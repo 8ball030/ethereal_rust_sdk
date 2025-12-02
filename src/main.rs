@@ -1,8 +1,8 @@
 use rust_socketio::{ClientBuilder, Payload, RawClient, TransportType};
 use serde::{Deserialize, Serialize};
-use std::time::Duration;
 use std::result::Result::Ok;
 use std::thread;
+use std::time::Duration;
 
 const SERVER_URL: &str = "wss://ws.etherealtest.net";
 const API_URL: &str = "https://api.etherealtest.net";
@@ -27,11 +27,8 @@ struct SubscriptionMessage {
 
 async fn get_products() -> Result<Vec<Product>, Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
-    let response = client
-        .get(format!("{}/v1/product", API_URL))
-        .send()
-        .await?;
-    
+    let response = client.get(format!("{}/v1/product", API_URL)).send().await?;
+
     let product_response: ProductResponse = response.json().await?;
     Ok(product_response.data)
 }
@@ -44,16 +41,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let products = get_products().await?;
     println!("Fetched {} products", products.len());
 
-
     // Build socket with event handlers
-thread::spawn(move || {
+    thread::spawn(move || {
         // Build socket with event handlers
         let _socket = ClientBuilder::new(SERVER_URL)
             .transport_type(TransportType::Websocket)
             .namespace("/v1/stream")
             .on("open", move |_payload: Payload, socket: RawClient| {
                 println!("Connected to {}", SERVER_URL);
-                
+
                 // Subscribe to all products
                 for product in &products {
                     // Subscribe to BookDepth
@@ -61,18 +57,18 @@ thread::spawn(move || {
                         msg_type: "BookDepth".to_string(),
                         product_id: product.id.clone(),
                     };
-                    
+
                     if let Ok(json_msg) = serde_json::to_value(&book_depth_msg) {
                         let _ = socket.emit("subscribe", Payload::from(json_msg.to_string()));
                         println!("Subscribed BookDepth:{}", product.id);
                     }
-                    
+
                     // Subscribe to MarketPrice
                     let market_price_msg = SubscriptionMessage {
                         msg_type: "MarketPrice".to_string(),
                         product_id: product.id.clone(),
                     };
-                    
+
                     if let Ok(json_msg) = serde_json::to_value(&market_price_msg) {
                         let _ = socket.emit("subscribe", Payload::from(json_msg.to_string()));
                         println!("Subscribed MarketPrice:{}", product.id);
@@ -94,23 +90,23 @@ thread::spawn(move || {
                         if let Some(s) = values.first() {
                             println!("[BookDepth] Received: {}", s);
                         }
-                    },
+                    }
                     Payload::Binary(bin) => println!("[BookDepth] Received bytes: {:#?}", bin),
-                    _ => {},
-                    // Payload::String(_) => println!("[BookDepth] Received a string payload"),
+                    _ => {} // Payload::String(_) => println!("[BookDepth] Received a string payload"),
                 }
             })
-            .on("MarketPrice", |payload: Payload, _socket: RawClient| {
-                match payload {
+            .on(
+                "MarketPrice",
+                |payload: Payload, _socket: RawClient| match payload {
                     Payload::Text(values) => {
                         if let Some(s) = values.first() {
                             println!("[MarketPrice] Received: {}", s);
                         }
-                    },
+                    }
                     Payload::Binary(bin) => println!("[MarketPrice] Received bytes: {:#?}", bin),
-                    _ => {},
-                }
-            })
+                    _ => {}
+                },
+            )
             .connect()
             .expect("Connection failed");
 
