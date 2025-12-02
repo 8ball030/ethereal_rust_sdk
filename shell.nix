@@ -6,6 +6,12 @@ pkgs.mkShell {
     rustup
     cargo
     # node stuff
+    # node stuff
+    nodejs_22
+    corepack_22
+    typeshare
+    openapi-generator-cli
+
   ];
   nativeBuildInputs =
     with pkgs;
@@ -31,7 +37,7 @@ pkgs.mkShell {
     ];
   
   shellHook = ''
-    rustup default 1.85.0
+    rustup default 1.88.0
     rustup component add rust-src
     export PATH=/home/$(whoami)/.cargo/bin:$PATH
   '';

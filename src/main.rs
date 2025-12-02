@@ -4,18 +4,15 @@ use std::result::Result::Ok;
 use std::thread;
 use std::time::Duration;
 
+
+mod models;
+
+use models::page_of_product_dtos::PageOfProductDtos;
+use models::product_dto::ProductDto;
+
 const SERVER_URL: &str = "wss://ws.etherealtest.net";
 const API_URL: &str = "https://api.etherealtest.net";
 
-#[derive(Debug, Deserialize)]
-struct ProductResponse {
-    data: Vec<Product>,
-}
-
-#[derive(Debug, Deserialize, Clone)]
-struct Product {
-    id: String,
-}
 
 #[derive(Debug, Serialize)]
 struct SubscriptionMessage {
@@ -25,11 +22,14 @@ struct SubscriptionMessage {
     product_id: String,
 }
 
-async fn get_products() -> Result<Vec<Product>, Box<dyn std::error::Error>> {
+async fn get_products() -> Result<Vec<ProductDto>, Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
     let response = client.get(format!("{}/v1/product", API_URL)).send().await?;
 
-    let product_response: ProductResponse = response.json().await?;
+    println!("Fetching products from {}/v1/product", API_URL);
+    let raw_json = response.text().await?;
+    println!("Raw response: {}", raw_json);
+    let product_response: PageOfProductDtos = serde_json::from_str(&raw_json)?;
     Ok(product_response.data)
 }
 
@@ -55,7 +55,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     // Subscribe to BookDepth
                     let book_depth_msg = SubscriptionMessage {
                         msg_type: "BookDepth".to_string(),
-                        product_id: product.id.clone(),
+                        product_id: product.id.to_string(),
                     };
 
                     if let Ok(json_msg) = serde_json::to_value(&book_depth_msg) {
@@ -66,7 +66,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     // Subscribe to MarketPrice
                     let market_price_msg = SubscriptionMessage {
                         msg_type: "MarketPrice".to_string(),
-                        product_id: product.id.clone(),
+                        product_id: product.id.to_string(),
                     };
 
                     if let Ok(json_msg) = serde_json::to_value(&market_price_msg) {
