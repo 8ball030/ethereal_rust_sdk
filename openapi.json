@@ -5731,17 +5731,7 @@
             "description": "Onchain generated productId from prior product registration"
           },
           "engineType": {
-            "enum": [
-              0,
-              1
-            ],
-            "type": "number",
-            "example": 0,
-            "description": "Product engine type e.g. PERP (0)",
-            "x-enum-varnames": [
-              "PERP",
-              "SPOT"
-            ]
+            "$ref": "#/components/schemas/EngineType"
           },
           "clientOrderId": {
             "type": "string",
@@ -5871,17 +5861,7 @@
             "description": "Onchain generated productId from prior product registration"
           },
           "engineType": {
-            "enum": [
-              0,
-              1
-            ],
-            "type": "number",
-            "example": 0,
-            "description": "Product engine type e.g. PERP (0)",
-            "x-enum-varnames": [
-              "PERP",
-              "SPOT"
-            ]
+            "$ref": "#/components/schemas/EngineType"
           },
           "clientOrderId": {
             "type": "string",
@@ -7074,17 +7054,7 @@
             "description": "Name of the quote token (e.g. USD in BTCUSD)"
           },
           "engineType": {
-            "enum": [
-              0,
-              1
-            ],
-            "type": "number",
-            "example": 0,
-            "description": "The corresponding engine type this product was registered with",
-            "x-enum-varnames": [
-              "PERP",
-              "SPOT"
-            ]
+            "$ref": "#/components/schemas/EngineType"
           },
           "onchainId": {
             "type": "number",
@@ -8944,7 +8914,16 @@
         "required": [
           "isEnabled"
         ]
-      }
+      },
+      "EngineType": {
+  "type": "integer",
+  "format": "int32",
+  "enum": [0, 1],
+  "x-enum-varnames": ["PERP", "SPOT"],
+  "description": "Type of trading engine",
+  "example": 1
+}
+
     }
   }
 }

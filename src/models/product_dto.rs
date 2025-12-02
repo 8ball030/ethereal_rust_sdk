@@ -34,9 +34,8 @@ pub struct ProductDto {
     /// Name of the quote token (e.g. USD in BTCUSD)
     #[serde(rename = "quoteTokenName")]
     pub quote_token_name: String,
-    /// The corresponding engine type this product was registered with
     #[serde(rename = "engineType")]
-    pub engine_type: EngineType,
+    pub engine_type: models::EngineType,
     /// The productId generated onchain after registering for the first time
     #[serde(rename = "onchainId")]
     pub onchain_id: f64,
