@@ -1,0 +1,13 @@
+[package]
+name = "ethereal_streamer"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+# anyhow = "1"
+# serde_json = "1.0.145"
+rust_socketio = "0.6.0"
+reqwest = {version = "0.12.24", features = ["json"]}
+serde = "1.0.228"
+serde_json = "1.0.145"
