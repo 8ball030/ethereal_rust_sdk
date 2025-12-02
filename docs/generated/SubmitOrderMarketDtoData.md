@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 **quantity** | **String** | Non-directional quantity of product in native units expressed as a decimal (precision: 9) | 
 **side** | **f64** | Side as either BUY (0) or SELL (1) | 
 **onchain_id** | **f64** | Onchain generated productId from prior product registration | 
-**engine_type** | [**models::EngineType**](EngineType.md) |  | 
+**engine_type** | **f64** | Product engine type e.g. PERP (0) | 
 **client_order_id** | Option<**String**> | A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters) | [optional]
 **reduce_only** | Option<**bool**> | Whether this should be a reduce-only order, required for close | [optional][default to false]
 **close** | Option<**bool**> | Order closes the entire current position, requires zero quantity and reduceOnly | [optional][default to false]

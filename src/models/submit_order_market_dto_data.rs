@@ -34,8 +34,9 @@ pub struct SubmitOrderMarketDtoData {
     /// Onchain generated productId from prior product registration
     #[serde(rename = "onchainId")]
     pub onchain_id: f64,
+    /// Product engine type e.g. PERP (0)
     #[serde(rename = "engineType")]
-    pub engine_type: models::EngineType,
+    pub engine_type: EngineType,
     /// A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)
     #[serde(rename = "clientOrderId", skip_serializing_if = "Option::is_none")]
     pub client_order_id: Option<String>,
@@ -66,7 +67,7 @@ pub struct SubmitOrderMarketDtoData {
 }
 
 impl SubmitOrderMarketDtoData {
-    pub fn new(subaccount: String, sender: String, nonce: String, r#type: Type, quantity: String, side: Side, onchain_id: f64, engine_type: models::EngineType, signed_at: f64) -> SubmitOrderMarketDtoData {
+    pub fn new(subaccount: String, sender: String, nonce: String, r#type: Type, quantity: String, side: Side, onchain_id: f64, engine_type: EngineType, signed_at: f64) -> SubmitOrderMarketDtoData {
         SubmitOrderMarketDtoData {
             subaccount,
             sender,
@@ -112,6 +113,20 @@ pub enum Side {
 impl Default for Side {
     fn default() -> Side {
         Self::BUY
+    }
+}
+/// Product engine type e.g. PERP (0)
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+pub enum EngineType {
+    #[serde(rename = "0")]
+    PERP,
+    #[serde(rename = "1")]
+    SPOT,
+}
+
+impl Default for EngineType {
+    fn default() -> EngineType {
+        Self::PERP
     }
 }
 /// Stop type, either 0 (take-profit) or 1 (stop-loss), requires non-zero stopPrice

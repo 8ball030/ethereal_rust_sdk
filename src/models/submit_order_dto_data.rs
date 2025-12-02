@@ -51,6 +51,20 @@ impl Default for Side {
         Self::BUY
     }
 }
+/// Product engine type e.g. PERP (0)
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+pub enum EngineType {
+    #[serde(rename = "0")]
+    PERP,
+    #[serde(rename = "1")]
+    SPOT,
+}
+
+impl Default for EngineType {
+    fn default() -> EngineType {
+        Self::PERP
+    }
+}
 /// Stop type, either 0 (take-profit) or 1 (stop-loss), requires non-zero stopPrice
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 pub enum StopType {
