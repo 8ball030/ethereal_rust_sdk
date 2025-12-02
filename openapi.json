@@ -8928,6 +8928,66 @@
         ],
         "description": "Type of trading engine",
         "example": 1
+      },
+      "BookDepthMessage": {
+        "type": "object",
+        "description": "Server-to-client BookDepth event message. First message is the full book (up to 100 levels per side). Subsequent messages are price-level diffs with absolute quantities. A zero quantity removes that level.",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64",
+            "description": "System timestamp in milliseconds when this BookDepth was emitted."
+          },
+          "previousTimestamp": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Timestamp in ms of the previous BookDepth event for this product."
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Identifier of the product."
+          },
+          "asks": {
+            "type": "array",
+            "description": "Array of ask levels as [price, quantity] string tuples.",
+            "minItems": 0,
+            "maxItems": 100,
+            "items": {
+              "type": "array",
+              "description": "Single ask level as [price, quantity].",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "string",
+                "description": "Price or quantity as decimal string."
+              }
+            }
+          },
+          "bids": {
+            "type": "array",
+            "description": "Array of bid levels as [price, quantity] string tuples.",
+            "minItems": 0,
+            "maxItems": 100,
+            "items": {
+              "type": "array",
+              "description": "Single bid level as [price, quantity].",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "string",
+                "description": "Price or quantity as decimal string."
+              }
+            }
+          }
+        },
+        "required": [
+          "timestamp",
+          "previousTimestamp",
+          "productId",
+          "asks",
+          "bids"
+        ]
       }
     }
   }
