@@ -15,22 +15,26 @@ codegen:
 	  -i openapi.json \
 	  -g rust \
 	  -o ./generated
-	  -c ./openapi_config.yaml
+
 	cp ./generated/src/models/* ./src/models/
 	cp ./generated/docs/* ./docs/generated/
 	rm -rf ./generated
-	# we now need to make the models/mod.rs file manually
-	echo "#![allow(clippy::all)]" > ./src/models/mod.rs
-	echo "#![allow(unused_imports)]" >> ./src/models/mod.rs
-	echo "#![allow(dead_code)]" >> ./src/models/mod.rs
-	echo "pub mod product_dto;" >> ./src/models/mod.rs
-	echo "pub mod page_of_product_dtos;" >> ./src/models/mod.rs
-	echo "pub use product_dto::ProductDto;" >> ./src/models/mod.rs
-	echo "pub use page_of_product_dtos::PageOfProductDtos;" >> ./src/models/mod.rs
-	# engine type
-	echo "pub mod engine_type;" >> ./src/models/mod.rs
-	echo "pub use engine_type::EngineType;" >> ./src/models/mod.rs
+
+	# rebuild mod.rs
+	@echo "#![allow(clippy::all)]" > ./src/models/mod.rs
+	@echo "#![allow(unused_imports)]" >> ./src/models/mod.rs
+	@echo "#![allow(dead_code)]" >> ./src/models/mod.rs
+	@echo "#![allow(non_camel_case_types)]" >> ./src/models/mod.rs
+	@echo "#![allow(clippy::upper_case_acronyms)]" >> ./src/models/mod.rs
 
 
+	@for f in ./src/models/*.rs; do \
+		base=$$(basename $$f); \
+		if [ "$$base" = "mod.rs" ]; then continue; fi; \
+		name=$${base%.rs}; \
+		camel=$$(echo $$name | sed -E 's/(^|_)([a-z])/\U\2/g'); \
+		echo "pub mod $$name;" >> ./src/models/mod.rs; \
+		echo "pub use $$name::$$camel;" >> ./src/models/mod.rs; \
+	done
 
 all: codegen fmt lint build test
