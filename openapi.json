@@ -8916,14 +8916,19 @@
         ]
       },
       "EngineType": {
-  "type": "integer",
-  "format": "int32",
-  "enum": [0, 1],
-  "x-enum-varnames": ["PERP", "SPOT"],
-  "description": "Type of trading engine",
-  "example": 1
-}
-
+        "type": "integer",
+        "format": "int32",
+        "enum": [
+          0,
+          1
+        ],
+        "x-enum-varnames": [
+          "PERP",
+          "SPOT"
+        ],
+        "description": "Type of trading engine",
+        "example": 1
+      }
     }
   }
 }
