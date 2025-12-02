@@ -39,12 +39,12 @@ make all
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## TODO
-- [ ] Generate datatypes from Ethereal API spec.
+- [x] Generate datatypes from Ethereal API spec.
+- [x] Set up continuous integration and deployment (CI/CD) pipeline.
 - [ ] Integrate with Ethereal authentication system.
 - [ ] Fully Integrate with Ethereal Websocket API.
 - [ ] Add more examples and documentation.
 - [ ] Write tests for all modules and functionalities.
-- [ ] Set up continuous integration and deployment (CI/CD) pipeline.
 - [ ] Publish the crate to crates.io.
 - [ ] Parse stringified numbers into appropriate numeric types.
 
