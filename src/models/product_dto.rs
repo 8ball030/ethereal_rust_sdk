@@ -34,9 +34,8 @@ pub struct ProductDto {
     /// Name of the quote token (e.g. USD in BTCUSD)
     #[serde(rename = "quoteTokenName")]
     pub quote_token_name: String,
-    /// The corresponding engine type this product was registered with
     #[serde(rename = "engineType")]
-    pub engine_type: EngineType,
+    pub engine_type: models::EngineType,
     /// The productId generated onchain after registering for the first time
     #[serde(rename = "onchainId")]
     pub onchain_id: f64,
@@ -100,7 +99,7 @@ pub struct ProductDto {
 }
 
 impl ProductDto {
-    pub fn new(id: uuid::Uuid, ticker: String, display_ticker: String, base_token_address: String, quote_token_address: String, base_token_name: String, quote_token_name: String, engine_type: EngineType, onchain_id: f64, block_number: String, cumulative_funding_usd: String, created_at: f64, min_quantity: String, lot_size: String, tick_size: String, maker_fee: String, taker_fee: String, max_quantity: String, min_price: String, max_price: String, volume24h: String, max_leverage: f64, pyth_feed_id: f64, funding_rate1h: String, open_interest: String, max_open_interest_usd: String, max_position_notional_usd: String) -> ProductDto {
+    pub fn new(id: uuid::Uuid, ticker: String, display_ticker: String, base_token_address: String, quote_token_address: String, base_token_name: String, quote_token_name: String, engine_type: models::EngineType, onchain_id: f64, block_number: String, cumulative_funding_usd: String, created_at: f64, min_quantity: String, lot_size: String, tick_size: String, maker_fee: String, taker_fee: String, max_quantity: String, min_price: String, max_price: String, volume24h: String, max_leverage: f64, pyth_feed_id: f64, funding_rate1h: String, open_interest: String, max_open_interest_usd: String, max_position_notional_usd: String) -> ProductDto {
         ProductDto {
             id,
             ticker,
@@ -131,20 +130,6 @@ impl ProductDto {
             max_open_interest_usd,
             max_position_notional_usd,
         }
-    }
-}
-/// The corresponding engine type this product was registered with
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum EngineType {
-    #[serde(rename = "0")]
-    PERP,
-    #[serde(rename = "1")]
-    SPOT,
-}
-
-impl Default for EngineType {
-    fn default() -> EngineType {
-        Self::PERP
     }
 }
 

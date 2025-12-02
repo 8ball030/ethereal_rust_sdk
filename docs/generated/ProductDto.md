@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 **quote_token_address** | **String** | Address of quote token (non-checksummed) | 
 **base_token_name** | **String** | Name of the base token (e.g. BTC in BTCUSD) | 
 **quote_token_name** | **String** | Name of the quote token (e.g. USD in BTCUSD) | 
-**engine_type** | **f64** | The corresponding engine type this product was registered with | 
+**engine_type** | [**models::EngineType**](EngineType.md) |  | 
 **onchain_id** | **f64** | The productId generated onchain after registering for the first time | 
 **block_number** | **String** | Block number this product was registered on | 
 **cumulative_funding_usd** | **String** | Cumulative funding in USD of the product (precision: 9) | 
