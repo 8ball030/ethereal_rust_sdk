@@ -5,3 +5,5 @@ pub mod page_of_product_dtos;
 pub mod product_dto;
 pub use page_of_product_dtos::PageOfProductDtos;
 pub use product_dto::ProductDto;
+pub mod engine_type;
+pub use engine_type::EngineType;

@@ -27,9 +27,9 @@ codegen:
 	echo "pub mod page_of_product_dtos;" >> ./src/models/mod.rs
 	echo "pub use product_dto::ProductDto;" >> ./src/models/mod.rs
 	echo "pub use page_of_product_dtos::PageOfProductDtos;" >> ./src/models/mod.rs
-	# # engine type
-	# echo "pub mod engine_type;" >> ./src/models/mod.rs
-	# echo "pub use engine_type::EngineType;" >> ./src/models/mod.rs
+	# engine type
+	echo "pub mod engine_type;" >> ./src/models/mod.rs
+	echo "pub use engine_type::EngineType;" >> ./src/models/mod.rs
 
 
 
