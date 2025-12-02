@@ -4,10 +4,14 @@ use std::result::Result::Ok;
 use std::thread;
 use std::time::Duration;
 
+mod channels;
 mod models;
 
+use models::market_price_dto::MarketPriceDto;
 use models::page_of_product_dtos::PageOfProductDtos;
 use models::product_dto::ProductDto;
+
+use crate::channels::public_channels::{BOOK_DEPTH, MARKET_PRICE};
 
 const SERVER_URL: &str = "wss://ws.etherealtest.net";
 const API_URL: &str = "https://api.etherealtest.net";
@@ -49,7 +53,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 for product in &products {
                     // Subscribe to BookDepth
                     let book_depth_msg = SubscriptionMessage {
-                        msg_type: "BookDepth".to_string(),
+                        msg_type: BOOK_DEPTH.to_string(),
                         product_id: product.id.to_string(),
                     };
 
@@ -60,7 +64,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                     // Subscribe to MarketPrice
                     let market_price_msg = SubscriptionMessage {
-                        msg_type: "MarketPrice".to_string(),
+                        msg_type: MARKET_PRICE.to_string(),
                         product_id: product.id.to_string(),
                     };
 
@@ -79,35 +83,32 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             .on("error", |payload: Payload, _socket: RawClient| {
                 println!("Error encountered: {payload:?}");
             })
-            .on("BookDepth", |payload: Payload, _socket: RawClient| {
-                match payload {
-                    Payload::Text(values) => {
-                        if let Some(s) = values.first() {
-                            println!("[BookDepth] Received: {s}");
-                        }
-                    }
-                    Payload::Binary(bin) => println!("[BookDepth] Received bytes: {bin:#?}"),
-                    _ => {} // Payload::String(_) => println!("[BookDepth] Received a string payload"),
-                }
-            })
             .on(
-                "MarketPrice",
-                |payload: Payload, _socket: RawClient| match payload {
-                    Payload::Text(values) => {
-                        if let Some(s) = values.first() {
-                            println!("[MarketPrice] Received: {s}");
+                BOOK_DEPTH.to_string(),
+                |payload: Payload, _socket: RawClient| {
+                    match payload {
+                        Payload::Text(values) => {
+                            if let Some(s) = values.first() {
+                                println!("[BookDepth] Received: {s}");
+                            }
                         }
+                        Payload::Binary(bin) => println!("[BookDepth] Received bytes: {bin:#?}"),
+                        _ => {} // Payload::String(_) => println!("[BookDepth] Received a string payload"),
                     }
-                    Payload::Binary(bin) => println!("[MarketPrice] Received bytes: {bin:#?}"),
-                    _ => {}
                 },
             )
+            .on(MARKET_PRICE.to_string(), |payload: Payload, _| {
+                if let Payload::Text(values) = payload {
+                    for value in values {
+                        if let Ok(market_price) = serde_json::from_value::<MarketPriceDto>(value) {
+                            println!("MarketPrice: {market_price:?}");
+                        }
+                    }
+                }
+            })
             .connect()
             .expect("Connection failed");
-
         println!("Connection established!");
-
-        // Keep the socket alive and polling for events
     });
 
     // Keep main thread alive

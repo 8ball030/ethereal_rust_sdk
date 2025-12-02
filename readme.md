@@ -46,6 +46,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [ ] Write tests for all modules and functionalities.
 - [ ] Set up continuous integration and deployment (CI/CD) pipeline.
 - [ ] Publish the crate to crates.io.
+- [ ] Parse stringified numbers into appropriate numeric types.
 
 ## Acknowledgements
 - [Ethereal](https://ethereal.trade) for providing the platform and API.
