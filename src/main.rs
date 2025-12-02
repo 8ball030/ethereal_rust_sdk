@@ -1,9 +1,8 @@
 use rust_socketio::{ClientBuilder, Payload, RawClient, TransportType};
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use std::result::Result::Ok;
 use std::thread;
 use std::time::Duration;
-
 
 mod models;
 
@@ -12,7 +11,6 @@ use models::product_dto::ProductDto;
 
 const SERVER_URL: &str = "wss://ws.etherealtest.net";
 const API_URL: &str = "https://api.etherealtest.net";
-
 
 #[derive(Debug, Serialize)]
 struct SubscriptionMessage {
@@ -24,18 +22,15 @@ struct SubscriptionMessage {
 
 async fn get_products() -> Result<Vec<ProductDto>, Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
-    let response = client.get(format!("{}/v1/product", API_URL)).send().await?;
-
-    println!("Fetching products from {}/v1/product", API_URL);
-    let raw_json = response.text().await?;
-    println!("Raw response: {}", raw_json);
-    let product_response: PageOfProductDtos = serde_json::from_str(&raw_json)?;
+    let response = client.get(format!("{API_URL}/v1/product")).send().await?;
+    println!("Fetching products");
+    let product_response: PageOfProductDtos = response.json().await?;
     Ok(product_response.data)
 }
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    println!("Connecting to Ethereal WebSocket server at {}", SERVER_URL);
+    println!("Connecting to Ethereal WebSocket server at {SERVER_URL}");
 
     // Fetch products first
     let products = get_products().await?;
@@ -48,7 +43,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             .transport_type(TransportType::Websocket)
             .namespace("/v1/stream")
             .on("open", move |_payload: Payload, socket: RawClient| {
-                println!("Connected to {}", SERVER_URL);
+                println!("Connected to {SERVER_URL}");
 
                 // Subscribe to all products
                 for product in &products {
@@ -82,16 +77,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 println!("Disconnected");
             })
             .on("error", |payload: Payload, _socket: RawClient| {
-                println!("Error encountered: {:?}", payload);
+                println!("Error encountered: {payload:?}");
             })
             .on("BookDepth", |payload: Payload, _socket: RawClient| {
                 match payload {
                     Payload::Text(values) => {
                         if let Some(s) = values.first() {
-                            println!("[BookDepth] Received: {}", s);
+                            println!("[BookDepth] Received: {s}");
                         }
                     }
-                    Payload::Binary(bin) => println!("[BookDepth] Received bytes: {:#?}", bin),
+                    Payload::Binary(bin) => println!("[BookDepth] Received bytes: {bin:#?}"),
                     _ => {} // Payload::String(_) => println!("[BookDepth] Received a string payload"),
                 }
             })
@@ -100,10 +95,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 |payload: Payload, _socket: RawClient| match payload {
                     Payload::Text(values) => {
                         if let Some(s) = values.first() {
-                            println!("[MarketPrice] Received: {}", s);
+                            println!("[MarketPrice] Received: {s}");
                         }
                     }
-                    Payload::Binary(bin) => println!("[MarketPrice] Received bytes: {:#?}", bin),
+                    Payload::Binary(bin) => println!("[MarketPrice] Received bytes: {bin:#?}"),
                     _ => {}
                 },
             )
