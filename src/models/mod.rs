@@ -13,6 +13,8 @@ pub mod bad_request_dto_message;
 pub use bad_request_dto_message::BadRequestDtoMessage;
 pub mod bad_request_dto;
 pub use bad_request_dto::BadRequestDto;
+pub mod book_depth_message;
+pub use book_depth_message::BookDepthMessage;
 pub mod cancel_order_dto_data;
 pub use cancel_order_dto_data::CancelOrderDtoData;
 pub mod cancel_order_dto;
