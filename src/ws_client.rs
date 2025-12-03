@@ -8,26 +8,13 @@ use std::{
     time::Duration,
 };
 
-use crate::enums::Environment;
+use crate::types::SubscriptionMessage;
+use crate::{channels::public_channels, enums::Environment};
 use rust_socketio::client::Client;
-
-use serde::Serialize;
-
-#[derive(Debug, Serialize)]
-pub struct SubscriptionMessage {
-    #[serde(rename = "type")]
-    pub msg_type: String,
-    #[serde(rename = "productId")]
-    pub product_id: String,
-}
-
-const MARKET_PRICE: &str = "MarketPrice";
-
-const SERVER_URL: &str = "wss://ws.etherealtest.net";
 
 fn get_server_url(environment: &Environment) -> &str {
     match environment {
-        Environment::Production => "wss://ws.etherealstreamer.com",
+        Environment::Production => "wss://ws.ethereal.trade",
         Environment::Testnet => "wss://ws.etherealtest.net",
     }
 }
@@ -48,36 +35,6 @@ impl WsClient {
             client: None,
         }
     }
-    pub fn subscribe_market_data(&self, product_id: &str) {
-        // Get a reference to the connected client or bail out early
-        let client = match &self.client {
-            Some(c) => c,
-            None => {
-                println!("WebSocket client is not connected. Please call connect() first.");
-                return;
-            }
-        };
-
-        let market_price_msg = SubscriptionMessage {
-            msg_type: MARKET_PRICE.to_string(),
-            product_id: product_id.to_string(),
-        };
-
-        let json_msg = match serde_json::to_value(&market_price_msg) {
-            Ok(v) => v,
-            Err(e) => {
-                eprintln!("Failed to serialize subscription message: {e}");
-                return;
-            }
-        };
-
-        // Now `client` is `&Client`, not `&Option<Client>`
-        if let Err(e) = client.emit("subscribe", Payload::from(json_msg.to_string())) {
-            eprintln!("Failed to emit subscribe: {e}");
-        } else {
-            println!("Subscribed MarketPrice: {product_id}");
-        }
-    }
 
     #[allow(clippy::result_large_err)]
     pub fn connect(&mut self) -> Result<(), Error> {
@@ -92,7 +49,7 @@ impl WsClient {
             self.client_builder
                 .clone()
                 .on("open", move |_payload: Payload, _socket: RawClient| {
-                    println!("Connected to {SERVER_URL}");
+                    println!("WebSocket connection established.");
                     flag_for_cb.store(true, Ordering::SeqCst);
                 });
 
@@ -121,13 +78,118 @@ impl WsClient {
             std::thread::park();
         }
     }
+    fn is_connected(&self) -> bool {
+        self.client.is_some()
+    }
 
+    pub fn subscribe_market_data(&self, product_id: &str) {
+        // Get a reference to the connected client or bail out early
+        if !self.is_connected() {
+            println!("WebSocket client is not connected. Please call connect() first.");
+            return;
+        }
+
+        let market_price_msg = SubscriptionMessage {
+            msg_type: public_channels::MARKET_PRICE.to_string(),
+            product_id: product_id.to_string(),
+        };
+
+        let json_msg = match serde_json::to_value(&market_price_msg) {
+            Ok(v) => v,
+            Err(e) => {
+                eprintln!("Failed to serialize subscription message: {e}");
+                return;
+            }
+        };
+
+        // Now `client` is `&Client`, not `&Option<Client>`
+        let client = self.client.as_ref().unwrap();
+        if let Err(e) = client.emit("subscribe", Payload::from(json_msg.to_string())) {
+            eprintln!("Failed to emit subscribe: {e}");
+        } else {
+            println!("Subscribed MarketPrice: {product_id}");
+        }
+    }
     pub fn register_market_price_callback<F>(&mut self, callback: F)
     where
         F: Fn(Payload, RawClient) + Send + Sync + 'static,
     {
-        let builder = self.client_builder.clone().on(MARKET_PRICE, callback); // MARKER_PRICE is &str, no need for to_string()
+        let builder = self
+            .client_builder
+            .clone()
+            .on(public_channels::MARKET_PRICE, callback); // MARKER_PRICE is &str, no need for to_string()
 
+        self.client_builder = builder;
+    }
+    pub fn subscribe_orderbook_data(&self, product_id: &str) {
+        // Get a reference to the connected client or bail out early
+        if !self.is_connected() {
+            println!("WebSocket client is not connected. Please call connect() first.");
+            return;
+        }
+        let orderbook_msg = SubscriptionMessage {
+            msg_type: public_channels::BOOK_DEPTH.to_string(),
+            product_id: product_id.to_string(),
+        };
+
+        let json_msg = match serde_json::to_value(&orderbook_msg) {
+            Ok(v) => v,
+            Err(e) => {
+                eprintln!("Failed to serialize subscription message: {e}");
+                return;
+            }
+        };
+        let client = self.client.as_ref().unwrap();
+        if let Err(e) = client.emit("subscribe", Payload::from(json_msg.to_string())) {
+            eprintln!("Failed to emit subscribe: {e}");
+        } else {
+            println!("Subscribed BookDepth: {product_id}");
+        }
+    }
+    pub fn register_orderbook_callback<F>(&mut self, callback: F)
+    where
+        F: Fn(Payload, RawClient) + Send + Sync + 'static,
+    {
+        let builder = self
+            .client_builder
+            .clone()
+            .on(public_channels::BOOK_DEPTH, callback); // BOOK_DEPTH is &str, no need for to_string()
+
+        self.client_builder = builder;
+    }
+    pub fn subscribe_trade_fill_data(&self, product_id: &str) {
+        // Get a reference to the connected client or bail out early
+        if !self.is_connected() {
+            println!("WebSocket client is not connected. Please call connect() first.");
+            return;
+        }
+        let trade_fill_msg = SubscriptionMessage {
+            msg_type: public_channels::TRADE_FILL.to_string(),
+            product_id: product_id.to_string(),
+        };
+
+        let json_msg = match serde_json::to_value(&trade_fill_msg) {
+            Ok(v) => v,
+            Err(e) => {
+                eprintln!("Failed to serialize subscription message: {e}");
+                return;
+            }
+        };
+        let client = self.client.as_ref().unwrap();
+        if let Err(e) = client.emit("subscribe", Payload::from(json_msg.to_string())) {
+            eprintln!("Failed to emit subscribe: {e}");
+        } else {
+            println!("Subscribed TradeFill: {product_id}");
+        }
+    }
+    pub fn register_trade_fill_callback<F>(&mut self, callback: F)
+    where
+        F: Fn(Payload, RawClient) + Send + Sync + 'static,
+    {
+        let builder = self
+            .client_builder
+            .clone()
+            .on(public_channels::TRADE_FILL, callback); // TRADE_FILL is &str, no need for to_string()
         self.client_builder = builder;
     }
 }

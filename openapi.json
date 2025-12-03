@@ -8988,6 +8988,72 @@
           "asks",
           "bids"
         ]
+      },
+      "TradeStreamMessage": {
+        "type": "object",
+        "description": "Server-to-client TradeStreams event message containing recent trades for a product.",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "Array of trade objects.",
+            "items": {
+              "type": "object",
+              "description": "Single trade object.",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier of the trade."
+                },
+                "price": {
+                  "type": "string",
+                  "description": "Trade price as a decimal string."
+                },
+                "filled": {
+                  "type": "string",
+                  "description": "Filled quantity as a decimal string."
+                },
+                "takerSide": {
+                  "$ref": "#/components/schemas/TakerSide"
+                },
+                "createdAt": {
+                  "type": "number",
+                  "description": "Timestamp of when the trade was created (ms since Unix Epoch)."
+                }
+              },
+              "required": [
+                "id",
+                "price",
+                "filled",
+                "takerSide",
+                "createdAt"
+              ]
+            }
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Identifier of the product."
+          }
+        },
+        "required": [
+          "data",
+          "productId"
+        ]
+      },
+      "TakerSide": {
+        "type": "integer",
+        "format": "int32",
+        "enum": [
+          0,
+          1
+        ],
+        "x-enum-varnames": [
+          "BUY",
+          "SELL"
+        ],
+        "description": "Side of the trade",
+        "example": 0
       }
     }
   }
