@@ -6,8 +6,8 @@ use ethereal_streamer::enums::Environment;
 use ethereal_streamer::models::BookDepthMessage;
 use ethereal_streamer::ws_client::WsClient;
 
-fn orderbook_callback(market_price: Payload, _socket: RawClient) {
-    if let Payload::Text(values) = market_price {
+fn orderbook_callback(raw_data: Payload, _socket: RawClient) {
+    if let Payload::Text(values) = raw_data {
         for value in values {
             if let Ok(orderbook) = serde_json::from_value::<BookDepthMessage>(value) {
                 println!(
