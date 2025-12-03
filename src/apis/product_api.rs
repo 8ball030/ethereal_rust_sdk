@@ -69,7 +69,7 @@ pub enum ProductControllerListError {
     UnknownValue(serde_json::Value),
 }
 
-pub async fn product_controller_get_by_id(
+pub fn product_controller_get_by_id(
     configuration: &configuration::Configuration,
     id: &str,
 ) -> Result<models::ProductDto, Error<ProductControllerGetByIdError>> {
@@ -88,7 +88,7 @@ pub async fn product_controller_get_by_id(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -99,7 +99,7 @@ pub async fn product_controller_get_by_id(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -114,7 +114,7 @@ pub async fn product_controller_get_by_id(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<ProductControllerGetByIdError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -124,7 +124,7 @@ pub async fn product_controller_get_by_id(
     }
 }
 
-pub async fn product_controller_get_market_liquidity(
+pub fn product_controller_get_market_liquidity(
     configuration: &configuration::Configuration,
     product_id: &str,
 ) -> Result<models::MarketLiquidityDto, Error<ProductControllerGetMarketLiquidityError>> {
@@ -140,7 +140,7 @@ pub async fn product_controller_get_market_liquidity(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -151,7 +151,7 @@ pub async fn product_controller_get_market_liquidity(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -166,7 +166,7 @@ pub async fn product_controller_get_market_liquidity(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<ProductControllerGetMarketLiquidityError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
@@ -177,7 +177,7 @@ pub async fn product_controller_get_market_liquidity(
     }
 }
 
-pub async fn product_controller_get_market_price(
+pub fn product_controller_get_market_price(
     configuration: &configuration::Configuration,
     product_ids: Vec<uuid::Uuid>,
 ) -> Result<models::ListOfMarketPriceDtos, Error<ProductControllerGetMarketPriceError>> {
@@ -209,7 +209,7 @@ pub async fn product_controller_get_market_price(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -220,7 +220,7 @@ pub async fn product_controller_get_market_price(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -235,7 +235,7 @@ pub async fn product_controller_get_market_price(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<ProductControllerGetMarketPriceError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
@@ -246,7 +246,7 @@ pub async fn product_controller_get_market_price(
     }
 }
 
-pub async fn product_controller_list(
+pub fn product_controller_list(
     configuration: &configuration::Configuration,
     order: Option<&str>,
     limit: Option<f64>,
@@ -284,7 +284,7 @@ pub async fn product_controller_list(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -295,7 +295,7 @@ pub async fn product_controller_list(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -310,7 +310,7 @@ pub async fn product_controller_list(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<ProductControllerListError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,

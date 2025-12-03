@@ -27,7 +27,7 @@ pub enum WhitelistControllerIsWhitelistedError {
     UnknownValue(serde_json::Value),
 }
 
-pub async fn whitelist_controller_is_whitelisted(
+pub fn whitelist_controller_is_whitelisted(
     configuration: &configuration::Configuration,
     address: &str,
 ) -> Result<models::WhitelistDto, Error<WhitelistControllerIsWhitelistedError>> {
@@ -43,7 +43,7 @@ pub async fn whitelist_controller_is_whitelisted(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -54,7 +54,7 @@ pub async fn whitelist_controller_is_whitelisted(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -69,7 +69,7 @@ pub async fn whitelist_controller_is_whitelisted(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<WhitelistControllerIsWhitelistedError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {

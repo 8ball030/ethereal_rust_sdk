@@ -83,7 +83,7 @@ pub enum PositionControllerListLiquidationsBySubaccountIdError {
     UnknownValue(serde_json::Value),
 }
 
-pub async fn position_controller_get_active(
+pub fn position_controller_get_active(
     configuration: &configuration::Configuration,
     subaccount_id: &str,
     product_id: &str,
@@ -102,7 +102,7 @@ pub async fn position_controller_get_active(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -113,7 +113,7 @@ pub async fn position_controller_get_active(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -128,7 +128,7 @@ pub async fn position_controller_get_active(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<PositionControllerGetActiveError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -138,7 +138,7 @@ pub async fn position_controller_get_active(
     }
 }
 
-pub async fn position_controller_get_by_id(
+pub fn position_controller_get_by_id(
     configuration: &configuration::Configuration,
     id: &str,
 ) -> Result<models::PositionDto, Error<PositionControllerGetByIdError>> {
@@ -157,7 +157,7 @@ pub async fn position_controller_get_by_id(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -168,7 +168,7 @@ pub async fn position_controller_get_by_id(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -183,7 +183,7 @@ pub async fn position_controller_get_by_id(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<PositionControllerGetByIdError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -193,7 +193,7 @@ pub async fn position_controller_get_by_id(
     }
 }
 
-pub async fn position_controller_list_by_subaccount_id(
+pub fn position_controller_list_by_subaccount_id(
     configuration: &configuration::Configuration,
     subaccount_id: &str,
     order: Option<&str>,
@@ -275,7 +275,7 @@ pub async fn position_controller_list_by_subaccount_id(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -286,7 +286,7 @@ pub async fn position_controller_list_by_subaccount_id(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -301,7 +301,7 @@ pub async fn position_controller_list_by_subaccount_id(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<PositionControllerListBySubaccountIdError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
@@ -312,7 +312,7 @@ pub async fn position_controller_list_by_subaccount_id(
     }
 }
 
-pub async fn position_controller_list_fills_by_position_id(
+pub fn position_controller_list_fills_by_position_id(
     configuration: &configuration::Configuration,
     position_id: &str,
     order: Option<&str>,
@@ -348,7 +348,7 @@ pub async fn position_controller_list_fills_by_position_id(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -359,7 +359,7 @@ pub async fn position_controller_list_fills_by_position_id(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -374,7 +374,7 @@ pub async fn position_controller_list_fills_by_position_id(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<PositionControllerListFillsByPositionIdError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
@@ -385,7 +385,7 @@ pub async fn position_controller_list_fills_by_position_id(
     }
 }
 
-pub async fn position_controller_list_liquidations_by_subaccount_id(
+pub fn position_controller_list_liquidations_by_subaccount_id(
     configuration: &configuration::Configuration,
     order: Option<&str>,
     limit: Option<f64>,
@@ -421,7 +421,7 @@ pub async fn position_controller_list_liquidations_by_subaccount_id(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -432,7 +432,7 @@ pub async fn position_controller_list_liquidations_by_subaccount_id(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -447,7 +447,7 @@ pub async fn position_controller_list_liquidations_by_subaccount_id(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<PositionControllerListLiquidationsBySubaccountIdError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {

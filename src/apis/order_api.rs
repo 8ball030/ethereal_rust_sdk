@@ -111,7 +111,7 @@ pub enum OrderControllerSubmitError {
     UnknownValue(serde_json::Value),
 }
 
-pub async fn order_controller_cancel(
+pub fn order_controller_cancel(
     configuration: &configuration::Configuration,
     cancel_order_dto: models::CancelOrderDto,
 ) -> Result<models::ListOfCancelOrderResultDtos, Error<OrderControllerCancelError>> {
@@ -129,7 +129,7 @@ pub async fn order_controller_cancel(
     req_builder = req_builder.json(&p_cancel_order_dto);
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -140,7 +140,7 @@ pub async fn order_controller_cancel(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -155,7 +155,7 @@ pub async fn order_controller_cancel(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<OrderControllerCancelError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -165,7 +165,7 @@ pub async fn order_controller_cancel(
     }
 }
 
-pub async fn order_controller_dry_run(
+pub fn order_controller_dry_run(
     configuration: &configuration::Configuration,
     submit_dry_order_dto: models::SubmitDryOrderDto,
 ) -> Result<models::DryRunOrderCreatedDto, Error<OrderControllerDryRunError>> {
@@ -183,7 +183,7 @@ pub async fn order_controller_dry_run(
     req_builder = req_builder.json(&p_submit_dry_order_dto);
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -194,7 +194,7 @@ pub async fn order_controller_dry_run(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -209,7 +209,7 @@ pub async fn order_controller_dry_run(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<OrderControllerDryRunError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -219,7 +219,7 @@ pub async fn order_controller_dry_run(
     }
 }
 
-pub async fn order_controller_get_by_id(
+pub fn order_controller_get_by_id(
     configuration: &configuration::Configuration,
     id: &str,
 ) -> Result<models::OrderDto, Error<OrderControllerGetByIdError>> {
@@ -238,7 +238,7 @@ pub async fn order_controller_get_by_id(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -249,7 +249,7 @@ pub async fn order_controller_get_by_id(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -264,7 +264,7 @@ pub async fn order_controller_get_by_id(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<OrderControllerGetByIdError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -274,7 +274,7 @@ pub async fn order_controller_get_by_id(
     }
 }
 
-pub async fn order_controller_list_by_subaccount_id(
+pub fn order_controller_list_by_subaccount_id(
     configuration: &configuration::Configuration,
     subaccount_id: &str,
     order: Option<&str>,
@@ -387,7 +387,7 @@ pub async fn order_controller_list_by_subaccount_id(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -398,7 +398,7 @@ pub async fn order_controller_list_by_subaccount_id(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -413,7 +413,7 @@ pub async fn order_controller_list_by_subaccount_id(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<OrderControllerListBySubaccountIdError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
@@ -424,7 +424,7 @@ pub async fn order_controller_list_by_subaccount_id(
     }
 }
 
-pub async fn order_controller_list_fills_by_subaccount_id(
+pub fn order_controller_list_fills_by_subaccount_id(
     configuration: &configuration::Configuration,
     subaccount_id: &str,
     order: Option<&str>,
@@ -501,7 +501,7 @@ pub async fn order_controller_list_fills_by_subaccount_id(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -512,7 +512,7 @@ pub async fn order_controller_list_fills_by_subaccount_id(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -527,7 +527,7 @@ pub async fn order_controller_list_fills_by_subaccount_id(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<OrderControllerListFillsBySubaccountIdError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
@@ -538,7 +538,7 @@ pub async fn order_controller_list_fills_by_subaccount_id(
     }
 }
 
-pub async fn order_controller_list_trades(
+pub fn order_controller_list_trades(
     configuration: &configuration::Configuration,
     product_id: &str,
     order: Option<&str>,
@@ -574,7 +574,7 @@ pub async fn order_controller_list_trades(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -585,7 +585,7 @@ pub async fn order_controller_list_trades(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -600,7 +600,7 @@ pub async fn order_controller_list_trades(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<OrderControllerListTradesError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -610,7 +610,7 @@ pub async fn order_controller_list_trades(
     }
 }
 
-pub async fn order_controller_submit(
+pub fn order_controller_submit(
     configuration: &configuration::Configuration,
     submit_order_dto: models::SubmitOrderDto,
 ) -> Result<models::SubmitOrderCreatedDto, Error<OrderControllerSubmitError>> {
@@ -628,7 +628,7 @@ pub async fn order_controller_submit(
     req_builder = req_builder.json(&p_submit_order_dto);
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -639,7 +639,7 @@ pub async fn order_controller_submit(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -654,7 +654,7 @@ pub async fn order_controller_submit(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<OrderControllerSubmitError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,

@@ -83,7 +83,7 @@ pub enum TokenControllerListWithdrawsError {
     UnknownValue(serde_json::Value),
 }
 
-pub async fn token_controller_get_by_id(
+pub fn token_controller_get_by_id(
     configuration: &configuration::Configuration,
     id: &str,
 ) -> Result<models::TokenDto, Error<TokenControllerGetByIdError>> {
@@ -102,7 +102,7 @@ pub async fn token_controller_get_by_id(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -113,7 +113,7 @@ pub async fn token_controller_get_by_id(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -128,7 +128,7 @@ pub async fn token_controller_get_by_id(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<TokenControllerGetByIdError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -138,7 +138,7 @@ pub async fn token_controller_get_by_id(
     }
 }
 
-pub async fn token_controller_initiate_withdraw(
+pub fn token_controller_initiate_withdraw(
     configuration: &configuration::Configuration,
     id: &str,
     initiate_withdraw_dto: models::InitiateWithdrawDto,
@@ -162,7 +162,7 @@ pub async fn token_controller_initiate_withdraw(
     req_builder = req_builder.json(&p_initiate_withdraw_dto);
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -173,7 +173,7 @@ pub async fn token_controller_initiate_withdraw(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -188,7 +188,7 @@ pub async fn token_controller_initiate_withdraw(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<TokenControllerInitiateWithdrawError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
@@ -199,7 +199,7 @@ pub async fn token_controller_initiate_withdraw(
     }
 }
 
-pub async fn token_controller_list(
+pub fn token_controller_list(
     configuration: &configuration::Configuration,
     order: Option<&str>,
     limit: Option<f64>,
@@ -242,7 +242,7 @@ pub async fn token_controller_list(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -253,7 +253,7 @@ pub async fn token_controller_list(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -268,7 +268,7 @@ pub async fn token_controller_list(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<TokenControllerListError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -278,7 +278,7 @@ pub async fn token_controller_list(
     }
 }
 
-pub async fn token_controller_list_transfers(
+pub fn token_controller_list_transfers(
     configuration: &configuration::Configuration,
     subaccount_id: &str,
     order: Option<&str>,
@@ -366,7 +366,7 @@ pub async fn token_controller_list_transfers(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -377,7 +377,7 @@ pub async fn token_controller_list_transfers(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -392,7 +392,7 @@ pub async fn token_controller_list_transfers(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<TokenControllerListTransfersError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -402,7 +402,7 @@ pub async fn token_controller_list_transfers(
     }
 }
 
-pub async fn token_controller_list_withdraws(
+pub fn token_controller_list_withdraws(
     configuration: &configuration::Configuration,
     subaccount_id: &str,
     order: Option<&str>,
@@ -443,7 +443,7 @@ pub async fn token_controller_list_withdraws(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -454,7 +454,7 @@ pub async fn token_controller_list_withdraws(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -469,7 +469,7 @@ pub async fn token_controller_list_withdraws(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<TokenControllerListWithdrawsError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,

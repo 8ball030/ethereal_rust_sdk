@@ -20,7 +20,7 @@ pub enum MaintenanceControllerIsMaintenanceError {
     UnknownValue(serde_json::Value),
 }
 
-pub async fn maintenance_controller_is_maintenance(
+pub fn maintenance_controller_is_maintenance(
     configuration: &configuration::Configuration,
 ) -> Result<models::MaintenanceDto, Error<MaintenanceControllerIsMaintenanceError>> {
     let uri_str = format!("{}/v1/maintenance", configuration.base_path);
@@ -31,7 +31,7 @@ pub async fn maintenance_controller_is_maintenance(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -42,7 +42,7 @@ pub async fn maintenance_controller_is_maintenance(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -57,7 +57,7 @@ pub async fn maintenance_controller_is_maintenance(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<MaintenanceControllerIsMaintenanceError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {

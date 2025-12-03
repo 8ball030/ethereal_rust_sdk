@@ -55,7 +55,7 @@ pub enum FundingControllerListProjectedRatesError {
     UnknownValue(serde_json::Value),
 }
 
-pub async fn funding_controller_get_projected_funding_rate(
+pub fn funding_controller_get_projected_funding_rate(
     configuration: &configuration::Configuration,
     product_id: &str,
 ) -> Result<models::ProjectedFundingDto, Error<FundingControllerGetProjectedFundingRateError>> {
@@ -71,7 +71,7 @@ pub async fn funding_controller_get_projected_funding_rate(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -82,7 +82,7 @@ pub async fn funding_controller_get_projected_funding_rate(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -97,7 +97,7 @@ pub async fn funding_controller_get_projected_funding_rate(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<FundingControllerGetProjectedFundingRateError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
@@ -108,7 +108,7 @@ pub async fn funding_controller_get_projected_funding_rate(
     }
 }
 
-pub async fn funding_controller_list_by_product_id(
+pub fn funding_controller_list_by_product_id(
     configuration: &configuration::Configuration,
     product_id: &str,
     range: &str,
@@ -147,7 +147,7 @@ pub async fn funding_controller_list_by_product_id(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -158,7 +158,7 @@ pub async fn funding_controller_list_by_product_id(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -173,7 +173,7 @@ pub async fn funding_controller_list_by_product_id(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<FundingControllerListByProductIdError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
@@ -184,7 +184,7 @@ pub async fn funding_controller_list_by_product_id(
     }
 }
 
-pub async fn funding_controller_list_projected_rates(
+pub fn funding_controller_list_projected_rates(
     configuration: &configuration::Configuration,
     product_ids: Vec<uuid::Uuid>,
 ) -> Result<models::PageOfProjectedFundingDtos, Error<FundingControllerListProjectedRatesError>> {
@@ -216,7 +216,7 @@ pub async fn funding_controller_list_projected_rates(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -227,7 +227,7 @@ pub async fn funding_controller_list_projected_rates(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -242,7 +242,7 @@ pub async fn funding_controller_list_projected_rates(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<FundingControllerListProjectedRatesError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {

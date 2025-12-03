@@ -97,7 +97,7 @@ pub enum LinkedSignerControllerRevokeSignerError {
     UnknownValue(serde_json::Value),
 }
 
-pub async fn linked_signer_controller_get_account_quota(
+pub fn linked_signer_controller_get_account_quota(
     configuration: &configuration::Configuration,
     subaccount_id: &str,
 ) -> Result<models::AccountSignerQuotaDto, Error<LinkedSignerControllerGetAccountQuotaError>> {
@@ -113,7 +113,7 @@ pub async fn linked_signer_controller_get_account_quota(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -124,7 +124,7 @@ pub async fn linked_signer_controller_get_account_quota(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -139,7 +139,7 @@ pub async fn linked_signer_controller_get_account_quota(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<LinkedSignerControllerGetAccountQuotaError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
@@ -150,7 +150,7 @@ pub async fn linked_signer_controller_get_account_quota(
     }
 }
 
-pub async fn linked_signer_controller_get_signer(
+pub fn linked_signer_controller_get_signer(
     configuration: &configuration::Configuration,
     id: &str,
 ) -> Result<models::SignerDto, Error<LinkedSignerControllerGetSignerError>> {
@@ -169,7 +169,7 @@ pub async fn linked_signer_controller_get_signer(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -180,7 +180,7 @@ pub async fn linked_signer_controller_get_signer(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -195,7 +195,7 @@ pub async fn linked_signer_controller_get_signer(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<LinkedSignerControllerGetSignerError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
@@ -206,7 +206,7 @@ pub async fn linked_signer_controller_get_signer(
     }
 }
 
-pub async fn linked_signer_controller_link_signer(
+pub fn linked_signer_controller_link_signer(
     configuration: &configuration::Configuration,
     link_signer_dto: models::LinkSignerDto,
 ) -> Result<models::SignerDto, Error<LinkedSignerControllerLinkSignerError>> {
@@ -224,7 +224,7 @@ pub async fn linked_signer_controller_link_signer(
     req_builder = req_builder.json(&p_link_signer_dto);
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -235,7 +235,7 @@ pub async fn linked_signer_controller_link_signer(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -250,7 +250,7 @@ pub async fn linked_signer_controller_link_signer(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<LinkedSignerControllerLinkSignerError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
@@ -261,7 +261,7 @@ pub async fn linked_signer_controller_link_signer(
     }
 }
 
-pub async fn linked_signer_controller_list_by_subaccount_id(
+pub fn linked_signer_controller_list_by_subaccount_id(
     configuration: &configuration::Configuration,
     subaccount_id: &str,
     order: Option<&str>,
@@ -318,7 +318,7 @@ pub async fn linked_signer_controller_list_by_subaccount_id(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -329,7 +329,7 @@ pub async fn linked_signer_controller_list_by_subaccount_id(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -344,7 +344,7 @@ pub async fn linked_signer_controller_list_by_subaccount_id(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<LinkedSignerControllerListBySubaccountIdError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
@@ -355,7 +355,7 @@ pub async fn linked_signer_controller_list_by_subaccount_id(
     }
 }
 
-pub async fn linked_signer_controller_refresh_signer(
+pub fn linked_signer_controller_refresh_signer(
     configuration: &configuration::Configuration,
     refresh_linked_signer_dto: models::RefreshLinkedSignerDto,
 ) -> Result<models::SignerDto, Error<LinkedSignerControllerRefreshSignerError>> {
@@ -373,7 +373,7 @@ pub async fn linked_signer_controller_refresh_signer(
     req_builder = req_builder.json(&p_refresh_linked_signer_dto);
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -384,7 +384,7 @@ pub async fn linked_signer_controller_refresh_signer(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -399,7 +399,7 @@ pub async fn linked_signer_controller_refresh_signer(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<LinkedSignerControllerRefreshSignerError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
@@ -410,7 +410,7 @@ pub async fn linked_signer_controller_refresh_signer(
     }
 }
 
-pub async fn linked_signer_controller_revoke_signer(
+pub fn linked_signer_controller_revoke_signer(
     configuration: &configuration::Configuration,
     revoke_linked_signer_dto: models::RevokeLinkedSignerDto,
 ) -> Result<models::SignerDto, Error<LinkedSignerControllerRevokeSignerError>> {
@@ -428,7 +428,7 @@ pub async fn linked_signer_controller_revoke_signer(
     req_builder = req_builder.json(&p_revoke_linked_signer_dto);
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -439,7 +439,7 @@ pub async fn linked_signer_controller_revoke_signer(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -454,7 +454,7 @@ pub async fn linked_signer_controller_revoke_signer(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<LinkedSignerControllerRevokeSignerError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {

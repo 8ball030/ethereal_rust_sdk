@@ -41,7 +41,7 @@ pub enum PointsControllerListPointsSeasonSummariesError {
     UnknownValue(serde_json::Value),
 }
 
-pub async fn points_controller_list_points_periods(
+pub fn points_controller_list_points_periods(
     configuration: &configuration::Configuration,
     address: &str,
     season: f64,
@@ -63,7 +63,7 @@ pub async fn points_controller_list_points_periods(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -74,7 +74,7 @@ pub async fn points_controller_list_points_periods(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -89,7 +89,7 @@ pub async fn points_controller_list_points_periods(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<PointsControllerListPointsPeriodsError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
@@ -100,7 +100,7 @@ pub async fn points_controller_list_points_periods(
     }
 }
 
-pub async fn points_controller_list_points_season_summaries(
+pub fn points_controller_list_points_season_summaries(
     configuration: &configuration::Configuration,
     address: &str,
 ) -> Result<
@@ -119,7 +119,7 @@ pub async fn points_controller_list_points_season_summaries(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -130,7 +130,7 @@ pub async fn points_controller_list_points_season_summaries(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -145,7 +145,7 @@ pub async fn points_controller_list_points_season_summaries(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<PointsControllerListPointsSeasonSummariesError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {

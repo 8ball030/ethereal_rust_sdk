@@ -16,8 +16,9 @@ codegen:
 	openapi-generator-cli generate \
 	  -i openapi.json \
 	  -g rust \
-	  -o ./generated
-# 	  -additional-properties=supportAsync=false
+	  -o ./generated \
+	--additional-properties=supportAsync=false
+
 
 	cp ./generated/src/models/* ./src/models/
 	cp ./generated/docs/* ./docs/generated/

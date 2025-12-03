@@ -27,7 +27,7 @@ pub enum TimeControllerPostSystemTimeError {
     UnknownValue(serde_json::Value),
 }
 
-pub async fn time_controller_get_system_time(
+pub fn time_controller_get_system_time(
     configuration: &configuration::Configuration,
 ) -> Result<models::SystemTimeDto, Error<TimeControllerGetSystemTimeError>> {
     let uri_str = format!("{}/v1/time", configuration.base_path);
@@ -38,7 +38,7 @@ pub async fn time_controller_get_system_time(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -49,7 +49,7 @@ pub async fn time_controller_get_system_time(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -64,7 +64,7 @@ pub async fn time_controller_get_system_time(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<TimeControllerGetSystemTimeError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -74,7 +74,7 @@ pub async fn time_controller_get_system_time(
     }
 }
 
-pub async fn time_controller_post_system_time(
+pub fn time_controller_post_system_time(
     configuration: &configuration::Configuration,
 ) -> Result<models::SystemTimeDto, Error<TimeControllerPostSystemTimeError>> {
     let uri_str = format!("{}/v1/time", configuration.base_path);
@@ -87,7 +87,7 @@ pub async fn time_controller_post_system_time(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -98,7 +98,7 @@ pub async fn time_controller_post_system_time(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -113,7 +113,7 @@ pub async fn time_controller_post_system_time(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<TimeControllerPostSystemTimeError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,

@@ -83,7 +83,7 @@ pub enum ReferralControllerListReferralsError {
     UnknownValue(serde_json::Value),
 }
 
-pub async fn referral_controller_activate(
+pub fn referral_controller_activate(
     configuration: &configuration::Configuration,
     activate_referral_dto: models::ActivateReferralDto,
 ) -> Result<models::ReferralDto, Error<ReferralControllerActivateError>> {
@@ -101,7 +101,7 @@ pub async fn referral_controller_activate(
     req_builder = req_builder.json(&p_activate_referral_dto);
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -112,7 +112,7 @@ pub async fn referral_controller_activate(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -127,7 +127,7 @@ pub async fn referral_controller_activate(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<ReferralControllerActivateError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -137,7 +137,7 @@ pub async fn referral_controller_activate(
     }
 }
 
-pub async fn referral_controller_claim_code(
+pub fn referral_controller_claim_code(
     configuration: &configuration::Configuration,
     claim_referral_code_dto: models::ClaimReferralCodeDto,
 ) -> Result<models::ReferralDto, Error<ReferralControllerClaimCodeError>> {
@@ -155,7 +155,7 @@ pub async fn referral_controller_claim_code(
     req_builder = req_builder.json(&p_claim_referral_code_dto);
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -166,7 +166,7 @@ pub async fn referral_controller_claim_code(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -181,7 +181,7 @@ pub async fn referral_controller_claim_code(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<ReferralControllerClaimCodeError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -191,7 +191,7 @@ pub async fn referral_controller_claim_code(
     }
 }
 
-pub async fn referral_controller_get_code_usage(
+pub fn referral_controller_get_code_usage(
     configuration: &configuration::Configuration,
     code: &str,
 ) -> Result<models::ReferralCodeUsageDto, Error<ReferralControllerGetCodeUsageError>> {
@@ -210,7 +210,7 @@ pub async fn referral_controller_get_code_usage(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -221,7 +221,7 @@ pub async fn referral_controller_get_code_usage(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -236,7 +236,7 @@ pub async fn referral_controller_get_code_usage(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<ReferralControllerGetCodeUsageError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
@@ -247,7 +247,7 @@ pub async fn referral_controller_get_code_usage(
     }
 }
 
-pub async fn referral_controller_get_summary(
+pub fn referral_controller_get_summary(
     configuration: &configuration::Configuration,
     x_ethereal_auth: &str,
     x_ethereal_sender: &str,
@@ -280,7 +280,7 @@ pub async fn referral_controller_get_summary(
     req_builder = req_builder.header("X-Ethereal-SignedAt", p_x_ethereal_signed_at.to_string());
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -291,7 +291,7 @@ pub async fn referral_controller_get_summary(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -306,7 +306,7 @@ pub async fn referral_controller_get_summary(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<ReferralControllerGetSummaryError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
@@ -316,7 +316,7 @@ pub async fn referral_controller_get_summary(
     }
 }
 
-pub async fn referral_controller_list_referrals(
+pub fn referral_controller_list_referrals(
     configuration: &configuration::Configuration,
     x_ethereal_auth: &str,
     x_ethereal_sender: &str,
@@ -369,7 +369,7 @@ pub async fn referral_controller_list_referrals(
     req_builder = req_builder.header("X-Ethereal-SignedAt", p_x_ethereal_signed_at.to_string());
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -380,7 +380,7 @@ pub async fn referral_controller_list_referrals(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -395,7 +395,7 @@ pub async fn referral_controller_list_referrals(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<ReferralControllerListReferralsError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {

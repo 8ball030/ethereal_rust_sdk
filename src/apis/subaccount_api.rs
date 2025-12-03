@@ -55,7 +55,7 @@ pub enum SubaccountControllerListSubaccountBalancesError {
     UnknownValue(serde_json::Value),
 }
 
-pub async fn subaccount_controller_get_by_subaccount_id(
+pub fn subaccount_controller_get_by_subaccount_id(
     configuration: &configuration::Configuration,
     id: &str,
 ) -> Result<models::SubaccountDto, Error<SubaccountControllerGetBySubaccountIdError>> {
@@ -74,7 +74,7 @@ pub async fn subaccount_controller_get_by_subaccount_id(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -85,7 +85,7 @@ pub async fn subaccount_controller_get_by_subaccount_id(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -100,7 +100,7 @@ pub async fn subaccount_controller_get_by_subaccount_id(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<SubaccountControllerGetBySubaccountIdError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
@@ -111,7 +111,7 @@ pub async fn subaccount_controller_get_by_subaccount_id(
     }
 }
 
-pub async fn subaccount_controller_list_by_account(
+pub fn subaccount_controller_list_by_account(
     configuration: &configuration::Configuration,
     sender: &str,
     order: Option<&str>,
@@ -152,7 +152,7 @@ pub async fn subaccount_controller_list_by_account(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -163,7 +163,7 @@ pub async fn subaccount_controller_list_by_account(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -178,7 +178,7 @@ pub async fn subaccount_controller_list_by_account(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<SubaccountControllerListByAccountError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
@@ -189,7 +189,7 @@ pub async fn subaccount_controller_list_by_account(
     }
 }
 
-pub async fn subaccount_controller_list_subaccount_balances(
+pub fn subaccount_controller_list_subaccount_balances(
     configuration: &configuration::Configuration,
     subaccount_id: &str,
     order: Option<&str>,
@@ -228,7 +228,7 @@ pub async fn subaccount_controller_list_subaccount_balances(
     }
 
     let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
+    let resp = configuration.client.execute(req)?;
 
     let status = resp.status();
     let content_type = resp
@@ -239,7 +239,7 @@ pub async fn subaccount_controller_list_subaccount_balances(
     let content_type = super::ContentType::from(content_type);
 
     if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
             ContentType::Text => {
@@ -254,7 +254,7 @@ pub async fn subaccount_controller_list_subaccount_balances(
             }
         }
     } else {
-        let content = resp.text().await?;
+        let content = resp.text()?;
         let entity: Option<SubaccountControllerListSubaccountBalancesError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
