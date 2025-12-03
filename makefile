@@ -17,7 +17,7 @@ codegen:
 	  -i openapi.json \
 	  -g rust \
 	  -o ./generated \
-	--additional-properties=supportAsync=false
+	--additional-properties=supportAsync=false,useSingleRequestParameter=true
 
 
 	cp ./generated/src/models/* ./src/models/

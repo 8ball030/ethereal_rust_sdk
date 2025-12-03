@@ -11,6 +11,7 @@ pkgs.mkShell {
     corepack_22
     typeshare
     openapi-generator-cli
+    python312
 
   ];
   nativeBuildInputs =

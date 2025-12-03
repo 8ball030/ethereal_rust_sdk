@@ -2,7 +2,7 @@ use log::info;
 use rust_socketio::client::RawClient;
 use rust_socketio::Payload;
 
-use ethereal_rust_sdk::async_client::get_products;
+use ethereal_rust_sdk::apis::product_api::{product_controller_list, ProductControllerListParams};
 use ethereal_rust_sdk::enums::Environment;
 use ethereal_rust_sdk::models::MarketPriceDto;
 use ethereal_rust_sdk::ws_client::WsClient;
@@ -25,8 +25,11 @@ fn market_data_callback(market_price: Payload, _socket: RawClient) {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     simple_logger::init_with_level(log::Level::Info).unwrap();
 
-    let env = Environment::Testnet;
-    let products = get_products(env.clone())?;
+    let env = Environment::Production;
+
+    let api_configuration = ethereal_rust_sdk::apis::configuration::Configuration::default();
+    let params = ProductControllerListParams::default();
+    let products = product_controller_list(&api_configuration, params)?;
 
     let mut ws_client = WsClient::new(env);
 
@@ -34,7 +37,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     ws_client.connect()?;
 
-    products.iter().for_each(|product| {
+    products.data.iter().for_each(|product| {
         ws_client.subscribe_market_data(&product.id.to_string());
     });
     ws_client.run_forever();
