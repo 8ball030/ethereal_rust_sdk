@@ -36,11 +36,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Subaccounts: {subaccounts:?}");
 
     let mut ws_client = WsClient::new(env);
-    println!("Connecting WS Client...");
 
     ws_client.register_order_update_callback(order_update_callback);
     ws_client.connect()?;
-    println!("Subscribing to transfer events for subaccounts...");
     subaccounts.iter().for_each(|subaccount| {
         ws_client.subscribe_order_update(&subaccount.id.to_string());
     });

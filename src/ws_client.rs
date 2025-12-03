@@ -61,13 +61,10 @@ impl WsClient {
         }
 
         self.client = Some(c);
-        println!("WebSocket client connected.");
-
         Ok(())
     }
 
     pub fn run_forever(&self) {
-        println!("Running WebSocket client forever...");
         if let Some(_c) = &self.client {
             println!("WebSocket client is running.");
         } else {
@@ -88,7 +85,6 @@ impl WsClient {
             println!("WebSocket client is not connected. Please call connect() first.");
             return;
         }
-
         let market_price_msg = ProductSubscriptionMessage {
             msg_type: public_channels::MARKET_PRICE.to_string(),
             product_id: product_id.to_string(),
@@ -120,6 +116,7 @@ impl WsClient {
             .on(public_channels::MARKET_PRICE, callback); // MARKER_PRICE is &str, no need for to_string()
 
         self.client_builder = builder;
+        println!("Registered market price callback.");
     }
     pub fn subscribe_orderbook_data(&self, product_id: &str) {
         // Get a reference to the connected client or bail out early
@@ -156,6 +153,7 @@ impl WsClient {
             .on(public_channels::BOOK_DEPTH, callback); // BOOK_DEPTH is &str, no need for to_string()
 
         self.client_builder = builder;
+        println!("Registered order book callback.");
     }
     pub fn subscribe_trade_fill_data(&self, product_id: &str) {
         // Get a reference to the connected client or bail out early
@@ -191,6 +189,7 @@ impl WsClient {
             .clone()
             .on(public_channels::TRADE_FILL, callback); // TRADE_FILL is &str, no need for to_string()
         self.client_builder = builder;
+        println!("Registered trade fill callback.");
     }
 
     pub fn register_transfer_callback<F>(&mut self, callback: F)
@@ -203,6 +202,7 @@ impl WsClient {
             .on(public_channels::TOKEN_TRANSFER, callback); // TOKEN_TRANSFER is &str, no need for to_string()
 
         self.client_builder = builder;
+        println!("Registered transfer callback.");
     }
     pub fn subscribe_transfer_events(&self, subaccount_id: &str) {
         // Get a reference to the connected client or bail out early
@@ -210,7 +210,6 @@ impl WsClient {
             println!("WebSocket client is not connected. Please call connect() first.");
             return;
         }
-
         let transfer_msg = SubaccountSubscriptionMessage {
             msg_type: public_channels::TOKEN_TRANSFER.to_string(),
             subaccount_id: subaccount_id.to_string(),
@@ -240,6 +239,7 @@ impl WsClient {
             .on(public_channels::ORDER_FILL, callback); // ORDER_FILL is &str, no need for to_string()
 
         self.client_builder = builder;
+        println!("Registered order fill callback.");
     }
     pub fn subscribe_order_fill(&self, subaccount_id: &str) {
         // Get a reference to the connected client or bail out early
@@ -275,6 +275,7 @@ impl WsClient {
             .on(public_channels::ORDER_UPDATE, callback); // ORDER_UPDATE is &str, no need for to_string()
 
         self.client_builder = builder;
+        println!("Registered order update callback.");
     }
     pub fn subscribe_order_update(&self, subaccount_id: &str) {
         // Get a reference to the connected client or bail out early
@@ -310,6 +311,7 @@ impl WsClient {
             .on(public_channels::SUBACCOUNT_LIQUIDATION, callback); // SUBACCOUNT_LIQUIDATION is &str, no need for to_string()
 
         self.client_builder = builder;
+        println!("Registered subaccount liquidation callback.");
     }
     pub fn subscribe_subaccount_liquidation(&self, subaccount_id: &str) {
         // Get a reference to the connected client or bail out early

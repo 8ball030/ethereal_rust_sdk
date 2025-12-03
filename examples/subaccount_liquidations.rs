@@ -32,14 +32,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let env = Environment::Testnet;
     let subaccounts = get_subaccounts(env.clone(), sender_address.as_str())?;
 
-    println!("Subaccounts: {subaccounts:?}");
-
     let mut ws_client = WsClient::new(env);
-    println!("Connecting WS Client...");
 
     ws_client.register_subaccount_liquidation_callback(liquidation_callback);
     ws_client.connect()?;
-    println!("Subscribing to transfer events for subaccounts...");
     subaccounts.iter().for_each(|subaccount| {
         ws_client.subscribe_subaccount_liquidation(&subaccount.id.to_string());
     });
