@@ -1,3 +1,4 @@
+use log::info;
 use rust_socketio::client::RawClient;
 use rust_socketio::Payload;
 
@@ -10,7 +11,7 @@ fn market_data_callback(market_price: Payload, _socket: RawClient) {
     if let Payload::Text(values) = market_price {
         for value in values {
             if let Ok(market_price) = serde_json::from_value::<MarketPriceDto>(value) {
-                println!(
+                info!(
                     "Market Price Update - Product ID: {:?}, Best Bid: {:?}, Best Ask: {:?}",
                     market_price.product_id,
                     market_price.best_bid_price,
@@ -22,7 +23,8 @@ fn market_data_callback(market_price: Payload, _socket: RawClient) {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    println!("Getting products...");
+    simple_logger::init_with_level(log::Level::Info).unwrap();
+
     let env = Environment::Testnet;
     let products = get_products(env.clone())?;
 

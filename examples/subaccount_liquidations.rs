@@ -3,6 +3,7 @@ use ethereal_rust_sdk::enums::Environment;
 use ethereal_rust_sdk::models::SubaccountLiquidation;
 use ethereal_rust_sdk::ws_client::WsClient;
 
+use log::{error, info};
 use rust_socketio::client::RawClient;
 use rust_socketio::Payload;
 
@@ -11,24 +12,22 @@ fn liquidation_callback(raw_data: Payload, _socket: RawClient) {
         for value in values {
             if let Ok(liquidation) = serde_json::from_value::<SubaccountLiquidation>(value.clone())
             {
-                println!(
+                info!(
                     "Subaccount liquidated - ID: {}, Liquidated At: {}",
                     liquidation.subaccount_id, liquidation.liquidated_at
                 );
             } else {
-                eprintln!("Failed to deserialize liquidation data: {value}");
+                error!("Failed to deserialize liquidation data: {value}");
             }
         }
     }
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    println!("We retrieve the sender address from the environment variable SENDER_ADDRESS");
-    // We raise if the variable is not set
+    simple_logger::init_with_level(log::Level::Info).unwrap();
     let sender_address = std::env::var("SENDER_ADDRESS").unwrap_or_else(|_| {
         panic!("SENDER_ADDRESS environment variable is not set");
     });
-    println!("Getting subaccounts...");
     let env = Environment::Testnet;
     let subaccounts = get_subaccounts(env.clone(), sender_address.as_str())?;
 

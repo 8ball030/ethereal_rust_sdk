@@ -1,3 +1,4 @@
+use log::info;
 use rust_socketio::client::RawClient;
 use rust_socketio::Payload;
 
@@ -10,7 +11,7 @@ fn orderbook_callback(raw_data: Payload, _socket: RawClient) {
     if let Payload::Text(values) = raw_data {
         for value in values {
             if let Ok(orderbook) = serde_json::from_value::<BookDepthMessage>(value) {
-                println!(
+                info!(
                     "Orderbook Update - Product ID: {:?}, Bids: {:?}, Asks: {:?}",
                     orderbook.product_id, orderbook.bids, orderbook.asks
                 );
@@ -20,13 +21,12 @@ fn orderbook_callback(raw_data: Payload, _socket: RawClient) {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    println!("Getting products...");
+    simple_logger::init_with_level(log::Level::Info).unwrap();
     let env = Environment::Testnet;
     let products = get_products(env.clone())?;
 
     let mut ws_client = WsClient::new(env);
 
-    println!("Registering orderbook callback...");
     ws_client.register_orderbook_callback(orderbook_callback);
 
     ws_client.connect()?;
