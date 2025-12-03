@@ -13,6 +13,44 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 
+/// struct for passing parameters to the method [`subaccount_controller_get_by_subaccount_id`]
+#[derive(Clone, Debug)]
+pub struct SubaccountControllerGetBySubaccountIdParams {
+    pub id: String,
+}
+
+/// struct for passing parameters to the method [`subaccount_controller_list_by_account`]
+#[derive(Clone, Debug)]
+pub struct SubaccountControllerListByAccountParams {
+    /// Address of the sender
+    pub sender: String,
+    /// Direction to paginate through objects
+    pub order: Option<String>,
+    /// Limit the number of objects to return
+    pub limit: Option<f64>,
+    /// Pointer to the current object in pagination dataset
+    pub cursor: Option<String>,
+    /// Bytes32 encoded subaccount name (0x prefix, zero padded)
+    pub name: Option<String>,
+    /// Order by field
+    pub order_by: Option<String>,
+}
+
+/// struct for passing parameters to the method [`subaccount_controller_list_subaccount_balances`]
+#[derive(Clone, Debug)]
+pub struct SubaccountControllerListSubaccountBalancesParams {
+    /// Id representing the registered subaccount
+    pub subaccount_id: String,
+    /// Direction to paginate through objects
+    pub order: Option<String>,
+    /// Limit the number of objects to return
+    pub limit: Option<f64>,
+    /// Pointer to the current object in pagination dataset
+    pub cursor: Option<String>,
+    /// Order by field
+    pub order_by: Option<String>,
+}
+
 /// struct for typed errors of method [`subaccount_controller_get_by_subaccount_id`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -57,15 +95,12 @@ pub enum SubaccountControllerListSubaccountBalancesError {
 
 pub fn subaccount_controller_get_by_subaccount_id(
     configuration: &configuration::Configuration,
-    id: &str,
+    params: SubaccountControllerGetBySubaccountIdParams,
 ) -> Result<models::SubaccountDto, Error<SubaccountControllerGetBySubaccountIdError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-
     let uri_str = format!(
         "{}/v1/subaccount/{id}",
         configuration.base_path,
-        id = crate::apis::urlencode(p_id)
+        id = crate::apis::urlencode(params.id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
@@ -113,38 +148,25 @@ pub fn subaccount_controller_get_by_subaccount_id(
 
 pub fn subaccount_controller_list_by_account(
     configuration: &configuration::Configuration,
-    sender: &str,
-    order: Option<&str>,
-    limit: Option<f64>,
-    cursor: Option<&str>,
-    name: Option<&str>,
-    order_by: Option<&str>,
+    params: SubaccountControllerListByAccountParams,
 ) -> Result<models::PageOfSubaccountDtos, Error<SubaccountControllerListByAccountError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_sender = sender;
-    let p_order = order;
-    let p_limit = limit;
-    let p_cursor = cursor;
-    let p_name = name;
-    let p_order_by = order_by;
-
     let uri_str = format!("{}/v1/subaccount", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_order {
+    if let Some(ref param_value) = params.order {
         req_builder = req_builder.query(&[("order", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_limit {
+    if let Some(ref param_value) = params.limit {
         req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_cursor {
+    if let Some(ref param_value) = params.cursor {
         req_builder = req_builder.query(&[("cursor", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_name {
+    if let Some(ref param_value) = params.name {
         req_builder = req_builder.query(&[("name", &param_value.to_string())]);
     }
-    req_builder = req_builder.query(&[("sender", &p_sender.to_string())]);
-    if let Some(ref param_value) = p_order_by {
+    req_builder = req_builder.query(&[("sender", &params.sender.to_string())]);
+    if let Some(ref param_value) = params.order_by {
         req_builder = req_builder.query(&[("orderBy", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
@@ -191,36 +213,25 @@ pub fn subaccount_controller_list_by_account(
 
 pub fn subaccount_controller_list_subaccount_balances(
     configuration: &configuration::Configuration,
-    subaccount_id: &str,
-    order: Option<&str>,
-    limit: Option<f64>,
-    cursor: Option<&str>,
-    order_by: Option<&str>,
+    params: SubaccountControllerListSubaccountBalancesParams,
 ) -> Result<
     models::PageOfSubaccountBalanceDtos,
     Error<SubaccountControllerListSubaccountBalancesError>,
 > {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_subaccount_id = subaccount_id;
-    let p_order = order;
-    let p_limit = limit;
-    let p_cursor = cursor;
-    let p_order_by = order_by;
-
     let uri_str = format!("{}/v1/subaccount/balance", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_order {
+    if let Some(ref param_value) = params.order {
         req_builder = req_builder.query(&[("order", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_limit {
+    if let Some(ref param_value) = params.limit {
         req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_cursor {
+    if let Some(ref param_value) = params.cursor {
         req_builder = req_builder.query(&[("cursor", &param_value.to_string())]);
     }
-    req_builder = req_builder.query(&[("subaccountId", &p_subaccount_id.to_string())]);
-    if let Some(ref param_value) = p_order_by {
+    req_builder = req_builder.query(&[("subaccountId", &params.subaccount_id.to_string())]);
+    if let Some(ref param_value) = params.order_by {
         req_builder = req_builder.query(&[("orderBy", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {

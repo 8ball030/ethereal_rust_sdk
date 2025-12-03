@@ -13,6 +13,103 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 
+/// struct for passing parameters to the method [`order_controller_cancel`]
+#[derive(Clone, Debug)]
+pub struct OrderControllerCancelParams {
+    pub cancel_order_dto: models::CancelOrderDto,
+}
+
+/// struct for passing parameters to the method [`order_controller_dry_run`]
+#[derive(Clone, Debug)]
+pub struct OrderControllerDryRunParams {
+    pub submit_dry_order_dto: models::SubmitDryOrderDto,
+}
+
+/// struct for passing parameters to the method [`order_controller_get_by_id`]
+#[derive(Clone, Debug)]
+pub struct OrderControllerGetByIdParams {
+    pub id: String,
+}
+
+/// struct for passing parameters to the method [`order_controller_list_by_subaccount_id`]
+#[derive(Clone, Debug)]
+pub struct OrderControllerListBySubaccountIdParams {
+    /// Id of the subaccount to query for
+    pub subaccount_id: String,
+    /// Direction to paginate through objects
+    pub order: Option<String>,
+    /// Limit the number of objects to return
+    pub limit: Option<f64>,
+    /// Pointer to the current object in pagination dataset
+    pub cursor: Option<String>,
+    /// Client-generated order id to query for (either a valid UUID or alphanumeric string up to 32 characters)
+    pub client_order_id: Option<String>,
+    /// Array of product ids to filter for
+    pub product_ids: Option<Vec<uuid::Uuid>>,
+    /// Filter by orders created after timestamp exclusive (ms since Unix epoch)
+    pub created_after: Option<f64>,
+    /// Filter by orders created before timestamp inclusive (ms since Unix epoch)
+    pub created_before: Option<f64>,
+    /// Side of the order to filter for
+    pub side: Option<f64>,
+    /// Whether the order is a position close order
+    pub close: Option<bool>,
+    /// Array of StopTypes to filter by
+    pub stop_types: Option<Vec<f64>>,
+    /// Filter by orders that are working: NEW, FILLED_PARTIAL
+    pub is_working: Option<bool>,
+    /// Filter by orders that are pending
+    pub is_pending: Option<bool>,
+    /// Order by field
+    pub order_by: Option<String>,
+}
+
+/// struct for passing parameters to the method [`order_controller_list_fills_by_subaccount_id`]
+#[derive(Clone, Debug)]
+pub struct OrderControllerListFillsBySubaccountIdParams {
+    /// Id of the subaccount to filter fills by
+    pub subaccount_id: String,
+    /// Direction to paginate through objects
+    pub order: Option<String>,
+    /// Limit the number of objects to return
+    pub limit: Option<f64>,
+    /// Pointer to the current object in pagination dataset
+    pub cursor: Option<String>,
+    /// Array of product ids to filter for
+    pub product_ids: Option<Vec<uuid::Uuid>>,
+    /// Filter by order fills created before timestamp exclusive (ms since Unix epoch)
+    pub created_after: Option<f64>,
+    /// Filter by order fills created before timestamp inclusive (ms since Unix epoch)
+    pub created_before: Option<f64>,
+    /// Side as either BUY (0) or SELL (1)
+    pub side: Option<f64>,
+    /// Order by field
+    pub order_by: Option<String>,
+    /// Explicitly include self trades (excluded by default)
+    pub include_self_trades: Option<bool>,
+}
+
+/// struct for passing parameters to the method [`order_controller_list_trades`]
+#[derive(Clone, Debug)]
+pub struct OrderControllerListTradesParams {
+    /// Id of the product to filter trades by
+    pub product_id: String,
+    /// Direction to paginate through objects
+    pub order: Option<String>,
+    /// Limit the number of objects to return
+    pub limit: Option<f64>,
+    /// Pointer to the current object in pagination dataset
+    pub cursor: Option<String>,
+    /// Order by fields
+    pub order_by: Option<String>,
+}
+
+/// struct for passing parameters to the method [`order_controller_submit`]
+#[derive(Clone, Debug)]
+pub struct OrderControllerSubmitParams {
+    pub submit_order_dto: models::SubmitOrderDto,
+}
+
 /// struct for typed errors of method [`order_controller_cancel`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -113,11 +210,8 @@ pub enum OrderControllerSubmitError {
 
 pub fn order_controller_cancel(
     configuration: &configuration::Configuration,
-    cancel_order_dto: models::CancelOrderDto,
+    params: OrderControllerCancelParams,
 ) -> Result<models::ListOfCancelOrderResultDtos, Error<OrderControllerCancelError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_cancel_order_dto = cancel_order_dto;
-
     let uri_str = format!("{}/v1/order/cancel", configuration.base_path);
     let mut req_builder = configuration
         .client
@@ -126,7 +220,7 @@ pub fn order_controller_cancel(
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
-    req_builder = req_builder.json(&p_cancel_order_dto);
+    req_builder = req_builder.json(&params.cancel_order_dto);
 
     let req = req_builder.build()?;
     let resp = configuration.client.execute(req)?;
@@ -167,11 +261,8 @@ pub fn order_controller_cancel(
 
 pub fn order_controller_dry_run(
     configuration: &configuration::Configuration,
-    submit_dry_order_dto: models::SubmitDryOrderDto,
+    params: OrderControllerDryRunParams,
 ) -> Result<models::DryRunOrderCreatedDto, Error<OrderControllerDryRunError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_submit_dry_order_dto = submit_dry_order_dto;
-
     let uri_str = format!("{}/v1/order/dry-run", configuration.base_path);
     let mut req_builder = configuration
         .client
@@ -180,7 +271,7 @@ pub fn order_controller_dry_run(
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
-    req_builder = req_builder.json(&p_submit_dry_order_dto);
+    req_builder = req_builder.json(&params.submit_dry_order_dto);
 
     let req = req_builder.build()?;
     let resp = configuration.client.execute(req)?;
@@ -221,15 +312,12 @@ pub fn order_controller_dry_run(
 
 pub fn order_controller_get_by_id(
     configuration: &configuration::Configuration,
-    id: &str,
+    params: OrderControllerGetByIdParams,
 ) -> Result<models::OrderDto, Error<OrderControllerGetByIdError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-
     let uri_str = format!(
         "{}/v1/order/{id}",
         configuration.base_path,
-        id = crate::apis::urlencode(p_id)
+        id = crate::apis::urlencode(params.id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
@@ -276,54 +364,25 @@ pub fn order_controller_get_by_id(
 
 pub fn order_controller_list_by_subaccount_id(
     configuration: &configuration::Configuration,
-    subaccount_id: &str,
-    order: Option<&str>,
-    limit: Option<f64>,
-    cursor: Option<&str>,
-    client_order_id: Option<&str>,
-    product_ids: Option<Vec<uuid::Uuid>>,
-    created_after: Option<f64>,
-    created_before: Option<f64>,
-    side: Option<f64>,
-    close: Option<bool>,
-    stop_types: Option<Vec<f64>>,
-    is_working: Option<bool>,
-    is_pending: Option<bool>,
-    order_by: Option<&str>,
+    params: OrderControllerListBySubaccountIdParams,
 ) -> Result<models::PageOfOrderDtos, Error<OrderControllerListBySubaccountIdError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_subaccount_id = subaccount_id;
-    let p_order = order;
-    let p_limit = limit;
-    let p_cursor = cursor;
-    let p_client_order_id = client_order_id;
-    let p_product_ids = product_ids;
-    let p_created_after = created_after;
-    let p_created_before = created_before;
-    let p_side = side;
-    let p_close = close;
-    let p_stop_types = stop_types;
-    let p_is_working = is_working;
-    let p_is_pending = is_pending;
-    let p_order_by = order_by;
-
     let uri_str = format!("{}/v1/order", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_order {
+    if let Some(ref param_value) = params.order {
         req_builder = req_builder.query(&[("order", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_limit {
+    if let Some(ref param_value) = params.limit {
         req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_cursor {
+    if let Some(ref param_value) = params.cursor {
         req_builder = req_builder.query(&[("cursor", &param_value.to_string())]);
     }
-    req_builder = req_builder.query(&[("subaccountId", &p_subaccount_id.to_string())]);
-    if let Some(ref param_value) = p_client_order_id {
+    req_builder = req_builder.query(&[("subaccountId", &params.subaccount_id.to_string())]);
+    if let Some(ref param_value) = params.client_order_id {
         req_builder = req_builder.query(&[("clientOrderId", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_product_ids {
+    if let Some(ref param_value) = params.product_ids {
         req_builder = match "multi" {
             "multi" => req_builder.query(
                 &param_value
@@ -342,19 +401,19 @@ pub fn order_controller_list_by_subaccount_id(
             )]),
         };
     }
-    if let Some(ref param_value) = p_created_after {
+    if let Some(ref param_value) = params.created_after {
         req_builder = req_builder.query(&[("createdAfter", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_created_before {
+    if let Some(ref param_value) = params.created_before {
         req_builder = req_builder.query(&[("createdBefore", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_side {
+    if let Some(ref param_value) = params.side {
         req_builder = req_builder.query(&[("side", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_close {
+    if let Some(ref param_value) = params.close {
         req_builder = req_builder.query(&[("close", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_stop_types {
+    if let Some(ref param_value) = params.stop_types {
         req_builder = match "multi" {
             "multi" => req_builder.query(
                 &param_value
@@ -373,13 +432,13 @@ pub fn order_controller_list_by_subaccount_id(
             )]),
         };
     }
-    if let Some(ref param_value) = p_is_working {
+    if let Some(ref param_value) = params.is_working {
         req_builder = req_builder.query(&[("isWorking", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_is_pending {
+    if let Some(ref param_value) = params.is_pending {
         req_builder = req_builder.query(&[("isPending", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_order_by {
+    if let Some(ref param_value) = params.order_by {
         req_builder = req_builder.query(&[("orderBy", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
@@ -426,43 +485,22 @@ pub fn order_controller_list_by_subaccount_id(
 
 pub fn order_controller_list_fills_by_subaccount_id(
     configuration: &configuration::Configuration,
-    subaccount_id: &str,
-    order: Option<&str>,
-    limit: Option<f64>,
-    cursor: Option<&str>,
-    product_ids: Option<Vec<uuid::Uuid>>,
-    created_after: Option<f64>,
-    created_before: Option<f64>,
-    side: Option<f64>,
-    order_by: Option<&str>,
-    include_self_trades: Option<bool>,
+    params: OrderControllerListFillsBySubaccountIdParams,
 ) -> Result<models::PageOfOrderFillDtos, Error<OrderControllerListFillsBySubaccountIdError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_subaccount_id = subaccount_id;
-    let p_order = order;
-    let p_limit = limit;
-    let p_cursor = cursor;
-    let p_product_ids = product_ids;
-    let p_created_after = created_after;
-    let p_created_before = created_before;
-    let p_side = side;
-    let p_order_by = order_by;
-    let p_include_self_trades = include_self_trades;
-
     let uri_str = format!("{}/v1/order/fill", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_order {
+    if let Some(ref param_value) = params.order {
         req_builder = req_builder.query(&[("order", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_limit {
+    if let Some(ref param_value) = params.limit {
         req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_cursor {
+    if let Some(ref param_value) = params.cursor {
         req_builder = req_builder.query(&[("cursor", &param_value.to_string())]);
     }
-    req_builder = req_builder.query(&[("subaccountId", &p_subaccount_id.to_string())]);
-    if let Some(ref param_value) = p_product_ids {
+    req_builder = req_builder.query(&[("subaccountId", &params.subaccount_id.to_string())]);
+    if let Some(ref param_value) = params.product_ids {
         req_builder = match "multi" {
             "multi" => req_builder.query(
                 &param_value
@@ -481,19 +519,19 @@ pub fn order_controller_list_fills_by_subaccount_id(
             )]),
         };
     }
-    if let Some(ref param_value) = p_created_after {
+    if let Some(ref param_value) = params.created_after {
         req_builder = req_builder.query(&[("createdAfter", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_created_before {
+    if let Some(ref param_value) = params.created_before {
         req_builder = req_builder.query(&[("createdBefore", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_side {
+    if let Some(ref param_value) = params.side {
         req_builder = req_builder.query(&[("side", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_order_by {
+    if let Some(ref param_value) = params.order_by {
         req_builder = req_builder.query(&[("orderBy", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_include_self_trades {
+    if let Some(ref param_value) = params.include_self_trades {
         req_builder = req_builder.query(&[("includeSelfTrades", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
@@ -540,33 +578,22 @@ pub fn order_controller_list_fills_by_subaccount_id(
 
 pub fn order_controller_list_trades(
     configuration: &configuration::Configuration,
-    product_id: &str,
-    order: Option<&str>,
-    limit: Option<f64>,
-    cursor: Option<&str>,
-    order_by: Option<&str>,
+    params: OrderControllerListTradesParams,
 ) -> Result<models::PageOfTradeDtos, Error<OrderControllerListTradesError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_product_id = product_id;
-    let p_order = order;
-    let p_limit = limit;
-    let p_cursor = cursor;
-    let p_order_by = order_by;
-
     let uri_str = format!("{}/v1/order/trade", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_order {
+    if let Some(ref param_value) = params.order {
         req_builder = req_builder.query(&[("order", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_limit {
+    if let Some(ref param_value) = params.limit {
         req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_cursor {
+    if let Some(ref param_value) = params.cursor {
         req_builder = req_builder.query(&[("cursor", &param_value.to_string())]);
     }
-    req_builder = req_builder.query(&[("productId", &p_product_id.to_string())]);
-    if let Some(ref param_value) = p_order_by {
+    req_builder = req_builder.query(&[("productId", &params.product_id.to_string())]);
+    if let Some(ref param_value) = params.order_by {
         req_builder = req_builder.query(&[("orderBy", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
@@ -612,11 +639,8 @@ pub fn order_controller_list_trades(
 
 pub fn order_controller_submit(
     configuration: &configuration::Configuration,
-    submit_order_dto: models::SubmitOrderDto,
+    params: OrderControllerSubmitParams,
 ) -> Result<models::SubmitOrderCreatedDto, Error<OrderControllerSubmitError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_submit_order_dto = submit_order_dto;
-
     let uri_str = format!("{}/v1/order", configuration.base_path);
     let mut req_builder = configuration
         .client
@@ -625,7 +649,7 @@ pub fn order_controller_submit(
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
-    req_builder = req_builder.json(&p_submit_order_dto);
+    req_builder = req_builder.json(&params.submit_order_dto);
 
     let req = req_builder.build()?;
     let resp = configuration.client.execute(req)?;

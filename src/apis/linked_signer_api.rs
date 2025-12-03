@@ -13,6 +13,54 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 
+/// struct for passing parameters to the method [`linked_signer_controller_get_account_quota`]
+#[derive(Clone, Debug)]
+pub struct LinkedSignerControllerGetAccountQuotaParams {
+    /// Id representing the registered subaccount
+    pub subaccount_id: String,
+}
+
+/// struct for passing parameters to the method [`linked_signer_controller_get_signer`]
+#[derive(Clone, Debug)]
+pub struct LinkedSignerControllerGetSignerParams {
+    pub id: String,
+}
+
+/// struct for passing parameters to the method [`linked_signer_controller_link_signer`]
+#[derive(Clone, Debug)]
+pub struct LinkedSignerControllerLinkSignerParams {
+    pub link_signer_dto: models::LinkSignerDto,
+}
+
+/// struct for passing parameters to the method [`linked_signer_controller_list_by_subaccount_id`]
+#[derive(Clone, Debug)]
+pub struct LinkedSignerControllerListBySubaccountIdParams {
+    /// Id representing the registered subaccount
+    pub subaccount_id: String,
+    /// Direction to paginate through objects
+    pub order: Option<String>,
+    /// Limit the number of objects to return
+    pub limit: Option<f64>,
+    /// Pointer to the current object in pagination dataset
+    pub cursor: Option<String>,
+    /// Filters signers by statuses
+    pub statuses: Option<Vec<String>>,
+    /// Order by field
+    pub order_by: Option<String>,
+}
+
+/// struct for passing parameters to the method [`linked_signer_controller_refresh_signer`]
+#[derive(Clone, Debug)]
+pub struct LinkedSignerControllerRefreshSignerParams {
+    pub refresh_linked_signer_dto: models::RefreshLinkedSignerDto,
+}
+
+/// struct for passing parameters to the method [`linked_signer_controller_revoke_signer`]
+#[derive(Clone, Debug)]
+pub struct LinkedSignerControllerRevokeSignerParams {
+    pub revoke_linked_signer_dto: models::RevokeLinkedSignerDto,
+}
+
 /// struct for typed errors of method [`linked_signer_controller_get_account_quota`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -99,15 +147,12 @@ pub enum LinkedSignerControllerRevokeSignerError {
 
 pub fn linked_signer_controller_get_account_quota(
     configuration: &configuration::Configuration,
-    subaccount_id: &str,
+    params: LinkedSignerControllerGetAccountQuotaParams,
 ) -> Result<models::AccountSignerQuotaDto, Error<LinkedSignerControllerGetAccountQuotaError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_subaccount_id = subaccount_id;
-
     let uri_str = format!("{}/v1/linked-signer/quota", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("subaccountId", &p_subaccount_id.to_string())]);
+    req_builder = req_builder.query(&[("subaccountId", &params.subaccount_id.to_string())]);
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
@@ -152,15 +197,12 @@ pub fn linked_signer_controller_get_account_quota(
 
 pub fn linked_signer_controller_get_signer(
     configuration: &configuration::Configuration,
-    id: &str,
+    params: LinkedSignerControllerGetSignerParams,
 ) -> Result<models::SignerDto, Error<LinkedSignerControllerGetSignerError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-
     let uri_str = format!(
         "{}/v1/linked-signer/{id}",
         configuration.base_path,
-        id = crate::apis::urlencode(p_id)
+        id = crate::apis::urlencode(params.id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
@@ -208,11 +250,8 @@ pub fn linked_signer_controller_get_signer(
 
 pub fn linked_signer_controller_link_signer(
     configuration: &configuration::Configuration,
-    link_signer_dto: models::LinkSignerDto,
+    params: LinkedSignerControllerLinkSignerParams,
 ) -> Result<models::SignerDto, Error<LinkedSignerControllerLinkSignerError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_link_signer_dto = link_signer_dto;
-
     let uri_str = format!("{}/v1/linked-signer/link", configuration.base_path);
     let mut req_builder = configuration
         .client
@@ -221,7 +260,7 @@ pub fn linked_signer_controller_link_signer(
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
-    req_builder = req_builder.json(&p_link_signer_dto);
+    req_builder = req_builder.json(&params.link_signer_dto);
 
     let req = req_builder.build()?;
     let resp = configuration.client.execute(req)?;
@@ -263,35 +302,22 @@ pub fn linked_signer_controller_link_signer(
 
 pub fn linked_signer_controller_list_by_subaccount_id(
     configuration: &configuration::Configuration,
-    subaccount_id: &str,
-    order: Option<&str>,
-    limit: Option<f64>,
-    cursor: Option<&str>,
-    statuses: Option<Vec<String>>,
-    order_by: Option<&str>,
+    params: LinkedSignerControllerListBySubaccountIdParams,
 ) -> Result<models::PageOfSignersDto, Error<LinkedSignerControllerListBySubaccountIdError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_subaccount_id = subaccount_id;
-    let p_order = order;
-    let p_limit = limit;
-    let p_cursor = cursor;
-    let p_statuses = statuses;
-    let p_order_by = order_by;
-
     let uri_str = format!("{}/v1/linked-signer", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_order {
+    if let Some(ref param_value) = params.order {
         req_builder = req_builder.query(&[("order", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_limit {
+    if let Some(ref param_value) = params.limit {
         req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_cursor {
+    if let Some(ref param_value) = params.cursor {
         req_builder = req_builder.query(&[("cursor", &param_value.to_string())]);
     }
-    req_builder = req_builder.query(&[("subaccountId", &p_subaccount_id.to_string())]);
-    if let Some(ref param_value) = p_statuses {
+    req_builder = req_builder.query(&[("subaccountId", &params.subaccount_id.to_string())]);
+    if let Some(ref param_value) = params.statuses {
         req_builder = match "multi" {
             "multi" => req_builder.query(
                 &param_value
@@ -310,7 +336,7 @@ pub fn linked_signer_controller_list_by_subaccount_id(
             )]),
         };
     }
-    if let Some(ref param_value) = p_order_by {
+    if let Some(ref param_value) = params.order_by {
         req_builder = req_builder.query(&[("orderBy", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
@@ -357,11 +383,8 @@ pub fn linked_signer_controller_list_by_subaccount_id(
 
 pub fn linked_signer_controller_refresh_signer(
     configuration: &configuration::Configuration,
-    refresh_linked_signer_dto: models::RefreshLinkedSignerDto,
+    params: LinkedSignerControllerRefreshSignerParams,
 ) -> Result<models::SignerDto, Error<LinkedSignerControllerRefreshSignerError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_refresh_linked_signer_dto = refresh_linked_signer_dto;
-
     let uri_str = format!("{}/v1/linked-signer/refresh", configuration.base_path);
     let mut req_builder = configuration
         .client
@@ -370,7 +393,7 @@ pub fn linked_signer_controller_refresh_signer(
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
-    req_builder = req_builder.json(&p_refresh_linked_signer_dto);
+    req_builder = req_builder.json(&params.refresh_linked_signer_dto);
 
     let req = req_builder.build()?;
     let resp = configuration.client.execute(req)?;
@@ -412,11 +435,8 @@ pub fn linked_signer_controller_refresh_signer(
 
 pub fn linked_signer_controller_revoke_signer(
     configuration: &configuration::Configuration,
-    revoke_linked_signer_dto: models::RevokeLinkedSignerDto,
+    params: LinkedSignerControllerRevokeSignerParams,
 ) -> Result<models::SignerDto, Error<LinkedSignerControllerRevokeSignerError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_revoke_linked_signer_dto = revoke_linked_signer_dto;
-
     let uri_str = format!("{}/v1/linked-signer/revoke", configuration.base_path);
     let mut req_builder = configuration
         .client
@@ -425,7 +445,7 @@ pub fn linked_signer_controller_revoke_signer(
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
-    req_builder = req_builder.json(&p_revoke_linked_signer_dto);
+    req_builder = req_builder.json(&params.revoke_linked_signer_dto);
 
     let req = req_builder.build()?;
     let resp = configuration.client.execute(req)?;

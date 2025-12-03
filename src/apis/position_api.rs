@@ -13,6 +13,76 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 
+/// struct for passing parameters to the method [`position_controller_get_active`]
+#[derive(Clone, Debug)]
+pub struct PositionControllerGetActiveParams {
+    /// Id representing the registered subaccount
+    pub subaccount_id: String,
+    /// Id of product to filter position by
+    pub product_id: String,
+}
+
+/// struct for passing parameters to the method [`position_controller_get_by_id`]
+#[derive(Clone, Debug)]
+pub struct PositionControllerGetByIdParams {
+    pub id: String,
+}
+
+/// struct for passing parameters to the method [`position_controller_list_by_subaccount_id`]
+#[derive(Clone, Debug)]
+pub struct PositionControllerListBySubaccountIdParams {
+    /// Id representing the registered subaccount
+    pub subaccount_id: String,
+    /// Direction to paginate through objects
+    pub order: Option<String>,
+    /// Limit the number of objects to return
+    pub limit: Option<f64>,
+    /// Pointer to the current object in pagination dataset
+    pub cursor: Option<String>,
+    /// Array of product ids to filter for
+    pub product_ids: Option<Vec<uuid::Uuid>>,
+    /// Include or exclude open positions (i.e. non-zero size)
+    pub open: Option<bool>,
+    /// Order by field
+    pub order_by: Option<String>,
+    /// Filter by order fills created before timestamp exclusive (ms since Unix epoch)
+    pub created_after: Option<f64>,
+    /// Filter by order fills created before timestamp inclusive (ms since Unix epoch)
+    pub created_before: Option<f64>,
+    /// Side as either BUY (0) or SELL (1)
+    pub side: Option<f64>,
+    /// Filter by liquidated positions
+    pub is_liquidated: Option<bool>,
+}
+
+/// struct for passing parameters to the method [`position_controller_list_fills_by_position_id`]
+#[derive(Clone, Debug)]
+pub struct PositionControllerListFillsByPositionIdParams {
+    /// Id of the position to filter fills by
+    pub position_id: String,
+    /// Direction to paginate through objects
+    pub order: Option<String>,
+    /// Limit the number of objects to return
+    pub limit: Option<f64>,
+    /// Pointer to the current object in pagination dataset
+    pub cursor: Option<String>,
+    /// Order by field
+    pub order_by: Option<String>,
+}
+
+/// struct for passing parameters to the method [`position_controller_list_liquidations_by_subaccount_id`]
+#[derive(Clone, Debug)]
+pub struct PositionControllerListLiquidationsBySubaccountIdParams {
+    /// Direction to paginate through objects
+    pub order: Option<String>,
+    /// Limit the number of objects to return
+    pub limit: Option<f64>,
+    /// Pointer to the current object in pagination dataset
+    pub cursor: Option<String>,
+    /// Order by field
+    pub order_by: Option<String>,
+}
+
 /// struct for typed errors of method [`position_controller_get_active`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -85,18 +155,13 @@ pub enum PositionControllerListLiquidationsBySubaccountIdError {
 
 pub fn position_controller_get_active(
     configuration: &configuration::Configuration,
-    subaccount_id: &str,
-    product_id: &str,
+    params: PositionControllerGetActiveParams,
 ) -> Result<models::PositionDto, Error<PositionControllerGetActiveError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_subaccount_id = subaccount_id;
-    let p_product_id = product_id;
-
     let uri_str = format!("{}/v1/position/active", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("subaccountId", &p_subaccount_id.to_string())]);
-    req_builder = req_builder.query(&[("productId", &p_product_id.to_string())]);
+    req_builder = req_builder.query(&[("subaccountId", &params.subaccount_id.to_string())]);
+    req_builder = req_builder.query(&[("productId", &params.product_id.to_string())]);
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
@@ -140,15 +205,12 @@ pub fn position_controller_get_active(
 
 pub fn position_controller_get_by_id(
     configuration: &configuration::Configuration,
-    id: &str,
+    params: PositionControllerGetByIdParams,
 ) -> Result<models::PositionDto, Error<PositionControllerGetByIdError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-
     let uri_str = format!(
         "{}/v1/position/{id}",
         configuration.base_path,
-        id = crate::apis::urlencode(p_id)
+        id = crate::apis::urlencode(params.id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
@@ -195,45 +257,22 @@ pub fn position_controller_get_by_id(
 
 pub fn position_controller_list_by_subaccount_id(
     configuration: &configuration::Configuration,
-    subaccount_id: &str,
-    order: Option<&str>,
-    limit: Option<f64>,
-    cursor: Option<&str>,
-    product_ids: Option<Vec<uuid::Uuid>>,
-    open: Option<bool>,
-    order_by: Option<&str>,
-    created_after: Option<f64>,
-    created_before: Option<f64>,
-    side: Option<f64>,
-    is_liquidated: Option<bool>,
+    params: PositionControllerListBySubaccountIdParams,
 ) -> Result<models::PageOfPositionDtos, Error<PositionControllerListBySubaccountIdError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_subaccount_id = subaccount_id;
-    let p_order = order;
-    let p_limit = limit;
-    let p_cursor = cursor;
-    let p_product_ids = product_ids;
-    let p_open = open;
-    let p_order_by = order_by;
-    let p_created_after = created_after;
-    let p_created_before = created_before;
-    let p_side = side;
-    let p_is_liquidated = is_liquidated;
-
     let uri_str = format!("{}/v1/position", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_order {
+    if let Some(ref param_value) = params.order {
         req_builder = req_builder.query(&[("order", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_limit {
+    if let Some(ref param_value) = params.limit {
         req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_cursor {
+    if let Some(ref param_value) = params.cursor {
         req_builder = req_builder.query(&[("cursor", &param_value.to_string())]);
     }
-    req_builder = req_builder.query(&[("subaccountId", &p_subaccount_id.to_string())]);
-    if let Some(ref param_value) = p_product_ids {
+    req_builder = req_builder.query(&[("subaccountId", &params.subaccount_id.to_string())]);
+    if let Some(ref param_value) = params.product_ids {
         req_builder = match "multi" {
             "multi" => req_builder.query(
                 &param_value
@@ -252,22 +291,22 @@ pub fn position_controller_list_by_subaccount_id(
             )]),
         };
     }
-    if let Some(ref param_value) = p_open {
+    if let Some(ref param_value) = params.open {
         req_builder = req_builder.query(&[("open", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_order_by {
+    if let Some(ref param_value) = params.order_by {
         req_builder = req_builder.query(&[("orderBy", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_created_after {
+    if let Some(ref param_value) = params.created_after {
         req_builder = req_builder.query(&[("createdAfter", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_created_before {
+    if let Some(ref param_value) = params.created_before {
         req_builder = req_builder.query(&[("createdBefore", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_side {
+    if let Some(ref param_value) = params.side {
         req_builder = req_builder.query(&[("side", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_is_liquidated {
+    if let Some(ref param_value) = params.is_liquidated {
         req_builder = req_builder.query(&[("isLiquidated", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
@@ -314,33 +353,22 @@ pub fn position_controller_list_by_subaccount_id(
 
 pub fn position_controller_list_fills_by_position_id(
     configuration: &configuration::Configuration,
-    position_id: &str,
-    order: Option<&str>,
-    limit: Option<f64>,
-    cursor: Option<&str>,
-    order_by: Option<&str>,
+    params: PositionControllerListFillsByPositionIdParams,
 ) -> Result<models::PageOfPositionFillDtos, Error<PositionControllerListFillsByPositionIdError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_position_id = position_id;
-    let p_order = order;
-    let p_limit = limit;
-    let p_cursor = cursor;
-    let p_order_by = order_by;
-
     let uri_str = format!("{}/v1/position/fill", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_order {
+    if let Some(ref param_value) = params.order {
         req_builder = req_builder.query(&[("order", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_limit {
+    if let Some(ref param_value) = params.limit {
         req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_cursor {
+    if let Some(ref param_value) = params.cursor {
         req_builder = req_builder.query(&[("cursor", &param_value.to_string())]);
     }
-    req_builder = req_builder.query(&[("positionId", &p_position_id.to_string())]);
-    if let Some(ref param_value) = p_order_by {
+    req_builder = req_builder.query(&[("positionId", &params.position_id.to_string())]);
+    if let Some(ref param_value) = params.order_by {
         req_builder = req_builder.query(&[("orderBy", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
@@ -387,33 +415,24 @@ pub fn position_controller_list_fills_by_position_id(
 
 pub fn position_controller_list_liquidations_by_subaccount_id(
     configuration: &configuration::Configuration,
-    order: Option<&str>,
-    limit: Option<f64>,
-    cursor: Option<&str>,
-    order_by: Option<&str>,
+    params: PositionControllerListLiquidationsBySubaccountIdParams,
 ) -> Result<
     models::PageOfPositionLiquidationsDto,
     Error<PositionControllerListLiquidationsBySubaccountIdError>,
 > {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_order = order;
-    let p_limit = limit;
-    let p_cursor = cursor;
-    let p_order_by = order_by;
-
     let uri_str = format!("{}/v1/position/liquidation", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_order {
+    if let Some(ref param_value) = params.order {
         req_builder = req_builder.query(&[("order", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_limit {
+    if let Some(ref param_value) = params.limit {
         req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_cursor {
+    if let Some(ref param_value) = params.cursor {
         req_builder = req_builder.query(&[("cursor", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_order_by {
+    if let Some(ref param_value) = params.order_by {
         req_builder = req_builder.query(&[("orderBy", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {

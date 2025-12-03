@@ -13,6 +13,67 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 
+/// struct for passing parameters to the method [`referral_controller_activate`]
+#[derive(Clone, Debug)]
+pub struct ReferralControllerActivateParams {
+    pub activate_referral_dto: models::ActivateReferralDto,
+}
+
+/// struct for passing parameters to the method [`referral_controller_claim_code`]
+#[derive(Clone, Debug)]
+pub struct ReferralControllerClaimCodeParams {
+    pub claim_referral_code_dto: models::ClaimReferralCodeDto,
+}
+
+/// struct for passing parameters to the method [`referral_controller_get_code_usage`]
+#[derive(Clone, Debug)]
+pub struct ReferralControllerGetCodeUsageParams {
+    /// Referral code (3-12 alphanumeric uppercase characters)
+    pub code: String,
+}
+
+/// struct for passing parameters to the method [`referral_controller_get_summary`]
+#[derive(Clone, Debug)]
+pub struct ReferralControllerGetSummaryParams {
+    /// Must be: EIP712Auth
+    pub x_ethereal_auth: String,
+    /// Address that signed this message (hex)
+    pub x_ethereal_sender: String,
+    /// The signature from signTypedData(...) signed by the sender
+    pub x_ethereal_signature: String,
+    /// Intent of the message (action to be taken)
+    pub x_ethereal_intent: String,
+    /// Message signedAt current timestamp (seconds since Unix Epoch)
+    pub x_ethereal_signed_at: String,
+    /// Bytes32 encoded subaccount name (0x prefix, zero padded, set when using linked signer)
+    pub subaccount: Option<String>,
+}
+
+/// struct for passing parameters to the method [`referral_controller_list_referrals`]
+#[derive(Clone, Debug)]
+pub struct ReferralControllerListReferralsParams {
+    /// Must be: EIP712Auth
+    pub x_ethereal_auth: String,
+    /// Address that signed this message (hex)
+    pub x_ethereal_sender: String,
+    /// The signature from signTypedData(...) signed by the sender
+    pub x_ethereal_signature: String,
+    /// Intent of the message (action to be taken)
+    pub x_ethereal_intent: String,
+    /// Message signedAt current timestamp (seconds since Unix Epoch)
+    pub x_ethereal_signed_at: String,
+    /// Direction to paginate through objects
+    pub order: Option<String>,
+    /// Limit the number of objects to return
+    pub limit: Option<f64>,
+    /// Pointer to the current object in pagination dataset
+    pub cursor: Option<String>,
+    /// Bytes32 encoded subaccount name (0x prefix, zero padded, set when using linked signer)
+    pub subaccount: Option<String>,
+    /// Order by field
+    pub order_by: Option<String>,
+}
+
 /// struct for typed errors of method [`referral_controller_activate`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -85,11 +146,8 @@ pub enum ReferralControllerListReferralsError {
 
 pub fn referral_controller_activate(
     configuration: &configuration::Configuration,
-    activate_referral_dto: models::ActivateReferralDto,
+    params: ReferralControllerActivateParams,
 ) -> Result<models::ReferralDto, Error<ReferralControllerActivateError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_activate_referral_dto = activate_referral_dto;
-
     let uri_str = format!("{}/v1/referral/activate", configuration.base_path);
     let mut req_builder = configuration
         .client
@@ -98,7 +156,7 @@ pub fn referral_controller_activate(
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
-    req_builder = req_builder.json(&p_activate_referral_dto);
+    req_builder = req_builder.json(&params.activate_referral_dto);
 
     let req = req_builder.build()?;
     let resp = configuration.client.execute(req)?;
@@ -139,11 +197,8 @@ pub fn referral_controller_activate(
 
 pub fn referral_controller_claim_code(
     configuration: &configuration::Configuration,
-    claim_referral_code_dto: models::ClaimReferralCodeDto,
+    params: ReferralControllerClaimCodeParams,
 ) -> Result<models::ReferralDto, Error<ReferralControllerClaimCodeError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_claim_referral_code_dto = claim_referral_code_dto;
-
     let uri_str = format!("{}/v1/referral/claim", configuration.base_path);
     let mut req_builder = configuration
         .client
@@ -152,7 +207,7 @@ pub fn referral_controller_claim_code(
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
-    req_builder = req_builder.json(&p_claim_referral_code_dto);
+    req_builder = req_builder.json(&params.claim_referral_code_dto);
 
     let req = req_builder.build()?;
     let resp = configuration.client.execute(req)?;
@@ -193,15 +248,12 @@ pub fn referral_controller_claim_code(
 
 pub fn referral_controller_get_code_usage(
     configuration: &configuration::Configuration,
-    code: &str,
+    params: ReferralControllerGetCodeUsageParams,
 ) -> Result<models::ReferralCodeUsageDto, Error<ReferralControllerGetCodeUsageError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_code = code;
-
     let uri_str = format!(
         "{}/v1/referral/code/{code}",
         configuration.base_path,
-        code = crate::apis::urlencode(p_code)
+        code = crate::apis::urlencode(params.code)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
@@ -249,35 +301,28 @@ pub fn referral_controller_get_code_usage(
 
 pub fn referral_controller_get_summary(
     configuration: &configuration::Configuration,
-    x_ethereal_auth: &str,
-    x_ethereal_sender: &str,
-    x_ethereal_signature: &str,
-    x_ethereal_intent: &str,
-    x_ethereal_signed_at: &str,
-    subaccount: Option<&str>,
+    params: ReferralControllerGetSummaryParams,
 ) -> Result<models::ReferralDto, Error<ReferralControllerGetSummaryError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_x_ethereal_auth = x_ethereal_auth;
-    let p_x_ethereal_sender = x_ethereal_sender;
-    let p_x_ethereal_signature = x_ethereal_signature;
-    let p_x_ethereal_intent = x_ethereal_intent;
-    let p_x_ethereal_signed_at = x_ethereal_signed_at;
-    let p_subaccount = subaccount;
-
     let uri_str = format!("{}/v1/referral/summary", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_subaccount {
+    if let Some(ref param_value) = params.subaccount {
         req_builder = req_builder.query(&[("subaccount", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
-    req_builder = req_builder.header("X-Ethereal-Auth", p_x_ethereal_auth.to_string());
-    req_builder = req_builder.header("X-Ethereal-Sender", p_x_ethereal_sender.to_string());
-    req_builder = req_builder.header("X-Ethereal-Signature", p_x_ethereal_signature.to_string());
-    req_builder = req_builder.header("X-Ethereal-Intent", p_x_ethereal_intent.to_string());
-    req_builder = req_builder.header("X-Ethereal-SignedAt", p_x_ethereal_signed_at.to_string());
+    req_builder = req_builder.header("X-Ethereal-Auth", params.x_ethereal_auth.to_string());
+    req_builder = req_builder.header("X-Ethereal-Sender", params.x_ethereal_sender.to_string());
+    req_builder = req_builder.header(
+        "X-Ethereal-Signature",
+        params.x_ethereal_signature.to_string(),
+    );
+    req_builder = req_builder.header("X-Ethereal-Intent", params.x_ethereal_intent.to_string());
+    req_builder = req_builder.header(
+        "X-Ethereal-SignedAt",
+        params.x_ethereal_signed_at.to_string(),
+    );
 
     let req = req_builder.build()?;
     let resp = configuration.client.execute(req)?;
@@ -318,55 +363,40 @@ pub fn referral_controller_get_summary(
 
 pub fn referral_controller_list_referrals(
     configuration: &configuration::Configuration,
-    x_ethereal_auth: &str,
-    x_ethereal_sender: &str,
-    x_ethereal_signature: &str,
-    x_ethereal_intent: &str,
-    x_ethereal_signed_at: &str,
-    order: Option<&str>,
-    limit: Option<f64>,
-    cursor: Option<&str>,
-    subaccount: Option<&str>,
-    order_by: Option<&str>,
+    params: ReferralControllerListReferralsParams,
 ) -> Result<models::PageOfReferralDtos, Error<ReferralControllerListReferralsError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_x_ethereal_auth = x_ethereal_auth;
-    let p_x_ethereal_sender = x_ethereal_sender;
-    let p_x_ethereal_signature = x_ethereal_signature;
-    let p_x_ethereal_intent = x_ethereal_intent;
-    let p_x_ethereal_signed_at = x_ethereal_signed_at;
-    let p_order = order;
-    let p_limit = limit;
-    let p_cursor = cursor;
-    let p_subaccount = subaccount;
-    let p_order_by = order_by;
-
     let uri_str = format!("{}/v1/referral", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_order {
+    if let Some(ref param_value) = params.order {
         req_builder = req_builder.query(&[("order", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_limit {
+    if let Some(ref param_value) = params.limit {
         req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_cursor {
+    if let Some(ref param_value) = params.cursor {
         req_builder = req_builder.query(&[("cursor", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_subaccount {
+    if let Some(ref param_value) = params.subaccount {
         req_builder = req_builder.query(&[("subaccount", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_order_by {
+    if let Some(ref param_value) = params.order_by {
         req_builder = req_builder.query(&[("orderBy", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
-    req_builder = req_builder.header("X-Ethereal-Auth", p_x_ethereal_auth.to_string());
-    req_builder = req_builder.header("X-Ethereal-Sender", p_x_ethereal_sender.to_string());
-    req_builder = req_builder.header("X-Ethereal-Signature", p_x_ethereal_signature.to_string());
-    req_builder = req_builder.header("X-Ethereal-Intent", p_x_ethereal_intent.to_string());
-    req_builder = req_builder.header("X-Ethereal-SignedAt", p_x_ethereal_signed_at.to_string());
+    req_builder = req_builder.header("X-Ethereal-Auth", params.x_ethereal_auth.to_string());
+    req_builder = req_builder.header("X-Ethereal-Sender", params.x_ethereal_sender.to_string());
+    req_builder = req_builder.header(
+        "X-Ethereal-Signature",
+        params.x_ethereal_signature.to_string(),
+    );
+    req_builder = req_builder.header("X-Ethereal-Intent", params.x_ethereal_intent.to_string());
+    req_builder = req_builder.header(
+        "X-Ethereal-SignedAt",
+        params.x_ethereal_signed_at.to_string(),
+    );
 
     let req = req_builder.build()?;
     let resp = configuration.client.execute(req)?;

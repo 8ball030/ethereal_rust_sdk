@@ -13,6 +13,24 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 
+/// struct for passing parameters to the method [`points_controller_list_points_periods`]
+#[derive(Clone, Debug)]
+pub struct PointsControllerListPointsPeriodsParams {
+    /// Address of account
+    pub address: String,
+    /// Season number
+    pub season: f64,
+    /// Epoch number within the season
+    pub epoch: f64,
+}
+
+/// struct for passing parameters to the method [`points_controller_list_points_season_summaries`]
+#[derive(Clone, Debug)]
+pub struct PointsControllerListPointsSeasonSummariesParams {
+    /// Address of account
+    pub address: String,
+}
+
 /// struct for typed errors of method [`points_controller_list_points_periods`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -43,21 +61,14 @@ pub enum PointsControllerListPointsSeasonSummariesError {
 
 pub fn points_controller_list_points_periods(
     configuration: &configuration::Configuration,
-    address: &str,
-    season: f64,
-    epoch: f64,
+    params: PointsControllerListPointsPeriodsParams,
 ) -> Result<models::ListOfPointsPeriodDtos, Error<PointsControllerListPointsPeriodsError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_address = address;
-    let p_season = season;
-    let p_epoch = epoch;
-
     let uri_str = format!("{}/v1/points", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("address", &p_address.to_string())]);
-    req_builder = req_builder.query(&[("season", &p_season.to_string())]);
-    req_builder = req_builder.query(&[("epoch", &p_epoch.to_string())]);
+    req_builder = req_builder.query(&[("address", &params.address.to_string())]);
+    req_builder = req_builder.query(&[("season", &params.season.to_string())]);
+    req_builder = req_builder.query(&[("epoch", &params.epoch.to_string())]);
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
@@ -102,18 +113,15 @@ pub fn points_controller_list_points_periods(
 
 pub fn points_controller_list_points_season_summaries(
     configuration: &configuration::Configuration,
-    address: &str,
+    params: PointsControllerListPointsSeasonSummariesParams,
 ) -> Result<
     models::ListOfPointsSeasonSummariesDtos,
     Error<PointsControllerListPointsSeasonSummariesError>,
 > {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_address = address;
-
     let uri_str = format!("{}/v1/points/summary", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("address", &p_address.to_string())]);
+    req_builder = req_builder.query(&[("address", &params.address.to_string())]);
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }

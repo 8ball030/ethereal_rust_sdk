@@ -13,6 +13,13 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 
+/// struct for passing parameters to the method [`whitelist_controller_is_whitelisted`]
+#[derive(Clone, Debug)]
+pub struct WhitelistControllerIsWhitelistedParams {
+    /// Address of account
+    pub address: String,
+}
+
 /// struct for typed errors of method [`whitelist_controller_is_whitelisted`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -29,15 +36,12 @@ pub enum WhitelistControllerIsWhitelistedError {
 
 pub fn whitelist_controller_is_whitelisted(
     configuration: &configuration::Configuration,
-    address: &str,
+    params: WhitelistControllerIsWhitelistedParams,
 ) -> Result<models::WhitelistDto, Error<WhitelistControllerIsWhitelistedError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_address = address;
-
     let uri_str = format!("{}/v1/whitelist", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("address", &p_address.to_string())]);
+    req_builder = req_builder.query(&[("address", &params.address.to_string())]);
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }

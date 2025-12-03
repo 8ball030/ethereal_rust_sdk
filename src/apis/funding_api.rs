@@ -13,6 +13,37 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 
+/// struct for passing parameters to the method [`funding_controller_get_projected_funding_rate`]
+#[derive(Clone, Debug)]
+pub struct FundingControllerGetProjectedFundingRateParams {
+    /// Id representing the registered product
+    pub product_id: String,
+}
+
+/// struct for passing parameters to the method [`funding_controller_list_by_product_id`]
+#[derive(Clone, Debug)]
+pub struct FundingControllerListByProductIdParams {
+    /// Id representing the registered product
+    pub product_id: String,
+    /// The range of time of funding rates to retrieve
+    pub range: String,
+    /// Direction to paginate through objects
+    pub order: Option<String>,
+    /// Limit the number of objects to return
+    pub limit: Option<f64>,
+    /// Pointer to the current object in pagination dataset
+    pub cursor: Option<String>,
+    /// Order by field
+    pub order_by: Option<String>,
+}
+
+/// struct for passing parameters to the method [`funding_controller_list_projected_rates`]
+#[derive(Clone, Debug)]
+pub struct FundingControllerListProjectedRatesParams {
+    /// Array of product ids
+    pub product_ids: Vec<uuid::Uuid>,
+}
+
 /// struct for typed errors of method [`funding_controller_get_projected_funding_rate`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -57,15 +88,12 @@ pub enum FundingControllerListProjectedRatesError {
 
 pub fn funding_controller_get_projected_funding_rate(
     configuration: &configuration::Configuration,
-    product_id: &str,
+    params: FundingControllerGetProjectedFundingRateParams,
 ) -> Result<models::ProjectedFundingDto, Error<FundingControllerGetProjectedFundingRateError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_product_id = product_id;
-
     let uri_str = format!("{}/v1/funding/projected", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("productId", &p_product_id.to_string())]);
+    req_builder = req_builder.query(&[("productId", &params.product_id.to_string())]);
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
@@ -110,36 +138,23 @@ pub fn funding_controller_get_projected_funding_rate(
 
 pub fn funding_controller_list_by_product_id(
     configuration: &configuration::Configuration,
-    product_id: &str,
-    range: &str,
-    order: Option<&str>,
-    limit: Option<f64>,
-    cursor: Option<&str>,
-    order_by: Option<&str>,
+    params: FundingControllerListByProductIdParams,
 ) -> Result<models::PageOfFundingDtos, Error<FundingControllerListByProductIdError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_product_id = product_id;
-    let p_range = range;
-    let p_order = order;
-    let p_limit = limit;
-    let p_cursor = cursor;
-    let p_order_by = order_by;
-
     let uri_str = format!("{}/v1/funding", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_order {
+    if let Some(ref param_value) = params.order {
         req_builder = req_builder.query(&[("order", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_limit {
+    if let Some(ref param_value) = params.limit {
         req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_cursor {
+    if let Some(ref param_value) = params.cursor {
         req_builder = req_builder.query(&[("cursor", &param_value.to_string())]);
     }
-    req_builder = req_builder.query(&[("productId", &p_product_id.to_string())]);
-    req_builder = req_builder.query(&[("range", &p_range.to_string())]);
-    if let Some(ref param_value) = p_order_by {
+    req_builder = req_builder.query(&[("productId", &params.product_id.to_string())]);
+    req_builder = req_builder.query(&[("range", &params.range.to_string())]);
+    if let Some(ref param_value) = params.order_by {
         req_builder = req_builder.query(&[("orderBy", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
@@ -186,24 +201,23 @@ pub fn funding_controller_list_by_product_id(
 
 pub fn funding_controller_list_projected_rates(
     configuration: &configuration::Configuration,
-    product_ids: Vec<uuid::Uuid>,
+    params: FundingControllerListProjectedRatesParams,
 ) -> Result<models::PageOfProjectedFundingDtos, Error<FundingControllerListProjectedRatesError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_product_ids = product_ids;
-
     let uri_str = format!("{}/v1/funding/projected-rate", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
     req_builder = match "multi" {
         "multi" => req_builder.query(
-            &p_product_ids
+            &params
+                .product_ids
                 .into_iter()
                 .map(|p| ("productIds".to_owned(), p.to_string()))
                 .collect::<Vec<(std::string::String, std::string::String)>>(),
         ),
         _ => req_builder.query(&[(
             "productIds",
-            &p_product_ids
+            &params
+                .product_ids
                 .into_iter()
                 .map(|p| p.to_string())
                 .collect::<Vec<String>>()

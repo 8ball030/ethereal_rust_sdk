@@ -13,6 +13,76 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 
+/// struct for passing parameters to the method [`token_controller_get_by_id`]
+#[derive(Clone, Debug)]
+pub struct TokenControllerGetByIdParams {
+    pub id: String,
+}
+
+/// struct for passing parameters to the method [`token_controller_initiate_withdraw`]
+#[derive(Clone, Debug)]
+pub struct TokenControllerInitiateWithdrawParams {
+    pub id: String,
+    pub initiate_withdraw_dto: models::InitiateWithdrawDto,
+}
+
+/// struct for passing parameters to the method [`token_controller_list`]
+#[derive(Clone, Debug)]
+pub struct TokenControllerListParams {
+    /// Direction to paginate through objects
+    pub order: Option<String>,
+    /// Limit the number of objects to return
+    pub limit: Option<f64>,
+    /// Pointer to the current object in pagination dataset
+    pub cursor: Option<String>,
+    /// Filters tokens by if its enabled for deposit
+    pub deposit_enabled: Option<bool>,
+    /// Filters tokens by if its enabled for withdraw
+    pub withdraw_enabled: Option<bool>,
+    /// Order by field
+    pub order_by: Option<String>,
+}
+
+/// struct for passing parameters to the method [`token_controller_list_transfers`]
+#[derive(Clone, Debug)]
+pub struct TokenControllerListTransfersParams {
+    /// Id representing the registered subaccount
+    pub subaccount_id: String,
+    /// Direction to paginate through objects
+    pub order: Option<String>,
+    /// Limit the number of objects to return
+    pub limit: Option<f64>,
+    /// Pointer to the current object in pagination dataset
+    pub cursor: Option<String>,
+    /// Array of transfer statuses to filter by
+    pub statuses: Option<Vec<String>>,
+    /// Array of transfer types to filter by
+    pub types: Option<Vec<String>>,
+    /// Order by field
+    pub order_by: Option<String>,
+    /// Filter by transfers created after timestamp exclusive (ms since Unix epoch)
+    pub created_after: Option<f64>,
+    /// Filter by transfers created before timestamp inclusive (ms since Unix epoch)
+    pub created_before: Option<f64>,
+}
+
+/// struct for passing parameters to the method [`token_controller_list_withdraws`]
+#[derive(Clone, Debug)]
+pub struct TokenControllerListWithdrawsParams {
+    /// Id representing the registered subaccount
+    pub subaccount_id: String,
+    /// Direction to paginate through objects
+    pub order: Option<String>,
+    /// Limit the number of objects to return
+    pub limit: Option<f64>,
+    /// Pointer to the current object in pagination dataset
+    pub cursor: Option<String>,
+    /// Filters active withdraws
+    pub is_active: Option<bool>,
+    /// Order by field
+    pub order_by: Option<String>,
+}
+
 /// struct for typed errors of method [`token_controller_get_by_id`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -85,15 +155,12 @@ pub enum TokenControllerListWithdrawsError {
 
 pub fn token_controller_get_by_id(
     configuration: &configuration::Configuration,
-    id: &str,
+    params: TokenControllerGetByIdParams,
 ) -> Result<models::TokenDto, Error<TokenControllerGetByIdError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-
     let uri_str = format!(
         "{}/v1/token/{id}",
         configuration.base_path,
-        id = crate::apis::urlencode(p_id)
+        id = crate::apis::urlencode(params.id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
@@ -140,17 +207,12 @@ pub fn token_controller_get_by_id(
 
 pub fn token_controller_initiate_withdraw(
     configuration: &configuration::Configuration,
-    id: &str,
-    initiate_withdraw_dto: models::InitiateWithdrawDto,
+    params: TokenControllerInitiateWithdrawParams,
 ) -> Result<models::WithdrawDto, Error<TokenControllerInitiateWithdrawError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_initiate_withdraw_dto = initiate_withdraw_dto;
-
     let uri_str = format!(
         "{}/v1/token/{id}/withdraw",
         configuration.base_path,
-        id = crate::apis::urlencode(p_id)
+        id = crate::apis::urlencode(params.id)
     );
     let mut req_builder = configuration
         .client
@@ -159,7 +221,7 @@ pub fn token_controller_initiate_withdraw(
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
-    req_builder = req_builder.json(&p_initiate_withdraw_dto);
+    req_builder = req_builder.json(&params.initiate_withdraw_dto);
 
     let req = req_builder.build()?;
     let resp = configuration.client.execute(req)?;
@@ -201,40 +263,27 @@ pub fn token_controller_initiate_withdraw(
 
 pub fn token_controller_list(
     configuration: &configuration::Configuration,
-    order: Option<&str>,
-    limit: Option<f64>,
-    cursor: Option<&str>,
-    deposit_enabled: Option<bool>,
-    withdraw_enabled: Option<bool>,
-    order_by: Option<&str>,
+    params: TokenControllerListParams,
 ) -> Result<models::PageOfTokensDtos, Error<TokenControllerListError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_order = order;
-    let p_limit = limit;
-    let p_cursor = cursor;
-    let p_deposit_enabled = deposit_enabled;
-    let p_withdraw_enabled = withdraw_enabled;
-    let p_order_by = order_by;
-
     let uri_str = format!("{}/v1/token", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_order {
+    if let Some(ref param_value) = params.order {
         req_builder = req_builder.query(&[("order", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_limit {
+    if let Some(ref param_value) = params.limit {
         req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_cursor {
+    if let Some(ref param_value) = params.cursor {
         req_builder = req_builder.query(&[("cursor", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_deposit_enabled {
+    if let Some(ref param_value) = params.deposit_enabled {
         req_builder = req_builder.query(&[("depositEnabled", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_withdraw_enabled {
+    if let Some(ref param_value) = params.withdraw_enabled {
         req_builder = req_builder.query(&[("withdrawEnabled", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_order_by {
+    if let Some(ref param_value) = params.order_by {
         req_builder = req_builder.query(&[("orderBy", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
@@ -280,41 +329,22 @@ pub fn token_controller_list(
 
 pub fn token_controller_list_transfers(
     configuration: &configuration::Configuration,
-    subaccount_id: &str,
-    order: Option<&str>,
-    limit: Option<f64>,
-    cursor: Option<&str>,
-    statuses: Option<Vec<String>>,
-    types: Option<Vec<String>>,
-    order_by: Option<&str>,
-    created_after: Option<f64>,
-    created_before: Option<f64>,
+    params: TokenControllerListTransfersParams,
 ) -> Result<models::PageOfTransfersDtos, Error<TokenControllerListTransfersError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_subaccount_id = subaccount_id;
-    let p_order = order;
-    let p_limit = limit;
-    let p_cursor = cursor;
-    let p_statuses = statuses;
-    let p_types = types;
-    let p_order_by = order_by;
-    let p_created_after = created_after;
-    let p_created_before = created_before;
-
     let uri_str = format!("{}/v1/token/transfer", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_order {
+    if let Some(ref param_value) = params.order {
         req_builder = req_builder.query(&[("order", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_limit {
+    if let Some(ref param_value) = params.limit {
         req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_cursor {
+    if let Some(ref param_value) = params.cursor {
         req_builder = req_builder.query(&[("cursor", &param_value.to_string())]);
     }
-    req_builder = req_builder.query(&[("subaccountId", &p_subaccount_id.to_string())]);
-    if let Some(ref param_value) = p_statuses {
+    req_builder = req_builder.query(&[("subaccountId", &params.subaccount_id.to_string())]);
+    if let Some(ref param_value) = params.statuses {
         req_builder = match "multi" {
             "multi" => req_builder.query(
                 &param_value
@@ -333,7 +363,7 @@ pub fn token_controller_list_transfers(
             )]),
         };
     }
-    if let Some(ref param_value) = p_types {
+    if let Some(ref param_value) = params.types {
         req_builder = match "multi" {
             "multi" => req_builder.query(
                 &param_value
@@ -352,13 +382,13 @@ pub fn token_controller_list_transfers(
             )]),
         };
     }
-    if let Some(ref param_value) = p_order_by {
+    if let Some(ref param_value) = params.order_by {
         req_builder = req_builder.query(&[("orderBy", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_created_after {
+    if let Some(ref param_value) = params.created_after {
         req_builder = req_builder.query(&[("createdAfter", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_created_before {
+    if let Some(ref param_value) = params.created_before {
         req_builder = req_builder.query(&[("createdBefore", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
@@ -404,38 +434,25 @@ pub fn token_controller_list_transfers(
 
 pub fn token_controller_list_withdraws(
     configuration: &configuration::Configuration,
-    subaccount_id: &str,
-    order: Option<&str>,
-    limit: Option<f64>,
-    cursor: Option<&str>,
-    is_active: Option<bool>,
-    order_by: Option<&str>,
+    params: TokenControllerListWithdrawsParams,
 ) -> Result<models::PageOfWithdrawDtos, Error<TokenControllerListWithdrawsError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_subaccount_id = subaccount_id;
-    let p_order = order;
-    let p_limit = limit;
-    let p_cursor = cursor;
-    let p_is_active = is_active;
-    let p_order_by = order_by;
-
     let uri_str = format!("{}/v1/token/withdraw", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_order {
+    if let Some(ref param_value) = params.order {
         req_builder = req_builder.query(&[("order", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_limit {
+    if let Some(ref param_value) = params.limit {
         req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_cursor {
+    if let Some(ref param_value) = params.cursor {
         req_builder = req_builder.query(&[("cursor", &param_value.to_string())]);
     }
-    req_builder = req_builder.query(&[("subaccountId", &p_subaccount_id.to_string())]);
-    if let Some(ref param_value) = p_is_active {
+    req_builder = req_builder.query(&[("subaccountId", &params.subaccount_id.to_string())]);
+    if let Some(ref param_value) = params.is_active {
         req_builder = req_builder.query(&[("isActive", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_order_by {
+    if let Some(ref param_value) = params.order_by {
         req_builder = req_builder.query(&[("orderBy", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {

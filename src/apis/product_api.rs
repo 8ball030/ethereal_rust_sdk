@@ -13,6 +13,41 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 
+/// struct for passing parameters to the method [`product_controller_get_by_id`]
+#[derive(Clone, Debug)]
+pub struct ProductControllerGetByIdParams {
+    pub id: String,
+}
+
+/// struct for passing parameters to the method [`product_controller_get_market_liquidity`]
+#[derive(Clone, Debug)]
+pub struct ProductControllerGetMarketLiquidityParams {
+    /// Id representing the registered product
+    pub product_id: String,
+}
+
+/// struct for passing parameters to the method [`product_controller_get_market_price`]
+#[derive(Clone, Debug)]
+pub struct ProductControllerGetMarketPriceParams {
+    /// Array of product ids
+    pub product_ids: Vec<uuid::Uuid>,
+}
+
+/// struct for passing parameters to the method [`product_controller_list`]
+#[derive(Clone, Debug, Default)]
+pub struct ProductControllerListParams {
+    /// Direction to paginate through objects
+    pub order: Option<String>,
+    /// Limit the number of objects to return
+    pub limit: Option<f64>,
+    /// Pointer to the current object in pagination dataset
+    pub cursor: Option<String>,
+    /// Order by field
+    pub order_by: Option<String>,
+    /// Filter products by ticker (case insensitive)
+    pub ticker: Option<String>,
+}
+
 /// struct for typed errors of method [`product_controller_get_by_id`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -71,15 +106,12 @@ pub enum ProductControllerListError {
 
 pub fn product_controller_get_by_id(
     configuration: &configuration::Configuration,
-    id: &str,
+    params: ProductControllerGetByIdParams,
 ) -> Result<models::ProductDto, Error<ProductControllerGetByIdError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-
     let uri_str = format!(
         "{}/v1/product/{id}",
         configuration.base_path,
-        id = crate::apis::urlencode(p_id)
+        id = crate::apis::urlencode(params.id)
     );
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
@@ -126,15 +158,12 @@ pub fn product_controller_get_by_id(
 
 pub fn product_controller_get_market_liquidity(
     configuration: &configuration::Configuration,
-    product_id: &str,
+    params: ProductControllerGetMarketLiquidityParams,
 ) -> Result<models::MarketLiquidityDto, Error<ProductControllerGetMarketLiquidityError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_product_id = product_id;
-
     let uri_str = format!("{}/v1/product/market-liquidity", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("productId", &p_product_id.to_string())]);
+    req_builder = req_builder.query(&[("productId", &params.product_id.to_string())]);
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
@@ -179,24 +208,23 @@ pub fn product_controller_get_market_liquidity(
 
 pub fn product_controller_get_market_price(
     configuration: &configuration::Configuration,
-    product_ids: Vec<uuid::Uuid>,
+    params: ProductControllerGetMarketPriceParams,
 ) -> Result<models::ListOfMarketPriceDtos, Error<ProductControllerGetMarketPriceError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_product_ids = product_ids;
-
     let uri_str = format!("{}/v1/product/market-price", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
     req_builder = match "multi" {
         "multi" => req_builder.query(
-            &p_product_ids
+            &params
+                .product_ids
                 .into_iter()
                 .map(|p| ("productIds".to_owned(), p.to_string()))
                 .collect::<Vec<(std::string::String, std::string::String)>>(),
         ),
         _ => req_builder.query(&[(
             "productIds",
-            &p_product_ids
+            &params
+                .product_ids
                 .into_iter()
                 .map(|p| p.to_string())
                 .collect::<Vec<String>>()
@@ -248,35 +276,24 @@ pub fn product_controller_get_market_price(
 
 pub fn product_controller_list(
     configuration: &configuration::Configuration,
-    order: Option<&str>,
-    limit: Option<f64>,
-    cursor: Option<&str>,
-    order_by: Option<&str>,
-    ticker: Option<&str>,
+    params: ProductControllerListParams,
 ) -> Result<models::PageOfProductDtos, Error<ProductControllerListError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_order = order;
-    let p_limit = limit;
-    let p_cursor = cursor;
-    let p_order_by = order_by;
-    let p_ticker = ticker;
-
     let uri_str = format!("{}/v1/product", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    if let Some(ref param_value) = p_order {
+    if let Some(ref param_value) = params.order {
         req_builder = req_builder.query(&[("order", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_limit {
+    if let Some(ref param_value) = params.limit {
         req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_cursor {
+    if let Some(ref param_value) = params.cursor {
         req_builder = req_builder.query(&[("cursor", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_order_by {
+    if let Some(ref param_value) = params.order_by {
         req_builder = req_builder.query(&[("orderBy", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_ticker {
+    if let Some(ref param_value) = params.ticker {
         req_builder = req_builder.query(&[("ticker", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
