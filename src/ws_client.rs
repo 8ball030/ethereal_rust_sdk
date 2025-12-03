@@ -8,27 +8,13 @@ use std::{
     time::Duration,
 };
 
-use crate::enums::Environment;
+use crate::types::SubscriptionMessage;
+use crate::{channels::public_channels, enums::Environment};
 use rust_socketio::client::Client;
-
-use serde::Serialize;
-
-#[derive(Debug, Serialize)]
-pub struct SubscriptionMessage {
-    #[serde(rename = "type")]
-    pub msg_type: String,
-    #[serde(rename = "productId")]
-    pub product_id: String,
-}
-
-const MARKET_PRICE: &str = "MarketPrice";
-const BOOK_DEPTH: &str = "BookDepth";
-
-const SERVER_URL: &str = "wss://ws.etherealtest.net";
 
 fn get_server_url(environment: &Environment) -> &str {
     match environment {
-        Environment::Production => "wss://ws.etherealstreamer.com",
+        Environment::Production => "wss://ws.ethereal.trade",
         Environment::Testnet => "wss://ws.etherealtest.net",
     }
 }
@@ -63,7 +49,7 @@ impl WsClient {
             self.client_builder
                 .clone()
                 .on("open", move |_payload: Payload, _socket: RawClient| {
-                    println!("Connected to {SERVER_URL}");
+                    println!("WebSocket connection established.");
                     flag_for_cb.store(true, Ordering::SeqCst);
                 });
 
@@ -104,7 +90,7 @@ impl WsClient {
         }
 
         let market_price_msg = SubscriptionMessage {
-            msg_type: MARKET_PRICE.to_string(),
+            msg_type: public_channels::MARKET_PRICE.to_string(),
             product_id: product_id.to_string(),
         };
 
@@ -128,7 +114,10 @@ impl WsClient {
     where
         F: Fn(Payload, RawClient) + Send + Sync + 'static,
     {
-        let builder = self.client_builder.clone().on(MARKET_PRICE, callback); // MARKER_PRICE is &str, no need for to_string()
+        let builder = self
+            .client_builder
+            .clone()
+            .on(public_channels::MARKET_PRICE, callback); // MARKER_PRICE is &str, no need for to_string()
 
         self.client_builder = builder;
     }
@@ -139,7 +128,7 @@ impl WsClient {
             return;
         }
         let orderbook_msg = SubscriptionMessage {
-            msg_type: BOOK_DEPTH.to_string(),
+            msg_type: public_channels::BOOK_DEPTH.to_string(),
             product_id: product_id.to_string(),
         };
 
@@ -161,7 +150,10 @@ impl WsClient {
     where
         F: Fn(Payload, RawClient) + Send + Sync + 'static,
     {
-        let builder = self.client_builder.clone().on(BOOK_DEPTH, callback); // BOOK_DEPTH is &str, no need for to_string()
+        let builder = self
+            .client_builder
+            .clone()
+            .on(public_channels::BOOK_DEPTH, callback); // BOOK_DEPTH is &str, no need for to_string()
 
         self.client_builder = builder;
     }
