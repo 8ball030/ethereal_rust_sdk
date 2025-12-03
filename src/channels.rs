@@ -6,5 +6,5 @@ pub mod public_channels {
     pub const TRADE_FILL: &str = "TradeFill";
     // pub const ORDER_UPDATE: &str = "OrderUpdate";
     // pub const SUBACCOUNT_LIQUIDATION: &str = "SubaccountLiquidation";
-    // pub const TOKEN_TRANSFER: &str = "TokenTransfer";
+    pub const TOKEN_TRANSFER: &str = "TokenTransfer";
 }

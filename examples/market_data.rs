@@ -1,8 +1,9 @@
-use ethereal_streamer::models::MarketPriceDto;
 use rust_socketio::client::RawClient;
 use rust_socketio::Payload;
 
+use ethereal_streamer::async_client::get_products;
 use ethereal_streamer::enums::Environment;
+use ethereal_streamer::models::MarketPriceDto;
 use ethereal_streamer::ws_client::WsClient;
 
 fn market_data_callback(market_price: Payload, _socket: RawClient) {
@@ -23,7 +24,7 @@ fn market_data_callback(market_price: Payload, _socket: RawClient) {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Getting products...");
     let env = Environment::Testnet;
-    let products = ethereal_streamer::async_client::get_products(env.clone())?;
+    let products = get_products(env.clone())?;
     println!("Starting WS Client.");
     let mut ws_client = WsClient::new(env);
 
