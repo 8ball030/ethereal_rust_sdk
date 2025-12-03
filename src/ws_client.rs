@@ -22,6 +22,7 @@ pub struct SubscriptionMessage {
 }
 
 const MARKET_PRICE: &str = "MarketPrice";
+const BOOK_DEPTH: &str = "BookDepth";
 
 const SERVER_URL: &str = "wss://ws.etherealtest.net";
 
@@ -46,36 +47,6 @@ impl WsClient {
         Self {
             client_builder,
             client: None,
-        }
-    }
-    pub fn subscribe_market_data(&self, product_id: &str) {
-        // Get a reference to the connected client or bail out early
-        let client = match &self.client {
-            Some(c) => c,
-            None => {
-                println!("WebSocket client is not connected. Please call connect() first.");
-                return;
-            }
-        };
-
-        let market_price_msg = SubscriptionMessage {
-            msg_type: MARKET_PRICE.to_string(),
-            product_id: product_id.to_string(),
-        };
-
-        let json_msg = match serde_json::to_value(&market_price_msg) {
-            Ok(v) => v,
-            Err(e) => {
-                eprintln!("Failed to serialize subscription message: {e}");
-                return;
-            }
-        };
-
-        // Now `client` is `&Client`, not `&Option<Client>`
-        if let Err(e) = client.emit("subscribe", Payload::from(json_msg.to_string())) {
-            eprintln!("Failed to emit subscribe: {e}");
-        } else {
-            println!("Subscribed MarketPrice: {product_id}");
         }
     }
 
@@ -121,12 +92,76 @@ impl WsClient {
             std::thread::park();
         }
     }
+    fn is_connected(&self) -> bool {
+        self.client.is_some()
+    }
 
+    pub fn subscribe_market_data(&self, product_id: &str) {
+        // Get a reference to the connected client or bail out early
+        if !self.is_connected() {
+            println!("WebSocket client is not connected. Please call connect() first.");
+            return;
+        }
+
+        let market_price_msg = SubscriptionMessage {
+            msg_type: MARKET_PRICE.to_string(),
+            product_id: product_id.to_string(),
+        };
+
+        let json_msg = match serde_json::to_value(&market_price_msg) {
+            Ok(v) => v,
+            Err(e) => {
+                eprintln!("Failed to serialize subscription message: {e}");
+                return;
+            }
+        };
+
+        // Now `client` is `&Client`, not `&Option<Client>`
+        let client = self.client.as_ref().unwrap();
+        if let Err(e) = client.emit("subscribe", Payload::from(json_msg.to_string())) {
+            eprintln!("Failed to emit subscribe: {e}");
+        } else {
+            println!("Subscribed MarketPrice: {product_id}");
+        }
+    }
     pub fn register_market_price_callback<F>(&mut self, callback: F)
     where
         F: Fn(Payload, RawClient) + Send + Sync + 'static,
     {
         let builder = self.client_builder.clone().on(MARKET_PRICE, callback); // MARKER_PRICE is &str, no need for to_string()
+
+        self.client_builder = builder;
+    }
+    pub fn subscribe_orderbook_data(&self, product_id: &str) {
+        // Get a reference to the connected client or bail out early
+        if !self.is_connected() {
+            println!("WebSocket client is not connected. Please call connect() first.");
+            return;
+        }
+        let orderbook_msg = SubscriptionMessage {
+            msg_type: BOOK_DEPTH.to_string(),
+            product_id: product_id.to_string(),
+        };
+
+        let json_msg = match serde_json::to_value(&orderbook_msg) {
+            Ok(v) => v,
+            Err(e) => {
+                eprintln!("Failed to serialize subscription message: {e}");
+                return;
+            }
+        };
+        let client = self.client.as_ref().unwrap();
+        if let Err(e) = client.emit("subscribe", Payload::from(json_msg.to_string())) {
+            eprintln!("Failed to emit subscribe: {e}");
+        } else {
+            println!("Subscribed BookDepth: {product_id}");
+        }
+    }
+    pub fn register_orderbook_callback<F>(&mut self, callback: F)
+    where
+        F: Fn(Payload, RawClient) + Send + Sync + 'static,
+    {
+        let builder = self.client_builder.clone().on(BOOK_DEPTH, callback); // BOOK_DEPTH is &str, no need for to_string()
 
         self.client_builder = builder;
     }
