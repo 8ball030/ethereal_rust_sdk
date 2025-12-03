@@ -300,4 +300,39 @@ impl WsClient {
             println!("Subscribed OrderUpdate: {subaccount_id}");
         }
     }
+    pub fn register_subaccount_liquidation_callback<F>(&mut self, callback: F)
+    where
+        F: Fn(Payload, RawClient) + Send + Sync + 'static,
+    {
+        let builder = self
+            .client_builder
+            .clone()
+            .on(public_channels::SUBACCOUNT_LIQUIDATION, callback); // SUBACCOUNT_LIQUIDATION is &str, no need for to_string()
+
+        self.client_builder = builder;
+    }
+    pub fn subscribe_subaccount_liquidation(&self, subaccount_id: &str) {
+        // Get a reference to the connected client or bail out early
+        if !self.is_connected() {
+            println!("WebSocket client is not connected. Please call connect() first.");
+            return;
+        }
+        let liquidation_msg = SubaccountSubscriptionMessage {
+            msg_type: public_channels::SUBACCOUNT_LIQUIDATION.to_string(),
+            subaccount_id: subaccount_id.to_string(),
+        };
+        let json_msg = match serde_json::to_value(&liquidation_msg) {
+            Ok(v) => v,
+            Err(e) => {
+                eprintln!("Failed to serialize subscription message: {e}");
+                return;
+            }
+        };
+        let client = self.client.as_ref().unwrap();
+        if let Err(e) = client.emit("subscribe", Payload::from(json_msg.to_string())) {
+            eprintln!("Failed to emit subscribe: {e}");
+        } else {
+            println!("Subscribed SubaccountLiquidation: {subaccount_id}");
+        }
+    }
 }
