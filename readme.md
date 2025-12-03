@@ -9,12 +9,14 @@ This is the Ethereal Rust SDK, which provides tools and libraries for interactin
 
 ## Getting Started
 
-At present, the Ethereal Rust SDK is under active development. To get started with the SDK, clone the repository and run the example code:
+At present, the Ethereal Rust SDK is under active development. To get started with the SDK, clone the repository and run the example code;`
+
+We have a number of examples included in the `examples` directory. Here is how to run the `market_data` example:
 
 ```bash
 git clone https://github.com/8ball030/ethereal_rust_sdk.git
 cd ethereal_rust_sdk
-cargo run
+cargo run --example market_data
 ```
 
 :NOTE: Instructions for getting started with the Ethereal Rust SDK will be provided here soon.
