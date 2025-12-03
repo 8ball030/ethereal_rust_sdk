@@ -1,10 +1,10 @@
 use rust_socketio::client::RawClient;
 use rust_socketio::Payload;
 
-use ethereal_streamer::async_client::get_products;
-use ethereal_streamer::enums::Environment;
-use ethereal_streamer::models::MarketPriceDto;
-use ethereal_streamer::ws_client::WsClient;
+use ethereal_rust_sdk::async_client::get_products;
+use ethereal_rust_sdk::enums::Environment;
+use ethereal_rust_sdk::models::MarketPriceDto;
+use ethereal_rust_sdk::ws_client::WsClient;
 
 fn market_data_callback(market_price: Payload, _socket: RawClient) {
     if let Payload::Text(values) = market_price {
@@ -25,16 +25,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Getting products...");
     let env = Environment::Testnet;
     let products = get_products(env.clone())?;
-    println!("Starting WS Client.");
+
     let mut ws_client = WsClient::new(env);
 
-    println!("Registering market data callback...");
     ws_client.register_market_price_callback(market_data_callback);
 
-    println!("Connecting WS Client...");
     ws_client.connect()?;
 
-    println!("Subscribing to market data for products...");
     products.iter().for_each(|product| {
         ws_client.subscribe_market_data(&product.id.to_string());
     });

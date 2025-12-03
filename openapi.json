@@ -9057,6 +9057,26 @@
         ],
         "description": "Side of the order",
         "example": 0
+      },
+      "SubaccountLiquidation": {
+        "type": "object",
+        "properties": {
+          "subaccountId": {
+            "type": "string",
+            "example": "9036443a-441a-4a66-87f2-bd5c44cdca7a",
+            "description": "Id representing the registered subaccount",
+            "format": "uuid"
+          },
+          "liquidatedAt": {
+            "type": "number",
+            "example": 1712019600000,
+            "description": "Timestamp of when the subaccount was liquidated (ms since Unix Epoch)"
+          }
+        },
+        "required": [
+          "subaccountId",
+          "liquidatedAt"
+        ]
       }
     }
   }

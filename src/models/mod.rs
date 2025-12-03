@@ -137,6 +137,8 @@ pub mod subaccount_balance_dto;
 pub use subaccount_balance_dto::SubaccountBalanceDto;
 pub mod subaccount_dto;
 pub use subaccount_dto::SubaccountDto;
+pub mod subaccount_liquidation;
+pub use subaccount_liquidation::SubaccountLiquidation;
 pub mod submit_dry_order_dto;
 pub use submit_dry_order_dto::SubmitDryOrderDto;
 pub mod submit_order_created_dto;

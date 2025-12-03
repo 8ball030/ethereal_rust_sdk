@@ -1,7 +1,7 @@
-use ethereal_streamer::async_client::get_subaccounts;
-use ethereal_streamer::enums::Environment;
-use ethereal_streamer::models::PageOfOrderDtos;
-use ethereal_streamer::ws_client::WsClient;
+use ethereal_rust_sdk::async_client::get_subaccounts;
+use ethereal_rust_sdk::enums::Environment;
+use ethereal_rust_sdk::models::PageOfOrderDtos;
+use ethereal_rust_sdk::ws_client::WsClient;
 
 use rust_socketio::client::RawClient;
 use rust_socketio::Payload;
@@ -36,11 +36,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Subaccounts: {subaccounts:?}");
 
     let mut ws_client = WsClient::new(env);
-    println!("Connecting WS Client...");
 
     ws_client.register_order_update_callback(order_update_callback);
     ws_client.connect()?;
-    println!("Subscribing to transfer events for subaccounts...");
     subaccounts.iter().for_each(|subaccount| {
         ws_client.subscribe_order_update(&subaccount.id.to_string());
     });

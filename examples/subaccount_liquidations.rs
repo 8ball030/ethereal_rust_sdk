@@ -1,23 +1,22 @@
 use ethereal_rust_sdk::async_client::get_subaccounts;
 use ethereal_rust_sdk::enums::Environment;
-use ethereal_rust_sdk::models::PageOfOrderFillDtos;
+use ethereal_rust_sdk::models::SubaccountLiquidation;
 use ethereal_rust_sdk::ws_client::WsClient;
 
 use rust_socketio::client::RawClient;
 use rust_socketio::Payload;
 
-fn order_fill_callback(raw_data: Payload, _socket: RawClient) {
+fn liquidation_callback(raw_data: Payload, _socket: RawClient) {
     if let Payload::Text(values) = raw_data {
         for value in values {
-            if let Ok(page) = serde_json::from_value::<PageOfOrderFillDtos>(value.clone()) {
-                for fill in page.data {
-                    println!(
-                        "Order Fill - ID: {}, Product ID: {}, Price: {}, Side: {:?}",
-                        fill.id, fill.product_id, fill.price, fill.side,
-                    );
-                }
+            if let Ok(liquidation) = serde_json::from_value::<SubaccountLiquidation>(value.clone())
+            {
+                println!(
+                    "Subaccount liquidated - ID: {}, Liquidated At: {}",
+                    liquidation.subaccount_id, liquidation.liquidated_at
+                );
             } else {
-                eprintln!("Failed to deserialize order fill data: {value}");
+                eprintln!("Failed to deserialize liquidation data: {value}");
             }
         }
     }
@@ -33,14 +32,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let env = Environment::Testnet;
     let subaccounts = get_subaccounts(env.clone(), sender_address.as_str())?;
 
-    println!("Subaccounts: {subaccounts:?}");
-
     let mut ws_client = WsClient::new(env);
 
-    ws_client.register_order_fill_callback(order_fill_callback);
+    ws_client.register_subaccount_liquidation_callback(liquidation_callback);
     ws_client.connect()?;
     subaccounts.iter().for_each(|subaccount| {
-        ws_client.subscribe_order_fill(&subaccount.id.to_string());
+        ws_client.subscribe_subaccount_liquidation(&subaccount.id.to_string());
     });
     ws_client.run_forever();
 

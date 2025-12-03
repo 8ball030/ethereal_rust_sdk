@@ -1,7 +1,7 @@
-use ethereal_streamer::async_client::get_subaccounts;
-use ethereal_streamer::enums::Environment;
-use ethereal_streamer::models::TransferDto;
-use ethereal_streamer::ws_client::WsClient;
+use ethereal_rust_sdk::async_client::get_subaccounts;
+use ethereal_rust_sdk::enums::Environment;
+use ethereal_rust_sdk::models::TransferDto;
+use ethereal_rust_sdk::ws_client::WsClient;
 
 use rust_socketio::client::RawClient;
 use rust_socketio::Payload;
@@ -33,14 +33,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let env = Environment::Testnet;
     let subaccounts = get_subaccounts(env.clone(), sender_address.as_str())?;
 
-    println!("Subaccounts: {subaccounts:?}");
-
     let mut ws_client = WsClient::new(env);
-    println!("Connecting WS Client...");
 
     ws_client.register_transfer_callback(transfer_callback);
     ws_client.connect()?;
-    println!("Subscribing to transfer events for subaccounts...");
     subaccounts.iter().for_each(|subaccount| {
         ws_client.subscribe_transfer_events(&subaccount.id.to_string());
     });
