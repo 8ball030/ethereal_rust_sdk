@@ -1,3 +1,4 @@
+use log::{error, info};
 use rust_socketio::client::RawClient;
 use rust_socketio::Payload;
 
@@ -11,13 +12,13 @@ fn trade_fill_callback(raw_data: Payload, _socket: RawClient) {
         for value in values {
             match serde_json::from_value::<TradeStreamMessage>(value) {
                 Err(e) => {
-                    eprintln!("Failed to deserialize TradeStreamMessage: {e}");
+                    error!("Failed to deserialize TradeStreamMessage: {e}");
                     return;
                 }
                 Ok(trade) => {
                     // Successfully deserialized, proceed
                     for fill in trade.data {
-                        println!(
+                        info!(
                             "Trade Fill - Product ID: {:?}, Price: {:?}, Quantity: {:?}",
                             trade.product_id, fill.price, fill.filled
                         );
@@ -29,7 +30,7 @@ fn trade_fill_callback(raw_data: Payload, _socket: RawClient) {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    println!("Getting products...");
+    simple_logger::init_with_level(log::Level::Info).unwrap();
     let env = Environment::Production;
     let products = get_products(env.clone())?;
 
