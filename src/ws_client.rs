@@ -8,7 +8,7 @@ use std::{
     time::Duration,
 };
 
-use crate::types::SubscriptionMessage;
+use crate::types::{ProductSubscriptionMessage, SubaccountSubscriptionMessage};
 use crate::{channels::public_channels, enums::Environment};
 use rust_socketio::client::Client;
 
@@ -89,7 +89,7 @@ impl WsClient {
             return;
         }
 
-        let market_price_msg = SubscriptionMessage {
+        let market_price_msg = ProductSubscriptionMessage {
             msg_type: public_channels::MARKET_PRICE.to_string(),
             product_id: product_id.to_string(),
         };
@@ -127,7 +127,7 @@ impl WsClient {
             println!("WebSocket client is not connected. Please call connect() first.");
             return;
         }
-        let orderbook_msg = SubscriptionMessage {
+        let orderbook_msg = ProductSubscriptionMessage {
             msg_type: public_channels::BOOK_DEPTH.to_string(),
             product_id: product_id.to_string(),
         };
@@ -163,7 +163,7 @@ impl WsClient {
             println!("WebSocket client is not connected. Please call connect() first.");
             return;
         }
-        let trade_fill_msg = SubscriptionMessage {
+        let trade_fill_msg = ProductSubscriptionMessage {
             msg_type: public_channels::TRADE_FILL.to_string(),
             product_id: product_id.to_string(),
         };
@@ -191,5 +191,43 @@ impl WsClient {
             .clone()
             .on(public_channels::TRADE_FILL, callback); // TRADE_FILL is &str, no need for to_string()
         self.client_builder = builder;
+    }
+
+    pub fn register_transfer_callback<F>(&mut self, callback: F)
+    where
+        F: Fn(Payload, RawClient) + Send + Sync + 'static,
+    {
+        let builder = self
+            .client_builder
+            .clone()
+            .on(public_channels::TOKEN_TRANSFER, callback); // TOKEN_TRANSFER is &str, no need for to_string()
+
+        self.client_builder = builder;
+    }
+    pub fn subscribe_transfer_events(&self, subaccount_id: &str) {
+        // Get a reference to the connected client or bail out early
+        if !self.is_connected() {
+            println!("WebSocket client is not connected. Please call connect() first.");
+            return;
+        }
+
+        let transfer_msg = SubaccountSubscriptionMessage {
+            msg_type: public_channels::TOKEN_TRANSFER.to_string(),
+            subaccount_id: subaccount_id.to_string(),
+        };
+
+        let json_msg = match serde_json::to_value(&transfer_msg) {
+            Ok(v) => v,
+            Err(e) => {
+                eprintln!("Failed to serialize subscription message: {e}");
+                return;
+            }
+        };
+        let client = self.client.as_ref().unwrap();
+        if let Err(e) = client.emit("subscribe", Payload::from(json_msg.to_string())) {
+            eprintln!("Failed to emit subscribe: {e}");
+        } else {
+            println!("Subscribed TokenTransfer: {subaccount_id}");
+        }
     }
 }
