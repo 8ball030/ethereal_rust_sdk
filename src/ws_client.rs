@@ -157,4 +157,39 @@ impl WsClient {
 
         self.client_builder = builder;
     }
+    pub fn subscribe_trade_fill_data(&self, product_id: &str) {
+        // Get a reference to the connected client or bail out early
+        if !self.is_connected() {
+            println!("WebSocket client is not connected. Please call connect() first.");
+            return;
+        }
+        let trade_fill_msg = SubscriptionMessage {
+            msg_type: public_channels::TRADE_FILL.to_string(),
+            product_id: product_id.to_string(),
+        };
+
+        let json_msg = match serde_json::to_value(&trade_fill_msg) {
+            Ok(v) => v,
+            Err(e) => {
+                eprintln!("Failed to serialize subscription message: {e}");
+                return;
+            }
+        };
+        let client = self.client.as_ref().unwrap();
+        if let Err(e) = client.emit("subscribe", Payload::from(json_msg.to_string())) {
+            eprintln!("Failed to emit subscribe: {e}");
+        } else {
+            println!("Subscribed TradeFill: {product_id}");
+        }
+    }
+    pub fn register_trade_fill_callback<F>(&mut self, callback: F)
+    where
+        F: Fn(Payload, RawClient) + Send + Sync + 'static,
+    {
+        let builder = self
+            .client_builder
+            .clone()
+            .on(public_channels::TRADE_FILL, callback); // TRADE_FILL is &str, no need for to_string()
+        self.client_builder = builder;
+    }
 }

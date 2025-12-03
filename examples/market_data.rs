@@ -22,9 +22,10 @@ fn market_data_callback(market_price: Payload, _socket: RawClient) {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Getting products...");
-    let products = ethereal_streamer::async_client::get_products()?;
+    let env = Environment::Testnet;
+    let products = ethereal_streamer::async_client::get_products(env.clone())?;
     println!("Starting WS Client.");
-    let mut ws_client = WsClient::new(Environment::Testnet);
+    let mut ws_client = WsClient::new(env);
 
     println!("Registering market data callback...");
     ws_client.register_market_price_callback(market_data_callback);
