@@ -14,20 +14,20 @@ use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 
 /// struct for passing parameters to the method [`token_controller_get_by_id`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct TokenControllerGetByIdParams {
     pub id: String,
 }
 
 /// struct for passing parameters to the method [`token_controller_initiate_withdraw`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct TokenControllerInitiateWithdrawParams {
     pub id: String,
     pub initiate_withdraw_dto: models::InitiateWithdrawDto,
 }
 
 /// struct for passing parameters to the method [`token_controller_list`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct TokenControllerListParams {
     /// Direction to paginate through objects
     pub order: Option<String>,
@@ -44,7 +44,7 @@ pub struct TokenControllerListParams {
 }
 
 /// struct for passing parameters to the method [`token_controller_list_transfers`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct TokenControllerListTransfersParams {
     /// Id representing the registered subaccount
     pub subaccount_id: String,
@@ -67,7 +67,7 @@ pub struct TokenControllerListTransfersParams {
 }
 
 /// struct for passing parameters to the method [`token_controller_list_withdraws`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct TokenControllerListWithdrawsParams {
     /// Id representing the registered subaccount
     pub subaccount_id: String,

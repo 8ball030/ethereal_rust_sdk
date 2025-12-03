@@ -14,13 +14,13 @@ use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 
 /// struct for passing parameters to the method [`subaccount_controller_get_by_subaccount_id`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct SubaccountControllerGetBySubaccountIdParams {
     pub id: String,
 }
 
 /// struct for passing parameters to the method [`subaccount_controller_list_by_account`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct SubaccountControllerListByAccountParams {
     /// Address of the sender
     pub sender: String,
@@ -37,7 +37,7 @@ pub struct SubaccountControllerListByAccountParams {
 }
 
 /// struct for passing parameters to the method [`subaccount_controller_list_subaccount_balances`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct SubaccountControllerListSubaccountBalancesParams {
     /// Id representing the registered subaccount
     pub subaccount_id: String,

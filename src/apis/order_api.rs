@@ -14,25 +14,25 @@ use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 
 /// struct for passing parameters to the method [`order_controller_cancel`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct OrderControllerCancelParams {
     pub cancel_order_dto: models::CancelOrderDto,
 }
 
 /// struct for passing parameters to the method [`order_controller_dry_run`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct OrderControllerDryRunParams {
     pub submit_dry_order_dto: models::SubmitDryOrderDto,
 }
 
 /// struct for passing parameters to the method [`order_controller_get_by_id`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct OrderControllerGetByIdParams {
     pub id: String,
 }
 
 /// struct for passing parameters to the method [`order_controller_list_by_subaccount_id`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct OrderControllerListBySubaccountIdParams {
     /// Id of the subaccount to query for
     pub subaccount_id: String,
@@ -65,7 +65,7 @@ pub struct OrderControllerListBySubaccountIdParams {
 }
 
 /// struct for passing parameters to the method [`order_controller_list_fills_by_subaccount_id`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct OrderControllerListFillsBySubaccountIdParams {
     /// Id of the subaccount to filter fills by
     pub subaccount_id: String,
@@ -90,7 +90,7 @@ pub struct OrderControllerListFillsBySubaccountIdParams {
 }
 
 /// struct for passing parameters to the method [`order_controller_list_trades`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct OrderControllerListTradesParams {
     /// Id of the product to filter trades by
     pub product_id: String,
@@ -105,7 +105,7 @@ pub struct OrderControllerListTradesParams {
 }
 
 /// struct for passing parameters to the method [`order_controller_submit`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct OrderControllerSubmitParams {
     pub submit_order_dto: models::SubmitOrderDto,
 }

@@ -14,26 +14,26 @@ use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 
 /// struct for passing parameters to the method [`referral_controller_activate`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct ReferralControllerActivateParams {
     pub activate_referral_dto: models::ActivateReferralDto,
 }
 
 /// struct for passing parameters to the method [`referral_controller_claim_code`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct ReferralControllerClaimCodeParams {
     pub claim_referral_code_dto: models::ClaimReferralCodeDto,
 }
 
 /// struct for passing parameters to the method [`referral_controller_get_code_usage`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct ReferralControllerGetCodeUsageParams {
     /// Referral code (3-12 alphanumeric uppercase characters)
     pub code: String,
 }
 
 /// struct for passing parameters to the method [`referral_controller_get_summary`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct ReferralControllerGetSummaryParams {
     /// Must be: EIP712Auth
     pub x_ethereal_auth: String,
@@ -50,7 +50,7 @@ pub struct ReferralControllerGetSummaryParams {
 }
 
 /// struct for passing parameters to the method [`referral_controller_list_referrals`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct ReferralControllerListReferralsParams {
     /// Must be: EIP712Auth
     pub x_ethereal_auth: String,

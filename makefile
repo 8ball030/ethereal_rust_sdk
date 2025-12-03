@@ -46,5 +46,6 @@ codegen:
 		echo "pub mod $$name;" >> ./src/models/mod.rs; \
 		echo "pub use $$name::$$camel;" >> ./src/models/mod.rs; \
 	done
+	python build_scripts/post_processing.py
 
 all: codegen fmt lint build test

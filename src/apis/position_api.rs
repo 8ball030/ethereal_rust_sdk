@@ -14,7 +14,7 @@ use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 
 /// struct for passing parameters to the method [`position_controller_get_active`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct PositionControllerGetActiveParams {
     /// Id representing the registered subaccount
     pub subaccount_id: String,
@@ -23,13 +23,13 @@ pub struct PositionControllerGetActiveParams {
 }
 
 /// struct for passing parameters to the method [`position_controller_get_by_id`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct PositionControllerGetByIdParams {
     pub id: String,
 }
 
 /// struct for passing parameters to the method [`position_controller_list_by_subaccount_id`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct PositionControllerListBySubaccountIdParams {
     /// Id representing the registered subaccount
     pub subaccount_id: String,
@@ -56,7 +56,7 @@ pub struct PositionControllerListBySubaccountIdParams {
 }
 
 /// struct for passing parameters to the method [`position_controller_list_fills_by_position_id`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct PositionControllerListFillsByPositionIdParams {
     /// Id of the position to filter fills by
     pub position_id: String,
@@ -71,7 +71,7 @@ pub struct PositionControllerListFillsByPositionIdParams {
 }
 
 /// struct for passing parameters to the method [`position_controller_list_liquidations_by_subaccount_id`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct PositionControllerListLiquidationsBySubaccountIdParams {
     /// Direction to paginate through objects
     pub order: Option<String>,

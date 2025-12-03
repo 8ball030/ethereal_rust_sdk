@@ -14,14 +14,14 @@ use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 
 /// struct for passing parameters to the method [`funding_controller_get_projected_funding_rate`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct FundingControllerGetProjectedFundingRateParams {
     /// Id representing the registered product
     pub product_id: String,
 }
 
 /// struct for passing parameters to the method [`funding_controller_list_by_product_id`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct FundingControllerListByProductIdParams {
     /// Id representing the registered product
     pub product_id: String,
@@ -38,7 +38,7 @@ pub struct FundingControllerListByProductIdParams {
 }
 
 /// struct for passing parameters to the method [`funding_controller_list_projected_rates`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct FundingControllerListProjectedRatesParams {
     /// Array of product ids
     pub product_ids: Vec<uuid::Uuid>,

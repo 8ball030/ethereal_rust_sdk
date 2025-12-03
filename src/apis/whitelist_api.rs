@@ -14,7 +14,7 @@ use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 
 /// struct for passing parameters to the method [`whitelist_controller_is_whitelisted`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct WhitelistControllerIsWhitelistedParams {
     /// Address of account
     pub address: String,

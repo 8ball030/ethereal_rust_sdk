@@ -14,26 +14,26 @@ use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 
 /// struct for passing parameters to the method [`linked_signer_controller_get_account_quota`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct LinkedSignerControllerGetAccountQuotaParams {
     /// Id representing the registered subaccount
     pub subaccount_id: String,
 }
 
 /// struct for passing parameters to the method [`linked_signer_controller_get_signer`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct LinkedSignerControllerGetSignerParams {
     pub id: String,
 }
 
 /// struct for passing parameters to the method [`linked_signer_controller_link_signer`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct LinkedSignerControllerLinkSignerParams {
     pub link_signer_dto: models::LinkSignerDto,
 }
 
 /// struct for passing parameters to the method [`linked_signer_controller_list_by_subaccount_id`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct LinkedSignerControllerListBySubaccountIdParams {
     /// Id representing the registered subaccount
     pub subaccount_id: String,
@@ -50,13 +50,13 @@ pub struct LinkedSignerControllerListBySubaccountIdParams {
 }
 
 /// struct for passing parameters to the method [`linked_signer_controller_refresh_signer`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct LinkedSignerControllerRefreshSignerParams {
     pub refresh_linked_signer_dto: models::RefreshLinkedSignerDto,
 }
 
 /// struct for passing parameters to the method [`linked_signer_controller_revoke_signer`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct LinkedSignerControllerRevokeSignerParams {
     pub revoke_linked_signer_dto: models::RevokeLinkedSignerDto,
 }

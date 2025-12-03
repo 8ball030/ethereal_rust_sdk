@@ -14,7 +14,7 @@ use reqwest;
 use serde::{Deserialize, Serialize, de::Error as _};
 
 /// struct for passing parameters to the method [`points_controller_list_points_periods`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct PointsControllerListPointsPeriodsParams {
     /// Address of account
     pub address: String,
@@ -25,7 +25,7 @@ pub struct PointsControllerListPointsPeriodsParams {
 }
 
 /// struct for passing parameters to the method [`points_controller_list_points_season_summaries`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct PointsControllerListPointsSeasonSummariesParams {
     /// Address of account
     pub address: String,
