@@ -1,7 +1,9 @@
 lint: 
 	cargo clippy --all-features --all-targets --examples -- -D warnings 
 fmt:
-	cargo fmt --all
+	cargo fmt --all 
+	# format examples
+	rustfmt examples/*.rs
 build:
 	cargo build --all-features
 test:
