@@ -4,7 +4,6 @@ This is the Ethereal Rust SDK, which provides tools and libraries for interactin
 ## Features
 - Socket.IO client for real-time communication for all supported WebSocket channels
 - JSON serialization and deserialization
-- Asynchronous programming with Tokio
 - HTTP requests with Reqwest
 
 ## Getting Started
@@ -52,9 +51,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Acknowledgements
 - [Ethereal](https://ethereal.trade) for providing the platform and API.
-- [Tokio](https://tokio.rs/) for asynchronous programming in Rust.
 - [Reqwest](https://docs.rs/reqwest/) for HTTP requests in Rust.
 - [Rust Socket.IO](https://docs.rs/rust_socketio/) for Socket.IO client functionality in Rust.
 - [Serde](https://serde.rs/) for serialization and deserialization in Rust.
-- [Anyhow](https://docs.rs/anyhow/) for error handling in Rust.
 - [Serde JSON](https://docs.rs/serde_json/) for JSON support in Rust.
