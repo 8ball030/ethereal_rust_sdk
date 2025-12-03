@@ -6455,17 +6455,7 @@
             ]
           },
           "side": {
-            "enum": [
-              0,
-              1
-            ],
-            "type": "number",
-            "example": 1,
-            "description": "Side as either BUY (0) or SELL (1)",
-            "x-enum-varnames": [
-              "BUY",
-              "SELL"
-            ]
+            "$ref": "#/components/schemas/OrderSide"
           },
           "reduceOnly": {
             "type": "boolean",
@@ -6535,7 +6525,6 @@
           }
         },
         "required": [
-          "hasNext",
           "data"
         ]
       },
@@ -9053,6 +9042,20 @@
           "SELL"
         ],
         "description": "Side of the trade",
+        "example": 0
+      },
+      "OrderSide": {
+        "type": "integer",
+        "format": "int32",
+        "enum": [
+          0,
+          1
+        ],
+        "x-enum-varnames": [
+          "BUY",
+          "SELL"
+        ],
+        "description": "Side of the order",
         "example": 0
       }
     }

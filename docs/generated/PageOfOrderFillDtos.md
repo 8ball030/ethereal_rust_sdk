@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**has_next** | **bool** | Whether there are more objects to paginate through | 
+**has_next** | Option<**bool**> | Whether there are more objects to paginate through | [optional]
 **next_cursor** | Option<**String**> | Pointer to the next page in pagination dataset | [optional]
 **data** | [**Vec<models::OrderFillDto>**](OrderFillDto.md) | Array of order fill objects | 
 
