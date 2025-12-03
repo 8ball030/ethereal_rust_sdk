@@ -1,10 +1,10 @@
 use rust_socketio::client::RawClient;
 use rust_socketio::Payload;
 
-use ethereal_streamer::async_client::get_products;
-use ethereal_streamer::enums::Environment;
-use ethereal_streamer::models::BookDepthMessage;
-use ethereal_streamer::ws_client::WsClient;
+use ethereal_rust_sdk::async_client::get_products;
+use ethereal_rust_sdk::enums::Environment;
+use ethereal_rust_sdk::models::BookDepthMessage;
+use ethereal_rust_sdk::ws_client::WsClient;
 
 fn orderbook_callback(raw_data: Payload, _socket: RawClient) {
     if let Payload::Text(values) = raw_data {

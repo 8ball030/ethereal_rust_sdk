@@ -1,5 +1,5 @@
 [package]
-name = "ethereal_streamer"
+name = "ethereal_rust_sdk"
 version = "0.1.0"
 edition = "2024"
 

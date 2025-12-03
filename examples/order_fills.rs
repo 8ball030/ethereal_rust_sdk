@@ -1,7 +1,7 @@
-use ethereal_streamer::async_client::get_subaccounts;
-use ethereal_streamer::enums::Environment;
-use ethereal_streamer::models::PageOfOrderDtos;
-use ethereal_streamer::ws_client::WsClient;
+use ethereal_rust_sdk::async_client::get_subaccounts;
+use ethereal_rust_sdk::enums::Environment;
+use ethereal_rust_sdk::models::PageOfOrderDtos;
+use ethereal_rust_sdk::ws_client::WsClient;
 
 use rust_socketio::client::RawClient;
 use rust_socketio::Payload;
