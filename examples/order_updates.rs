@@ -1,19 +1,19 @@
 use ethereal_streamer::async_client::get_subaccounts;
 use ethereal_streamer::enums::Environment;
-use ethereal_streamer::models::PageOfOrderDtos;
+use ethereal_streamer::models::PageOfOrderFillDtos;
 use ethereal_streamer::ws_client::WsClient;
 
 use rust_socketio::client::RawClient;
 use rust_socketio::Payload;
 
-fn order_update_callback(raw_data: Payload, _socket: RawClient) {
+fn order_fill_callback(raw_data: Payload, _socket: RawClient) {
     if let Payload::Text(values) = raw_data {
         for value in values {
-            if let Ok(page) = serde_json::from_value::<PageOfOrderDtos>(value.clone()) {
+            if let Ok(page) = serde_json::from_value::<PageOfOrderFillDtos>(value.clone()) {
                 for fill in page.data {
                     println!(
-                        "Order update - ID: {}, Product ID: {}, Price: {}, Side: {:?} Quantity: {} Status: {:?}",
-                        fill.id, fill.product_id, fill.price, fill.side, fill.quantity, fill.status
+                        "Order Fill - ID: {}, Product ID: {}, Price: {}, Side: {:?}",
+                        fill.id, fill.product_id, fill.price, fill.side,
                     );
                 }
             } else {
@@ -38,11 +38,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut ws_client = WsClient::new(env);
     println!("Connecting WS Client...");
 
-    ws_client.register_order_update_callback(order_update_callback);
+    ws_client.register_order_fill_callback(order_fill_callback);
     ws_client.connect()?;
     println!("Subscribing to transfer events for subaccounts...");
     subaccounts.iter().for_each(|subaccount| {
-        ws_client.subscribe_order_update(&subaccount.id.to_string());
+        ws_client.subscribe_order_fill(&subaccount.id.to_string());
     });
     ws_client.run_forever();
 
