@@ -31,9 +31,8 @@ pub struct OrderFillDto {
     /// The provided order's type e.g. MARKET or LIMIT
     #[serde(rename = "type")]
     pub r#type: Type,
-    /// Side as either BUY (0) or SELL (1)
     #[serde(rename = "side")]
-    pub side: Side,
+    pub side: models::OrderSide,
     /// Indicates if the fill is reduce only
     #[serde(rename = "reduceOnly")]
     pub reduce_only: bool,
@@ -61,7 +60,7 @@ impl OrderFillDto {
         price: String,
         filled: String,
         r#type: Type,
-        side: Side,
+        side: models::OrderSide,
         reduce_only: bool,
         fee_usd: String,
         is_maker: bool,
@@ -98,19 +97,5 @@ pub enum Type {
 impl Default for Type {
     fn default() -> Type {
         Self::Market
-    }
-}
-/// Side as either BUY (0) or SELL (1)
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Side {
-    #[serde(rename = "0")]
-    BUY,
-    #[serde(rename = "1")]
-    SELL,
-}
-
-impl Default for Side {
-    fn default() -> Side {
-        Self::BUY
     }
 }

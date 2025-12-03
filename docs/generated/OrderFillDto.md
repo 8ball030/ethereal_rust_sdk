@@ -10,7 +10,7 @@ Name | Type | Description | Notes
 **price** | **String** | Fill price in expressed as a decimal (precision: 9) | 
 **filled** | **String** | Quantity filled in native units expressed as a decimal (precision: 9) | 
 **r#type** | **String** | The provided order's type e.g. MARKET or LIMIT | 
-**side** | **f64** | Side as either BUY (0) or SELL (1) | 
+**side** | [**models::OrderSide**](OrderSide.md) |  | 
 **reduce_only** | **bool** | Indicates if the fill is reduce only | 
 **fee_usd** | **String** | The provided subaccount's charged fee in USD expressed as a decimal (precision: 9) | 
 **is_maker** | **bool** | Indicates if the fill was a maker or taker | 
