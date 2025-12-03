@@ -2,7 +2,7 @@
 This is the Ethereal Rust SDK, which provides tools and libraries for interacting with the [Ethereal](https://ethereal.trade) platform using the Rust programming language.
 
 ## Features
-- Socket.IO client for real-time communication
+- Socket.IO client for real-time communication for all supported WebSocket channels
 - JSON serialization and deserialization
 - Asynchronous programming with Tokio
 - HTTP requests with Reqwest
@@ -43,8 +43,8 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## TODO
 - [x] Generate datatypes from Ethereal API spec.
 - [x] Set up continuous integration and deployment (CI/CD) pipeline.
+- [x] Fully Integrate with Ethereal Websocket API.
 - [ ] Integrate with Ethereal authentication system.
-- [ ] Fully Integrate with Ethereal Websocket API.
 - [ ] Add more examples and documentation.
 - [ ] Write tests for all modules and functionalities.
 - [ ] Publish the crate to crates.io.
