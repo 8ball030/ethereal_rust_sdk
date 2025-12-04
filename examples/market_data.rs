@@ -2,9 +2,10 @@ use log::info;
 use rust_socketio::client::RawClient;
 use rust_socketio::Payload;
 
-use ethereal_rust_sdk::apis::product_api::{product_controller_list, ProductControllerListParams};
+use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
 use ethereal_rust_sdk::enums::Environment;
 use ethereal_rust_sdk::models::MarketPriceDto;
+use ethereal_rust_sdk::sync_client::client::HttpClient;
 use ethereal_rust_sdk::ws_client::WsClient;
 
 fn market_data_callback(market_price: Payload, _socket: RawClient) {
@@ -27,16 +28,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let env = Environment::Production;
 
-    let api_configuration = ethereal_rust_sdk::apis::configuration::Configuration::default();
-    let params = ProductControllerListParams::default();
-    let products = product_controller_list(&api_configuration, params)?;
+    let http_client = HttpClient::new(env.clone());
+    let mut ws_client = WsClient::new(env.clone());
 
-    let mut ws_client = WsClient::new(env);
+    let params = ProductControllerListParams::default();
 
     ws_client.register_market_price_callback(market_data_callback);
-
     ws_client.connect()?;
 
+    let products = http_client.products().list(params)?;
     products.data.iter().for_each(|product| {
         ws_client.subscribe_market_data(&product.id.to_string());
     });
