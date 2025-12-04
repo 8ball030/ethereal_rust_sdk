@@ -1,9 +1,7 @@
 use alloy::hex;
-use alloy::primitives::{Address, U256, address, FixedBytes};
-use alloy::signers::k256::ecdsa::SigningKey;
+use alloy::primitives::{address, FixedBytes};
 use alloy::signers::{local::PrivateKeySigner, Signer};
 use alloy::sol_types::{sol, eip712_domain, Eip712Domain};
-use alloy_signer::k256::sha2::digest::typenum::uint;
 
 // "address sender,bytes32 subaccount,uint128 quantity,uint128 price,bool reduceOnly,uint8 side,uint8 engineType,uint32 productId,uint64 nonce,uint64 signedAt"
 
@@ -45,7 +43,6 @@ const DOMAIN: Eip712Domain = eip712_domain! {
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // 1) Local signer from private key
-    let pk_hex = "0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcd";
     let signer: PrivateKeySigner = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80".parse()?;
  
 
