@@ -18,8 +18,58 @@ cd ethereal_rust_sdk
 cargo run --example market_data
 ```
 
-:NOTE: Instructions for getting started with the Ethereal Rust SDK will be provided here soon.
 
+The client can be used as somewhat illustrated in the example below:
+
+```rust
+
+use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
+use ethereal_rust_sdk::enums::Environment;
+use ethereal_rust_sdk::models::MarketPriceDto;
+use ethereal_rust_sdk::sync_client::client::HttpClient;
+use ethereal_rust_sdk::ws_client::WsClient;
+
+fn market_data_callback(market_price: Payload, _socket: RawClient) {
+    if let Payload::Text(values) = market_price {
+        for value in values {
+            if let Ok(market_price) = serde_json::from_value::<MarketPriceDto>(value) {
+                info!(
+                    "Market Price Update - Product ID: {:?}, Best Bid: {:?}, Best Ask: {:?}",
+                    market_price.product_id,
+                    market_price.best_bid_price,
+                    market_price.best_ask_price
+                );
+            }
+        }
+    }
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    simple_logger::init_with_level(log::Level::Info).unwrap();
+
+    let env = Environment::Production;
+
+    let http_client = HttpClient::new(env.clone());
+    let params = ProductControllerListParams::default();
+    let products = http_client.product().list(params)?;
+
+    let mut ws_client = WsClient::new(env.clone());
+    ws_client.register_market_price_callback(market_data_callback);
+    ws_client.connect()?;
+
+    products.data.iter().for_each(|product| {
+        ws_client.subscribe_market_data(&product.id.to_string());
+    });
+    ws_client.run_forever();
+    Ok(())
+}
+
+```
+
+As can be seen, the SDK provides both synchronous HTTP clients and WebSocket clients to interact with the Ethereal platform.
+
+
+:NOTE: Instructions for getting started with the Ethereal Rust SDK will be provided here soon.
 
 ## Contributing
 Contributions are welcome! Please fork the repository and submit a pull request with your changes.
@@ -43,9 +93,12 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [x] Generate datatypes from Ethereal API spec.
 - [x] Set up continuous integration and deployment (CI/CD) pipeline.
 - [x] Fully Integrate with Ethereal Websocket API.
-- [ ] Integrate with Ethereal authentication system.
-- [ ] Add more examples and documentation.
+- [x] Implement Read HTTP client for Ethereal REST API.
+- [x] Create example code for using the SDK.
+- [ ] Implement Order posting for Ethereal REST API.
+- [ ] Create async HTTP client for Ethereal REST API.
 - [ ] Write tests for all modules and functionalities.
+- [ ] Add more examples and documentation.
 - [ ] Publish the crate to crates.io.
 - [ ] Parse stringified numbers into appropriate numeric types.
 
