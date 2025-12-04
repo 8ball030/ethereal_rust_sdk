@@ -1,6 +1,7 @@
-use ethereal_rust_sdk::async_client::get_subaccounts;
+use ethereal_rust_sdk::apis::subaccount_api::SubaccountControllerListByAccountParams;
 use ethereal_rust_sdk::enums::Environment;
 use ethereal_rust_sdk::models::PageOfOrderFillDtos;
+use ethereal_rust_sdk::sync_client::client::HttpClient;
 use ethereal_rust_sdk::ws_client::WsClient;
 
 use log::info;
@@ -30,13 +31,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         panic!("SENDER_ADDRESS environment variable is not set");
     });
     let env = Environment::Testnet;
-    let subaccounts = get_subaccounts(env.clone(), sender_address.as_str())?;
+
+    let http_client = HttpClient::new(env.clone());
+    let params = SubaccountControllerListByAccountParams {
+        sender: sender_address,
+        ..Default::default()
+    };
+    let subaccounts = http_client.subaccount().list_by_account(params)?;
 
     let mut ws_client = WsClient::new(env);
-
     ws_client.register_order_fill_callback(order_fill_callback);
     ws_client.connect()?;
-    subaccounts.iter().for_each(|subaccount| {
+    subaccounts.data.iter().for_each(|subaccount| {
         ws_client.subscribe_order_fill(&subaccount.id.to_string());
     });
     ws_client.run_forever();

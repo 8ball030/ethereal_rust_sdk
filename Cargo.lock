@@ -235,6 +235,7 @@ dependencies = [
  "serde_json",
  "serde_repr",
  "simple_logger",
+ "url",
  "uuid",
 ]
 

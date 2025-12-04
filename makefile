@@ -1,5 +1,5 @@
 lint: 
-	cargo clippy --all-features --all-targets --examples -- -D warnings 
+	cargo clippy --all-features --all-targets --examples --tests -- -D warnings 
 fmt:
 	cargo fmt --all 
 	# format examples
@@ -16,11 +16,13 @@ codegen:
 	openapi-generator-cli generate \
 	  -i openapi.json \
 	  -g rust \
-	  -o ./generated
+	  -o ./generated \
+	--additional-properties=supportAsync=false,useSingleRequestParameter=true
+
 
 	cp ./generated/src/models/* ./src/models/
 	cp ./generated/docs/* ./docs/generated/
-	rm -rf ./generated
+	cp -r ./generated/src/apis ./src/
 
 	# rebuild mod.rs
 	@echo "#![allow(clippy::all)]" > ./src/models/mod.rs
@@ -28,7 +30,13 @@ codegen:
 	@echo "#![allow(dead_code)]" >> ./src/models/mod.rs
 	@echo "#![allow(non_camel_case_types)]" >> ./src/models/mod.rs
 	@echo "#![allow(clippy::upper_case_acronyms)]" >> ./src/models/mod.rs
+	# rebuild api mod.rs
 
+	@echo "#![allow(clippy::all)]" > ./src/apis/mod.rs
+	cat ./generated/src/apis/mod.rs >> ./src/apis/mod.rs
+
+	# cleanup
+	rm -rf ./generated
 
 	@for f in ./src/models/*.rs; do \
 		base=$$(basename $$f); \
@@ -38,5 +46,6 @@ codegen:
 		echo "pub mod $$name;" >> ./src/models/mod.rs; \
 		echo "pub use $$name::$$camel;" >> ./src/models/mod.rs; \
 	done
+	python build_scripts/post_processing.py
 
 all: codegen fmt lint build test
