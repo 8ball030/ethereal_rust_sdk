@@ -28,9 +28,8 @@ pub struct OrderDto {
     /// Original quantity (as per order submission) in native units expressed as a decimal (precision: 9)
     #[serde(rename = "quantity")]
     pub quantity: String,
-    /// Side as either BUY (0) or SELL (1)
     #[serde(rename = "side")]
-    pub side: Side,
+    pub side: models::OrderSide,
     /// Id of product this order was placed against
     #[serde(rename = "productId")]
     pub product_id: uuid::Uuid,
@@ -96,7 +95,7 @@ impl OrderDto {
         r#type: Type,
         available_quantity: String,
         quantity: String,
-        side: Side,
+        side: models::OrderSide,
         product_id: uuid::Uuid,
         subaccount_id: uuid::Uuid,
         status: Status,
@@ -150,20 +149,6 @@ pub enum Type {
 impl Default for Type {
     fn default() -> Type {
         Self::Market
-    }
-}
-/// Side as either BUY (0) or SELL (1)
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Side {
-    #[serde(rename = "0")]
-    BUY,
-    #[serde(rename = "1")]
-    SELL,
-}
-
-impl Default for Side {
-    fn default() -> Side {
-        Self::BUY
     }
 }
 /// Status of the order

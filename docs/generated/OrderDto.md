@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **r#type** | **String** | Trade order type e.g. MARKET or LIMIT | 
 **available_quantity** | **String** | Remaining quantity (if modified or reduced) in native units expressed as a decimal (precision: 9) | 
 **quantity** | **String** | Original quantity (as per order submission) in native units expressed as a decimal (precision: 9) | 
-**side** | **f64** | Side as either BUY (0) or SELL (1) | 
+**side** | [**models::OrderSide**](OrderSide.md) |  | 
 **product_id** | [**uuid::Uuid**](uuid::Uuid.md) | Id of product this order was placed against | 
 **subaccount_id** | [**uuid::Uuid**](uuid::Uuid.md) | Id of the subaccount associated to order | 
 **status** | **String** | Status of the order | 

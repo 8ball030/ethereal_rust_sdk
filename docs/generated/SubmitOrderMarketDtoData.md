@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **nonce** | **String** | Message nonce timestamp (nanoseconds since Unix Epoch) | 
 **r#type** | **String** | Market order type | 
 **quantity** | **String** | Non-directional quantity of product in native units expressed as a decimal (precision: 9) | 
-**side** | **f64** | Side as either BUY (0) or SELL (1) | 
+**side** | [**models::OrderSide**](OrderSide.md) |  | 
 **onchain_id** | **f64** | Onchain generated productId from prior product registration | 
 **engine_type** | [**models::EngineType**](EngineType.md) |  | 
 **client_order_id** | Option<**String**> | A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters) | [optional]
