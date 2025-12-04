@@ -26,6 +26,30 @@ METHOD_TEMPLATE = Template("""
     }
 """)
 
+TEST_METHOD_TEMPLATE_WITH_PARAMS = Template("""
+#[test]
+fn test_$short_function_name() {
+    let client = HttpClient::new(Environment::Testnet);
+    let params = $params_struct_name::default();
+    let result = client.$api_name().$short_function_name(params);
+    assert!(result.is_ok());
+}
+""")
+TEST_METHOD_TEMPLATE_WITHOUT_PARAMS = Template("""
+#[test]
+fn test_$short_function_name() {
+    let client = HttpClient::new(Environment::Testnet);
+    let result = client.$api_name().$short_function_name();
+    assert!(result.is_ok());
+}
+""")
+
+TEST_API_TEMPLATE = Template("""
+use ethereal_rust_sdk::sync_client::client::HttpClient;
+use ethereal_rust_sdk::enums::Environment;
+use ethereal_rust_sdk::apis::$api_name::{$client_imports};
+""")
+
 SUB_CLIENT_TEMPLATE = Template("""
 use crate::{
     apis::{
@@ -110,7 +134,7 @@ def check_sub_client_methods(file_path: Path):
     func_started = False
     model_imports = set()
     client_imports = set()
-    functions = []
+    functions, tests = [], []
     for ix, line in enumerate(lines):
         if line.startswith("pub fn "):
             func_started = True
@@ -124,6 +148,7 @@ def check_sub_client_methods(file_path: Path):
             return_type = line.split("Result<models::")[1].split(",")[0]
 
             params_line = ""
+            params_struct_name = ""
             if "params: " in line:
                 params_struct_name = line.split("params: ")[1].split(")")[0]
                 params_line = f"params: {params_struct_name},"
@@ -137,11 +162,24 @@ def check_sub_client_methods(file_path: Path):
                 error_name=error_name,
                 return_type=return_type
             )
+            if params_line == "":
+                templated_test_function = TEST_METHOD_TEMPLATE_WITHOUT_PARAMS.substitute(
+                    short_function_name=short_method_name,
+                    api_name=api_name
+                )
+            else:
+                templated_test_function = TEST_METHOD_TEMPLATE_WITH_PARAMS.substitute(
+                    short_function_name=short_method_name,
+                    api_name=api_name,
+                    params_struct_name=params_struct_name
+
+                )
+            tests.append(templated_test_function)
             functions.append(templated_function)
             model_imports.add(return_type)
             client_imports.add(error_name)
             client_imports.add(long_method_name)
-    return functions, model_imports, client_imports
+    return functions, tests, model_imports, client_imports
 
 
 def write_sub_client_file(api_name: str, functions: list[str], model_imports: set[str], client_imports: set[str]):
@@ -173,6 +211,20 @@ def include_sub_client_in_mod_file(api_name: str):
             mf.write(f"\n{sub_client_mod_line}")
         print(f"    Updated mod.rs to include {api_name[:-4]} sub-client.")
 
+def write_tests_file(api_name: str, tests: list[str], client_imports: set[str]):
+    """
+    Write the tests file for the sub-client.
+    """
+    tests_file = SYNC_CLIENT_PATH.parent.parent / "tests" / f"test_{api_name[:-4]}.rs"
+    tests_file.touch()
+    tests_content = TEST_API_TEMPLATE.substitute(
+        api_name=api_name,
+        client_imports=", ".join(sorted(client_imports))
+    )
+    tests_content += "\n\n" + "\n".join(tests)
+    tests_file.write_text(tests_content)
+    print(f"    Wrote tests file: {tests_file.stem}")
+
 def post_process_generated_files(generated_files: list[Path]):
     """
     Post-process the gathered generated files.
@@ -183,7 +235,7 @@ def post_process_generated_files(generated_files: list[Path]):
         if "_api" in file.stem:
             print("Processing API file:", file.stem)
             check_sync_client_has_sub_client(file)
-            functions, model_imports, client_imports = check_sub_client_methods(file)
+            functions, tests, model_imports, client_imports = check_sub_client_methods(file)
             write_sub_client_file(
                 api_name=file.stem,
                 functions=functions,
@@ -191,10 +243,12 @@ def post_process_generated_files(generated_files: list[Path]):
                 client_imports=client_imports
             )
             include_sub_client_in_mod_file(file.stem)
+            # write_tests_file(
+            #     api_name=file.stem,
+            #     tests=tests,
+            #     client_imports=client_imports
+            # )
 
-
-    
-        
 
 if __name__ == "__main__":
     generated_files = gather_generated_files(SOURCE_DIR)

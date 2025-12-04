@@ -1,5 +1,5 @@
 lint: 
-	cargo clippy --all-features --all-targets --examples -- -D warnings 
+	cargo clippy --all-features --all-targets --examples --tests -- -D warnings 
 fmt:
 	cargo fmt --all 
 	# format examples

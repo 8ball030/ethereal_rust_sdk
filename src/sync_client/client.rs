@@ -28,7 +28,7 @@ impl HttpClient {
         Self { config }
     }
 
-    pub fn products(&self) -> ProductClient<'_> {
+    pub fn product(&self) -> ProductClient<'_> {
         ProductClient {
             config: &self.config,
         }

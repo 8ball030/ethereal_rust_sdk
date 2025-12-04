@@ -29,14 +29,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let env = Environment::Production;
 
     let http_client = HttpClient::new(env.clone());
-    let mut ws_client = WsClient::new(env.clone());
-
     let params = ProductControllerListParams::default();
+    let products = http_client.product().list(params)?;
 
+    let mut ws_client = WsClient::new(env.clone());
     ws_client.register_market_price_callback(market_data_callback);
     ws_client.connect()?;
 
-    let products = http_client.products().list(params)?;
     products.data.iter().for_each(|product| {
         ws_client.subscribe_market_data(&product.id.to_string());
     });
