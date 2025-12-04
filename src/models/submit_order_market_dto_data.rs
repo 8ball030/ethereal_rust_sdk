@@ -28,9 +28,8 @@ pub struct SubmitOrderMarketDtoData {
     /// Non-directional quantity of product in native units expressed as a decimal (precision: 9)
     #[serde(rename = "quantity")]
     pub quantity: String,
-    /// Side as either BUY (0) or SELL (1)
     #[serde(rename = "side")]
-    pub side: Side,
+    pub side: models::OrderSide,
     /// Onchain generated productId from prior product registration
     #[serde(rename = "onchainId")]
     pub onchain_id: f64,
@@ -75,7 +74,7 @@ impl SubmitOrderMarketDtoData {
         nonce: String,
         r#type: Type,
         quantity: String,
-        side: Side,
+        side: models::OrderSide,
         onchain_id: f64,
         engine_type: models::EngineType,
         signed_at: f64,
@@ -111,20 +110,6 @@ pub enum Type {
 impl Default for Type {
     fn default() -> Type {
         Self::Market
-    }
-}
-/// Side as either BUY (0) or SELL (1)
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Side {
-    #[serde(rename = "0")]
-    BUY,
-    #[serde(rename = "1")]
-    SELL,
-}
-
-impl Default for Side {
-    fn default() -> Side {
-        Self::BUY
     }
 }
 /// Stop type, either 0 (take-profit) or 1 (stop-loss), requires non-zero stopPrice
