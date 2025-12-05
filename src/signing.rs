@@ -85,7 +85,6 @@ pub fn encode_eip712_message(message: &TradeOrder) -> H256 {
         ethers::abi::Token::Uint(U256::from(message.signed_at)),
     ]));
 
-    println!("Struct Hash: 0x{:x?}", H256::from_slice(&struct_hash));
     // Final EIP712 hash: keccak256("\x19\x01" ‖ domainSeparator ‖ structHash)
     let mut encoded = vec![0x19, 0x01];
     encoded.extend_from_slice(&domain_separator);
