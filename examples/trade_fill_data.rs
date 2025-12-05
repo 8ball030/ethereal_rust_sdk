@@ -34,7 +34,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     simple_logger::init_with_level(log::Level::Info).unwrap();
     let env = Environment::Mainnet;
 
-    let http_client = HttpClient::new(env.clone());
+    let http_client = HttpClient::new(env);
     let params = ProductControllerListParams::default();
     let products = http_client.product().list(params)?;
     let mut ws_client = WsClient::new(env);

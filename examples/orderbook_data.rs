@@ -24,7 +24,7 @@ fn orderbook_callback(raw_data: Payload, _socket: RawClient) {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     simple_logger::init_with_level(log::Level::Info).unwrap();
     let env = Environment::Testnet;
-    let http_client = HttpClient::new(env.clone());
+    let http_client = HttpClient::new(env);
     let params = ProductControllerListParams::default();
     let products = http_client.product().list(params)?;
 

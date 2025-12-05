@@ -7,7 +7,7 @@ use ethers::utils::hex;
 use ethers::{types::U256, utils::keccak256};
 use serde::{Deserialize, Serialize};
 
-use crate::{domain_config::DOMAINS, enums::Environment, domain_config::DomainConfig};
+use crate::{domain_config::DOMAINS, enums::Environment};
 
 pub fn to_scaled_e9(value: f64) -> u128 {
     (value * 1e9) as u128
@@ -66,8 +66,6 @@ pub fn make_full_hash(domain_hash: &[u8; 32], message_hash: &[u8; 32]) -> [u8; 3
     keccak256(&full_hash)
 }
 
-
-
 // We define a base type
 pub trait Eip712 {
     fn type_hash() -> Result<[u8; 32], Eip712Error>;
@@ -84,7 +82,6 @@ pub trait Eip712 {
     }
 }
 
-
 // Define your typed data structure
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TradeOrder {
@@ -100,13 +97,12 @@ pub struct TradeOrder {
     pub signed_at: u64,
 }
 impl Eip712 for TradeOrder {
-    
     fn type_hash() -> Result<[u8; 32], Eip712Error> {
         Ok(ethers::utils::keccak256(
             "TradeOrder(address sender,bytes32 subaccount,uint128 quantity,uint128 price,bool reduceOnly,uint8 side,uint8 engineType,uint32 productId,uint64 nonce,uint64 signedAt)",
         ))
     }
-    
+
     fn struct_hash(&self) -> Result<[u8; 32], Eip712Error> {
         let mut encoded = Vec::new();
         encoded.extend_from_slice(&Self::type_hash()?);
@@ -122,7 +118,7 @@ impl Eip712 for TradeOrder {
             ethers::abi::Token::Uint(U256::from(self.nonce)),
             ethers::abi::Token::Uint(U256::from(self.signed_at)),
         ]));
-        
+
         Ok(ethers::utils::keccak256(&encoded))
     }
 }

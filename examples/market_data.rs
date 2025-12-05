@@ -28,11 +28,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let env = Environment::Mainnet;
 
-    let http_client = HttpClient::new(env.clone());
+    let http_client = HttpClient::new(env);
     let params = ProductControllerListParams::default();
     let products = http_client.product().list(params)?;
 
-    let mut ws_client = WsClient::new(env.clone());
+    let mut ws_client = WsClient::new(env);
     ws_client.register_market_price_callback(market_data_callback);
     ws_client.connect()?;
 

@@ -1,4 +1,3 @@
-use ethereal_rust_sdk::signing::Eip712;
 use ethereal_rust_sdk::apis::order_api::OrderControllerSubmitParams;
 use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
 use ethereal_rust_sdk::apis::subaccount_api::SubaccountControllerListByAccountParams;
@@ -6,9 +5,8 @@ use ethereal_rust_sdk::enums::Environment;
 use ethereal_rust_sdk::models::{
     OrderSide, SubmitOrderDto, SubmitOrderDtoData, SubmitOrderLimitDtoData,
 };
-use ethereal_rust_sdk::signing::{
-    get_nonce, get_now, hex_to_bytes32, to_scaled_e9, TradeOrder,
-};
+use ethereal_rust_sdk::signing::Eip712;
+use ethereal_rust_sdk::signing::{get_nonce, get_now, hex_to_bytes32, to_scaled_e9, TradeOrder};
 use ethereal_rust_sdk::sync_client::client::HttpClient;
 use ethers::signers::{LocalWallet, Signer};
 
@@ -24,7 +22,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let env = Environment::Testnet;
 
-    let http_client = HttpClient::new(env.clone());
+    let http_client = HttpClient::new(env);
 
     let btc_product = http_client
         .product()

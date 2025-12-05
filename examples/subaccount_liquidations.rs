@@ -30,7 +30,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         panic!("SENDER_ADDRESS environment variable is not set");
     });
     let env = Environment::Testnet;
-    let http_client = HttpClient::new(env.clone());
+    let http_client = HttpClient::new(env);
     let params = SubaccountControllerListByAccountParams {
         sender: sender_address,
         ..Default::default()

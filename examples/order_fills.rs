@@ -34,7 +34,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     });
 
     let env = Environment::Testnet;
-    let http_client = HttpClient::new(env.clone());
+    let http_client = HttpClient::new(env);
     let params = SubaccountControllerListByAccountParams {
         sender: sender_address,
         ..Default::default()
