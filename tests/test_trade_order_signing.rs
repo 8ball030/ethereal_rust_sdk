@@ -24,6 +24,7 @@ fn get_test_order() -> TradeOrder {
         product_id: 2,
         nonce: 1764897077655477722,
         signed_at: 1764897077,
+        environment: Environment::Testnet,
     }
 }
 

@@ -69,6 +69,7 @@ pub struct TradeOrder {
     pub product_id: u32,
     pub nonce: u64,
     pub signed_at: u64,
+    pub environment: Environment,
 }
 
 // Implement EIP-712 for your struct
@@ -76,14 +77,13 @@ impl Eip712 for TradeOrder {
     type Error = ethers::types::transaction::eip712::Eip712Error;
 
     fn domain(&self) -> Result<ethers::types::transaction::eip712::EIP712Domain, Self::Error> {
+        let domain_config = DOMAINS.get(self.environment);
         Ok(ethers::types::transaction::eip712::EIP712Domain {
-            name: Some("Ethereal".to_string()),
-            version: Some("1".to_string()),
-            chain_id: Some(U256::from(13374202)),
+            name: Some(domain_config.name.to_string()),
+            version: Some(domain_config.version.to_string()),
+            chain_id: Some(U256::from(domain_config.chain_id)),
             verifying_contract: Some(
-                "0x1F0327A80e43FEF1Cd872DC5d38dCe4A165c0643"
-                    .parse()
-                    .unwrap(),
+                domain_config.verifying_contract.parse().unwrap(),
             ),
             salt: None,
         })
@@ -132,7 +132,7 @@ where
     // return crypto.Keccak256(fullHash)
 
     let full_hash = make_full_hash(
-        &get_domain_separator(Environment::Testnet),
+        &data.domain()?.separator(),
         &data.struct_hash()?,
     );
     let signature = wallet.sign_hash(full_hash.into())?;

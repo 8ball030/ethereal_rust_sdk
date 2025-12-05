@@ -71,6 +71,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         product_id: btc_product.onchain_id.to_string().parse()?,
         nonce,
         signed_at: now as u64,
+        environment: env,
     };
 
     println!("Message: {}", serde_json::to_string_pretty(&message)?);
