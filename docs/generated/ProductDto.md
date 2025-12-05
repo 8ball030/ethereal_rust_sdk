@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 **base_token_name** | **String** | Name of the base token (e.g. BTC in BTCUSD) | 
 **quote_token_name** | **String** | Name of the quote token (e.g. USD in BTCUSD) | 
 **engine_type** | [**models::EngineType**](EngineType.md) |  | 
-**onchain_id** | **f64** | The productId generated onchain after registering for the first time | 
+**onchain_id** | **i32** | The productId generated onchain after registering for the first time | 
 **block_number** | **String** | Block number this product was registered on | 
 **cumulative_funding_usd** | **String** | Cumulative funding in USD of the product (precision: 9) | 
 **created_at** | **f64** | Product creation timestamp (ms since Unix Epoch) | 

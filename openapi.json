@@ -5704,7 +5704,7 @@
             "$ref": "#/components/schemas/OrderSide"
           },
           "onchainId": {
-            "type": "number",
+            "type": "integer",
             "minimum": 1,
             "example": 1,
             "description": "Onchain generated productId from prior product registration"
@@ -5748,13 +5748,15 @@
             ]
           },
           "signedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600,
-            "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
+            "description": "Message signedAt current timestamp (seconds since Unix Epoch)",
+            "format": "int64"
           },
           "expiresAt": {
-            "type": "number",
-            "description": "Order expiry timestamp (seconds since Unix Epoch), defaults to the maximum allowed value: signedAt + 6652800"
+            "type": "integer",
+            "description": "Order expiry timestamp (seconds since Unix Epoch), defaults to the maximum allowed value: signedAt + 6652800",
+            "format": "int64"
           },
           "groupId": {
             "type": "string",
@@ -5821,20 +5823,10 @@
             "format": "decimal"
           },
           "side": {
-            "enum": [
-              0,
-              1
-            ],
-            "type": "number",
-            "example": 1,
-            "description": "Side as either BUY (0) or SELL (1)",
-            "x-enum-varnames": [
-              "BUY",
-              "SELL"
-            ]
+            "$ref": "#/components/schemas/OrderSide"
           },
           "onchainId": {
-            "type": "number",
+            "type": "integer",
             "minimum": 1,
             "example": 1,
             "description": "Onchain generated productId from prior product registration"
@@ -5878,13 +5870,15 @@
             ]
           },
           "signedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600,
-            "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
+            "description": "Message signedAt current timestamp (seconds since Unix Epoch)",
+            "format": "int64"
           },
           "expiresAt": {
-            "type": "number",
-            "description": "Order expiry timestamp (seconds since Unix Epoch), defaults to the maximum allowed value: signedAt + 6652800"
+            "type": "integer",
+            "description": "Order expiry timestamp (seconds since Unix Epoch), defaults to the maximum allowed value: signedAt + 6652800",
+            "format": "int64"
           },
           "groupId": {
             "type": "string",
@@ -7025,7 +7019,7 @@
             "$ref": "#/components/schemas/EngineType"
           },
           "onchainId": {
-            "type": "number",
+            "type": "integer",
             "example": 1,
             "description": "The productId generated onchain after registering for the first time"
           },
@@ -7672,7 +7666,7 @@
             "description": "Message nonce timestamp (nanoseconds since Unix Epoch)"
           },
           "signedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600,
             "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
           }
@@ -7807,7 +7801,7 @@
             "description": "Message nonce timestamp (nanoseconds since Unix Epoch)"
           },
           "signedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600,
             "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
           }
@@ -7871,7 +7865,7 @@
             "description": "Message nonce timestamp (nanoseconds since Unix Epoch)"
           },
           "signedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600,
             "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
           }
@@ -8254,7 +8248,8 @@
             "description": "Message nonce timestamp (nanoseconds since Unix Epoch)"
           },
           "signedAt": {
-            "type": "number",
+            "type": "integer",
+            "format": "int64",
             "example": 1712019600,
             "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
           }
@@ -8773,9 +8768,10 @@
             ]
           },
           "signedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600,
-            "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
+            "description": "Message signedAt current timestamp (seconds since Unix Epoch)",
+            "format": "int64"
           },
           "code": {
             "type": "string",
@@ -8835,7 +8831,7 @@
             ]
           },
           "signedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600,
             "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
           },

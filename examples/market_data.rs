@@ -26,7 +26,7 @@ fn market_data_callback(market_price: Payload, _socket: RawClient) {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     simple_logger::init_with_level(log::Level::Info).unwrap();
 
-    let env = Environment::Production;
+    let env = Environment::Mainnet;
 
     let http_client = HttpClient::new(env.clone());
     let params = ProductControllerListParams::default();

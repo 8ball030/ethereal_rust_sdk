@@ -12,7 +12,8 @@ run:
 	cargo run --all-features
 
 codegen:
-	# curl https://api.ethereal.trade/openapi.json | jq > openapi.json
+	bash build_scripts/pre_processing.sh
+
 	openapi-generator-cli generate \
 	  -i openapi.json \
 	  -g rust \

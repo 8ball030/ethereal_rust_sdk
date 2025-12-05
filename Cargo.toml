@@ -5,18 +5,21 @@ edition = "2024"
 
 [dependencies]
 # tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
-rust_socketio = "0.6.0"
-reqwest = {version = "0.12.24", features = ["json"]}
-uuid = { version = "1.0", features = ["serde"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0.145"
 serde_repr = "0.1"
-log = "0.4.29"
-simple_logger = "5.1.0"
+
+rust_socketio = "0.6.0"
+reqwest = {version = "0.12.24", features = ["json"]}
 url = "2.5.7"
-alloy = "1.1.2"
-alloy-signer       = { version = "1.1", features = ["eip712"] }
-alloy-sol-types = "1.4.1"
-dotenvy = "0.15.7"
+uuid = { version = "1.19.0", features = ["serde"] }
+
+simple_logger = "5.1.0"
+log = "0.4.29"
 anyhow = "1.0.100"
 
+ethers = { version = "2.0.0", default-features = false, features = ["eip712"] }
+ethers-contract-derive = "2.0"
+
+dotenvy = "0.15.7"
+rust_decimal = "1.39.0"

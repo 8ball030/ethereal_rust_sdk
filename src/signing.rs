@@ -1,0 +1,149 @@
+use ethers::signers::LocalWallet;
+use ethers::types::{Address, Signature, transaction::eip712::Eip712};
+use std::time::{SystemTime, UNIX_EPOCH};
+
+use ethers::utils::hex;
+use ethers::{types::U256, utils::keccak256};
+use serde::{Deserialize, Serialize};
+
+use crate::{domain_config::DOMAINS, enums::Environment};
+
+pub fn to_scaled_e9(value: f64) -> u128 {
+    (value * 1e9) as u128
+}
+
+pub fn get_nonce() -> u64 {
+    // Get the current ns timestamp to use as a nonce
+
+    let start = SystemTime::now();
+    let since_epoch = start
+        .duration_since(UNIX_EPOCH)
+        .expect("Time went backwards");
+    since_epoch.as_nanos() as u64
+}
+
+pub fn get_now() -> i64 {
+    // Get the current s timestamp to use as signed_at
+
+    let start = SystemTime::now();
+    let since_epoch = start
+        .duration_since(UNIX_EPOCH)
+        .expect("Time went backwards");
+    since_epoch.as_secs() as i64
+}
+
+pub fn get_domain_separator(env: Environment) -> [u8; 32] {
+    let domain_config = DOMAINS.get(env);
+    let domain_type_hash = keccak256(
+        "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)",
+    );
+    keccak256(ethers::abi::encode(&[
+        ethers::abi::Token::Uint(U256::from(domain_type_hash)),
+        ethers::abi::Token::Uint(U256::from(keccak256(domain_config.name))),
+        ethers::abi::Token::Uint(U256::from(keccak256(domain_config.version))),
+        ethers::abi::Token::Uint(U256::from(domain_config.chain_id)),
+        ethers::abi::Token::Address(domain_config.verifying_contract.parse().unwrap()),
+    ]))
+}
+
+pub fn hex_to_bytes32(s: &str) -> Result<[u8; 32], Box<dyn std::error::Error>> {
+    let raw = s.trim_start_matches("0x");
+    let decoded = hex::decode(raw)?;
+
+    let mut out = [0u8; 32];
+    let n = decoded.len().min(32);
+    out[..n].copy_from_slice(&decoded[..n]);
+
+    Ok(out)
+}
+// Define your typed data structure
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TradeOrder {
+    pub sender: Address,
+    pub subaccount: [u8; 32],
+    pub quantity: u128,
+    pub price: u128,
+    pub reduce_only: bool,
+    pub side: u8,
+    pub engine_type: u8,
+    pub product_id: u32,
+    pub nonce: u64,
+    pub signed_at: u64,
+}
+
+// Implement EIP-712 for your struct
+impl Eip712 for TradeOrder {
+    type Error = ethers::types::transaction::eip712::Eip712Error;
+
+    fn domain(&self) -> Result<ethers::types::transaction::eip712::EIP712Domain, Self::Error> {
+        Ok(ethers::types::transaction::eip712::EIP712Domain {
+            name: Some("Ethereal".to_string()),
+            version: Some("1".to_string()),
+            chain_id: Some(U256::from(13374202)),
+            verifying_contract: Some(
+                "0x1F0327A80e43FEF1Cd872DC5d38dCe4A165c0643"
+                    .parse()
+                    .unwrap(),
+            ),
+            salt: None,
+        })
+    }
+
+    fn type_hash() -> Result<[u8; 32], Self::Error> {
+        Ok(ethers::utils::keccak256(
+            "TradeOrder(address sender,bytes32 subaccount,uint128 quantity,uint128 price,bool reduceOnly,uint8 side,uint8 engineType,uint32 productId,uint64 nonce,uint64 signedAt)",
+        ))
+    }
+
+    fn struct_hash(&self) -> Result<[u8; 32], Self::Error> {
+        let mut encoded = Vec::new();
+        encoded.extend_from_slice(&Self::type_hash()?);
+        encoded.extend_from_slice(&ethers::abi::encode(&[
+            ethers::abi::Token::Address(self.sender),
+            ethers::abi::Token::FixedBytes(self.subaccount.to_vec()),
+            ethers::abi::Token::Uint(U256::from(self.quantity)),
+            ethers::abi::Token::Uint(U256::from(self.price)),
+            ethers::abi::Token::Bool(self.reduce_only),
+            ethers::abi::Token::Uint(U256::from(self.side)),
+            ethers::abi::Token::Uint(U256::from(self.engine_type)),
+            ethers::abi::Token::Uint(U256::from(self.product_id)),
+            ethers::abi::Token::Uint(U256::from(self.nonce)),
+            ethers::abi::Token::Uint(U256::from(self.signed_at)),
+        ]));
+
+        Ok(ethers::utils::keccak256(&encoded))
+    }
+}
+
+// Synchronous signing function
+pub fn sign_eip712<T: Eip712>(
+    wallet: &LocalWallet,
+    data: &T,
+) -> Result<Signature, Box<dyn std::error::Error>>
+where
+    <T as Eip712>::Error: 'static,
+{
+    // Go reference code for EIP-712 signing
+    // func MakeFullHash(domainHash []byte, messageHash []byte) []byte {
+    // fullHash := make([]byte, 0, 66)
+    // fullHash = append(fullHash, 0x19, 0x01)
+    // fullHash = append(fullHash, domainHash...)
+    // fullHash = append(fullHash, messageHash...)
+    // return crypto.Keccak256(fullHash)
+
+    let full_hash = make_full_hash(
+        &get_domain_separator(Environment::Testnet),
+        &data.struct_hash()?,
+    );
+    let signature = wallet.sign_hash(full_hash.into())?;
+    Ok(signature)
+}
+
+pub fn make_full_hash(domain_hash: &[u8; 32], message_hash: &[u8; 32]) -> [u8; 32] {
+    let mut full_hash = Vec::with_capacity(66);
+    full_hash.push(0x19);
+    full_hash.push(0x01);
+    full_hash.extend_from_slice(domain_hash);
+    full_hash.extend_from_slice(message_hash);
+    keccak256(&full_hash)
+}
