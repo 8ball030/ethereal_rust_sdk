@@ -1,3 +1,4 @@
+mod common;
 use ethereal_rust_sdk::apis::order_api::OrderControllerSubmitParams;
 use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
 use ethereal_rust_sdk::apis::subaccount_api::SubaccountControllerListByAccountParams;
@@ -7,7 +8,6 @@ use ethereal_rust_sdk::models::{
 };
 use ethereal_rust_sdk::signing::Eip712;
 use ethereal_rust_sdk::signing::{get_nonce, get_now, hex_to_bytes32, to_scaled_e9, TradeOrder};
-use ethereal_rust_sdk::sync_client::client::HttpClient;
 use ethers::signers::{LocalWallet, Signer};
 
 use ethers::utils::hex;
@@ -22,7 +22,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let env = Environment::Testnet;
 
-    let http_client = HttpClient::new(env);
+    let http_client = common::create_test_client()?;
 
     let btc_product = http_client
         .product()

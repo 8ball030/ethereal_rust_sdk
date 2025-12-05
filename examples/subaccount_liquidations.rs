@@ -1,7 +1,7 @@
+mod common;
 use ethereal_rust_sdk::apis::subaccount_api::SubaccountControllerListByAccountParams;
 use ethereal_rust_sdk::enums::Environment;
 use ethereal_rust_sdk::models::SubaccountLiquidation;
-use ethereal_rust_sdk::sync_client::client::HttpClient;
 use ethereal_rust_sdk::ws_client::WsClient;
 
 use log::{error, info};
@@ -29,8 +29,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let sender_address = std::env::var("SENDER_ADDRESS").unwrap_or_else(|_| {
         panic!("SENDER_ADDRESS environment variable is not set");
     });
+
+    let http_client = common::create_test_client()?;
     let env = Environment::Testnet;
-    let http_client = HttpClient::new(env);
     let params = SubaccountControllerListByAccountParams {
         sender: sender_address,
         ..Default::default()

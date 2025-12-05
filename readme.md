@@ -253,7 +253,9 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [x] Fully Integrate with Ethereal Websocket API.
 - [x] Implement Read HTTP client for Ethereal REST API.
 - [x] Create example code for using the SDK.
-- [ ] Implement Order posting for Ethereal REST API.
+- [x] Implement Order posting for Ethereal REST API.
+- [ ] Template all other signable apis.
+- [ ] Create abstraction for signable requests.
 - [ ] Create async HTTP client for Ethereal REST API.
 - [ ] Write tests for all modules and functionalities.
 - [ ] Add more examples and documentation.

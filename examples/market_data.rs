@@ -1,11 +1,11 @@
 use log::info;
 use rust_socketio::client::RawClient;
 use rust_socketio::Payload;
+mod common;
 
 use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
 use ethereal_rust_sdk::enums::Environment;
 use ethereal_rust_sdk::models::MarketPriceDto;
-use ethereal_rust_sdk::sync_client::client::HttpClient;
 use ethereal_rust_sdk::ws_client::WsClient;
 
 fn market_data_callback(market_price: Payload, _socket: RawClient) {
@@ -28,7 +28,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let env = Environment::Mainnet;
 
-    let http_client = HttpClient::new(env);
+    let http_client = common::create_test_client()?;
     let params = ProductControllerListParams::default();
     let products = http_client.product().list(params)?;
 

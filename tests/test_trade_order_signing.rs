@@ -1,4 +1,3 @@
-
 use ethereal_rust_sdk::enums::Environment;
 use ethereal_rust_sdk::signing::Eip712;
 use ethereal_rust_sdk::signing::{TradeOrder, to_scaled_e9};
