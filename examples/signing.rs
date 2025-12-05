@@ -92,6 +92,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 engine_type: btc_product.engine_type,
                 reduce_only: Some(false),
                 signed_at: now,
+                price: human_price.to_string(),
                 ..Default::default()
             },
         ))),
