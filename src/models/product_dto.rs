@@ -38,7 +38,7 @@ pub struct ProductDto {
     pub engine_type: models::EngineType,
     /// The productId generated onchain after registering for the first time
     #[serde(rename = "onchainId")]
-    pub onchain_id: f64,
+    pub onchain_id: i32,
     /// Block number this product was registered on
     #[serde(rename = "blockNumber")]
     pub block_number: String,
@@ -108,7 +108,7 @@ impl ProductDto {
         base_token_name: String,
         quote_token_name: String,
         engine_type: models::EngineType,
-        onchain_id: f64,
+        onchain_id: i32,
         block_number: String,
         cumulative_funding_usd: String,
         created_at: f64,

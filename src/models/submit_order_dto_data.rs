@@ -37,20 +37,6 @@ impl Default for Type {
         Self::Market
     }
 }
-/// Side as either BUY (0) or SELL (1)
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Side {
-    #[serde(rename = "0")]
-    BUY,
-    #[serde(rename = "1")]
-    SELL,
-}
-
-impl Default for Side {
-    fn default() -> Side {
-        Self::BUY
-    }
-}
 /// Stop type, either 0 (take-profit) or 1 (stop-loss), requires non-zero stopPrice
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 pub enum StopType {

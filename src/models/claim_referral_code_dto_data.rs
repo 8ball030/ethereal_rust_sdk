@@ -21,7 +21,7 @@ pub struct ClaimReferralCodeDtoData {
     pub intent: Intent,
     /// Message signedAt current timestamp (seconds since Unix Epoch)
     #[serde(rename = "signedAt")]
-    pub signed_at: f64,
+    pub signed_at: i64,
     /// The referral code to claim
     #[serde(rename = "code")]
     pub code: String,
@@ -31,7 +31,7 @@ impl ClaimReferralCodeDtoData {
     pub fn new(
         sender: String,
         intent: Intent,
-        signed_at: f64,
+        signed_at: i64,
         code: String,
     ) -> ClaimReferralCodeDtoData {
         ClaimReferralCodeDtoData {

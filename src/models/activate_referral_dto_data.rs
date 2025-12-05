@@ -21,7 +21,7 @@ pub struct ActivateReferralDtoData {
     pub intent: Intent,
     /// Message signedAt current timestamp (seconds since Unix Epoch)
     #[serde(rename = "signedAt")]
-    pub signed_at: f64,
+    pub signed_at: i32,
     /// Bytes32 encoded subaccount name (0x prefix, zero padded)
     #[serde(rename = "subaccount")]
     pub subaccount: String,
@@ -31,7 +31,7 @@ impl ActivateReferralDtoData {
     pub fn new(
         sender: String,
         intent: Intent,
-        signed_at: f64,
+        signed_at: i32,
         subaccount: String,
     ) -> ActivateReferralDtoData {
         ActivateReferralDtoData {

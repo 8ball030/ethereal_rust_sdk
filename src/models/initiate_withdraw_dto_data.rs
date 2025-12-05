@@ -36,7 +36,7 @@ pub struct InitiateWithdrawDtoData {
     pub nonce: String,
     /// Message signedAt current timestamp (seconds since Unix Epoch)
     #[serde(rename = "signedAt")]
-    pub signed_at: f64,
+    pub signed_at: i64,
 }
 
 impl InitiateWithdrawDtoData {
@@ -48,7 +48,7 @@ impl InitiateWithdrawDtoData {
         lz_destination_address: String,
         lz_destination_eid: LzDestinationEid,
         nonce: String,
-        signed_at: f64,
+        signed_at: i64,
     ) -> InitiateWithdrawDtoData {
         InitiateWithdrawDtoData {
             account,

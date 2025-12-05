@@ -28,12 +28,11 @@ pub struct SubmitOrderLimitDtoData {
     /// Non-directional quantity of product in native units expressed as a decimal (precision: 9)
     #[serde(rename = "quantity")]
     pub quantity: String,
-    /// Side as either BUY (0) or SELL (1)
     #[serde(rename = "side")]
-    pub side: Side,
+    pub side: models::OrderSide,
     /// Onchain generated productId from prior product registration
     #[serde(rename = "onchainId")]
-    pub onchain_id: f64,
+    pub onchain_id: i32,
     #[serde(rename = "engineType")]
     pub engine_type: models::EngineType,
     /// A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)
@@ -53,10 +52,10 @@ pub struct SubmitOrderLimitDtoData {
     pub stop_type: Option<StopType>,
     /// Message signedAt current timestamp (seconds since Unix Epoch)
     #[serde(rename = "signedAt")]
-    pub signed_at: f64,
+    pub signed_at: i64,
     /// Order expiry timestamp (seconds since Unix Epoch), defaults to the maximum allowed value: signedAt + 6652800
     #[serde(rename = "expiresAt", skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<f64>,
+    pub expires_at: Option<i64>,
     /// Group Id (UUID) for linking orders together in OCO/OTO relationships
     #[serde(rename = "groupId", skip_serializing_if = "Option::is_none")]
     pub group_id: Option<uuid::Uuid>,
@@ -84,10 +83,10 @@ impl SubmitOrderLimitDtoData {
         nonce: String,
         r#type: Type,
         quantity: String,
-        side: Side,
-        onchain_id: f64,
+        side: models::OrderSide,
+        onchain_id: i32,
         engine_type: models::EngineType,
-        signed_at: f64,
+        signed_at: i64,
         price: String,
         time_in_force: TimeInForce,
         post_only: bool,
@@ -126,20 +125,6 @@ pub enum Type {
 impl Default for Type {
     fn default() -> Type {
         Self::Limit
-    }
-}
-/// Side as either BUY (0) or SELL (1)
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Side {
-    #[serde(rename = "0")]
-    BUY,
-    #[serde(rename = "1")]
-    SELL,
-}
-
-impl Default for Side {
-    fn default() -> Side {
-        Self::BUY
     }
 }
 /// Stop type, either 0 (take-profit) or 1 (stop-loss), requires non-zero stopPrice
