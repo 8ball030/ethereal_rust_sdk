@@ -1,12 +1,14 @@
 """
 Simple post-processing script for generated code.
 """
+import json
 from pathlib import Path
 from string import Template
 
-SOURCE_DIR = Path(__file__).parent.parent / "src" / "apis"
-
-SYNC_CLIENT_PATH = Path(__file__).parent.parent / "src" / "sync_client"
+CRATE_ROOT = Path(__file__).parent.parent / "src"
+API_SOURCE_DIR = CRATE_ROOT/ "apis"
+SYNC_CLIENT_PATH = CRATE_ROOT / "sync_client"
+DATA_DIR = Path(__file__).parent.parent / "data"
 
 SUBCLIENT_TEMPLATE = Template("""
 pub struct ProductClient<'a> {
@@ -67,6 +69,44 @@ impl<'a> $client_name<'a> {
 $functions
 }
 """)
+
+
+CONFIG_TEMPLATE = Template("""
+use crate::enums::Environment;
+#[derive(Clone)]
+pub struct DomainConfig {
+    pub name: &'static str,
+    pub version: &'static str,
+    pub chain_id: u64,
+    pub verifying_contract: &'static str,
+}
+
+pub struct EnvDomains {
+    pub testnet: DomainConfig,
+    pub mainnet: DomainConfig,
+}
+impl EnvDomains {
+    pub fn get(&self, env: Environment) -> &DomainConfig {
+        match env {
+            Environment::Testnet => &self.testnet,
+            Environment::Mainnet => &self.mainnet,
+        }
+    }
+}
+pub static DOMAINS: EnvDomains = EnvDomains {
+$config_values
+};
+""")
+
+CONFIG_VALUES_TEMPLATE = Template("""
+    $environment: DomainConfig {
+        name: "$name",
+        version: "$version",
+        chain_id: $chain_id,
+        verifying_contract: "$verifying_contract",
+    },
+""")
+
 
 
 def gather_generated_files(generated_dir: Path):
@@ -249,7 +289,40 @@ def post_process_generated_files(generated_files: list[Path]):
             #     client_imports=client_imports
             # )
 
+def generate_domain_config_files():
+    """
+    Generate domain configuration files for different environments.
+    """
+    environments = {
+        "testnet": DATA_DIR / "testnet" / "rpc_config.json",
+        "mainnet": DATA_DIR / "mainnet" / "rpc_config.json",
+    }
+    domain_config_values = []
+    for env_name, config_path in environments.items():
+        if not config_path.exists():
+            print(f"    Warning: Config file {config_path} does not exist.")
+            continue
+        config_data = json.loads(config_path.read_text())
+        domain_info = config_data.get("domain", {})
+        config_values = CONFIG_VALUES_TEMPLATE.substitute(
+            environment=env_name,
+            name=domain_info.get("name", "Ethereal"),
+            version=domain_info.get("version", "1"),
+            chain_id=domain_info.get("chainId", 13374202),
+            verifying_contract=domain_info.get("verifyingContract", "0x1F0327A80e43FEF1Cd872DC5d38dCe4A165c0643"),
+        )
+        domain_config_values.append(config_values)
+
+    config_file_path = CRATE_ROOT / "domain_config.rs"
+    if not config_file_path.exists():
+        config_file_path.touch()
+    config_content = CONFIG_TEMPLATE.substitute(
+        config_values="\n".join(domain_config_values),
+    )
+    config_file_path.write_text(config_content)
 
 if __name__ == "__main__":
-    generated_files = gather_generated_files(SOURCE_DIR)
+    generate_domain_config_files()
+    generated_files = gather_generated_files(API_SOURCE_DIR)
     post_process_generated_files(generated_files)
+    print("Post-processing completed.")

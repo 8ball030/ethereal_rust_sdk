@@ -10,7 +10,7 @@ use crate::{
 
 fn get_server_url(environment: &Environment) -> &str {
     match environment {
-        Environment::Production => "https://api.ethereal.trade",
+        Environment::Mainnet => "https://api.ethereal.trade",
         Environment::Testnet => "https://api.etherealtest.net",
     }
 }

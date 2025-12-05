@@ -1,7 +1,9 @@
 pub mod apis;
 pub mod channels;
+pub mod domain_config;
 pub mod enums;
 pub mod models;
+pub mod signing;
 pub mod sync_client;
 pub mod types;
 pub mod ws_client;

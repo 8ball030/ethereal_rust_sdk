@@ -1,5 +1,5 @@
 #[derive(Clone)]
 pub enum Environment {
-    Production,
+    Mainnet,
     Testnet,
 }

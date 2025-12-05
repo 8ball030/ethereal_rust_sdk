@@ -1,0 +1,17 @@
+{
+  "domain": {
+    "name": "Ethereal",
+    "version": "1",
+    "chainId": 5064014,
+    "verifyingContract": "0xB3cDC82035C495c484C9fF11eD5f3Ff6d342e3cc"
+  },
+  "signatureTypes": {
+    "LinkSigner": "address sender,address signer,bytes32 subaccount,uint64 nonce,uint64 signedAt",
+    "TradeOrder": "address sender,bytes32 subaccount,uint128 quantity,uint128 price,bool reduceOnly,uint8 side,uint8 engineType,uint32 productId,uint64 nonce,uint64 signedAt",
+    "InitiateWithdraw": "address account,bytes32 subaccount,address token,uint256 amount,uint64 nonce,uint64 signedAt,bytes32 destinationAddress,uint32 destinationEndpointId",
+    "RevokeLinkedSigner": "address sender,address signer,bytes32 subaccount,uint64 nonce,uint64 signedAt",
+    "EIP712Auth": "address sender,uint8 intent,uint64 signedAt",
+    "CancelOrder": "address sender,bytes32 subaccount,uint64 nonce",
+    "RefreshLinkedSigner": "address sender,address signer,uint64 nonce,uint64 signedAt"
+  }
+}

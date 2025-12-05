@@ -15,7 +15,7 @@ use rust_socketio::client::Client;
 
 fn get_server_url(environment: &Environment) -> &str {
     match environment {
-        Environment::Production => "wss://ws.ethereal.trade",
+        Environment::Mainnet => "wss://ws.ethereal.trade",
         Environment::Testnet => "wss://ws.etherealtest.net",
     }
 }
