@@ -1,3 +1,4 @@
+mod common;
 use ethereal_rust_sdk::apis::order_api::OrderControllerSubmitParams;
 use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
 use ethereal_rust_sdk::apis::subaccount_api::SubaccountControllerListByAccountParams;
@@ -5,12 +6,9 @@ use ethereal_rust_sdk::enums::Environment;
 use ethereal_rust_sdk::models::{
     OrderSide, SubmitOrderDto, SubmitOrderDtoData, SubmitOrderLimitDtoData,
 };
-use ethereal_rust_sdk::signing::{
-    get_nonce, get_now, hex_to_bytes32, sign_eip712, to_scaled_e9, TradeOrder,
-};
-use ethereal_rust_sdk::sync_client::client::HttpClient;
+use ethereal_rust_sdk::signing::Eip712;
+use ethereal_rust_sdk::signing::{get_nonce, get_now, hex_to_bytes32, to_scaled_e9, TradeOrder};
 use ethers::signers::{LocalWallet, Signer};
-use ethers::types::transaction::eip712::Eip712;
 
 use ethers::utils::hex;
 
@@ -24,7 +22,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let env = Environment::Testnet;
 
-    let http_client = HttpClient::new(env.clone());
+    let (http_client, _) = common::create_test_clients()?;
 
     let btc_product = http_client
         .product()
@@ -78,7 +76,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let hash = message.struct_hash()?;
     println!("EIP712 Hash as hex: 0x{}", hex::encode(hash));
 
-    let signature = sign_eip712(&wallet, &message)?;
+    let signature = message.sign(env, &wallet)?;
     println!("Signature: 0x{signature}");
     let dto = SubmitOrderDto {
         data: Box::new(SubmitOrderDtoData::SubmitOrderLimitDtoData(Box::new(

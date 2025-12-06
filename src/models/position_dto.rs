@@ -46,9 +46,8 @@ pub struct PositionDto {
     /// Cumulative quantity of all position decreases expressed as a decimal (precision: 9)
     #[serde(rename = "totalDecreaseQuantity")]
     pub total_decrease_quantity: String,
-    /// Side as either BUY (0) or SELL (1)
     #[serde(rename = "side")]
-    pub side: Side,
+    pub side: models::PositionSide,
     /// Id of product to this position belongs to
     #[serde(rename = "productId")]
     pub product_id: uuid::Uuid,
@@ -79,7 +78,7 @@ impl PositionDto {
         total_increase_quantity: String,
         total_decrease_notional: String,
         total_decrease_quantity: String,
-        side: Side,
+        side: models::PositionSide,
         product_id: uuid::Uuid,
         updated_at: f64,
         created_at: f64,
@@ -104,19 +103,5 @@ impl PositionDto {
             is_liquidated,
             liquidation_price: None,
         }
-    }
-}
-/// Side as either BUY (0) or SELL (1)
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Side {
-    #[serde(rename = "0")]
-    BUY,
-    #[serde(rename = "1")]
-    SELL,
-}
-
-impl Default for Side {
-    fn default() -> Side {
-        Self::BUY
     }
 }

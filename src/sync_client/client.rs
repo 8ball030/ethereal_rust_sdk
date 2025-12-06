@@ -1,12 +1,16 @@
 use crate::{
-    apis::configuration::Configuration, enums::Environment, sync_client::funding::FundingClient,
-    sync_client::linked_signer::LinkedSignerClient, sync_client::maintenance::MaintenanceClient,
-    sync_client::order::OrderClient, sync_client::points::PointsClient,
-    sync_client::position::PositionClient, sync_client::product::ProductClient,
-    sync_client::referral::ReferralClient, sync_client::rpc::RpcClient,
-    sync_client::subaccount::SubaccountClient, sync_client::time::TimeClient,
-    sync_client::token::TokenClient, sync_client::whitelist::WhitelistClient,
+    apis::{configuration::Configuration, subaccount_api::SubaccountControllerListByAccountParams},
+    enums::Environment,
+    models::SubaccountDto,
+    sync_client::{
+        funding::FundingClient, linked_signer::LinkedSignerClient, maintenance::MaintenanceClient,
+        order::OrderClient, points::PointsClient, position::PositionClient, product::ProductClient,
+        referral::ReferralClient, rpc::RpcClient, subaccount::SubaccountClient, time::TimeClient,
+        token::TokenClient, whitelist::WhitelistClient,
+    },
 };
+
+use ethers::signers::{LocalWallet, Signer};
 
 fn get_server_url(environment: &Environment) -> &str {
     match environment {
@@ -17,15 +21,32 @@ fn get_server_url(environment: &Environment) -> &str {
 
 pub struct HttpClient {
     config: Configuration,
+    pub wallet: LocalWallet,
+    pub address: String,
+    pub subaccounts: Vec<SubaccountDto>,
 }
 
 impl HttpClient {
-    pub fn new(env: Environment) -> Self {
+    pub fn new(env: Environment, private_key: &str) -> Self {
         let config = Configuration {
             base_path: get_server_url(&env).to_string(),
             ..Default::default()
         };
-        Self { config }
+        let wallet = private_key.parse::<LocalWallet>().unwrap();
+        let address = format!("{:?}", wallet.address());
+        let subaccounts = SubaccountClient { config: &config }
+            .list_by_account(SubaccountControllerListByAccountParams {
+                sender: address.clone(),
+                ..Default::default()
+            })
+            .unwrap()
+            .data;
+        Self {
+            config,
+            wallet,
+            address,
+            subaccounts,
+        }
     }
 
     pub fn product(&self) -> ProductClient<'_> {

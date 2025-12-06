@@ -1,13 +1,13 @@
+mod common;
 use ethereal_rust_sdk::apis::product_api::{
     ProductControllerGetByIdParams, ProductControllerGetMarketLiquidityParams,
     ProductControllerGetMarketPriceParams, ProductControllerListParams,
 };
-use ethereal_rust_sdk::enums::Environment;
 use ethereal_rust_sdk::sync_client::client::HttpClient;
 use uuid::Uuid;
 
 fn client_and_first_product() -> (HttpClient, Uuid) {
-    let client = HttpClient::new(Environment::Testnet);
+    let client = common::create_test_client().unwrap();
 
     let products = client
         .product()
@@ -69,8 +69,7 @@ fn test_get_market_price() {
 
 #[test]
 fn test_list() {
-    let client = HttpClient::new(Environment::Testnet);
-
+    let client = common::create_test_client().unwrap();
     let result = client
         .product()
         .list(ProductControllerListParams::default());

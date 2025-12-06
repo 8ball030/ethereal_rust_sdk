@@ -31,7 +31,7 @@ METHOD_TEMPLATE = Template("""
 TEST_METHOD_TEMPLATE_WITH_PARAMS = Template("""
 #[test]
 fn test_$short_function_name() {
-    let client = HttpClient::new(Environment::Testnet);
+    let client = common::create_test_client().unwrap();
     let params = $params_struct_name::default();
     let result = client.$api_name().$short_function_name(params);
     assert!(result.is_ok());
@@ -40,15 +40,14 @@ fn test_$short_function_name() {
 TEST_METHOD_TEMPLATE_WITHOUT_PARAMS = Template("""
 #[test]
 fn test_$short_function_name() {
-    let client = HttpClient::new(Environment::Testnet);
+    let client = common::create_test_client().unwrap();
     let result = client.$api_name().$short_function_name();
     assert!(result.is_ok());
 }
 """)
 
 TEST_API_TEMPLATE = Template("""
-use ethereal_rust_sdk::sync_client::client::HttpClient;
-use ethereal_rust_sdk::enums::Environment;
+mod common;
 use ethereal_rust_sdk::apis::$api_name::{$client_imports};
 """)
 
@@ -256,6 +255,8 @@ def write_tests_file(api_name: str, tests: list[str], client_imports: set[str]):
     Write the tests file for the sub-client.
     """
     tests_file = SYNC_CLIENT_PATH.parent.parent / "tests" / f"test_{api_name[:-4]}.rs"
+    if tests_file.exists():
+        return
     tests_file.touch()
     tests_content = TEST_API_TEMPLATE.substitute(
         api_name=api_name,
@@ -283,11 +284,11 @@ def post_process_generated_files(generated_files: list[Path]):
                 client_imports=client_imports
             )
             include_sub_client_in_mod_file(file.stem)
-            # write_tests_file(
-            #     api_name=file.stem,
-            #     tests=tests,
-            #     client_imports=client_imports
-            # )
+            write_tests_file(
+                api_name=file.stem,
+                tests=tests,
+                client_imports=client_imports
+            )
 
 def generate_domain_config_files():
     """

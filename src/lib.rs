@@ -6,4 +6,5 @@ pub mod models;
 pub mod signing;
 pub mod sync_client;
 pub mod types;
+pub mod utils;
 pub mod ws_client;
