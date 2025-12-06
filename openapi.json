@@ -5809,12 +5809,7 @@
             "description": "Message nonce timestamp (nanoseconds since Unix Epoch)"
           },
           "type": {
-            "enum": [
-              "LIMIT"
-            ],
-            "type": "string",
-            "example": "LIMIT",
-            "description": "Limit order type"
+            "$ref": "#/components/schemas/OrderType"
           },
           "quantity": {
             "type": "string",
@@ -9019,6 +9014,13 @@
         "type": "string",
         "example": "MarkUpdate",
         "description": "Cause of liquidation (either MarkChanged or Funding)"
+      },
+      "OrderType": {
+        "type": "enum",
+        "enum": [
+          "LIMIT",
+          "MARKET"
+        ]
       }
     }
   }
