@@ -22,6 +22,7 @@ fn get_server_url(environment: &Environment) -> &str {
 pub struct HttpClient {
     config: Configuration,
     pub wallet: LocalWallet,
+    pub address: String,
     pub subaccounts: Vec<SubaccountDto>,
 }
 
@@ -32,9 +33,10 @@ impl HttpClient {
             ..Default::default()
         };
         let wallet = private_key.parse::<LocalWallet>().unwrap();
+        let address = format!("{:?}", wallet.address());
         let subaccounts = SubaccountClient { config: &config }
             .list_by_account(SubaccountControllerListByAccountParams {
-                sender: format!("{:?}", wallet.address()),
+                sender: address.clone(),
                 ..Default::default()
             })
             .unwrap()
@@ -42,6 +44,7 @@ impl HttpClient {
         Self {
             config,
             wallet,
+            address,
             subaccounts,
         }
     }

@@ -1,6 +1,7 @@
 mod common;
 use ethereal_rust_sdk::apis::position_api::{
-    PositionControllerGetActiveParams, PositionControllerGetByIdParams, PositionControllerListBySubaccountIdParams, PositionControllerListFillsByPositionIdParams,
+    PositionControllerGetActiveParams, PositionControllerGetByIdParams,
+    PositionControllerListBySubaccountIdParams, PositionControllerListFillsByPositionIdParams,
     PositionControllerListLiquidationsBySubaccountIdParams,
 };
 

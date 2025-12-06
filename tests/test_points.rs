@@ -1,7 +1,6 @@
 mod common;
 use ethereal_rust_sdk::apis::points_api::{
-    PointsControllerListPointsPeriodsParams,
-    PointsControllerListPointsSeasonSummariesParams,
+    PointsControllerListPointsPeriodsParams, PointsControllerListPointsSeasonSummariesParams,
 };
 
 #[test]

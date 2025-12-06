@@ -1,6 +1,8 @@
 mod common;
 use ethereal_rust_sdk::apis::referral_api::{
-    ReferralControllerActivateParams, ReferralControllerClaimCodeParams, ReferralControllerGetCodeUsageParams, ReferralControllerGetSummaryParams, ReferralControllerListReferralsParams,
+    ReferralControllerActivateParams, ReferralControllerClaimCodeParams,
+    ReferralControllerGetCodeUsageParams, ReferralControllerGetSummaryParams,
+    ReferralControllerListReferralsParams,
 };
 
 #[test]

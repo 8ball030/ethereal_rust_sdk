@@ -1,6 +1,8 @@
 mod common;
 use ethereal_rust_sdk::apis::linked_signer_api::{
-    LinkedSignerControllerGetAccountQuotaParams, LinkedSignerControllerGetSignerParams, LinkedSignerControllerLinkSignerParams, LinkedSignerControllerListBySubaccountIdParams, LinkedSignerControllerRefreshSignerParams, LinkedSignerControllerRevokeSignerParams,
+    LinkedSignerControllerGetAccountQuotaParams, LinkedSignerControllerGetSignerParams,
+    LinkedSignerControllerLinkSignerParams, LinkedSignerControllerListBySubaccountIdParams,
+    LinkedSignerControllerRefreshSignerParams, LinkedSignerControllerRevokeSignerParams,
 };
 
 #[test]

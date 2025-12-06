@@ -1,6 +1,7 @@
 mod common;
 use ethereal_rust_sdk::apis::funding_api::{
-    FundingControllerGetProjectedFundingRateParams, FundingControllerListByProductIdParams, FundingControllerListProjectedRatesParams,
+    FundingControllerGetProjectedFundingRateParams, FundingControllerListByProductIdParams,
+    FundingControllerListProjectedRatesParams,
 };
 
 #[test]

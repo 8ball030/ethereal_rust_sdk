@@ -1,8 +1,8 @@
 mod common;
 use ethereal_rust_sdk::apis::order_api::{
-    OrderControllerCancelParams,
-    OrderControllerDryRunParams, OrderControllerGetByIdParams, OrderControllerListBySubaccountIdParams, OrderControllerListFillsBySubaccountIdParams, OrderControllerListTradesParams,
-    OrderControllerSubmitParams,
+    OrderControllerCancelParams, OrderControllerDryRunParams, OrderControllerGetByIdParams,
+    OrderControllerListBySubaccountIdParams, OrderControllerListFillsBySubaccountIdParams,
+    OrderControllerListTradesParams, OrderControllerSubmitParams,
 };
 
 #[test]
