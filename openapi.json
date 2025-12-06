@@ -5280,7 +5280,13 @@
             "description": "A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)"
           },
           "type": {
-            "$ref": "#/components/schemas/OrderType"
+            "type": "string",
+            "example": "LIMIT",
+            "description": "Trade order type e.g. MARKET or LIMIT",
+            "enum": [
+              "MARKET",
+              "LIMIT"
+            ]
           },
           "availableQuantity": {
             "type": "string",
@@ -5803,10 +5809,7 @@
             "description": "Message nonce timestamp (nanoseconds since Unix Epoch)"
           },
           "type": {
-            "$ref": "#/components/schemas/OrderType",
-            "enum": [
-              "LIMIT"
-            ]
+            "$ref": "#/components/schemas/OrderType"
           },
           "quantity": {
             "type": "string",
@@ -6411,7 +6414,13 @@
             "description": "Quantity filled in native units expressed as a decimal (precision: 9)"
           },
           "type": {
-            "$ref": "#/components/schemas/OrderType"
+            "type": "string",
+            "example": "LIMIT",
+            "description": "The provided order's type e.g. MARKET or LIMIT",
+            "enum": [
+              "MARKET",
+              "LIMIT"
+            ]
           },
           "side": {
             "$ref": "#/components/schemas/OrderSide"
@@ -9007,18 +9016,12 @@
         "description": "Cause of liquidation (either MarkChanged or Funding)"
       },
       "OrderType": {
-        "type": "string",
+        "type": "enum",
         "enum": [
-          "MARKET",
-          "LIMIT"
-        ],
-        "x-enum-varnames": [
-          "MARKET",
-          "LIMIT"
-        ],
-        "description": "Trade order type",
-        "example": "LIMIT"
+          "LIMIT",
+          "MARKET"
+        ]
+      }
     }
   }
-}
 }

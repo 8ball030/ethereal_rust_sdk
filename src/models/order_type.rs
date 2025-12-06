@@ -11,27 +11,26 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// OrderType : Trade order type
-/// Trade order type
+///
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 pub enum OrderType {
-    #[serde(rename = "MARKET")]
-    MARKET,
     #[serde(rename = "LIMIT")]
-    LIMIT,
+    Limit,
+    #[serde(rename = "MARKET")]
+    Market,
 }
 
 impl std::fmt::Display for OrderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            Self::MARKET => write!(f, "MARKET"),
-            Self::LIMIT => write!(f, "LIMIT"),
+            Self::Limit => write!(f, "LIMIT"),
+            Self::Market => write!(f, "MARKET"),
         }
     }
 }
 
 impl Default for OrderType {
     fn default() -> OrderType {
-        Self::MARKET
+        Self::Limit
     }
 }

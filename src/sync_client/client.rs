@@ -1,16 +1,38 @@
-use std::ops::Sub;
-
 use crate::{
-    apis::{configuration::Configuration, order_api::OrderControllerSubmitParams, product_api::ProductControllerListParams, subaccount_api::SubaccountControllerListByAccountParams}, enums::Environment, models::{SubaccountDto, SubmitOrderCreatedDto, SubmitOrderDto, SubmitOrderDtoData, SubmitOrderLimitDtoData}, signable_messages::TradeOrder, signing::{get_nonce, get_now, hex_to_bytes32, to_scaled_e9}, sync_client::{
-        funding::FundingClient, linked_signer::LinkedSignerClient, maintenance::MaintenanceClient,
-        order::OrderClient, points::PointsClient, position::PositionClient, product::{self, ProductClient},
-        referral::ReferralClient, rpc::RpcClient, subaccount::SubaccountClient, time::TimeClient,
-        token::TokenClient, whitelist::WhitelistClient,
-    }
+    apis::{
+        configuration::Configuration, order_api::OrderControllerSubmitParams,
+        product_api::ProductControllerListParams,
+        subaccount_api::SubaccountControllerListByAccountParams,
+    },
+    enums::Environment,
+    models::{
+        SubaccountDto, SubmitOrderCreatedDto, SubmitOrderDto, SubmitOrderDtoData,
+        SubmitOrderLimitDtoData,
+    },
+    signable_messages::TradeOrder,
+    signing::{get_nonce, get_now, hex_to_bytes32, to_scaled_e9},
+    sync_client::{
+        funding::FundingClient,
+        linked_signer::LinkedSignerClient,
+        maintenance::MaintenanceClient,
+        order::OrderClient,
+        points::PointsClient,
+        position::PositionClient,
+        product::{self, ProductClient},
+        referral::ReferralClient,
+        rpc::RpcClient,
+        subaccount::SubaccountClient,
+        time::TimeClient,
+        token::TokenClient,
+        whitelist::WhitelistClient,
+    },
 };
 
-use ethers::{signers::{LocalWallet, Signer}, utils::hex};
 use crate::signing::Eip712;
+use ethers::{
+    signers::{LocalWallet, Signer},
+    utils::hex,
+};
 
 fn get_server_url(environment: &Environment) -> &str {
     match environment {
@@ -44,17 +66,15 @@ impl HttpClient {
             .unwrap()
             .data;
         let product_hashmap = product::ProductClient { config: &config }
-            .list(
-                ProductControllerListParams {
-                    ..Default::default()
-                },
-            )
+            .list(ProductControllerListParams {
+                ..Default::default()
+            })
             .unwrap()
             .data
             .into_iter()
             .map(|p| (p.display_ticker.clone(), p))
             .collect();
-    
+
         Self {
             env,
             config,
@@ -147,7 +167,6 @@ impl HttpClient {
             return Err(format!("Ticker {ticker} not found").into());
         }
         let product_info = self.product_hashmap.get(ticker).unwrap();
-        let product_id = product_info.id.clone();
         let nonce = get_nonce(); // implement get_nonce to fetch or generate a nonce
         let now = get_now();
         let message = TradeOrder {
@@ -171,7 +190,7 @@ impl HttpClient {
                     sender: self.address.to_string(),
                     nonce: nonce.to_string(),
                     quantity: quantity.to_string(),
-                    side: side,
+                    side,
                     onchain_id: product_info.onchain_id,
                     engine_type: product_info.engine_type,
                     reduce_only: Some(false),
@@ -190,7 +209,5 @@ impl HttpClient {
             Ok(response) => Ok(response),
             Err(e) => Err(Box::new(e)),
         }
-
-
     }
 }

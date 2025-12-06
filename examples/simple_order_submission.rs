@@ -9,7 +9,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let quantity = 0.001;
     let price = 80000.0;
     let side = OrderSide::BUY;
-    let r#type = OrderType::LIMIT;
+    let r#type = OrderType::Limit;
 
     let (client, _) = common::create_test_clients()?;
 
