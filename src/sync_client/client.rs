@@ -1,6 +1,6 @@
 use crate::{
     apis::{
-        configuration::Configuration, order_api::OrderControllerSubmitParams,
+        configuration::Configuration, order_api::{OrderControllerListBySubaccountIdParams, OrderControllerSubmitParams},
         product_api::ProductControllerListParams,
         subaccount_api::SubaccountControllerListByAccountParams,
     },
@@ -209,5 +209,20 @@ impl HttpClient {
             Ok(response) => Ok(response),
             Err(e) => Err(Box::new(e)),
         }
+    }
+
+    pub fn cancel_order(&self, order_id: &str) -> Result<(), Box<dyn std::error::Error>> {
+    }
+    pub fn get_open_orders(&self) -> Result<Vec<crate::models::OrderDto>, Box<dyn std::error::Error>> {
+        let orders = self
+            .order()
+            .list_by_subaccount_id(OrderControllerListBySubaccountIdParams{
+                subaccount_id: self.subaccounts[0].id.clone().to_string(),
+                ..Default::default()
+            })?
+            .data
+            .into_iter()
+            .filter(|order| order.status == OrderStatus::OPEN);
+        Ok(orders.collect())
     }
 }
