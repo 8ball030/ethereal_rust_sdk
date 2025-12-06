@@ -13,8 +13,8 @@ Name | Type | Description | Notes
 **taker_fee_usd** | **String** | Taker fee in USD expressed as a decimal (precision: 9) | 
 **price** | **String** | Price expressed as a decimal (precision: 9) | 
 **filled** | **String** | Quantity filled in native units expressed as a decimal (precision: 9) | 
-**maker_side** | **f64** | Maker side as either BUY (0) or SELL (1) | 
-**taker_side** | **f64** | Taker side as either BUY (0) or SELL (1) | 
+**maker_side** | [**models::OrderSide**](OrderSide.md) |  | 
+**taker_side** | [**models::OrderSide**](OrderSide.md) |  | 
 **product_id** | [**uuid::Uuid**](uuid::Uuid.md) | Id of product the trade was made against | 
 **created_at** | **f64** | Trade creation timestamp (ms since Unix Epoch) | 
 

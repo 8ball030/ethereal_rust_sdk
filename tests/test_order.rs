@@ -33,28 +33,35 @@ fn test_get_by_id() {
 }
 
 #[test]
-#[ignore]
 fn test_list_by_subaccount_id() {
     let client = common::create_test_client().unwrap();
-    let params = OrderControllerListBySubaccountIdParams::default();
+    let params = OrderControllerListBySubaccountIdParams {
+        subaccount_id: client.subaccounts.first().unwrap().id.clone().to_string(),
+        ..Default::default()
+    };
     let result = client.order().list_by_subaccount_id(params);
     assert!(result.is_ok());
 }
 
 #[test]
-#[ignore]
 fn test_list_fills_by_subaccount_id() {
     let client = common::create_test_client().unwrap();
-    let params = OrderControllerListFillsBySubaccountIdParams::default();
+    let params = OrderControllerListFillsBySubaccountIdParams {
+        subaccount_id: client.subaccounts.first().unwrap().id.clone().to_string(),
+        ..Default::default()
+    };
     let result = client.order().list_fills_by_subaccount_id(params);
     assert!(result.is_ok());
 }
 
 #[test]
-#[ignore]
 fn test_list_trades() {
     let client = common::create_test_client().unwrap();
-    let params = OrderControllerListTradesParams::default();
+    let product = common::get_product(&client).unwrap();
+    let params = OrderControllerListTradesParams {
+        product_id: product.id.clone().to_string(),
+        ..Default::default()
+    };
     let result = client.order().list_trades(params);
     assert!(result.is_ok());
 }

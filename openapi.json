@@ -6553,30 +6553,10 @@
             "description": "Quantity filled in native units expressed as a decimal (precision: 9)"
           },
           "makerSide": {
-            "enum": [
-              0,
-              1
-            ],
-            "type": "number",
-            "example": 1,
-            "description": "Maker side as either BUY (0) or SELL (1)",
-            "x-enum-varnames": [
-              "BUY",
-              "SELL"
-            ]
+            "$ref": "#/components/schemas/OrderSide"
           },
           "takerSide": {
-            "enum": [
-              0,
-              1
-            ],
-            "type": "number",
-            "example": 0,
-            "description": "Taker side as either BUY (0) or SELL (1)",
-            "x-enum-varnames": [
-              "BUY",
-              "SELL"
-            ]
+            "$ref": "#/components/schemas/OrderSide"
           },
           "productId": {
             "type": "string",

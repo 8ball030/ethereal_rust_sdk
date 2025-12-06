@@ -40,12 +40,10 @@ pub struct TradeDto {
     /// Quantity filled in native units expressed as a decimal (precision: 9)
     #[serde(rename = "filled")]
     pub filled: String,
-    /// Maker side as either BUY (0) or SELL (1)
     #[serde(rename = "makerSide")]
-    pub maker_side: MakerSide,
-    /// Taker side as either BUY (0) or SELL (1)
+    pub maker_side: models::OrderSide,
     #[serde(rename = "takerSide")]
-    pub taker_side: TakerSide,
+    pub taker_side: models::OrderSide,
     /// Id of product the trade was made against
     #[serde(rename = "productId")]
     pub product_id: uuid::Uuid,
@@ -63,8 +61,8 @@ impl TradeDto {
         taker_fee_usd: String,
         price: String,
         filled: String,
-        maker_side: MakerSide,
-        taker_side: TakerSide,
+        maker_side: models::OrderSide,
+        taker_side: models::OrderSide,
         product_id: uuid::Uuid,
         created_at: f64,
     ) -> TradeDto {
@@ -83,33 +81,5 @@ impl TradeDto {
             product_id,
             created_at,
         }
-    }
-}
-/// Maker side as either BUY (0) or SELL (1)
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum MakerSide {
-    #[serde(rename = "0")]
-    BUY,
-    #[serde(rename = "1")]
-    SELL,
-}
-
-impl Default for MakerSide {
-    fn default() -> MakerSide {
-        Self::BUY
-    }
-}
-/// Taker side as either BUY (0) or SELL (1)
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum TakerSide {
-    #[serde(rename = "0")]
-    BUY,
-    #[serde(rename = "1")]
-    SELL,
-}
-
-impl Default for TakerSide {
-    fn default() -> TakerSide {
-        Self::BUY
     }
 }
