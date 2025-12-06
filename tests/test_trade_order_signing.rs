@@ -1,7 +1,9 @@
 use ethereal_rust_sdk::enums::Environment;
+use ethereal_rust_sdk::signable_messages::TradeOrder;
 use ethereal_rust_sdk::signing::Eip712;
-use ethereal_rust_sdk::signing::{TradeOrder, to_scaled_e9};
-use ethereal_rust_sdk::signing::{get_domain_separator, hex_to_bytes32, make_full_hash};
+use ethereal_rust_sdk::signing::{
+    get_domain_separator, hex_to_bytes32, make_full_hash, to_scaled_e9,
+};
 use ethers::signers::{LocalWallet, Signer};
 use ethers::utils::hex;
 

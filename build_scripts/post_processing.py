@@ -3,108 +3,23 @@ Simple post-processing script for generated code.
 """
 import json
 from pathlib import Path
-from string import Template
+
+from templates import (
+    METHOD_TEMPLATE,
+    SIGNABLE_MESSAGE_HEADER,
+    SIGNABLE_MESSAGE_TEMPLATE,
+    TEST_API_TEMPLATE,
+    TEST_METHOD_TEMPLATE_WITH_PARAMS,
+    TEST_METHOD_TEMPLATE_WITHOUT_PARAMS,
+    SUB_CLIENT_TEMPLATE,
+    CONFIG_TEMPLATE,
+    CONFIG_VALUES_TEMPLATE
+)
 
 CRATE_ROOT = Path(__file__).parent.parent / "src"
 API_SOURCE_DIR = CRATE_ROOT/ "apis"
 SYNC_CLIENT_PATH = CRATE_ROOT / "sync_client"
 DATA_DIR = Path(__file__).parent.parent / "data"
-
-SUBCLIENT_TEMPLATE = Template("""
-pub struct ProductClient<'a> {
-    pub config: &'a Configuration,
-}
-
-impl<'a> ProductClient<'a> {
-{methods}
-""")
-
-METHOD_TEMPLATE = Template("""
-    pub fn $short_function_name(
-        &self,
-        $params_line
-    ) -> Result<$return_type, Error<$error_name>> {
-        $function_name(self.config, $params)
-    }
-""")
-
-TEST_METHOD_TEMPLATE_WITH_PARAMS = Template("""
-#[test]
-fn test_$short_function_name() {
-    let client = common::create_test_client().unwrap();
-    let params = $params_struct_name::default();
-    let result = client.$api_name().$short_function_name(params);
-    assert!(result.is_ok());
-}
-""")
-TEST_METHOD_TEMPLATE_WITHOUT_PARAMS = Template("""
-#[test]
-fn test_$short_function_name() {
-    let client = common::create_test_client().unwrap();
-    let result = client.$api_name().$short_function_name();
-    assert!(result.is_ok());
-}
-""")
-
-TEST_API_TEMPLATE = Template("""
-mod common;
-use ethereal_rust_sdk::apis::$api_name::{$client_imports};
-""")
-
-SUB_CLIENT_TEMPLATE = Template("""
-use crate::{
-    apis::{
-        Error,
-        configuration::Configuration,
-        $api_name::{$client_imports},
-    },
-    models::{$model_imports},
-};
-pub struct $client_name<'a> {
-    pub config: &'a Configuration,
-}
-
-impl<'a> $client_name<'a> {
-$functions
-}
-""")
-
-
-CONFIG_TEMPLATE = Template("""
-use crate::enums::Environment;
-#[derive(Clone)]
-pub struct DomainConfig {
-    pub name: &'static str,
-    pub version: &'static str,
-    pub chain_id: u64,
-    pub verifying_contract: &'static str,
-}
-
-pub struct EnvDomains {
-    pub testnet: DomainConfig,
-    pub mainnet: DomainConfig,
-}
-impl EnvDomains {
-    pub fn get(&self, env: Environment) -> &DomainConfig {
-        match env {
-            Environment::Testnet => &self.testnet,
-            Environment::Mainnet => &self.mainnet,
-        }
-    }
-}
-pub static DOMAINS: EnvDomains = EnvDomains {
-$config_values
-};
-""")
-
-CONFIG_VALUES_TEMPLATE = Template("""
-    $environment: DomainConfig {
-        name: "$name",
-        version: "$version",
-        chain_id: $chain_id,
-        verifying_contract: "$verifying_contract",
-    },
-""")
 
 
 
@@ -120,6 +35,17 @@ def to_upper_camel_case(snake_str: str) -> str:
     """
     components = snake_str.split('_')
     return ''.join(x.title() for x in components)
+
+def to_snake_case(camel_str: str) -> str:
+    """
+    Convert an UpperCamelCase string to snake_case.
+    """
+    snake_str = ''
+    for i, char in enumerate(camel_str):
+        if char.isupper() and i != 0:
+            snake_str += '_'
+        snake_str += char.lower()
+    return snake_str
 
 def add_default_derive_attribute_to_parameter_structs(file_path: Path):
     """
@@ -322,8 +248,70 @@ def generate_domain_config_files():
     )
     config_file_path.write_text(config_content)
 
+
+def gather_signable_messages():
+    """
+    Gather signable message structs from the models directory.
+    Field: sender, Type: address
+    Field: subaccount, Type: bytes32
+    Field: quantity, Type: uint128
+    Field: price, Type: uint128
+    Field: reduceOnly, Type: bool
+    Field: side, Type: uint8
+    Field: engineType, Type: uint8
+    Field: productId, Type: uint32
+    Field: nonce, Type: uint64
+    Field: signedAt, Type: uint64
+
+    """
+
+    sol_to_rust_type_map = {
+        "address": "Address",
+        "bytes32": "[u8; 32]",
+        "uint128": "u128",
+        "uint256": "u128",
+        "uint64": "u64",
+        "uint32": "u32",
+        "uint8": "u8",
+        "bool": "bool",
+    }
+    sol_to_ethers_type_map = {
+        "address": "Address(self.{name})",
+        "bytes32": "FixedBytes(self.{name}.to_vec())",
+        "uint128": "Uint(U256::from(self.{name}))",
+        "uint256": "Uint(self.{name}.clone().into())",
+        "bool": "Bool(self.{name})",
+        "uint8": "Uint(U256::from(self.{name}))",
+        "uint32": "Uint(U256::from(self.{name}))",
+        "uint64": "Uint(U256::from(self.{name}))",
+    }
+    spec_path = DATA_DIR/  "mainnet" / "rpc_config.json"
+    sig_types = json.loads(spec_path.read_text())["signatureTypes"]
+    generated_types = []
+
+    for message_name, struct in sig_types.items():
+        fields, fields_encoding = [], []
+        for value in struct.split(","):
+            t, type_name = value.split(" ")
+            field = f"    pub {to_snake_case(type_name)}: {sol_to_rust_type_map[t]},"
+            fields.append(field)
+            ethers_type = sol_to_ethers_type_map[t].format(name=to_snake_case(type_name))
+            fields_encoding.append(f"                ethers::abi::Token::{ethers_type},")
+        generated_file = SIGNABLE_MESSAGE_TEMPLATE.substitute(
+            message_name=message_name,
+            fields="\n".join(fields),
+            struct=struct,
+            fields_encoding="\n".join(fields_encoding)
+        )
+        generated_types.append(generated_file)
+    signable_messages_file = CRATE_ROOT / "signable_messages.rs"
+    signable_messages_file.write_text(SIGNABLE_MESSAGE_HEADER + "\n".join(generated_types))
+
+    return fields
+
 if __name__ == "__main__":
     generate_domain_config_files()
     generated_files = gather_generated_files(API_SOURCE_DIR)
     post_process_generated_files(generated_files)
+    gather_signable_messages()
     print("Post-processing completed.")

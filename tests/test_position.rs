@@ -1,9 +1,9 @@
 mod common;
 use ethereal_rust_sdk::apis::position_api::{
-        PositionControllerGetActiveParams, PositionControllerGetByIdParams,
-        PositionControllerListBySubaccountIdParams, PositionControllerListFillsByPositionIdParams,
-        PositionControllerListLiquidationsBySubaccountIdParams,
-    };
+    PositionControllerGetActiveParams, PositionControllerGetByIdParams,
+    PositionControllerListBySubaccountIdParams, PositionControllerListFillsByPositionIdParams,
+    PositionControllerListLiquidationsBySubaccountIdParams,
+};
 
 #[test]
 fn test_get_active() {

@@ -6,8 +6,9 @@ use ethereal_rust_sdk::enums::Environment;
 use ethereal_rust_sdk::models::{
     OrderSide, SubmitOrderDto, SubmitOrderDtoData, SubmitOrderLimitDtoData,
 };
+use ethereal_rust_sdk::signable_messages::TradeOrder;
 use ethereal_rust_sdk::signing::Eip712;
-use ethereal_rust_sdk::signing::{get_nonce, get_now, hex_to_bytes32, to_scaled_e9, TradeOrder};
+use ethereal_rust_sdk::signing::{get_nonce, get_now, hex_to_bytes32, to_scaled_e9};
 use ethers::signers::{LocalWallet, Signer};
 
 use ethers::utils::hex;
