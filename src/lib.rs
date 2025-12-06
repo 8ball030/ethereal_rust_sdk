@@ -3,6 +3,7 @@ pub mod channels;
 pub mod domain_config;
 pub mod enums;
 pub mod models;
+pub mod signable_messages;
 pub mod signing;
 pub mod sync_client;
 pub mod types;
