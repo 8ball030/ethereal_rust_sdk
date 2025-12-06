@@ -1,21 +1,15 @@
 mod common;
-use ethereal_rust_sdk::apis::{
-    position_api::{
+use ethereal_rust_sdk::apis::position_api::{
         PositionControllerGetActiveParams, PositionControllerGetByIdParams,
         PositionControllerListBySubaccountIdParams, PositionControllerListFillsByPositionIdParams,
         PositionControllerListLiquidationsBySubaccountIdParams,
-    },
-    product_api::ProductControllerListParams,
-};
+    };
 
 #[test]
 fn test_get_active() {
     let client = common::create_test_client().unwrap();
     let subaccount_id = client.subaccounts.first().unwrap().id.clone().to_string();
-    let params = ProductControllerListParams::default();
-    let products = client.product().list(params).unwrap();
-
-    let product_id = &products.data.first().unwrap().id;
+    let product_id = common::get_product(&client).unwrap().id;
     let params = PositionControllerGetActiveParams {
         subaccount_id,
         product_id: product_id.to_string(),
@@ -28,10 +22,8 @@ fn test_get_active() {
 fn test_get_by_id() {
     let client = common::create_test_client().unwrap();
     let subaccount_id = client.subaccounts.first().unwrap().id.clone().to_string();
-    let params = ProductControllerListParams::default();
-    let products = client.product().list(params).unwrap();
+    let product_id = common::get_product(&client).unwrap().id;
 
-    let product_id = &products.data.first().unwrap().id;
     let params = PositionControllerGetActiveParams {
         subaccount_id,
         product_id: product_id.to_string(),
@@ -61,10 +53,7 @@ fn test_list_by_subaccount_id() {
 fn test_list_fills_by_position_id() {
     let client = common::create_test_client().unwrap();
     let subaccount_id = client.subaccounts.first().unwrap().id.clone().to_string();
-    let params = ProductControllerListParams::default();
-    let products = client.product().list(params).unwrap();
-
-    let product_id = &products.data.first().unwrap().id;
+    let product_id = common::get_product(&client).unwrap().id;
     let params = PositionControllerGetActiveParams {
         subaccount_id,
         product_id: product_id.to_string(),

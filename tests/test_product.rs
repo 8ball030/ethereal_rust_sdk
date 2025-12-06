@@ -9,18 +9,9 @@ use uuid::Uuid;
 fn client_and_first_product() -> (HttpClient, Uuid) {
     let client = common::create_test_client().unwrap();
 
-    let products = client
-        .product()
-        .list(ProductControllerListParams::default())
-        .expect("product().list should succeed in test env");
+    let product = common::get_product(&client).unwrap();
 
-    let product_id = products
-        .data
-        .first()
-        .map(|p| p.id)
-        .expect("at least one product should exist in test env");
-
-    (client, product_id)
+    (client, product.id)
 }
 
 #[test]
