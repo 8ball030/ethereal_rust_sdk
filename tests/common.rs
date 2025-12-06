@@ -1,8 +1,28 @@
-use ethereal_rust_sdk::{enums::Environment, sync_client::client::HttpClient};
+use ethereal_rust_sdk::{enums::Environment, models::ProductDto, sync_client::client::HttpClient};
 
 pub fn create_test_client() -> anyhow::Result<HttpClient> {
     let env = Environment::Testnet;
     let private_key = "0bb5d63b84421e1268dda020818ae30cf26e7f10e321fb820a8aa69216dea92a";
     let http_client = HttpClient::new(env, private_key);
     Ok(http_client)
+}
+
+pub fn get_product(client: &HttpClient) -> anyhow::Result<ProductDto> {
+    let params = ethereal_rust_sdk::apis::product_api::ProductControllerListParams::default();
+    let products = client.product().list(params)?;
+    let product = products.data.first().unwrap().clone();
+    Ok(product)
+}
+
+#[test]
+fn test_create_test_client() {
+    let client = create_test_client();
+    assert!(client.is_ok());
+}
+
+#[test]
+fn test_get_product() {
+    let client = create_test_client().unwrap();
+    let product = get_product(&client);
+    assert!(product.is_ok());
 }

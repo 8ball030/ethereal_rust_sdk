@@ -6793,17 +6793,7 @@
             ]
           },
           "side": {
-            "enum": [
-              0,
-              1
-            ],
-            "type": "number",
-            "example": 1,
-            "description": "Direction of the fill as either BUY (0) or SELL (1)",
-            "x-enum-varnames": [
-              "BUY",
-              "SELL"
-            ]
+            "$ref": "#/components/schemas/PositionSide"
           },
           "reduceOnly": {
             "type": "boolean",
