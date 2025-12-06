@@ -15,7 +15,7 @@ Name | Type | Description | Notes
 **total_increase_quantity** | **String** | Cumulative quantity of all position increases expressed as a decimal (precision: 9) | 
 **total_decrease_notional** | **String** | Cumulative USD value of all position decreases expressed as a decimal (precision: 9) | 
 **total_decrease_quantity** | **String** | Cumulative quantity of all position decreases expressed as a decimal (precision: 9) | 
-**side** | **f64** | Side as either BUY (0) or SELL (1) | 
+**side** | [**models::PositionSide**](PositionSide.md) |  | 
 **product_id** | [**uuid::Uuid**](uuid::Uuid.md) | Id of product to this position belongs to | 
 **updated_at** | **f64** | Position last updated timestamp (ms since Unix Epoch) | 
 **created_at** | **f64** | Position creation timestamp (ms since Unix Epoch) | 

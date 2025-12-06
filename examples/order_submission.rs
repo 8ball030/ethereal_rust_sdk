@@ -22,7 +22,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let env = Environment::Testnet;
 
-    let http_client = common::create_test_client()?;
+    let (http_client, _) = common::create_test_clients()?;
 
     let btc_product = http_client
         .product()

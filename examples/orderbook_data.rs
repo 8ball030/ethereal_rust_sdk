@@ -4,9 +4,7 @@ use rust_socketio::client::RawClient;
 use rust_socketio::Payload;
 
 use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
-use ethereal_rust_sdk::enums::Environment;
 use ethereal_rust_sdk::models::BookDepthMessage;
-use ethereal_rust_sdk::ws_client::WsClient;
 
 fn orderbook_callback(raw_data: Payload, _socket: RawClient) {
     if let Payload::Text(values) = raw_data {
@@ -23,12 +21,9 @@ fn orderbook_callback(raw_data: Payload, _socket: RawClient) {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     simple_logger::init_with_level(log::Level::Info).unwrap();
-    let http_client = common::create_test_client()?;
+    let (http_client, mut ws_client) = common::create_test_clients()?;
     let params = ProductControllerListParams::default();
     let products = http_client.product().list(params)?;
-    let env = Environment::Mainnet;
-
-    let mut ws_client = WsClient::new(env);
 
     ws_client.register_orderbook_callback(orderbook_callback);
 

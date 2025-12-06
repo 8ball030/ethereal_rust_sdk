@@ -28,18 +28,16 @@ pub struct PositionLiquidationDto {
     /// Liquidation mark price in USD expressed as a decimal (precision: 9)
     #[serde(rename = "liquidationPrice")]
     pub liquidation_price: String,
-    /// Cause of liquidation (either MarkChanged or Funding)
     #[serde(rename = "cause")]
-    pub cause: Cause,
+    pub cause: models::PositionLiquidationCause,
     /// Position cost at the time of liquidation in USD expressed as a decimal (precision: 9)
     #[serde(rename = "cost")]
     pub cost: String,
     /// Funding charged in USD expressed as a decimal (precision: 9), undefined if not liquidated due to funding
     #[serde(rename = "fundingChargeUsd", skip_serializing_if = "Option::is_none")]
     pub funding_charge_usd: Option<String>,
-    /// Position side as either BUY (0) or SELL (1)
     #[serde(rename = "positionSide")]
-    pub position_side: PositionSide,
+    pub position_side: models::PositionSide,
     /// Position liquidation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
     pub created_at: f64,
@@ -52,9 +50,9 @@ impl PositionLiquidationDto {
         product_id: uuid::Uuid,
         position_id: uuid::Uuid,
         liquidation_price: String,
-        cause: Cause,
+        cause: models::PositionLiquidationCause,
         cost: String,
-        position_side: PositionSide,
+        position_side: models::PositionSide,
         created_at: f64,
     ) -> PositionLiquidationDto {
         PositionLiquidationDto {
@@ -69,33 +67,5 @@ impl PositionLiquidationDto {
             position_side,
             created_at,
         }
-    }
-}
-/// Cause of liquidation (either MarkChanged or Funding)
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Cause {
-    #[serde(rename = "MarkChanged")]
-    MarkChanged,
-    #[serde(rename = "Funding")]
-    Funding,
-}
-
-impl Default for Cause {
-    fn default() -> Cause {
-        Self::MarkChanged
-    }
-}
-/// Position side as either BUY (0) or SELL (1)
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum PositionSide {
-    #[serde(rename = "0")]
-    BUY,
-    #[serde(rename = "1")]
-    SELL,
-}
-
-impl Default for PositionSide {
-    fn default() -> PositionSide {
-        Self::BUY
     }
 }

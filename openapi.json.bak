@@ -6903,7 +6903,17 @@
             "description": "Funding charged in USD expressed as a decimal (precision: 9), undefined if not liquidated due to funding"
           },
           "positionSide": {
-            "$ref": "#/components/schemas/PositionSide"
+            "enum": [
+              0,
+              1
+            ],
+            "type": "number",
+            "example": 0,
+            "description": "Position side as either BUY (0) or SELL (1)",
+            "x-enum-varnames": [
+              "BUY",
+              "SELL"
+            ]
           },
           "createdAt": {
             "type": "number",
@@ -9027,29 +9037,29 @@
           "liquidatedAt"
         ]
       },
-      "PositionSide": {
-        "type": "integer",
-        "format": "int32",
-        "enum": [
-          0,
-          1
-        ],
-        "x-enum-varnames": [
-          "BUY",
-          "SELL"
-        ],
-        "description": "Side of the position",
-        "example": 0
-      },
-      "PositionLiquidationCause": {
-        "enum": [
-          "MarkChanged",
-          "Funding"
-        ],
-        "type": "string",
-        "example": "MarkUpdate",
-        "description": "Cause of liquidation (either MarkChanged or Funding)"
-      }
+    "PositionSide": {
+      "type": "integer",
+      "format": "int32",
+      "enum": [
+        0,
+        1
+      ],
+      "x-enum-varnames": [
+        "BUY",
+        "SELL"
+      ],
+      "description": "Side of the position",
+      "example": 0
+  },
+  "PositionLiquidationCause": {
+            "enum": [
+              "MarkChanged",
+              "Funding"
+            ],
+            "type": "string",
+            "example": "MarkUpdate",
+            "description": "Cause of liquidation (either MarkChanged or Funding)"
+  }
     }
   }
 }
