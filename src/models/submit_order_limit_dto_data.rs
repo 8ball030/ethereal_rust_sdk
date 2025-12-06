@@ -22,9 +22,8 @@ pub struct SubmitOrderLimitDtoData {
     /// Message nonce timestamp (nanoseconds since Unix Epoch)
     #[serde(rename = "nonce")]
     pub nonce: String,
-    /// Limit order type
     #[serde(rename = "type")]
-    pub r#type: Type,
+    pub r#type: models::OrderType,
     /// Non-directional quantity of product in native units expressed as a decimal (precision: 9)
     #[serde(rename = "quantity")]
     pub quantity: String,
@@ -81,7 +80,7 @@ impl SubmitOrderLimitDtoData {
         subaccount: String,
         sender: String,
         nonce: String,
-        r#type: Type,
+        r#type: models::OrderType,
         quantity: String,
         side: models::OrderSide,
         onchain_id: i32,
@@ -113,18 +112,6 @@ impl SubmitOrderLimitDtoData {
             time_in_force,
             post_only,
         }
-    }
-}
-/// Limit order type
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Type {
-    #[serde(rename = "LIMIT")]
-    Limit,
-}
-
-impl Default for Type {
-    fn default() -> Type {
-        Self::Limit
     }
 }
 /// Stop type, either 0 (take-profit) or 1 (stop-loss), requires non-zero stopPrice
