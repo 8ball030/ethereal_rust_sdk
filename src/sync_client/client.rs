@@ -1,15 +1,19 @@
 use crate::{
     apis::{
-        configuration::Configuration, order_api::{OrderControllerListBySubaccountIdParams, OrderControllerSubmitParams},
+        configuration::Configuration,
+        order_api::{
+            OrderControllerCancelParams, OrderControllerListBySubaccountIdParams,
+            OrderControllerSubmitParams,
+        },
         product_api::ProductControllerListParams,
         subaccount_api::SubaccountControllerListByAccountParams,
     },
     enums::Environment,
     models::{
-        SubaccountDto, SubmitOrderCreatedDto, SubmitOrderDto, SubmitOrderDtoData,
-        SubmitOrderLimitDtoData,
+        CancelOrderDto, CancelOrderDtoData, CancelOrderResultDto, OrderStatus, SubaccountDto,
+        SubmitOrderCreatedDto, SubmitOrderDto, SubmitOrderDtoData, SubmitOrderLimitDtoData,
     },
-    signable_messages::TradeOrder,
+    signable_messages::{CancelOrder, TradeOrder},
     signing::{get_nonce, get_now, hex_to_bytes32, to_scaled_e9},
     sync_client::{
         funding::FundingClient,
@@ -33,6 +37,7 @@ use ethers::{
     signers::{LocalWallet, Signer},
     utils::hex,
 };
+use uuid::Uuid;
 
 fn get_server_url(environment: &Environment) -> &str {
     match environment {
@@ -211,18 +216,51 @@ impl HttpClient {
         }
     }
 
-    pub fn cancel_order(&self, order_id: &str) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn cancel_orders(
+        &self,
+        order_ids: Vec<String>,
+    ) -> Result<Vec<CancelOrderResultDto>, Box<dyn std::error::Error>> {
+        println!("Cancelling order...");
+        let subaccount = &self.subaccounts[0];
+        let nonce = get_nonce(); // implement get_nonce to fetch or generate a nonce
+        let message = CancelOrder {
+            sender: self.address.clone().parse()?,
+            subaccount: hex_to_bytes32(&subaccount.name.clone())?,
+            nonce, // increment nonce for the cancel order
+        };
+
+        let signature = message.sign(self.env, &self.wallet)?;
+        let ids: Vec<Uuid> = order_ids
+            .iter()
+            .map(|id| Uuid::parse_str(id).unwrap())
+            .collect();
+        let cancel_result = self.order().cancel(OrderControllerCancelParams {
+            cancel_order_dto: CancelOrderDto {
+                data: Box::new(CancelOrderDtoData {
+                    subaccount: subaccount.name.clone(),
+                    sender: self.address.to_string(),
+                    nonce: nonce.to_string(),
+                    order_ids: ids.into(),
+                    ..Default::default()
+                }),
+                signature: "0x".to_string() + &hex::encode(signature.to_vec()),
+            },
+        });
+        Ok(cancel_result.unwrap().data)
     }
-    pub fn get_open_orders(&self) -> Result<Vec<crate::models::OrderDto>, Box<dyn std::error::Error>> {
+    pub fn get_open_orders(
+        &self,
+    ) -> Result<Vec<crate::models::OrderDto>, Box<dyn std::error::Error>> {
         let orders = self
             .order()
-            .list_by_subaccount_id(OrderControllerListBySubaccountIdParams{
+            .list_by_subaccount_id(OrderControllerListBySubaccountIdParams {
                 subaccount_id: self.subaccounts[0].id.clone().to_string(),
                 ..Default::default()
             })?
-            .data
+            .data;
+        let open_orders = orders
             .into_iter()
-            .filter(|order| order.status == OrderStatus::OPEN);
-        Ok(orders.collect())
+            .filter(|order| order.status == OrderStatus::New);
+        Ok(open_orders.collect())
     }
 }

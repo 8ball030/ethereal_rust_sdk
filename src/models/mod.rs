@@ -69,6 +69,8 @@ pub mod order_fill_dto;
 pub use order_fill_dto::OrderFillDto;
 pub mod order_side;
 pub use order_side::OrderSide;
+pub mod order_status;
+pub use order_status::OrderStatus;
 pub mod order_type;
 pub use order_type::OrderType;
 pub mod page_of_funding_dtos;

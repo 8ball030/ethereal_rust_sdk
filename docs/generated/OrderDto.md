@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 **side** | [**models::OrderSide**](OrderSide.md) |  | 
 **product_id** | [**uuid::Uuid**](uuid::Uuid.md) | Id of product this order was placed against | 
 **subaccount_id** | [**uuid::Uuid**](uuid::Uuid.md) | Id of the subaccount associated to order | 
-**status** | **String** | Status of the order | 
+**status** | [**models::OrderStatus**](OrderStatus.md) |  | 
 **reduce_only** | **bool** | Indicates if the order is reduce only | 
 **close** | **bool** | Order closes the entire current position | 
 **updated_at** | **f64** | Order last updated timestamp (ms since Unix Epoch) | 

@@ -1,12 +1,15 @@
 mod common;
-use ethereal_rust_sdk::apis::order_api::OrderControllerSubmitParams;
+use ethereal_rust_sdk::apis::order_api::{
+    OrderControllerCancelParams, OrderControllerSubmitParams,
+};
 use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
 use ethereal_rust_sdk::apis::subaccount_api::SubaccountControllerListByAccountParams;
 use ethereal_rust_sdk::enums::Environment;
 use ethereal_rust_sdk::models::{
-    OrderSide, SubmitOrderDto, SubmitOrderDtoData, SubmitOrderLimitDtoData,
+    CancelOrderDto, CancelOrderDtoData, OrderSide, SubmitOrderDto, SubmitOrderDtoData,
+    SubmitOrderLimitDtoData,
 };
-use ethereal_rust_sdk::signable_messages::TradeOrder;
+use ethereal_rust_sdk::signable_messages::{CancelOrder, TradeOrder};
 use ethereal_rust_sdk::signing::Eip712;
 use ethereal_rust_sdk::signing::{get_nonce, get_now, hex_to_bytes32, to_scaled_e9};
 use ethers::signers::{LocalWallet, Signer};
@@ -82,7 +85,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let dto = SubmitOrderDto {
         data: Box::new(SubmitOrderDtoData::SubmitOrderLimitDtoData(Box::new(
             SubmitOrderLimitDtoData {
-                subaccount: subaccount.name,
+                subaccount: subaccount.name.clone(),
                 sender: sender_address.to_string(),
                 nonce: nonce.to_string(),
                 quantity: human_quantity.to_string(),
@@ -106,5 +109,27 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         submit_order_dto: dto,
     });
     println!("Order submission result: {result:?}");
+
+    println!("Cancelling order...");
+    let message = CancelOrder {
+        sender: http_client.address.clone().parse()?,
+        subaccount: hex_to_bytes32(&subaccount.name.clone())?,
+        nonce: nonce + 1, // increment nonce for the cancel order
+    };
+
+    let signature = message.sign(env, &http_client.wallet)?;
+    let cancel_result = http_client.order().cancel(OrderControllerCancelParams {
+        cancel_order_dto: CancelOrderDto {
+            data: Box::new(CancelOrderDtoData {
+                subaccount: subaccount.name.clone(),
+                sender: http_client.address.clone(),
+                nonce: (nonce + 1).to_string(),
+                order_ids: vec![result.unwrap().id].into(),
+                ..Default::default()
+            }),
+            signature: "0x".to_string() + &hex::encode(signature.to_vec()),
+        },
+    });
+    println!("Cancel order result: {cancel_result:?}");
     Ok(())
 }

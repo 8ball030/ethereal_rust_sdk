@@ -5314,18 +5314,7 @@
             "format": "uuid"
           },
           "status": {
-            "type": "string",
-            "example": "FILLED",
-            "description": "Status of the order",
-            "enum": [
-              "NEW",
-              "PENDING",
-              "FILLED_PARTIAL",
-              "FILLED",
-              "REJECTED",
-              "CANCELED",
-              "EXPIRED"
-            ]
+            "$ref": "#/components/schemas/OrderStatus"
           },
           "reduceOnly": {
             "type": "boolean",
@@ -9021,6 +9010,20 @@
           "LIMIT",
           "MARKET"
         ]
+      },
+      "OrderStatus": {
+            "type": "string",
+            "example": "FILLED",
+            "description": "Status of the order",
+            "enum": [
+              "NEW",
+              "PENDING",
+              "FILLED_PARTIAL",
+              "FILLED",
+              "REJECTED",
+              "CANCELED",
+              "EXPIRED"
+            ]
       }
     }
   }

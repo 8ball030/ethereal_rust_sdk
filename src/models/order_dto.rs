@@ -36,9 +36,8 @@ pub struct OrderDto {
     /// Id of the subaccount associated to order
     #[serde(rename = "subaccountId")]
     pub subaccount_id: uuid::Uuid,
-    /// Status of the order
     #[serde(rename = "status")]
-    pub status: Status,
+    pub status: models::OrderStatus,
     /// Indicates if the order is reduce only
     #[serde(rename = "reduceOnly")]
     pub reduce_only: bool,
@@ -98,7 +97,7 @@ impl OrderDto {
         side: models::OrderSide,
         product_id: uuid::Uuid,
         subaccount_id: uuid::Uuid,
-        status: Status,
+        status: models::OrderStatus,
         reduce_only: bool,
         close: bool,
         updated_at: f64,
@@ -149,30 +148,6 @@ pub enum Type {
 impl Default for Type {
     fn default() -> Type {
         Self::Market
-    }
-}
-/// Status of the order
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Status {
-    #[serde(rename = "NEW")]
-    New,
-    #[serde(rename = "PENDING")]
-    Pending,
-    #[serde(rename = "FILLED_PARTIAL")]
-    FilledPartial,
-    #[serde(rename = "FILLED")]
-    Filled,
-    #[serde(rename = "REJECTED")]
-    Rejected,
-    #[serde(rename = "CANCELED")]
-    Canceled,
-    #[serde(rename = "EXPIRED")]
-    Expired,
-}
-
-impl Default for Status {
-    fn default() -> Status {
-        Self::New
     }
 }
 /// Side as either BUY (0) or SELL (1)
