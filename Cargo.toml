@@ -4,7 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-# tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0.145"
 serde_repr = "0.1"
@@ -22,4 +21,3 @@ ethers = { version = "2.0.0", default-features = false, features = ["eip712"] }
 ethers-contract-derive = "2.0"
 
 dotenvy = "0.15.7"
-rust_decimal = "1.39.0"
