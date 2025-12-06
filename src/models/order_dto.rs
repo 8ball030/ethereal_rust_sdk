@@ -19,9 +19,8 @@ pub struct OrderDto {
     /// A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)
     #[serde(rename = "clientOrderId", skip_serializing_if = "Option::is_none")]
     pub client_order_id: Option<String>,
-    /// Trade order type e.g. MARKET or LIMIT
     #[serde(rename = "type")]
-    pub r#type: Type,
+    pub r#type: models::OrderType,
     /// Remaining quantity (if modified or reduced) in native units expressed as a decimal (precision: 9)
     #[serde(rename = "availableQuantity")]
     pub available_quantity: String,
@@ -92,7 +91,7 @@ pub struct OrderDto {
 impl OrderDto {
     pub fn new(
         id: uuid::Uuid,
-        r#type: Type,
+        r#type: models::OrderType,
         available_quantity: String,
         quantity: String,
         side: models::OrderSide,
@@ -135,20 +134,6 @@ impl OrderDto {
             group_contingency_type: None,
             group_id: None,
         }
-    }
-}
-/// Trade order type e.g. MARKET or LIMIT
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Type {
-    #[serde(rename = "MARKET")]
-    Market,
-    #[serde(rename = "LIMIT")]
-    Limit,
-}
-
-impl Default for Type {
-    fn default() -> Type {
-        Self::Market
     }
 }
 /// Status of the order

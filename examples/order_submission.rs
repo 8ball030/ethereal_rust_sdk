@@ -57,7 +57,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let now = get_now();
 
     let human_quantity = 0.001;
-    let human_price = 80000.0;
+    let human_price = 75000.0;
 
     let message = TradeOrder {
         sender: sender_address.parse()?,

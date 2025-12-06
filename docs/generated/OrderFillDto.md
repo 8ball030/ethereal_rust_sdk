@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **client_order_id** | Option<**String**> | A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters) | [optional]
 **price** | **String** | Fill price in expressed as a decimal (precision: 9) | 
 **filled** | **String** | Quantity filled in native units expressed as a decimal (precision: 9) | 
-**r#type** | **String** | The provided order's type e.g. MARKET or LIMIT | 
+**r#type** | [**models::OrderType**](OrderType.md) |  | 
 **side** | [**models::OrderSide**](OrderSide.md) |  | 
 **reduce_only** | **bool** | Indicates if the fill is reduce only | 
 **fee_usd** | **String** | The provided subaccount's charged fee in USD expressed as a decimal (precision: 9) | 

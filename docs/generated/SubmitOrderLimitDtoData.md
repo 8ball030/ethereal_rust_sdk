@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **subaccount** | **String** | Bytes32 encoded subaccount name (0x prefix, zero padded) | 
 **sender** | **String** | Address of account | 
 **nonce** | **String** | Message nonce timestamp (nanoseconds since Unix Epoch) | 
-**r#type** | **String** | Limit order type | 
+**r#type** | [**models::OrderType**](OrderType.md) |  | 
 **quantity** | **String** | Non-directional quantity of product in native units expressed as a decimal (precision: 9) | 
 **side** | [**models::OrderSide**](OrderSide.md) |  | 
 **onchain_id** | **i32** | Onchain generated productId from prior product registration | 

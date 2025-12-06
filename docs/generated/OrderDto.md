@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | [**uuid::Uuid**](uuid::Uuid.md) | Id representing the order | 
 **client_order_id** | Option<**String**> | A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters) | [optional]
-**r#type** | **String** | Trade order type e.g. MARKET or LIMIT | 
+**r#type** | [**models::OrderType**](OrderType.md) |  | 
 **available_quantity** | **String** | Remaining quantity (if modified or reduced) in native units expressed as a decimal (precision: 9) | 
 **quantity** | **String** | Original quantity (as per order submission) in native units expressed as a decimal (precision: 9) | 
 **side** | [**models::OrderSide**](OrderSide.md) |  | 

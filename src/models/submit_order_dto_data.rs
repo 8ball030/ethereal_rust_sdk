@@ -23,20 +23,6 @@ impl Default for SubmitOrderDtoData {
         Self::SubmitOrderMarketDtoData(Default::default())
     }
 }
-/// Market order type
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Type {
-    #[serde(rename = "MARKET")]
-    Market,
-    #[serde(rename = "LIMIT")]
-    Limit,
-}
-
-impl Default for Type {
-    fn default() -> Type {
-        Self::Market
-    }
-}
 /// Stop type, either 0 (take-profit) or 1 (stop-loss), requires non-zero stopPrice
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 pub enum StopType {

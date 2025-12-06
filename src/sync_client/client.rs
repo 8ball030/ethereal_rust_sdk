@@ -1,16 +1,16 @@
+use std::ops::Sub;
+
 use crate::{
-    apis::{configuration::Configuration, subaccount_api::SubaccountControllerListByAccountParams},
-    enums::Environment,
-    models::SubaccountDto,
-    sync_client::{
+    apis::{configuration::Configuration, order_api::OrderControllerSubmitParams, product_api::ProductControllerListParams, subaccount_api::SubaccountControllerListByAccountParams}, enums::Environment, models::{SubaccountDto, SubmitOrderCreatedDto, SubmitOrderDto, SubmitOrderDtoData, SubmitOrderLimitDtoData}, signable_messages::TradeOrder, signing::{get_nonce, get_now, hex_to_bytes32, to_scaled_e9}, sync_client::{
         funding::FundingClient, linked_signer::LinkedSignerClient, maintenance::MaintenanceClient,
-        order::OrderClient, points::PointsClient, position::PositionClient, product::ProductClient,
+        order::OrderClient, points::PointsClient, position::PositionClient, product::{self, ProductClient},
         referral::ReferralClient, rpc::RpcClient, subaccount::SubaccountClient, time::TimeClient,
         token::TokenClient, whitelist::WhitelistClient,
-    },
+    }
 };
 
-use ethers::signers::{LocalWallet, Signer};
+use ethers::{signers::{LocalWallet, Signer}, utils::hex};
+use crate::signing::Eip712;
 
 fn get_server_url(environment: &Environment) -> &str {
     match environment {
@@ -20,10 +20,12 @@ fn get_server_url(environment: &Environment) -> &str {
 }
 
 pub struct HttpClient {
+    env: Environment,
     config: Configuration,
     pub wallet: LocalWallet,
     pub address: String,
     pub subaccounts: Vec<SubaccountDto>,
+    product_hashmap: std::collections::HashMap<String, crate::models::ProductDto>,
 }
 
 impl HttpClient {
@@ -41,11 +43,25 @@ impl HttpClient {
             })
             .unwrap()
             .data;
+        let product_hashmap = product::ProductClient { config: &config }
+            .list(
+                ProductControllerListParams {
+                    ..Default::default()
+                },
+            )
+            .unwrap()
+            .data
+            .into_iter()
+            .map(|p| (p.display_ticker.clone(), p))
+            .collect();
+    
         Self {
+            env,
             config,
             wallet,
             address,
             subaccounts,
+            product_hashmap,
         }
     }
 
@@ -114,5 +130,67 @@ impl HttpClient {
         WhitelistClient {
             config: &self.config,
         }
+    }
+
+    pub fn submit_order(
+        &self,
+        ticker: &str,
+        quantity: f64,
+        price: Option<f64>,
+        side: crate::models::OrderSide,
+        r#type: crate::models::OrderType,
+    ) -> Result<SubmitOrderCreatedDto, Box<dyn std::error::Error>> {
+        println!(
+            "Submitting order... of type {type:?} and side {side:?} for {quantity} {ticker} at {price:?}"
+        );
+        if !self.product_hashmap.contains_key(ticker) {
+            return Err(format!("Ticker {ticker} not found").into());
+        }
+        let product_info = self.product_hashmap.get(ticker).unwrap();
+        let product_id = product_info.id.clone();
+        let nonce = get_nonce(); // implement get_nonce to fetch or generate a nonce
+        let now = get_now();
+        let message = TradeOrder {
+            sender: self.address.parse()?,
+            subaccount: hex_to_bytes32(&self.subaccounts[0].name)?,
+            quantity: to_scaled_e9(quantity),
+            price: to_scaled_e9(price.unwrap_or(0.0)),
+            reduce_only: false,
+            side: side as u8,
+            engine_type: product_info.engine_type.to_string().parse()?,
+            product_id: product_info.onchain_id.to_string().parse()?,
+            nonce,
+            signed_at: now as u64,
+        };
+        let signature = message.sign(self.env, &self.wallet)?;
+
+        let dto = SubmitOrderDto {
+            data: Box::new(SubmitOrderDtoData::SubmitOrderLimitDtoData(Box::new(
+                SubmitOrderLimitDtoData {
+                    subaccount: self.subaccounts[0].name.clone(),
+                    sender: self.address.to_string(),
+                    nonce: nonce.to_string(),
+                    quantity: quantity.to_string(),
+                    side: side,
+                    onchain_id: product_info.onchain_id,
+                    engine_type: product_info.engine_type,
+                    reduce_only: Some(false),
+                    signed_at: now,
+                    price: price.expect("Price should be present").to_string(),
+                    ..Default::default()
+                },
+            ))),
+            signature: "0x".to_string() + &hex::encode(signature.to_vec()),
+        };
+
+        let result = self.order().submit(OrderControllerSubmitParams {
+            submit_order_dto: dto,
+        });
+        match result {
+            Ok(response) => Ok(response),
+            Err(e) => Err(Box::new(e)),
+        }
+
+
     }
 }
