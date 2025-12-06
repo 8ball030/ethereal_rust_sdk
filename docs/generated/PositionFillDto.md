@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **filled** | **String** | Quantity filled in native units expressed as a decimal (precision: 9) | 
 **realized_pnl** | **String** | Realized PnL from the fill in USD expressed as a decimal (precision: 9) | 
 **r#type** | **String** | Corresponding order type that led to the position fill, LIQUIDATED if takeover | 
-**side** | **f64** | Direction of the fill as either BUY (0) or SELL (1) | 
+**side** | [**models::PositionSide**](PositionSide.md) |  | 
 **reduce_only** | **bool** | Indicates if the fill is reduce only | 
 **fee_usd** | **String** | The charged fee in USD expressed as a decimal (precision: 9) | 
 **created_at** | **f64** | Fill creation timestamp (ms since Unix Epoch) | 

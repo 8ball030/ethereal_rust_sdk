@@ -25,9 +25,8 @@ pub struct PositionFillDto {
     /// Corresponding order type that led to the position fill, LIQUIDATED if takeover
     #[serde(rename = "type")]
     pub r#type: Type,
-    /// Direction of the fill as either BUY (0) or SELL (1)
     #[serde(rename = "side")]
-    pub side: Side,
+    pub side: models::PositionSide,
     /// Indicates if the fill is reduce only
     #[serde(rename = "reduceOnly")]
     pub reduce_only: bool,
@@ -45,7 +44,7 @@ impl PositionFillDto {
         filled: String,
         realized_pnl: String,
         r#type: Type,
-        side: Side,
+        side: models::PositionSide,
         reduce_only: bool,
         fee_usd: String,
         created_at: f64,
@@ -80,19 +79,5 @@ pub enum Type {
 impl Default for Type {
     fn default() -> Type {
         Self::Market
-    }
-}
-/// Direction of the fill as either BUY (0) or SELL (1)
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Side {
-    #[serde(rename = "0")]
-    BUY,
-    #[serde(rename = "1")]
-    SELL,
-}
-
-impl Default for Side {
-    fn default() -> Side {
-        Self::BUY
     }
 }
