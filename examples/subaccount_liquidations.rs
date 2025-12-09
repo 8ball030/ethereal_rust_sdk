@@ -33,10 +33,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let subaccounts = http_client.subaccount().list_by_account(params)?;
 
     ws_client.register_subaccount_liquidation_callback(liquidation_callback);
-    ws_client.connect()?;
     subaccounts.data.iter().for_each(|subaccount| {
         ws_client.subscribe_subaccount_liquidation(&subaccount.id.to_string());
     });
+    ws_client.connect()?;
     ws_client.run_forever();
 
     Ok(())

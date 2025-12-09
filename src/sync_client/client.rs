@@ -32,6 +32,7 @@ use crate::{
     },
 };
 
+use crate::models::submit_order_limit_dto_data::TimeInForce;
 use crate::signing::Eip712;
 use ethers::{
     signers::{LocalWallet, Signer},
@@ -157,6 +158,7 @@ impl HttpClient {
         }
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn submit_order(
         &self,
         ticker: &str,
@@ -164,9 +166,13 @@ impl HttpClient {
         price: Option<f64>,
         side: crate::models::OrderSide,
         r#type: crate::models::OrderType,
+        time_in_force: TimeInForce,
+        post_only: bool,
+        reduce_only: bool,
+        expires_at: Option<i64>,
     ) -> Result<SubmitOrderCreatedDto, Box<dyn std::error::Error>> {
         println!(
-            "Submitting order... of type {type:?} and side {side:?} for {quantity} {ticker} at {price:?}"
+            "Submitting order... of type {type:?} and side {side:?} for {quantity} {ticker} at {price:?} reduce only: {reduce_only} post only: {post_only} expires at: {expires_at:?}"
         );
         if !self.product_hashmap.contains_key(ticker) {
             return Err(format!("Ticker {ticker} not found").into());
@@ -179,7 +185,7 @@ impl HttpClient {
             subaccount: hex_to_bytes32(&self.subaccounts[0].name)?,
             quantity: to_scaled_e9(quantity),
             price: to_scaled_e9(price.unwrap_or(0.0)),
-            reduce_only: false,
+            reduce_only,
             side: side as u8,
             engine_type: product_info.engine_type.to_string().parse()?,
             product_id: product_info.onchain_id.to_string().parse()?,
@@ -198,9 +204,12 @@ impl HttpClient {
                     side,
                     onchain_id: product_info.onchain_id,
                     engine_type: product_info.engine_type,
-                    reduce_only: Some(false),
+                    reduce_only: Some(reduce_only),
                     signed_at: now,
                     price: price.expect("Price should be present").to_string(),
+                    post_only,
+                    expires_at,
+                    time_in_force,
                     ..Default::default()
                 },
             ))),
