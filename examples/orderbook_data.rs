@@ -27,11 +27,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     ws_client.register_orderbook_callback(orderbook_callback);
 
-    ws_client.connect()?;
-
     products.data.iter().for_each(|product| {
         ws_client.subscribe_orderbook_data(&product.id.to_string());
     });
+    ws_client.connect()?;
     ws_client.run_forever();
     Ok(())
 }

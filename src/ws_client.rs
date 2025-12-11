@@ -1,4 +1,6 @@
-use log::{error, info, warn};
+use serde_json::Value;
+
+use log::{error, info};
 use rust_socketio::{ClientBuilder, Error, Payload, RawClient, TransportType};
 use std::{
     result::Result::Ok,
@@ -24,6 +26,7 @@ fn get_server_url(environment: &Environment) -> &str {
 pub struct WsClient {
     client_builder: ClientBuilder,
     client: Option<Client>,
+    subscriptions: Vec<Value>,
 }
 
 impl WsClient {
@@ -35,15 +38,19 @@ impl WsClient {
         Self {
             client_builder,
             client: None,
+            subscriptions: Vec::new(),
         }
     }
 
     #[allow(clippy::result_large_err)]
+    // given a closure as a callback
     pub fn connect(&mut self) -> Result<(), Error> {
         info!("Connecting websocket...");
 
         let connected_flag = Arc::new(AtomicBool::new(false));
         let flag_for_cb = Arc::clone(&connected_flag);
+
+        let subscriptions = self.subscriptions.clone();
 
         let builder =
             self.client_builder
@@ -51,6 +58,12 @@ impl WsClient {
                 .on("open", move |_payload: Payload, _socket: RawClient| {
                     info!("Websocket connected");
                     flag_for_cb.store(true, Ordering::SeqCst);
+                    for sub in subscriptions.iter() {
+                        info!("Resubscribing to channel: {sub:?}");
+                        if let Err(e) = _socket.emit("subscribe", Payload::from(sub.to_string())) {
+                            error!("Resubscribe failed for channel {sub:?}: {e}");
+                        }
+                    }
                 });
 
         let c = builder.connect()?;
@@ -69,16 +82,7 @@ impl WsClient {
         }
     }
 
-    fn is_connected(&self) -> bool {
-        self.client.is_some()
-    }
-
-    fn subscribe_with_product(&self, channel: &str, product_id: &str) {
-        if !self.is_connected() {
-            warn!("websocket_not_connected action=subscribe");
-            return;
-        }
-
+    fn subscribe_with_product(&mut self, channel: &str, product_id: &str) {
         let message = ProductSubscriptionMessage {
             msg_type: channel.to_string(),
             product_id: product_id.to_string(),
@@ -91,21 +95,10 @@ impl WsClient {
                 return;
             }
         };
-
-        let client = self.client.as_ref().unwrap();
-        if let Err(e) = client.emit("subscribe", Payload::from(json_msg.to_string())) {
-            error!("emit_failed channel={channel} error={e}");
-        } else {
-            info!("Subscribed to channel={channel} product_id={product_id}");
-        }
+        self.subscriptions.push(json_msg.clone());
     }
 
-    fn subscribe_with_subaccount(&self, channel: &str, subaccount_id: &str) {
-        if !self.is_connected() {
-            warn!("websocket_not_connected action=subscribe");
-            return;
-        }
-
+    fn subscribe_with_subaccount(&mut self, channel: &str, subaccount_id: &str) {
         let message = SubaccountSubscriptionMessage {
             msg_type: channel.to_string(),
             subaccount_id: subaccount_id.to_string(),
@@ -118,13 +111,7 @@ impl WsClient {
                 return;
             }
         };
-
-        let client = self.client.as_ref().unwrap();
-        if let Err(e) = client.emit("subscribe", Payload::from(json_msg.to_string())) {
-            error!("emit_failed channel={channel} error={e}");
-        } else {
-            info!("Subscribed to channel={channel} subaccount_id={subaccount_id}");
-        }
+        self.subscriptions.push(json_msg.clone());
     }
 
     fn register_callback_internal<F>(&mut self, channel: &str, callback: F)
@@ -136,7 +123,7 @@ impl WsClient {
         info!("Callback registered channel={channel}");
     }
 
-    pub fn subscribe_market_data(&self, product_id: &str) {
+    pub fn subscribe_market_data(&mut self, product_id: &str) {
         self.subscribe_with_product(public_channels::MARKET_PRICE, product_id);
     }
 
@@ -147,7 +134,7 @@ impl WsClient {
         self.register_callback_internal(public_channels::MARKET_PRICE, callback);
     }
 
-    pub fn subscribe_orderbook_data(&self, product_id: &str) {
+    pub fn subscribe_orderbook_data(&mut self, product_id: &str) {
         self.subscribe_with_product(public_channels::BOOK_DEPTH, product_id);
     }
 
@@ -158,7 +145,7 @@ impl WsClient {
         self.register_callback_internal(public_channels::BOOK_DEPTH, callback);
     }
 
-    pub fn subscribe_trade_fill_data(&self, product_id: &str) {
+    pub fn subscribe_trade_fill_data(&mut self, product_id: &str) {
         self.subscribe_with_product(public_channels::TRADE_FILL, product_id);
     }
 
@@ -169,7 +156,7 @@ impl WsClient {
         self.register_callback_internal(public_channels::TRADE_FILL, callback);
     }
 
-    pub fn subscribe_transfer_events(&self, subaccount_id: &str) {
+    pub fn subscribe_transfer_events(&mut self, subaccount_id: &str) {
         self.subscribe_with_subaccount(public_channels::TOKEN_TRANSFER, subaccount_id);
     }
 
@@ -180,7 +167,7 @@ impl WsClient {
         self.register_callback_internal(public_channels::TOKEN_TRANSFER, callback);
     }
 
-    pub fn subscribe_order_fill(&self, subaccount_id: &str) {
+    pub fn subscribe_order_fill(&mut self, subaccount_id: &str) {
         self.subscribe_with_subaccount(public_channels::ORDER_FILL, subaccount_id);
     }
 
@@ -191,7 +178,7 @@ impl WsClient {
         self.register_callback_internal(public_channels::ORDER_FILL, callback);
     }
 
-    pub fn subscribe_order_update(&self, subaccount_id: &str) {
+    pub fn subscribe_order_update(&mut self, subaccount_id: &str) {
         self.subscribe_with_subaccount(public_channels::ORDER_UPDATE, subaccount_id);
     }
 
@@ -202,7 +189,7 @@ impl WsClient {
         self.register_callback_internal(public_channels::ORDER_UPDATE, callback);
     }
 
-    pub fn subscribe_subaccount_liquidation(&self, subaccount_id: &str) {
+    pub fn subscribe_subaccount_liquidation(&mut self, subaccount_id: &str) {
         self.subscribe_with_subaccount(public_channels::SUBACCOUNT_LIQUIDATION, subaccount_id);
     }
 

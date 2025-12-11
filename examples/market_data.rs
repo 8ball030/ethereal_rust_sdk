@@ -28,18 +28,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let (http_client, mut ws_client) = common::create_test_clients()?;
     let params = ProductControllerListParams::default();
-    let products = http_client.product().list(params)?;
+    let products = http_client.product().list(params).unwrap().data;
 
     ws_client.register_market_price_callback(market_data_callback);
-    ws_client.connect()?;
 
-    products.data.iter().for_each(|product| {
-        println!(
-            "Subscribing to market data for market: {} id: {}",
-            product.ticker, product.id
-        );
+    for product in products.iter() {
         ws_client.subscribe_market_data(&product.id.to_string());
-    });
+    }
+
+    ws_client.connect()?;
     ws_client.run_forever();
     Ok(())
 }

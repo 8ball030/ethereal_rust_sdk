@@ -53,10 +53,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Params: {params:?}");
 
     ws_client.register_order_update_callback(order_update_callback);
-    ws_client.connect()?;
     subaccounts.data.iter().for_each(|subaccount| {
         ws_client.subscribe_order_update(&subaccount.id.to_string());
     });
+    ws_client.connect()?;
     ws_client.run_forever();
 
     Ok(())

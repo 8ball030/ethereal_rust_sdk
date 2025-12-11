@@ -36,11 +36,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let products = http_client.product().list(params)?;
 
     ws_client.register_trade_fill_callback(trade_fill_callback);
-    ws_client.connect()?;
 
     products.data.iter().for_each(|product| {
         ws_client.subscribe_trade_fill_data(&product.id.to_string());
     });
+    ws_client.connect()?;
     ws_client.run_forever();
     Ok(())
 }
