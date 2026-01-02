@@ -1,6 +1,6 @@
 [package]
 name = "ethereal_rust_sdk"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 description = "Trading client for Ethereal exchange"
 repository = "https://github.com/8ball030/ethereal_rust_sdk"
