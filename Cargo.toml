@@ -2,6 +2,9 @@
 name = "ethereal_rust_sdk"
 version = "0.1.1"
 edition = "2024"
+description = "Trading client for Ethereal exchange"
+repository = "https://github.com/8ball030/ethereal_rust_sdk"
+license = "MIT OR Apache-2.0"
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
