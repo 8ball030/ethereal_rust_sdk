@@ -24,3 +24,23 @@ ethers = { version = "2.0.0", default-features = false, features = ["eip712"] }
 ethers-contract-derive = "2.0"
 
 dotenvy = "0.15.7"
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+tokio-test = "0.4"
+
+[[bench]]
+name = "json_parsing"
+harness = false
+
+[[bench]]
+name = "subscription_handling"
+harness = false
+
+[[bench]]
+name = "serialization"
+harness = false
+
+[[bench]]
+name = "connect_latency"
+harness = false
