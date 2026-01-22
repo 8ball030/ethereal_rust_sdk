@@ -1,6 +1,4 @@
 use log::info;
-use rust_socketio::Payload;
-use rust_socketio::client::RawClient;
 mod common;
 
 use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
@@ -9,9 +7,7 @@ use ethereal_rust_sdk::models::MarketPriceDto;
 fn market_data_callback(market_price: MarketPriceDto) {
     info!(
         "Market Price Update - Product ID: {:?}, Best Bid: {:?}, Best Ask: {:?}",
-        market_price.product_id,
-        market_price.best_bid_price,
-        market_price.best_ask_price
+        market_price.product_id, market_price.best_bid_price, market_price.best_ask_price
     );
 }
 

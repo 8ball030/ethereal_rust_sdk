@@ -1,22 +1,14 @@
 mod common;
 use log::info;
-use rust_socketio::client::RawClient;
-use rust_socketio::Payload;
 
 use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
 use ethereal_rust_sdk::models::BookDepthMessage;
 
-fn orderbook_callback(raw_data: Payload, _socket: RawClient) {
-    if let Payload::Text(values) = raw_data {
-        for value in values {
-            if let Ok(orderbook) = serde_json::from_value::<BookDepthMessage>(value) {
-                info!(
-                    "Orderbook Update - Product ID: {:?}, Bids: {:?}, Asks: {:?}",
-                    orderbook.product_id, orderbook.bids, orderbook.asks
-                );
-            }
-        }
-    }
+fn orderbook_callback(raw_data: BookDepthMessage) {
+    info!(
+        "Orderbook Update - Product ID: {:?}, Bids: {:?}, Asks: {:?}",
+        raw_data.product_id, raw_data.bids, raw_data.asks
+    );
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
