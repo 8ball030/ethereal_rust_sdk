@@ -3,24 +3,12 @@ use ethereal_rust_sdk::apis::subaccount_api::SubaccountControllerListByAccountPa
 use ethereal_rust_sdk::models::TransferDto;
 
 use log::info;
-use rust_socketio::client::RawClient;
-use rust_socketio::Payload;
 
-fn transfer_callback(raw_data: Payload, _socket: RawClient) {
-    if let Payload::Text(values) = raw_data {
-        for value in values {
-            if let Ok(transfer) = serde_json::from_value::<TransferDto>(value) {
-                info!(
-                    "Transfer Event - ID: {:?}, Status: {:?}, Token Name: {:?}, Amount: {:?}, Token Address: {:?}",
-                    transfer.id,
-                    transfer.status,
-                    transfer.token_name,
-                    transfer.amount,
-                    transfer.token_address
-                );
-            }
-        }
-    }
+fn transfer_callback(raw_data: TransferDto) {
+    info!(
+        "Transfer Event - ID: {:?}, Status: {:?}, Token Name: {:?}, Amount: {:?}, Token Address: {:?}",
+        raw_data.id, raw_data.status, raw_data.token_name, raw_data.amount, raw_data.token_address
+    );
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

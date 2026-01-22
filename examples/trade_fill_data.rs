@@ -1,30 +1,15 @@
 mod common;
-use log::{error, info};
-use rust_socketio::client::RawClient;
-use rust_socketio::Payload;
+use log::info;
 
 use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
 use ethereal_rust_sdk::models::TradeStreamMessage;
 
-fn trade_fill_callback(raw_data: Payload, _socket: RawClient) {
-    if let Payload::Text(values) = raw_data {
-        for value in values {
-            match serde_json::from_value::<TradeStreamMessage>(value) {
-                Err(e) => {
-                    error!("Failed to deserialize TradeStreamMessage: {e}");
-                    return;
-                }
-                Ok(trade) => {
-                    // Successfully deserialized, proceed
-                    for fill in trade.data {
-                        info!(
-                            "Trade Fill - Product ID: {:?}, Price: {:?}, Quantity: {:?}",
-                            trade.product_id, fill.price, fill.filled
-                        );
-                    }
-                }
-            }
-        }
+fn trade_fill_callback(trade: TradeStreamMessage) {
+    for fill in trade.data {
+        info!(
+            "Trade Fill - Product ID: {:?}, Price: {:?}, Quantity: {:?}",
+            trade.product_id, fill.price, fill.filled
+        );
     }
 }
 

@@ -2,24 +2,13 @@ mod common;
 use ethereal_rust_sdk::apis::subaccount_api::SubaccountControllerListByAccountParams;
 use ethereal_rust_sdk::models::SubaccountLiquidation;
 
-use log::{error, info};
-use rust_socketio::client::RawClient;
-use rust_socketio::Payload;
+use log::info;
 
-fn liquidation_callback(raw_data: Payload, _socket: RawClient) {
-    if let Payload::Text(values) = raw_data {
-        for value in values {
-            if let Ok(liquidation) = serde_json::from_value::<SubaccountLiquidation>(value.clone())
-            {
-                info!(
-                    "Subaccount liquidated - ID: {}, Liquidated At: {}",
-                    liquidation.subaccount_id, liquidation.liquidated_at
-                );
-            } else {
-                error!("Failed to deserialize liquidation data: {value}");
-            }
-        }
-    }
+fn liquidation_callback(liquidation: SubaccountLiquidation) {
+    info!(
+        "Subaccount liquidated - ID: {}, Liquidated At: {}",
+        liquidation.subaccount_id, liquidation.liquidated_at
+    );
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

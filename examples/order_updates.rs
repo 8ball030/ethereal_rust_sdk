@@ -1,30 +1,18 @@
 mod common;
+
 use ethereal_rust_sdk::apis::position_api::PositionControllerGetActiveParams;
 use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
 use ethereal_rust_sdk::apis::subaccount_api::SubaccountControllerListByAccountParams;
 use ethereal_rust_sdk::models::PageOfOrderDtos;
 
-use log::{error, info};
-use rust_socketio::client::RawClient;
-use rust_socketio::Payload;
+use log::info;
 
-fn order_update_callback(raw_data: Payload, _socket: RawClient) {
-    if let Payload::Text(values) = raw_data {
-        for value in values {
-            match serde_json::from_value::<PageOfOrderDtos>(value.clone()) {
-                Ok(page) => {
-                    for fill in page.data {
-                        info!(
-                            "Order update - ID: {}, Product ID: {}, Price: {}, Side: {:?} Quantity: {:?}",
-                            fill.id, fill.product_id, fill.price, fill.side, fill.filled
-                        );
-                    }
-                }
-                Err(err) => {
-                    error!("Failed to deserialize order data: {value}, error: {err}");
-                }
-            }
-        }
+fn order_update_callback(raw_data: PageOfOrderDtos) {
+    for fill in raw_data.data {
+        info!(
+            "Order update - ID: {}, Product ID: {}, Price: {}, Side: {:?} Quantity: {:?}",
+            fill.id, fill.product_id, fill.price, fill.side, fill.filled
+        );
     }
 }
 
