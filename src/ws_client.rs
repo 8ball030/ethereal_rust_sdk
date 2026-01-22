@@ -38,16 +38,16 @@ fn get_typed_callback<T, F>(
 ) -> impl Fn(Payload, RawClient) + Send + Sync + 'static
 where
     T: serde::de::DeserializeOwned,
-    F: Fn(T, RawClient) + Send + Sync + 'static,
+    F: Fn(T) + Send + Sync + 'static,
 {
     let callback = Arc::new(callback);
 
-    move |payload: Payload, socket: RawClient| {
+    move |payload: Payload, _socket: RawClient| {
         let callback = callback.clone();
         process_raw_payload_with_callback::<T, _>(
             payload,
             callback,
-            socket,
+            // socket,
         );
     }
 }
@@ -55,16 +55,16 @@ where
 fn process_raw_payload_with_callback<T, F>(
     payload: Payload,
     callback: Arc<F>,
-    socket: RawClient,
+    // socket: RawClient,
 )
 where
     T: serde::de::DeserializeOwned,
-    F: Fn(T, RawClient) + Send + Sync + 'static,
+    F: Fn(T, ) + Send + Sync + 'static,
 {
     match parse_payload_to_type::<T>(payload) {
         Ok(items) => {
             for item in items {
-                callback(item, socket.clone());
+                callback(item);
             }
         }
         Err(e) => {
@@ -170,7 +170,7 @@ impl WsClient {
     fn register_callback_internal<F, T>(&mut self, channel: &str, callback: F)
     where
         T: serde::de::DeserializeOwned,
-        F: Fn(T, RawClient ) + Send + Sync + 'static,
+        F: Fn(T) + Send + Sync + 'static,
     {
         // we wrap the user callback to parse the payload into the expected type
         let callback = get_typed_callback::<T, F>(callback);
@@ -181,7 +181,7 @@ impl WsClient {
 
     pub fn register_market_data_callback<F>(&mut self, callback: F)
     where
-        F: Fn(MarketPriceDto, RawClient) + Send + Sync + 'static,
+        F: Fn(MarketPriceDto) + Send + Sync + 'static,
     {
         self.register_callback_internal(public_channels::MARKET_PRICE, callback);
     }

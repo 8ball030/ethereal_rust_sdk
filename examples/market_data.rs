@@ -6,7 +6,7 @@ mod common;
 use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
 use ethereal_rust_sdk::models::MarketPriceDto;
 
-fn market_data_callback(market_price: MarketPriceDto, _socket: RawClient) {
+fn market_data_callback(market_price: MarketPriceDto) {
     info!(
         "Market Price Update - Product ID: {:?}, Best Bid: {:?}, Best Ask: {:?}",
         market_price.product_id,
