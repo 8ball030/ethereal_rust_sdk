@@ -11,7 +11,7 @@ use std::{
     time::Duration,
 };
 
-use crate::types::{ProductSubscriptionMessage, SubaccountSubscriptionMessage};
+use crate::{models::MarketPriceDto, types::{ProductSubscriptionMessage, SubaccountSubscriptionMessage}};
 use crate::{channels::public_channels, enums::Environment};
 use rust_socketio::client::Client;
 
@@ -21,6 +21,58 @@ fn get_server_url(environment: &Environment) -> &str {
         Environment::Testnet => "wss://ws.etherealtest.net",
     }
 }
+
+fn parse_payload_to_type<T>(payload: Payload) -> Result<Vec<T>, serde_json::Error>
+where
+    T: serde::de::DeserializeOwned,
+{
+    match payload {
+        Payload::Text(t) => t.into_iter().map(serde_json::from_value::<T>).collect(),
+        Payload::String(s) => serde_json::from_str::<Vec<T>>(&s),
+        Payload::Binary(b) => serde_json::from_slice::<Vec<T>>(&b),
+    }
+}
+
+fn get_typed_callback<T, F>(
+    callback: F,
+) -> impl Fn(Payload, RawClient) + Send + Sync + 'static
+where
+    T: serde::de::DeserializeOwned,
+    F: Fn(T, RawClient) + Send + Sync + 'static,
+{
+    let callback = Arc::new(callback);
+
+    move |payload: Payload, socket: RawClient| {
+        let callback = callback.clone();
+        process_raw_payload_with_callback::<T, _>(
+            payload,
+            callback,
+            socket,
+        );
+    }
+}
+
+fn process_raw_payload_with_callback<T, F>(
+    payload: Payload,
+    callback: Arc<F>,
+    socket: RawClient,
+)
+where
+    T: serde::de::DeserializeOwned,
+    F: Fn(T, RawClient) + Send + Sync + 'static,
+{
+    match parse_payload_to_type::<T>(payload) {
+        Ok(items) => {
+            for item in items {
+                callback(item, socket.clone());
+            }
+        }
+        Err(e) => {
+            error!("Failed to parse payload: {e}");
+        }
+    }
+}
+
 
 #[derive(Clone)]
 pub struct WsClient {
@@ -82,7 +134,8 @@ impl WsClient {
         }
     }
 
-    fn subscribe_with_product(&mut self, channel: &str, product_id: &str) {
+    fn subscribe_with_product(&mut self, channel: &str, product_id: &str ) 
+    {
         let message = ProductSubscriptionMessage {
             msg_type: channel.to_string(),
             product_id: product_id.to_string(),
@@ -114,89 +167,93 @@ impl WsClient {
         self.subscriptions.push(json_msg.clone());
     }
 
-    fn register_callback_internal<F>(&mut self, channel: &str, callback: F)
+    fn register_callback_internal<F, T>(&mut self, channel: &str, callback: F)
     where
-        F: Fn(Payload, RawClient) + Send + Sync + 'static,
+        T: serde::de::DeserializeOwned,
+        F: Fn(T, RawClient ) + Send + Sync + 'static,
     {
+        // we wrap the user callback to parse the payload into the expected type
+        let callback = get_typed_callback::<T, F>(callback);
         let builder = self.client_builder.clone().on(channel, callback);
         self.client_builder = builder;
         info!("Callback registered channel={channel}");
+    }
+
+    pub fn register_market_data_callback<F>(&mut self, callback: F)
+    where
+        F: Fn(MarketPriceDto, RawClient) + Send + Sync + 'static,
+    {
+        self.register_callback_internal(public_channels::MARKET_PRICE, callback);
     }
 
     pub fn subscribe_market_data(&mut self, product_id: &str) {
         self.subscribe_with_product(public_channels::MARKET_PRICE, product_id);
     }
 
-    pub fn register_market_price_callback<F>(&mut self, callback: F)
-    where
-        F: Fn(Payload, RawClient) + Send + Sync + 'static,
-    {
-        self.register_callback_internal(public_channels::MARKET_PRICE, callback);
-    }
-
     pub fn subscribe_orderbook_data(&mut self, product_id: &str) {
         self.subscribe_with_product(public_channels::BOOK_DEPTH, product_id);
     }
 
-    pub fn register_orderbook_callback<F>(&mut self, callback: F)
-    where
-        F: Fn(Payload, RawClient) + Send + Sync + 'static,
-    {
-        self.register_callback_internal(public_channels::BOOK_DEPTH, callback);
-    }
+    // pub fn register_orderbook_callback<F>(&mut self, callback: F)
+    // where
+    //     F: Fn(Payload, RawClient) + Send + Sync + 'static,
+    // {
+    //     self.register_callback_internal(public_channels::BOOK_DEPTH, callback);
+    // }
 
-    pub fn subscribe_trade_fill_data(&mut self, product_id: &str) {
-        self.subscribe_with_product(public_channels::TRADE_FILL, product_id);
-    }
+    // pub fn subscribe_trade_fill_data(&mut self, product_id: &str) {
+    //     self.subscribe_with_product(public_channels::TRADE_FILL, product_id);
+    // }
 
-    pub fn register_trade_fill_callback<F>(&mut self, callback: F)
-    where
-        F: Fn(Payload, RawClient) + Send + Sync + 'static,
-    {
-        self.register_callback_internal(public_channels::TRADE_FILL, callback);
-    }
+    // pub fn register_trade_fill_callback<F>(&mut self, callback: F)
+    // where
+    //     F: Fn(Payload, RawClient) + Send + Sync + 'static,
+    // {
+    // {
+    //     self.register_callback_internal(public_channels::TRADE_FILL, callback);
+    // }
 
-    pub fn subscribe_transfer_events(&mut self, subaccount_id: &str) {
-        self.subscribe_with_subaccount(public_channels::TOKEN_TRANSFER, subaccount_id);
-    }
+    // pub fn subscribe_transfer_events(&mut self, subaccount_id: &str) {
+    //     self.subscribe_with_subaccount(public_channels::TOKEN_TRANSFER, subaccount_id);
+    // }
 
-    pub fn register_transfer_callback<F>(&mut self, callback: F)
-    where
-        F: Fn(Payload, RawClient) + Send + Sync + 'static,
-    {
-        self.register_callback_internal(public_channels::TOKEN_TRANSFER, callback);
-    }
+    // pub fn register_transfer_callback<F>(&mut self, callback: F)
+    // where
+    //     F: Fn(Payload, RawClient) + Send + Sync + 'static,
+    // {
+    //     self.register_callback_internal(public_channels::TOKEN_TRANSFER, callback);
+    // }
 
-    pub fn subscribe_order_fill(&mut self, subaccount_id: &str) {
-        self.subscribe_with_subaccount(public_channels::ORDER_FILL, subaccount_id);
-    }
+    // pub fn subscribe_order_fill(&mut self, subaccount_id: &str) {
+    //     self.subscribe_with_subaccount(public_channels::ORDER_FILL, subaccount_id);
+    // }
 
-    pub fn register_order_fill_callback<F>(&mut self, callback: F)
-    where
-        F: Fn(Payload, RawClient) + Send + Sync + 'static,
-    {
-        self.register_callback_internal(public_channels::ORDER_FILL, callback);
-    }
+    // pub fn register_order_fill_callback<F>(&mut self, callback: F)
+    // where
+    //     F: Fn(Payload, RawClient) + Send + Sync + 'static,
+    // {
+    //     self.register_callback_internal(public_channels::ORDER_FILL, callback);
+    // }
 
-    pub fn subscribe_order_update(&mut self, subaccount_id: &str) {
-        self.subscribe_with_subaccount(public_channels::ORDER_UPDATE, subaccount_id);
-    }
+    // pub fn subscribe_order_update(&mut self, subaccount_id: &str) {
+    //     self.subscribe_with_subaccount(public_channels::ORDER_UPDATE, subaccount_id);
+    // }
 
-    pub fn register_order_update_callback<F>(&mut self, callback: F)
-    where
-        F: Fn(Payload, RawClient) + Send + Sync + 'static,
-    {
-        self.register_callback_internal(public_channels::ORDER_UPDATE, callback);
-    }
+    // pub fn register_order_update_callback<F>(&mut self, callback: F)
+    // where
+    //     F: Fn(Payload, RawClient) + Send + Sync + 'static,
+    // {
+    //     self.register_callback_internal(public_channels::ORDER_UPDATE, callback);
+    // }
 
-    pub fn subscribe_subaccount_liquidation(&mut self, subaccount_id: &str) {
-        self.subscribe_with_subaccount(public_channels::SUBACCOUNT_LIQUIDATION, subaccount_id);
-    }
+    // pub fn subscribe_subaccount_liquidation(&mut self, subaccount_id: &str) {
+    //     self.subscribe_with_subaccount(public_channels::SUBACCOUNT_LIQUIDATION, subaccount_id);
+    // }
 
-    pub fn register_subaccount_liquidation_callback<F>(&mut self, callback: F)
-    where
-        F: Fn(Payload, RawClient) + Send + Sync + 'static,
-    {
-        self.register_callback_internal(public_channels::SUBACCOUNT_LIQUIDATION, callback);
-    }
+    // pub fn register_subaccount_liquidation_callback<F>(&mut self, callback: F)
+    // where
+    //     F: Fn(Payload, RawClient) + Send + Sync + 'static,
+    // {
+    //     self.register_callback_internal(public_channels::SUBACCOUNT_LIQUIDATION, callback);
+    // }
 }
