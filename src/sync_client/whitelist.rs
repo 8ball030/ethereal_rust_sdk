@@ -1,11 +1,11 @@
 use crate::{
     apis::{
-        Error,
         configuration::Configuration,
         whitelist_api::{
-            WhitelistControllerIsWhitelistedError, WhitelistControllerIsWhitelistedParams,
-            whitelist_controller_is_whitelisted,
+            whitelist_controller_is_whitelisted, WhitelistControllerIsWhitelistedError,
+            WhitelistControllerIsWhitelistedParams,
         },
+        Error,
     },
     models::WhitelistDto,
 };
@@ -14,10 +14,10 @@ pub struct WhitelistClient<'a> {
 }
 
 impl<'a> WhitelistClient<'a> {
-    pub fn is_whitelisted(
+    pub async fn is_whitelisted(
         &self,
         params: WhitelistControllerIsWhitelistedParams,
     ) -> Result<WhitelistDto, Error<WhitelistControllerIsWhitelistedError>> {
-        whitelist_controller_is_whitelisted(self.config, params)
+        whitelist_controller_is_whitelisted(self.config, params).await
     }
 }

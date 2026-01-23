@@ -1,7 +1,7 @@
 [package]
 name = "ethereal_rust_sdk"
 version = "0.1.2"
-edition = "2024"
+edition = "2018"
 description = "Trading client for Ethereal exchange"
 repository = "https://github.com/8ball030/ethereal_rust_sdk"
 license = "MIT OR Apache-2.0"
@@ -11,7 +11,7 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0.145"
 serde_repr = "0.1"
 
-rust_socketio = "0.6.0"
+rust_socketio = { version = "0.6.0", features = ["async"] }
 reqwest = {version = "0.12.24", features = ["json"]}
 url = "2.5.7"
 uuid = { version = "1.19.0", features = ["serde"] }
@@ -24,3 +24,5 @@ ethers = { version = "2.0.0", default-features = false, features = ["eip712"] }
 ethers-contract-derive = "2.0"
 
 dotenvy = "0.15.7"
+futures-util = "0.3.31"
+tokio = { version = "1.49.0", features = ["sync", "rt-multi-thread", "macros"] }

@@ -101,9 +101,9 @@ def check_sub_client_methods(file_path: Path):
     client_imports = set()
     functions, tests = [], []
     for ix, line in enumerate(lines):
-        if line.startswith("pub fn "):
+        if line.startswith("pub async fn "):
             func_started = True
-            long_method_name = line.split("pub fn ")[1].split("(")[0]
+            long_method_name = line.split("pub async fn ")[1].split("(")[0]
             short_method_name = long_method_name.replace(to_remove, "")
             print(f"    found: {short_method_name} in {api_name} sub-client at line {ix+1}")
         if func_started and "Result<" in line:

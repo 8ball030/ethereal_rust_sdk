@@ -1,10 +1,10 @@
 use crate::{
     apis::{
-        Error,
         configuration::Configuration,
         maintenance_api::{
-            MaintenanceControllerIsMaintenanceError, maintenance_controller_is_maintenance,
+            maintenance_controller_is_maintenance, MaintenanceControllerIsMaintenanceError,
         },
+        Error,
     },
     models::MaintenanceDto,
 };
@@ -13,9 +13,9 @@ pub struct MaintenanceClient<'a> {
 }
 
 impl<'a> MaintenanceClient<'a> {
-    pub fn is_maintenance(
+    pub async fn is_maintenance(
         &self,
     ) -> Result<MaintenanceDto, Error<MaintenanceControllerIsMaintenanceError>> {
-        maintenance_controller_is_maintenance(self.config)
+        maintenance_controller_is_maintenance(self.config).await
     }
 }

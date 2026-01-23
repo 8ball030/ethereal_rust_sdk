@@ -13,11 +13,11 @@ impl<'a> ProductClient<'a> {
 """)
 
 METHOD_TEMPLATE = Template("""
-    pub fn $short_function_name(
+    pub async fn $short_function_name(
         &self,
         $params_line
     ) -> Result<$return_type, Error<$error_name>> {
-        $function_name(self.config, $params)
+        $function_name(self.config, $params).await
     }
 """)
 

@@ -1,90 +1,34 @@
-use serde_json::Error as SerdeError;
-use serde_json::Value;
+use std::sync::Arc;
 
+use futures_util::FutureExt;
 use log::{error, info};
-use rust_socketio::{ClientBuilder, Error, Payload, RawClient, TransportType};
-use std::io;
-use std::{
-    result::Result::Ok,
-    sync::{
-        Arc,
-        atomic::{AtomicBool, Ordering},
-    },
-    time::Duration,
+use rust_socketio::{
+    asynchronous::{Client, ClientBuilder},
+    Error, Payload, TransportType,
 };
+use serde_json::Value;
+use tokio::sync::mpsc;
 
-use crate::{channels::public_channels, enums::Environment, models::TransferDto};
 use crate::{
+    channels::public_channels,
+    enums::Environment,
     models::{
         BookDepthMessage, MarketPriceDto, PageOfOrderDtos, PageOfOrderFillDtos,
-        SubaccountLiquidation, TradeStreamMessage,
+        SubaccountLiquidation, TradeStreamMessage, TransferDto,
     },
     types::{ProductSubscriptionMessage, SubaccountSubscriptionMessage},
+    utils::{get_server_url, get_typed_callback},
 };
-use rust_socketio::client::Client;
 
-fn get_server_url(environment: &Environment) -> &str {
-    match environment {
-        Environment::Mainnet => "wss://ws.ethereal.trade",
-        Environment::Testnet => "wss://ws.etherealtest.net",
+pub async fn run_forever() {
+    loop {
+        tokio::time::sleep(tokio::time::Duration::from_secs(60)).await;
     }
 }
-
-fn parse_payload_to_type<T>(payload: Payload) -> Result<Vec<T>, SerdeError>
-where
-    T: serde::de::DeserializeOwned,
-{
-    match payload {
-        Payload::Text(t) => t.into_iter().map(serde_json::from_value::<T>).collect(),
-        Payload::Binary(b) => serde_json::from_slice::<Vec<T>>(&b),
-        _ => {
-            let io_err = io::Error::other("Unsupported payload type");
-            Err(SerdeError::io(io_err))
-        }
-    }
-}
-
-fn get_typed_callback<T, F>(callback: F) -> impl Fn(Payload, RawClient) + Send + Sync + 'static
-where
-    T: serde::de::DeserializeOwned,
-    F: Fn(T) + Send + Sync + 'static,
-{
-    let callback = Arc::new(callback);
-
-    move |payload: Payload, _socket: RawClient| {
-        let callback = callback.clone();
-        process_raw_payload_with_callback::<T, _>(
-            payload, callback,
-            // socket,
-        );
-    }
-}
-
-fn process_raw_payload_with_callback<T, F>(
-    payload: Payload,
-    callback: Arc<F>,
-    // socket: RawClient,
-) where
-    T: serde::de::DeserializeOwned,
-    F: Fn(T) + Send + Sync + 'static,
-{
-    match parse_payload_to_type::<T>(payload) {
-        Ok(items) => {
-            for item in items {
-                callback(item);
-            }
-        }
-        Err(e) => {
-            error!("Failed to parse payload: {e}");
-        }
-    }
-}
-
-#[derive(Clone)]
 pub struct WsClient {
-    client_builder: ClientBuilder,
+    client_builder: Option<ClientBuilder>,
     client: Option<Client>,
-    subscriptions: Vec<Value>,
+    subscriptions: Arc<Vec<Value>>,
 }
 
 impl WsClient {
@@ -94,50 +38,47 @@ impl WsClient {
             .transport_type(TransportType::Websocket)
             .namespace("/v1/stream");
         Self {
-            client_builder,
+            client_builder: Some(client_builder),
             client: None,
-            subscriptions: Vec::new(),
+            subscriptions: Arc::new(Vec::new()),
         }
     }
 
     #[allow(clippy::result_large_err)]
     // given a closure as a callback
-    pub fn connect(&mut self) -> Result<(), Error> {
+    pub async fn connect(mut self) -> Result<(), Error> {
         info!("Connecting websocket...");
+        let builder = self.client_builder.take().expect("connect called twice");
 
-        let connected_flag = Arc::new(AtomicBool::new(false));
-        let flag_for_cb = Arc::clone(&connected_flag);
+        // bool channel to indicate connection established.
+        let (_tx, mut rx) = mpsc::channel::<bool>(16);
 
-        let subscriptions = self.subscriptions.clone();
+        let subscriptions = Arc::clone(&self.subscriptions); // cheap clone
 
-        let builder =
-            self.client_builder
-                .clone()
-                .on("open", move |_payload: Payload, _socket: RawClient| {
+        let connect_cb = move |_payload: Payload, socket: Client| {
+            {
+                let subscriptions = subscriptions.clone();
+                async move {
                     info!("Websocket connected");
-                    flag_for_cb.store(true, Ordering::SeqCst);
                     for sub in subscriptions.iter() {
-                        info!("Resubscribing to channel: {sub:?}");
-                        if let Err(e) = _socket.emit("subscribe", Payload::from(sub.to_string())) {
-                            error!("Resubscribe failed for channel {sub:?}: {e}");
-                        }
+                        info!("Subscribing to channel: {sub:?}");
+                        socket
+                            .emit("subscribe", Payload::from(sub.to_string()))
+                            .await
+                            .expect("Failed to emit subscribe message");
                     }
-                });
-
-        let c = builder.connect()?;
-
-        while !connected_flag.load(Ordering::SeqCst) {
-            std::thread::sleep(Duration::from_millis(100));
+                    // tx.send(true).await.expect("Failed to send connected signal");
+                }
+            }
+            .boxed()
+        };
+        self.client = Some(builder.on("open", connect_cb).connect().await?);
+        // wait for connection to be established
+        match rx.recv().await {
+            Some(_) => info!("Websocket connection established"),
+            None => error!("Websocket connection failed to establish"),
         }
-
-        self.client = Some(c);
         Ok(())
-    }
-
-    pub fn run_forever(&self) {
-        loop {
-            std::thread::sleep(Duration::from_secs(60));
-        }
     }
 
     fn subscribe_with_product(&mut self, channel: &str, product_id: &str) {
@@ -153,7 +94,9 @@ impl WsClient {
                 return;
             }
         };
-        self.subscriptions.push(json_msg.clone());
+        let subscriptions = Arc::get_mut(&mut self.subscriptions)
+            .expect("Failed to get mutable reference to subscriptions");
+        subscriptions.push(json_msg.clone());
     }
 
     fn subscribe_with_subaccount(&mut self, channel: &str, subaccount_id: &str) {
@@ -169,18 +112,24 @@ impl WsClient {
                 return;
             }
         };
-        self.subscriptions.push(json_msg.clone());
+        let subscriptions = Arc::get_mut(&mut self.subscriptions)
+            .expect("Failed to get mutable reference to subscriptions");
+        subscriptions.push(json_msg.clone());
     }
 
     fn register_callback_internal<F, T>(&mut self, channel: &str, callback: F)
     where
-        T: serde::de::DeserializeOwned,
+        T: serde::de::DeserializeOwned + Send + 'static,
         F: Fn(T) + Send + Sync + 'static,
     {
         // we wrap the user callback to parse the payload into the expected type
         let callback = get_typed_callback::<T, F>(callback);
-        let builder = self.client_builder.clone().on(channel, callback);
-        self.client_builder = builder;
+        self.client_builder = self
+            .client_builder
+            .take()
+            .expect("client_builder not set")
+            .on(channel, callback)
+            .into();
         info!("Callback registered channel={channel}");
     }
 
