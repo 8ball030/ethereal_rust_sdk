@@ -1,6 +1,7 @@
 use serde_json::Error as SerdeError;
 use std::{io, sync::Arc};
 
+use std::{future::Future, marker::Send, pin::Pin};
 use log::error;
 use rust_socketio::{asynchronous::Client, Payload};
 
@@ -35,23 +36,6 @@ where
         }
     }
 }
-
-// pub fn get_typed_callback<T, F>(callback: F) -> impl Fn(Payload, Client) + Send + Sync + 'static
-// where
-//     T: serde::de::DeserializeOwned,
-//     F: Fn(T) + Send + Sync + 'static,
-// {
-//     let callback = Arc::new(callback);
-
-//     move |payload: Payload, _socket: Client| {
-//         let callback = callback.clone();
-//         process_raw_payload_with_callback::<T, _>(
-//             payload, callback,
-//             // socket,
-//         );
-//     }
-// }
-use std::{future::Future, marker::Send, pin::Pin};
 
 pub fn get_typed_callback<T, F>(
     callback: F,

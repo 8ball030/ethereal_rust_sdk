@@ -51,13 +51,14 @@ impl WsClient {
         let builder = self.client_builder.take().expect("connect called twice");
 
         // bool channel to indicate connection established.
-        let (_tx, mut rx) = mpsc::channel::<bool>(16);
+        let (tx, mut rx) = mpsc::channel::<bool>(16);
 
         let subscriptions = Arc::clone(&self.subscriptions); // cheap clone
 
         let connect_cb = move |_payload: Payload, socket: Client| {
             {
                 let subscriptions = subscriptions.clone();
+                let tx = tx.clone();
                 async move {
                     info!("Websocket connected");
                     for sub in subscriptions.iter() {
@@ -67,7 +68,7 @@ impl WsClient {
                             .await
                             .expect("Failed to emit subscribe message");
                     }
-                    // tx.send(true).await.expect("Failed to send connected signal");
+                    tx.send(true).await.expect("Failed to send connected signal");
                 }
             }
             .boxed()
@@ -75,7 +76,8 @@ impl WsClient {
         self.client = Some(builder.on("open", connect_cb).connect().await?);
         // wait for connection to be established
         match rx.recv().await {
-            Some(_) => info!("Websocket connection established"),
+            Some(true) => info!("Websocket connection established"),
+            Some(false) => error!("Websocket connection failed to establish"),
             None => error!("Websocket connection failed to establish"),
         }
         Ok(())
