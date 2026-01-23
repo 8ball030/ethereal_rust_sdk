@@ -1,11 +1,11 @@
 use crate::{
     apis::{
-        Error,
         configuration::Configuration,
         time_api::{
-            TimeControllerGetSystemTimeError, TimeControllerPostSystemTimeError,
             time_controller_get_system_time, time_controller_post_system_time,
+            TimeControllerGetSystemTimeError, TimeControllerPostSystemTimeError,
         },
+        Error,
     },
     models::SystemTimeDto,
 };
@@ -14,15 +14,15 @@ pub struct TimeClient<'a> {
 }
 
 impl<'a> TimeClient<'a> {
-    pub fn get_system_time(
+    pub async fn get_system_time(
         &self,
     ) -> Result<SystemTimeDto, Error<TimeControllerGetSystemTimeError>> {
-        time_controller_get_system_time(self.config)
+        time_controller_get_system_time(self.config).await
     }
 
-    pub fn post_system_time(
+    pub async fn post_system_time(
         &self,
     ) -> Result<SystemTimeDto, Error<TimeControllerPostSystemTimeError>> {
-        time_controller_post_system_time(self.config)
+        time_controller_post_system_time(self.config).await
     }
 }

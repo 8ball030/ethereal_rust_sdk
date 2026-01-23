@@ -57,7 +57,7 @@ pub struct HttpClient {
 }
 
 impl HttpClient {
-    pub fn new(env: Environment, private_key: &str) -> Self {
+    pub async fn new(env: Environment, private_key: &str) -> Self {
         let config = Configuration {
             base_path: get_server_url(&env).to_string(),
             ..Default::default()
@@ -69,12 +69,14 @@ impl HttpClient {
                 sender: address.clone(),
                 ..Default::default()
             })
+            .await
             .unwrap()
             .data;
         let product_hashmap = product::ProductClient { config: &config }
             .list(ProductControllerListParams {
                 ..Default::default()
             })
+            .await
             .unwrap()
             .data
             .into_iter()
@@ -159,7 +161,7 @@ impl HttpClient {
     }
 
     #[allow(clippy::too_many_arguments)]
-    pub fn submit_order(
+    pub async fn submit_order(
         &self,
         ticker: &str,
         quantity: f64,
@@ -216,16 +218,19 @@ impl HttpClient {
             signature: "0x".to_string() + &hex::encode(signature.to_vec()),
         };
 
-        let result = self.order().submit(OrderControllerSubmitParams {
-            submit_order_dto: dto,
-        });
+        let result = self
+            .order()
+            .submit(OrderControllerSubmitParams {
+                submit_order_dto: dto,
+            })
+            .await;
         match result {
             Ok(response) => Ok(response),
             Err(e) => Err(Box::new(e)),
         }
     }
 
-    pub fn cancel_orders(
+    pub async fn cancel_orders(
         &self,
         order_ids: Vec<String>,
     ) -> Result<Vec<CancelOrderResultDto>, Box<dyn std::error::Error>> {
@@ -243,21 +248,24 @@ impl HttpClient {
             .iter()
             .map(|id| Uuid::parse_str(id).unwrap())
             .collect();
-        let cancel_result = self.order().cancel(OrderControllerCancelParams {
-            cancel_order_dto: CancelOrderDto {
-                data: Box::new(CancelOrderDtoData {
-                    subaccount: subaccount.name.clone(),
-                    sender: self.address.to_string(),
-                    nonce: nonce.to_string(),
-                    order_ids: ids.into(),
-                    ..Default::default()
-                }),
-                signature: "0x".to_string() + &hex::encode(signature.to_vec()),
-            },
-        });
+        let cancel_result = self
+            .order()
+            .cancel(OrderControllerCancelParams {
+                cancel_order_dto: CancelOrderDto {
+                    data: Box::new(CancelOrderDtoData {
+                        subaccount: subaccount.name.clone(),
+                        sender: self.address.to_string(),
+                        nonce: nonce.to_string(),
+                        order_ids: ids.into(),
+                        ..Default::default()
+                    }),
+                    signature: "0x".to_string() + &hex::encode(signature.to_vec()),
+                },
+            })
+            .await;
         Ok(cancel_result.unwrap().data)
     }
-    pub fn get_open_orders(
+    pub async fn get_open_orders(
         &self,
     ) -> Result<Vec<crate::models::OrderDto>, Box<dyn std::error::Error>> {
         let orders = self
@@ -265,7 +273,8 @@ impl HttpClient {
             .list_by_subaccount_id(OrderControllerListBySubaccountIdParams {
                 subaccount_id: self.subaccounts[0].id.clone().to_string(),
                 ..Default::default()
-            })?
+            })
+            .await?
             .data;
         let open_orders = orders
             .into_iter()

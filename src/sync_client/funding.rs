@@ -1,15 +1,14 @@
 use crate::{
     apis::{
-        Error,
         configuration::Configuration,
         funding_api::{
-            FundingControllerGetProjectedFundingRateError,
+            funding_controller_get_projected_funding_rate, funding_controller_list_by_product_id,
+            funding_controller_list_projected_rates, FundingControllerGetProjectedFundingRateError,
             FundingControllerGetProjectedFundingRateParams, FundingControllerListByProductIdError,
             FundingControllerListByProductIdParams, FundingControllerListProjectedRatesError,
             FundingControllerListProjectedRatesParams,
-            funding_controller_get_projected_funding_rate, funding_controller_list_by_product_id,
-            funding_controller_list_projected_rates,
         },
+        Error,
     },
     models::{PageOfFundingDtos, PageOfProjectedFundingDtos, ProjectedFundingDto},
 };
@@ -18,24 +17,24 @@ pub struct FundingClient<'a> {
 }
 
 impl<'a> FundingClient<'a> {
-    pub fn get_projected_funding_rate(
+    pub async fn get_projected_funding_rate(
         &self,
         params: FundingControllerGetProjectedFundingRateParams,
     ) -> Result<ProjectedFundingDto, Error<FundingControllerGetProjectedFundingRateError>> {
-        funding_controller_get_projected_funding_rate(self.config, params)
+        funding_controller_get_projected_funding_rate(self.config, params).await
     }
 
-    pub fn list_by_product_id(
+    pub async fn list_by_product_id(
         &self,
         params: FundingControllerListByProductIdParams,
     ) -> Result<PageOfFundingDtos, Error<FundingControllerListByProductIdError>> {
-        funding_controller_list_by_product_id(self.config, params)
+        funding_controller_list_by_product_id(self.config, params).await
     }
 
-    pub fn list_projected_rates(
+    pub async fn list_projected_rates(
         &self,
         params: FundingControllerListProjectedRatesParams,
     ) -> Result<PageOfProjectedFundingDtos, Error<FundingControllerListProjectedRatesError>> {
-        funding_controller_list_projected_rates(self.config, params)
+        funding_controller_list_projected_rates(self.config, params).await
     }
 }

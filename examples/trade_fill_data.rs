@@ -1,4 +1,5 @@
 mod common;
+use ethereal_rust_sdk::ws_client::run_forever;
 use log::info;
 
 use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
@@ -13,19 +14,20 @@ fn trade_fill_callback(trade: TradeStreamMessage) {
     }
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     simple_logger::init_with_level(log::Level::Info).unwrap();
 
-    let (http_client, mut ws_client) = common::create_test_clients()?;
+    let (http_client, mut ws_client) = common::create_test_clients().await?;
     let params = ProductControllerListParams::default();
-    let products = http_client.product().list(params)?;
+    let products = http_client.product().list(params).await?;
 
     ws_client.register_trade_fill_callback(trade_fill_callback);
 
     products.data.iter().for_each(|product| {
         ws_client.subscribe_trade_fill_data(&product.id.to_string());
     });
-    ws_client.connect()?;
-    ws_client.run_forever();
+    ws_client.connect().await?;
+    run_forever().await;
     Ok(())
 }

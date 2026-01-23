@@ -1,8 +1,9 @@
 mod common;
-use ethereal_rust_sdk::models::{OrderSide, OrderType};
+use ethereal_rust_sdk::models::{submit_order_limit_dto_data, OrderSide, OrderType};
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let (client, _) = common::create_test_clients()?;
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let (client, _) = common::create_test_clients().await?;
 
     println!("Creating order...");
 
@@ -13,7 +14,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let r#type = OrderType::Limit;
 
     let expires_at = None;
-    let time_in_force = ethereal_rust_sdk::models::submit_order_limit_dto_data::TimeInForce::Gtd;
+    let time_in_force = submit_order_limit_dto_data::TimeInForce::Gtd;
 
     // We have a few more options when creating an order now.
     let mut post_only = false;
@@ -31,6 +32,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             reduce_only,
             expires_at,
         )
+        .await
         .unwrap();
     println!("Order submitted: {order:?}");
 
@@ -50,6 +52,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             reduce_only,
             expires_at,
         )
+        .await
         .unwrap();
     println!("Post and reduce only order submitted: {order:?}");
 
@@ -70,14 +73,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             reduce_only,
             expires_at,
         )
+        .await
         .unwrap();
     println!("Order with expires_at submitted: {order:?}");
 
     println!("Fetching all current orders to cancel...");
-    let orders = client.get_open_orders().unwrap();
+    let orders = client.get_open_orders().await?;
     let cancel_result = client
         .cancel_orders(orders.iter().map(|order| order.id.to_string()).collect())
-        .unwrap();
+        .await?;
     println!("Cancel result: {cancel_result:?}");
     Ok(())
 }

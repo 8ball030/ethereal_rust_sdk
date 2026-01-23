@@ -1,3 +1,4 @@
+use ethereal_rust_sdk::ws_client::run_forever;
 use log::info;
 mod common;
 
@@ -11,12 +12,13 @@ fn market_data_callback(market_price: MarketPriceDto) {
     );
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     simple_logger::init_with_level(log::Level::Info).unwrap();
 
-    let (http_client, mut ws_client) = common::create_test_clients()?;
+    let (http_client, mut ws_client) = common::create_test_clients().await?;
     let params = ProductControllerListParams::default();
-    let products = http_client.product().list(params).unwrap().data;
+    let products = http_client.product().list(params).await.unwrap().data;
 
     ws_client.register_market_data_callback(market_data_callback);
 
@@ -24,7 +26,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ws_client.subscribe_market_data(&product.id.to_string());
     }
 
-    ws_client.connect()?;
-    ws_client.run_forever();
+    ws_client.connect().await?;
+    run_forever().await;
     Ok(())
 }

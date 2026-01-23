@@ -1,5 +1,5 @@
-use ethers::types::Address;
 use ethers::types::transaction::eip712::Eip712Error;
+use ethers::types::Address;
 
 use ethers::types::U256;
 use serde::{Deserialize, Serialize};
@@ -17,7 +17,7 @@ pub struct LinkSigner {
 impl Eip712 for LinkSigner {
     fn type_hash() -> Result<[u8; 32], Eip712Error> {
         Ok(ethers::utils::keccak256(
-            "LinkSigner(address sender,address signer,bytes32 subaccount,uint64 nonce,uint64 signedAt)",
+            "LinkSigner(address sender,address signer,bytes32 subaccount,uint64 nonce,uint64 signedAt)"
         ))
     }
 
@@ -52,7 +52,7 @@ pub struct TradeOrder {
 impl Eip712 for TradeOrder {
     fn type_hash() -> Result<[u8; 32], Eip712Error> {
         Ok(ethers::utils::keccak256(
-            "TradeOrder(address sender,bytes32 subaccount,uint128 quantity,uint128 price,bool reduceOnly,uint8 side,uint8 engineType,uint32 productId,uint64 nonce,uint64 signedAt)",
+            "TradeOrder(address sender,bytes32 subaccount,uint128 quantity,uint128 price,bool reduceOnly,uint8 side,uint8 engineType,uint32 productId,uint64 nonce,uint64 signedAt)"
         ))
     }
 
@@ -90,7 +90,7 @@ pub struct InitiateWithdraw {
 impl Eip712 for InitiateWithdraw {
     fn type_hash() -> Result<[u8; 32], Eip712Error> {
         Ok(ethers::utils::keccak256(
-            "InitiateWithdraw(address account,bytes32 subaccount,address token,uint256 amount,uint64 nonce,uint64 signedAt,bytes32 destinationAddress,uint32 destinationEndpointId)",
+            "InitiateWithdraw(address account,bytes32 subaccount,address token,uint256 amount,uint64 nonce,uint64 signedAt,bytes32 destinationAddress,uint32 destinationEndpointId)"
         ))
     }
 
@@ -123,7 +123,7 @@ pub struct RevokeLinkedSigner {
 impl Eip712 for RevokeLinkedSigner {
     fn type_hash() -> Result<[u8; 32], Eip712Error> {
         Ok(ethers::utils::keccak256(
-            "RevokeLinkedSigner(address sender,address signer,bytes32 subaccount,uint64 nonce,uint64 signedAt)",
+            "RevokeLinkedSigner(address sender,address signer,bytes32 subaccount,uint64 nonce,uint64 signedAt)"
         ))
     }
 

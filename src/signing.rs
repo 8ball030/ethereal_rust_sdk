@@ -1,6 +1,6 @@
 use ethers::signers::LocalWallet;
-use ethers::types::Signature;
 use ethers::types::transaction::eip712::Eip712Error;
+use ethers::types::Signature;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use ethers::utils::hex;
