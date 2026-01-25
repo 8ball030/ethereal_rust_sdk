@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{future::Future, sync::Arc};
 
 use futures_util::FutureExt;
 use log::{error, info};
@@ -117,13 +117,14 @@ impl WsClient {
         subscriptions.push(json_msg.clone());
     }
 
-    fn register_callback_internal<F, T>(&mut self, channel: &str, callback: F)
+    fn register_callback_internal<F, T, Fut>(&mut self, channel: &str, callback: F)
     where
         T: serde::de::DeserializeOwned + Send + 'static,
-        F: Fn(T) + Send + Sync + 'static,
+        F: Fn(T) -> Fut + Send + Sync + 'static,
+        Fut: Future<Output = ()> + Send + 'static,
     {
         // we wrap the user callback to parse the payload into the expected type
-        let callback = get_typed_callback::<T, F>(callback);
+        let callback = get_typed_callback::<T, F, Fut>(callback);
         self.client_builder = self
             .client_builder
             .take()
@@ -133,9 +134,10 @@ impl WsClient {
         info!("Callback registered channel={channel}");
     }
 
-    pub fn register_market_data_callback<F>(&mut self, callback: F)
+    pub fn register_market_data_callback<F, Fut>(&mut self, callback: F)
     where
-        F: Fn(MarketPriceDto) + Send + Sync + 'static,
+        F: Fn(MarketPriceDto) -> Fut + Send + Sync + 'static,
+        Fut: Future<Output = ()> + Send + 'static,
     {
         self.register_callback_internal(public_channels::MARKET_PRICE, callback);
     }
@@ -144,9 +146,10 @@ impl WsClient {
         self.subscribe_with_product(public_channels::MARKET_PRICE, product_id);
     }
 
-    pub fn register_orderbook_callback<F>(&mut self, callback: F)
+    pub fn register_orderbook_callback<F, Fut>(&mut self, callback: F)
     where
-        F: Fn(BookDepthMessage) + Send + Sync + 'static,
+        F: Fn(BookDepthMessage) -> Fut + Send + Sync + 'static,
+        Fut: Future<Output = ()> + Send + 'static,
     {
         self.register_callback_internal(public_channels::BOOK_DEPTH, callback);
     }
@@ -159,9 +162,10 @@ impl WsClient {
         self.subscribe_with_product(public_channels::TRADE_FILL, product_id);
     }
 
-    pub fn register_trade_fill_callback<F>(&mut self, callback: F)
+    pub fn register_trade_fill_callback<F, Fut>(&mut self, callback: F)
     where
-        F: Fn(TradeStreamMessage) + Send + Sync + 'static,
+        F: Fn(TradeStreamMessage) -> Fut + Send + Sync + 'static,
+        Fut: Future<Output = ()> + Send + 'static,
     {
         self.register_callback_internal(public_channels::TRADE_FILL, callback);
     }
@@ -170,9 +174,10 @@ impl WsClient {
         self.subscribe_with_subaccount(public_channels::TOKEN_TRANSFER, subaccount_id);
     }
 
-    pub fn register_transfer_callback<F>(&mut self, callback: F)
+    pub fn register_transfer_callback<F, Fut>(&mut self, callback: F)
     where
-        F: Fn(TransferDto) + Send + Sync + 'static,
+        F: Fn(TransferDto) -> Fut + Send + Sync + 'static,
+        Fut: Future<Output = ()> + Send + 'static,
     {
         self.register_callback_internal(public_channels::TOKEN_TRANSFER, callback);
     }
@@ -181,9 +186,10 @@ impl WsClient {
         self.subscribe_with_subaccount(public_channels::ORDER_FILL, subaccount_id);
     }
 
-    pub fn register_order_fill_callback<F>(&mut self, callback: F)
+    pub fn register_order_fill_callback<F, Fut>(&mut self, callback: F)
     where
-        F: Fn(PageOfOrderFillDtos) + Send + Sync + 'static,
+        F: Fn(PageOfOrderFillDtos) -> Fut + Send + Sync + 'static,
+        Fut: Future<Output = ()> + Send + 'static,
     {
         self.register_callback_internal(public_channels::ORDER_FILL, callback);
     }
@@ -192,9 +198,10 @@ impl WsClient {
         self.subscribe_with_subaccount(public_channels::ORDER_UPDATE, subaccount_id);
     }
 
-    pub fn register_order_update_callback<F>(&mut self, callback: F)
+    pub fn register_order_update_callback<F, Fut>(&mut self, callback: F)
     where
-        F: Fn(PageOfOrderDtos) + Send + Sync + 'static,
+        F: Fn(PageOfOrderDtos) -> Fut + Send + Sync + 'static,
+        Fut: Future<Output = ()> + Send + 'static,
     {
         self.register_callback_internal(public_channels::ORDER_UPDATE, callback);
     }
@@ -203,9 +210,10 @@ impl WsClient {
         self.subscribe_with_subaccount(public_channels::SUBACCOUNT_LIQUIDATION, subaccount_id);
     }
 
-    pub fn register_subaccount_liquidation_callback<F>(&mut self, callback: F)
+    pub fn register_subaccount_liquidation_callback<F, Fut>(&mut self, callback: F)
     where
-        F: Fn(SubaccountLiquidation) + Send + Sync + 'static,
+        F: Fn(SubaccountLiquidation) -> Fut + Send + Sync + 'static,
+        Fut: Future<Output = ()> + Send + 'static,
     {
         self.register_callback_internal(public_channels::SUBACCOUNT_LIQUIDATION, callback);
     }

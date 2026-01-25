@@ -8,7 +8,7 @@ use ethereal_rust_sdk::models::PageOfOrderDtos;
 use ethereal_rust_sdk::ws_client::run_forever;
 use log::info;
 
-fn order_update_callback(raw_data: PageOfOrderDtos) {
+async fn order_update_callback(raw_data: PageOfOrderDtos) {
     for fill in raw_data.data {
         info!(
             "Order update - ID: {}, Product ID: {}, Price: {}, Side: {:?} Quantity: {:?}",

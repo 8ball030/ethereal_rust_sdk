@@ -5,7 +5,7 @@ use log::info;
 use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
 use ethereal_rust_sdk::models::TradeStreamMessage;
 
-fn trade_fill_callback(trade: TradeStreamMessage) {
+async fn trade_fill_callback(trade: TradeStreamMessage) {
     for fill in trade.data {
         info!(
             "Trade Fill - Product ID: {:?}, Price: {:?}, Quantity: {:?}",

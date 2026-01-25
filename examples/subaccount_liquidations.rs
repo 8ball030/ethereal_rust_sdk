@@ -5,7 +5,7 @@ use ethereal_rust_sdk::models::SubaccountLiquidation;
 use ethereal_rust_sdk::ws_client::run_forever;
 use log::info;
 
-fn liquidation_callback(liquidation: SubaccountLiquidation) {
+async fn liquidation_callback(liquidation: SubaccountLiquidation) {
     info!(
         "Subaccount liquidated - ID: {}, Liquidated At: {}",
         liquidation.subaccount_id, liquidation.liquidated_at
