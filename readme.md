@@ -4,7 +4,12 @@ This is the Ethereal Rust SDK, which provides tools and libraries for interactin
 ## Features
 - Socket.IO client for real-time communication for all supported WebSocket channels
 - JSON serialization and deserialization
-- HTTP requests with Reqwest
+- Async HTTP requests with Reqwest
+- Fully typed data models generated from the Ethereal OpenAPI specification.
+- Support for all Ethereal REST API endpoints
+- Support for all Ethereal WebSocket API channels using async callbacks
+- Comprehensive error handling
+- Example code for common use cases
 
 ## Getting Started
 
@@ -19,7 +24,155 @@ cargo run --example market_data
 ```
 
 
-The client can be used as somewhat illustrated in the example below:
+## Usage of the SDK
+
+There are two main clients provided by the SDK: an asynchronous HTTP client for interacting with the Ethereal REST API, and a WebSocket client for real-time data via the Ethereal WebSocket API.
+
+### Creating Clients
+A convenient utility function is provided to create both clients. Here is an example of how to use it:
+
+```rust
+    let env = Environment::Testnet;
+    let private_key = "your_private_key_here";
+    let (http_client, ws_client) = create_client(env, private_key).await?;
+```
+
+### HTTP Client
+All of the HTTP client functionality is encapsulated in the `HttpClient` struct. This client can be used to make requests to various endpoints of the Ethereal REST API.
+
+The client has been generated using the OpenAPI specification provided by Ethereal, ensuring that all endpoints and data models are up-to-date with the latest API version.
+
+```rust
+// examples/simple_order_submission.rs
+od common;
+use ethereal_rust_sdk::models::{submit_order_limit_dto_data, OrderSide, OrderType};
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let (client, _) = common::create_test_clients().await?;
+
+    println!("Creating order...");
+
+    let ticker = "BTC-USD";
+    let quantity = 0.001;
+    let price = 80000.0;
+    let side = OrderSide::BUY;
+    let r#type = OrderType::Limit;
+
+    let expires_at = None;
+    let time_in_force = submit_order_limit_dto_data::TimeInForce::Gtd;
+
+    // We have a few more options when creating an order now.
+    let mut post_only = false;
+    let mut reduce_only = false;
+
+    let order = client
+        .submit_order(
+            ticker,
+            quantity,
+            Some(price),
+            side,
+            r#type,
+            time_in_force,
+            post_only,
+            reduce_only,
+            expires_at,
+        )
+        .await
+        .unwrap();
+    println!("Order submitted: {order:?}");
+
+    // We can also create orders with post only flag
+    println!("Creating post only reduce only order...");
+    post_only = true;
+    reduce_only = false;
+    let order = client
+        .submit_order(
+            ticker,
+            quantity,
+            Some(price),
+            side,
+            r#type,
+            time_in_force,
+            post_only,
+            reduce_only,
+            expires_at,
+        )
+        .await
+        .unwrap();
+    println!("Post and reduce only order submitted: {order:?}");
+
+    println!("Creating order with expires_at...");
+    let now = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)?
+        .as_secs() as i64;
+    let expires_at = Some(now + 60); // Expires in 60 seconds
+    let order = client
+        .submit_order(
+            ticker,
+            quantity,
+            Some(price),
+            side,
+            r#type,
+            time_in_force,
+            post_only,
+            reduce_only,
+            expires_at,
+        )
+        .await
+        .unwrap();
+    println!("Order with expires_at submitted: {order:?}");
+
+    println!("Fetching all current orders to cancel...");
+    let orders = client.get_open_orders().await?;
+    let cancel_result = client
+        .cancel_orders(orders.iter().map(|order| order.id.to_string()).collect())
+        .await?;
+    println!("Cancel result: {cancel_result:?}");
+    Ok(())
+}
+```
+
+Positions can be fetched similarly:
+
+```rust
+// examples/fetch_positions.rs
+use ethereal_rust_sdk::apis::{
+    position_api::PositionControllerListBySubaccountIdParams,
+    subaccount_api::SubaccountControllerListByAccountParams,
+};
+
+mod common;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    simple_logger::init_with_level(log::Level::Info).unwrap();
+
+    let (http_client, _) = common::create_test_clients().await?;
+    let params = SubaccountControllerListByAccountParams {
+        sender: http_client.address.clone(),
+        ..Default::default()
+    };
+    let subaccounts = http_client.subaccount().list_by_account(params).await?;
+
+    let positions = http_client
+        .position()
+        .list_by_subaccount_id(PositionControllerListBySubaccountIdParams {
+            subaccount_id: subaccounts.data.first().unwrap().id.to_string(),
+            ..Default::default()
+        })
+        .await?;
+    println!("Positions: {positions:#?}");
+
+    Ok(())
+}
+
+```
+
+
+### WebSocket Client
+
+The Websocket client can be used as somewhat illustrated in the example below:
 
 ## Market Data Subscription
 ```rust

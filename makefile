@@ -91,4 +91,8 @@ codegen:
 	done
 	python build_scripts/post_processing.py
 
-all: codegen fmt lint build test
+docs:
+	python build_scripts/readme.py
+
+all: codegen fmt lint build test docs
+	@echo "All tasks completed successfully."

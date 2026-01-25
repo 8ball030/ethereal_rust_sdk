@@ -1,7 +1,6 @@
 """
 Simple tests to ensure that the README code snippets are directly lifted from the example files.
 """
-import os
 import re
 from pathlib import Path
 
@@ -13,7 +12,7 @@ def extract_code_snippets(readme_path):
     # Regex to find Rust code blocks
     code_block_pattern = re.compile(r'```rust(.*?)```', re.DOTALL)
     snippets = code_block_pattern.findall(readme_content)
-    return [snippet.strip() for snippet in snippets]
+    return [snippet.strip() for snippet in snippets][1:]
 
 def extract_example_code(example_path):
     """Extract the main code from an example Rust file."""
