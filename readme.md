@@ -23,6 +23,12 @@ cd ethereal_rust_sdk
 cargo run --example market_data
 ```
 
+## Installation
+To use the Ethereal Rust SDK in your project run the following command to add it as a dependency in your `Cargo.toml` file:
+
+```bash
+cargo add ethereal_rust_sdk
+```
 
 ## Usage of the SDK
 
@@ -42,11 +48,11 @@ All of the HTTP client functionality is encapsulated in the `HttpClient` struct.
 
 The client has been generated using the OpenAPI specification provided by Ethereal, ensuring that all endpoints and data models are up-to-date with the latest API version.
 
-### Submittion of Orders
+### Submitting Orders
 
 ```rust
 // examples/simple_order_submission.rs
-od common;
+mod common;
 use ethereal_rust_sdk::models::{submit_order_limit_dto_data, OrderSide, OrderType};
 
 #[tokio::main]
@@ -133,6 +139,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Cancel result: {cancel_result:?}");
     Ok(())
 }
+
 ```
 
 ### Fetching Positions
@@ -280,6 +287,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     Ok(())
 }
+
 ```
 
 The example can be run with the following command:
@@ -341,7 +349,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-
 ```
 
 ```bash
@@ -355,15 +362,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 2025-12-04T15:22:26.745Z INFO  [order_fills] Order fill - ID: 11111111-2222-3333-4444-555555555555, Product ID: dce327cc-4fbb-4d5d-9ede-1c1fca7ef4ba, Price: 92724, Side: SELL Quantity: "0.001"
 ```
 
-
-:NOTE: Instructions for getting started with the Ethereal Rust SDK will be provided here soon.
-
 ## Contributing
 Contributions are welcome! Please fork the repository and submit a pull request with your changes.
 Before submitting a pull request, please ensure that your code adheres to the project's coding standards and passes all tests.
 Please run the following commands to lint, format, build, and test the project before submitting your changes:
 
 ```sh
+make codegen
 make fmt
 make lint
 make build
