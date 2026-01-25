@@ -5,7 +5,7 @@ use ethereal_rust_sdk::models::PageOfOrderFillDtos;
 use ethereal_rust_sdk::ws_client::run_forever;
 use log::info;
 
-fn order_fill_callback(raw_data: PageOfOrderFillDtos) {
+async fn order_fill_callback(raw_data: PageOfOrderFillDtos) {
     for fill in raw_data.data {
         info!(
             "Order fill - ID: {}, Product ID: {}, Price: {}, Side: {:?} Quantity: {:?}",

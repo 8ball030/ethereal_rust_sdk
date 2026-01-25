@@ -3,7 +3,7 @@ use ethereal_rust_sdk::apis::product_api::{
     ProductControllerGetByIdParams, ProductControllerGetMarketLiquidityParams,
     ProductControllerGetMarketPriceParams, ProductControllerListParams,
 };
-use ethereal_rust_sdk::sync_client::client::HttpClient;
+use ethereal_rust_sdk::async_client::client::HttpClient;
 use uuid::Uuid;
 
 async fn client_and_first_product() -> (HttpClient, Uuid) {

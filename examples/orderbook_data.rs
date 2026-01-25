@@ -5,7 +5,7 @@ use log::info;
 use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
 use ethereal_rust_sdk::models::BookDepthMessage;
 
-fn orderbook_callback(raw_data: BookDepthMessage) {
+async fn orderbook_callback(raw_data: BookDepthMessage) {
     info!(
         "Orderbook Update - Product ID: {:?}, Bids: {:?}, Asks: {:?}",
         raw_data.product_id, raw_data.bids, raw_data.asks

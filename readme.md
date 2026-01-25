@@ -4,7 +4,12 @@ This is the Ethereal Rust SDK, which provides tools and libraries for interactin
 ## Features
 - Socket.IO client for real-time communication for all supported WebSocket channels
 - JSON serialization and deserialization
-- HTTP requests with Reqwest
+- Async HTTP requests with Reqwest
+- Fully typed data models generated from the Ethereal OpenAPI specification.
+- Support for all Ethereal REST API endpoints
+- Support for all Ethereal WebSocket API channels using async callbacks
+- Comprehensive error handling
+- Example code for common use cases
 
 ## Getting Started
 
@@ -19,48 +24,189 @@ cargo run --example market_data
 ```
 
 
-The client can be used as somewhat illustrated in the example below:
+## Usage of the SDK
+
+There are two main clients provided by the SDK: an asynchronous HTTP client for interacting with the Ethereal REST API, and a WebSocket client for real-time data via the Ethereal WebSocket API.
+
+### Creating Clients
+A convenient utility function is provided to create both clients. Here is an example of how to use it:
 
 ```rust
+    let env = Environment::Testnet;
+    let private_key = "your_private_key_here";
+    let (http_client, ws_client) = create_client(env, private_key).await?;
+```
 
-use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
-use ethereal_rust_sdk::enums::Environment;
-use ethereal_rust_sdk::models::MarketPriceDto;
-use ethereal_rust_sdk::sync_client::client::HttpClient;
-use ethereal_rust_sdk::ws_client::WsClient;
+### HTTP Client
+All of the HTTP client functionality is encapsulated in the `HttpClient` struct. This client can be used to make requests to various endpoints of the Ethereal REST API.
 
-fn market_data_callback(market_price: Payload, _socket: RawClient) {
-    if let Payload::Text(values) = market_price {
-        for value in values {
-            if let Ok(market_price) = serde_json::from_value::<MarketPriceDto>(value) {
-                info!(
-                    "Market Price Update - Product ID: {:?}, Best Bid: {:?}, Best Ask: {:?}",
-                    market_price.product_id,
-                    market_price.best_bid_price,
-                    market_price.best_ask_price
-                );
-            }
-        }
-    }
+The client has been generated using the OpenAPI specification provided by Ethereal, ensuring that all endpoints and data models are up-to-date with the latest API version.
+
+```rust
+// examples/simple_order_submission.rs
+od common;
+use ethereal_rust_sdk::models::{submit_order_limit_dto_data, OrderSide, OrderType};
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let (client, _) = common::create_test_clients().await?;
+
+    println!("Creating order...");
+
+    let ticker = "BTC-USD";
+    let quantity = 0.001;
+    let price = 80000.0;
+    let side = OrderSide::BUY;
+    let r#type = OrderType::Limit;
+
+    let expires_at = None;
+    let time_in_force = submit_order_limit_dto_data::TimeInForce::Gtd;
+
+    // We have a few more options when creating an order now.
+    let mut post_only = false;
+    let mut reduce_only = false;
+
+    let order = client
+        .submit_order(
+            ticker,
+            quantity,
+            Some(price),
+            side,
+            r#type,
+            time_in_force,
+            post_only,
+            reduce_only,
+            expires_at,
+        )
+        .await
+        .unwrap();
+    println!("Order submitted: {order:?}");
+
+    // We can also create orders with post only flag
+    println!("Creating post only reduce only order...");
+    post_only = true;
+    reduce_only = false;
+    let order = client
+        .submit_order(
+            ticker,
+            quantity,
+            Some(price),
+            side,
+            r#type,
+            time_in_force,
+            post_only,
+            reduce_only,
+            expires_at,
+        )
+        .await
+        .unwrap();
+    println!("Post and reduce only order submitted: {order:?}");
+
+    println!("Creating order with expires_at...");
+    let now = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)?
+        .as_secs() as i64;
+    let expires_at = Some(now + 60); // Expires in 60 seconds
+    let order = client
+        .submit_order(
+            ticker,
+            quantity,
+            Some(price),
+            side,
+            r#type,
+            time_in_force,
+            post_only,
+            reduce_only,
+            expires_at,
+        )
+        .await
+        .unwrap();
+    println!("Order with expires_at submitted: {order:?}");
+
+    println!("Fetching all current orders to cancel...");
+    let orders = client.get_open_orders().await?;
+    let cancel_result = client
+        .cancel_orders(orders.iter().map(|order| order.id.to_string()).collect())
+        .await?;
+    println!("Cancel result: {cancel_result:?}");
+    Ok(())
 }
+```
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+Positions can be fetched similarly:
+
+```rust
+// examples/fetch_positions.rs
+use ethereal_rust_sdk::apis::{
+    position_api::PositionControllerListBySubaccountIdParams,
+    subaccount_api::SubaccountControllerListByAccountParams,
+};
+
+mod common;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     simple_logger::init_with_level(log::Level::Info).unwrap();
 
-    let env = Environment::Production;
+    let (http_client, _) = common::create_test_clients().await?;
+    let params = SubaccountControllerListByAccountParams {
+        sender: http_client.address.clone(),
+        ..Default::default()
+    };
+    let subaccounts = http_client.subaccount().list_by_account(params).await?;
 
-    let http_client = HttpClient::new(env.clone());
+    let positions = http_client
+        .position()
+        .list_by_subaccount_id(PositionControllerListBySubaccountIdParams {
+            subaccount_id: subaccounts.data.first().unwrap().id.to_string(),
+            ..Default::default()
+        })
+        .await?;
+    println!("Positions: {positions:#?}");
+
+    Ok(())
+}
+
+```
+
+
+### WebSocket Client
+
+The Websocket client can be used as somewhat illustrated in the example below:
+
+## Market Data Subscription
+```rust
+// examples/market_data.rs
+use ethereal_rust_sdk::ws_client::run_forever;
+use log::info;
+mod common;
+
+use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
+use ethereal_rust_sdk::models::MarketPriceDto;
+
+async fn market_data_callback(market_price: MarketPriceDto) {
+    info!(
+        "Market Price Update - Product ID: {:?}, Best Bid: {:?}, Best Ask: {:?}",
+        market_price.product_id, market_price.best_bid_price, market_price.best_ask_price
+    );
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    simple_logger::init_with_level(log::Level::Info).unwrap();
+
+    let (http_client, mut ws_client) = common::create_test_clients().await?;
     let params = ProductControllerListParams::default();
-    let products = http_client.product().list(params)?;
+    let products = http_client.product().list(params).await.unwrap().data;
 
-    let mut ws_client = WsClient::new(env.clone());
-    ws_client.register_market_price_callback(market_data_callback);
-    ws_client.connect()?;
+    ws_client.register_market_data_callback(market_data_callback);
 
-    products.data.iter().for_each(|product| {
+    for product in products.iter() {
         ws_client.subscribe_market_data(&product.id.to_string());
-    });
-    ws_client.run_forever();
+    }
+
+    ws_client.connect().await?;
+    run_forever().await;
     Ok(())
 }
 
@@ -77,57 +223,57 @@ The following example demonstrates how to do so for order updates.
 ### Order Status Updates
 
 ```rust
+// examples/order_updates.rs
+mod common;
+
+use ethereal_rust_sdk::apis::position_api::PositionControllerGetActiveParams;
+use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
 use ethereal_rust_sdk::apis::subaccount_api::SubaccountControllerListByAccountParams;
-use ethereal_rust_sdk::enums::Environment;
 use ethereal_rust_sdk::models::PageOfOrderDtos;
-use ethereal_rust_sdk::sync_client::client::HttpClient;
-use ethereal_rust_sdk::ws_client::WsClient;
 
-use log::{error, info};
-use rust_socketio::client::RawClient;
-use rust_socketio::Payload;
+use ethereal_rust_sdk::ws_client::run_forever;
+use log::info;
 
-fn order_update_callback(raw_data: Payload, _socket: RawClient) {
-    if let Payload::Text(values) = raw_data {
-        for value in values {
-            match serde_json::from_value::<PageOfOrderDtos>(value.clone()) {
-                Ok(page) => {
-                    for fill in page.data {
-                        info!(
-                            "Order update - ID: {}, Product ID: {}, Price: {}, Side: {:?} Quantity: {:?}",
-                            fill.id, fill.product_id, fill.price, fill.side, fill.filled
-                        );
-                    }
-                }
-                Err(err) => {
-                    error!("Failed to deserialize order data: {value}, error: {err}");
-                }
-            }
-        }
+async fn order_update_callback(raw_data: PageOfOrderDtos) {
+    for fill in raw_data.data {
+        info!(
+            "Order update - ID: {}, Product ID: {}, Price: {}, Side: {:?} Quantity: {:?}",
+            fill.id, fill.product_id, fill.price, fill.side, fill.filled
+        );
     }
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     simple_logger::init_with_level(log::Level::Info).unwrap();
-    let sender_address = std::env::var("SENDER_ADDRESS").unwrap_or_else(|_| {
-        panic!("SENDER_ADDRESS environment variable is not set");
-    });
-    let env = Environment::Testnet;
 
-    let http_client = HttpClient::new(env.clone());
+    let (http_client, mut ws_client) = common::create_test_clients().await?;
     let params = SubaccountControllerListByAccountParams {
-        sender: sender_address,
+        sender: http_client.address.clone(),
         ..Default::default()
     };
-    let subaccounts = http_client.subaccount().list_by_account(params)?;
+    let subaccounts = http_client.subaccount().list_by_account(params).await?;
+    let params = ProductControllerListParams::default();
+    let products = http_client.product().list(params).await?;
 
-    let mut ws_client = WsClient::new(env);
+    products
+        .data
+        .first()
+        .expect("No products found in test account");
+
+    let product_id = &products.data.first().unwrap().id;
+    let params = PositionControllerGetActiveParams {
+        subaccount_id: subaccounts.data.first().unwrap().id.to_string(),
+        product_id: product_id.to_string(),
+    };
+    println!("Params: {params:?}");
+
     ws_client.register_order_update_callback(order_update_callback);
-    ws_client.connect()?;
     subaccounts.data.iter().for_each(|subaccount| {
         ws_client.subscribe_order_update(&subaccount.id.to_string());
     });
-    ws_client.run_forever();
+    ws_client.connect().await?;
+    run_forever().await;
 
     Ok(())
 }
@@ -156,60 +302,44 @@ NOTE: The example below assumes you have already set the `SENDER_ADDRESS` enviro
 Additionally, it should be pointed out that a different data model is used for order fills, namely `PageOfOrderFillDtos`.
 
 ```rust
+// examples/order_fills.rs
+mod common;
 use ethereal_rust_sdk::apis::subaccount_api::SubaccountControllerListByAccountParams;
-use ethereal_rust_sdk::enums::Environment;
 use ethereal_rust_sdk::models::PageOfOrderFillDtos;
-use ethereal_rust_sdk::sync_client::client::HttpClient;
-use ethereal_rust_sdk::ws_client::WsClient;
 
-use log::{error, info};
-use rust_socketio::client::RawClient;
-use rust_socketio::Payload;
+use ethereal_rust_sdk::ws_client::run_forever;
+use log::info;
 
-fn order_fill_callback(raw_data: Payload, _socket: RawClient) {
-    if let Payload::Text(values) = raw_data {
-        for value in values {
-            match serde_json::from_value::<PageOfOrderFillDtos>(value.clone()) {
-                Ok(page) => {
-                    for fill in page.data {
-                        info!(
-                            "Order fill - ID: {}, Product ID: {}, Price: {}, Side: {:?} Quantity: {:?}",
-                            fill.id, fill.product_id, fill.price, fill.side, fill.filled
-                        );
-                    }
-                }
-                Err(err) => {
-                    error!("Failed to deserialize order data: {value}, error: {err}");
-                }
-            }
-        }
+async fn order_fill_callback(raw_data: PageOfOrderFillDtos) {
+    for fill in raw_data.data {
+        info!(
+            "Order fill - ID: {}, Product ID: {}, Price: {}, Side: {:?} Quantity: {:?}",
+            fill.id, fill.product_id, fill.price, fill.side, fill.filled
+        );
     }
 }
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    simple_logger::init_with_level(log::Level::Info).unwrap();
-    let sender_address = std::env::var("SENDER_ADDRESS").unwrap_or_else(|_| {
-        panic!("SENDER_ADDRESS environment variable is not set");
-    });
 
-    let env = Environment::Testnet;
-    let http_client = HttpClient::new(env.clone());
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    simple_logger::init_with_level(log::Level::Info).unwrap();
+
+    let (http_client, mut ws_client) = common::create_test_clients().await?;
     let params = SubaccountControllerListByAccountParams {
-        sender: sender_address,
+        sender: http_client.address.clone(),
         ..Default::default()
     };
-    let subaccounts = http_client.subaccount().list_by_account(params)?;
-
-    let mut ws_client = WsClient::new(env);
+    let subaccounts = http_client.subaccount().list_by_account(params).await?;
 
     ws_client.register_order_fill_callback(order_fill_callback);
-    ws_client.connect()?;
     subaccounts.data.iter().for_each(|subaccount| {
         ws_client.subscribe_order_fill(&subaccount.id.to_string());
     });
-    ws_client.run_forever();
+    ws_client.connect().await?;
+    run_forever().await;
 
     Ok(())
 }
+
 
 ```
 

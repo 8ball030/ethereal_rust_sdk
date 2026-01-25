@@ -8,14 +8,7 @@ use crate::{
         product_api::ProductControllerListParams,
         subaccount_api::SubaccountControllerListByAccountParams,
     },
-    enums::Environment,
-    models::{
-        CancelOrderDto, CancelOrderDtoData, CancelOrderResultDto, OrderStatus, SubaccountDto,
-        SubmitOrderCreatedDto, SubmitOrderDto, SubmitOrderDtoData, SubmitOrderLimitDtoData,
-    },
-    signable_messages::{CancelOrder, TradeOrder},
-    signing::{get_nonce, get_now, hex_to_bytes32, to_scaled_e9},
-    sync_client::{
+    async_client::{
         funding::FundingClient,
         linked_signer::LinkedSignerClient,
         maintenance::MaintenanceClient,
@@ -30,6 +23,13 @@ use crate::{
         token::TokenClient,
         whitelist::WhitelistClient,
     },
+    enums::Environment,
+    models::{
+        CancelOrderDto, CancelOrderDtoData, CancelOrderResultDto, OrderStatus, SubaccountDto,
+        SubmitOrderCreatedDto, SubmitOrderDto, SubmitOrderDtoData, SubmitOrderLimitDtoData,
+    },
+    signable_messages::{CancelOrder, TradeOrder},
+    signing::{get_nonce, get_now, hex_to_bytes32, to_scaled_e9},
 };
 
 use crate::models::submit_order_limit_dto_data::TimeInForce;

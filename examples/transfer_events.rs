@@ -5,7 +5,7 @@ use ethereal_rust_sdk::models::TransferDto;
 use ethereal_rust_sdk::ws_client::run_forever;
 use log::info;
 
-fn transfer_callback(raw_data: TransferDto) {
+async fn transfer_callback(raw_data: TransferDto) {
     info!(
         "Transfer Event - ID: {:?}, Status: {:?}, Token Name: {:?}, Amount: {:?}, Token Address: {:?}",
         raw_data.id, raw_data.status, raw_data.token_name, raw_data.amount, raw_data.token_address
