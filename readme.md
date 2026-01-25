@@ -37,10 +37,12 @@ A convenient utility function is provided to create both clients. Here is an exa
     let (http_client, ws_client) = create_client(env, private_key).await?;
 ```
 
-### HTTP Client
+## HTTP Client
 All of the HTTP client functionality is encapsulated in the `HttpClient` struct. This client can be used to make requests to various endpoints of the Ethereal REST API.
 
 The client has been generated using the OpenAPI specification provided by Ethereal, ensuring that all endpoints and data models are up-to-date with the latest API version.
+
+### Submittion of Orders
 
 ```rust
 // examples/simple_order_submission.rs
@@ -133,6 +135,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
+### Fetching Positions
+
 Positions can be fetched similarly:
 
 ```rust
@@ -169,10 +173,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 ```
 
-
 ### WebSocket Client
 
 The Websocket client can be used as somewhat illustrated in the example below:
+
+# Channels
+
+In order to proces messages from the websocket client, the user must first register a callback, then subscribe to the desired channel.
+
 
 ## Market Data Subscription
 ```rust
@@ -211,16 +219,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 ```
-
-As can be seen, the SDK provides both synchronous HTTP clients and WebSocket clients to interact with the Ethereal platform.
-
-# Channels
-
-In order to proces messages from the websocket client, the user must first register a callback, then subscribe to the desired channel.
-
-The following example demonstrates how to do so for order updates.
+As can be seen, the SDK provides both asynchronous HTTP clients and WebSocket clients to interact with the Ethereal platform.
 
 ### Order Status Updates
+
+The following example demonstrates how to register for order updates.
 
 ```rust
 // examples/order_updates.rs
@@ -297,8 +300,6 @@ The example can be run with the following command:
 
 An order fill callback can be registered and subscribed to in a similar manner, this time using the `register_order_fill_callback` and `subscribe_order_fill` methods.
 
-NOTE: The example below assumes you have already set the `SENDER_ADDRESS` environment variable.
-
 Additionally, it should be pointed out that a different data model is used for order fills, namely `PageOfOrderFillDtos`.
 
 ```rust
@@ -355,8 +356,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 
-
-
 :NOTE: Instructions for getting started with the Ethereal Rust SDK will be provided here soon.
 
 ## Contributing
@@ -384,12 +383,12 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [x] Implement Read HTTP client for Ethereal REST API.
 - [x] Create example code for using the SDK.
 - [x] Implement Order posting for Ethereal REST API.
+- [x] Create async HTTP client for Ethereal REST API.
+- [x] Write tests for all modules and functionalities.
+- [x] Add more examples and documentation.
+- [x] Publish the crate to crates.io.
 - [ ] Template all other signable apis.
 - [ ] Create abstraction for signable requests.
-- [ ] Create async HTTP client for Ethereal REST API.
-- [ ] Write tests for all modules and functionalities.
-- [ ] Add more examples and documentation.
-- [ ] Publish the crate to crates.io.
 - [ ] Parse stringified numbers into appropriate numeric types.
 
 ## Acknowledgements
