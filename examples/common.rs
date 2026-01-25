@@ -1,5 +1,5 @@
 use ethereal_rust_sdk::{
-    enums::Environment, sync_client::client::HttpClient, utils::create_client, ws_client::WsClient,
+    async_client::client::HttpClient, enums::Environment, utils::create_client, ws_client::WsClient,
 };
 
 pub async fn create_test_clients() -> anyhow::Result<(HttpClient, WsClient)> {

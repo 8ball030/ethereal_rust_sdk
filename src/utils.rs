@@ -5,7 +5,7 @@ use std::{io, sync::Arc};
 use log::error;
 use rust_socketio::{asynchronous::Client, Payload};
 
-use crate::{enums::Environment, sync_client::client::HttpClient, ws_client::WsClient};
+use crate::{async_client::client::HttpClient, enums::Environment, ws_client::WsClient};
 
 pub async fn create_client(
     env: Environment,

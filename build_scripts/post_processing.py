@@ -18,7 +18,7 @@ from templates import (
 
 CRATE_ROOT = Path(__file__).parent.parent / "src"
 API_SOURCE_DIR = CRATE_ROOT/ "apis"
-SYNC_CLIENT_PATH = CRATE_ROOT / "sync_client"
+SYNC_CLIENT_PATH = CRATE_ROOT / "async_client"
 DATA_DIR = Path(__file__).parent.parent / "data"
 
 

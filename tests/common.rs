@@ -1,4 +1,4 @@
-use ethereal_rust_sdk::{enums::Environment, models::ProductDto, sync_client::client::HttpClient};
+use ethereal_rust_sdk::{async_client::client::HttpClient, enums::Environment, models::ProductDto};
 
 pub async fn create_test_client() -> anyhow::Result<HttpClient> {
     let env = Environment::Testnet;
