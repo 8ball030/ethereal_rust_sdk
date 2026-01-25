@@ -18,7 +18,7 @@ from templates import (
 
 CRATE_ROOT = Path(__file__).parent.parent / "src"
 API_SOURCE_DIR = CRATE_ROOT/ "apis"
-SYNC_CLIENT_PATH = CRATE_ROOT / "async_client"
+ASYNC_CLIENT_PATH = CRATE_ROOT / "async_client"
 DATA_DIR = Path(__file__).parent.parent / "data"
 
 
@@ -81,11 +81,11 @@ def check_sync_client_has_sub_client(file_path: Path):
     """
     Check that the sync client has sub-client methods.
     """
-    sync_client_content = (SYNC_CLIENT_PATH / "client.rs").read_text()
+    sync_client_content = (ASYNC_CLIENT_PATH / "client.rs").read_text()
     api_name = file_path.stem.split("_api")[0]
     expected_client_name = f"{api_name.capitalize()}Client"
     if expected_client_name not in sync_client_content:
-        print(f"    Warning: {SYNC_CLIENT_PATH} does not have client for {expected_client_name}")
+        print(f"    Warning: {ASYNC_CLIENT_PATH} does not have client for {expected_client_name}")
 
 def check_sub_client_methods(file_path: Path):
     """
@@ -148,7 +148,7 @@ def check_sub_client_methods(file_path: Path):
 
 
 def write_sub_client_file(api_name: str, functions: list[str], model_imports: set[str], client_imports: set[str]):
-    sub_client_file = SYNC_CLIENT_PATH / f"{api_name[:-4]}.rs"
+    sub_client_file = ASYNC_CLIENT_PATH / f"{api_name[:-4]}.rs"
     client_name = f"{to_upper_camel_case(api_name[:-4])}Client"
     functions_str = "\n".join(functions)
     model_imports_str = ", ".join(sorted(model_imports))
@@ -168,7 +168,7 @@ def include_sub_client_in_mod_file(api_name: str):
     """
     Include the sub-client module in the sync_client mod.rs file.
     """
-    mod_file = SYNC_CLIENT_PATH / "mod.rs"
+    mod_file = ASYNC_CLIENT_PATH / "mod.rs"
     mod_content = mod_file.read_text()
     sub_client_mod_line = f"mod {api_name[:-4]};"
     if sub_client_mod_line not in mod_content:
@@ -180,7 +180,7 @@ def write_tests_file(api_name: str, tests: list[str], client_imports: set[str]):
     """
     Write the tests file for the sub-client.
     """
-    tests_file = SYNC_CLIENT_PATH.parent.parent / "tests" / f"test_{api_name[:-4]}.rs"
+    tests_file = ASYNC_CLIENT_PATH.parent.parent / "tests" / f"test_{api_name[:-4]}.rs"
     if tests_file.exists():
         return
     tests_file.touch()
