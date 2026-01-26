@@ -17,7 +17,7 @@ pub struct RevokeLinkedSignerDto {
     #[serde(rename = "signature")]
     pub signature: String,
     #[serde(rename = "data")]
-    pub data: Box<models::RevokeLinkedSignerDtoData>,
+    pub data: models::RevokeLinkedSignerDtoData,
 }
 
 impl RevokeLinkedSignerDto {
@@ -25,9 +25,6 @@ impl RevokeLinkedSignerDto {
         signature: String,
         data: models::RevokeLinkedSignerDtoData,
     ) -> RevokeLinkedSignerDto {
-        RevokeLinkedSignerDto {
-            signature,
-            data: Box::new(data),
-        }
+        RevokeLinkedSignerDto { signature, data }
     }
 }

@@ -1,11 +1,14 @@
-use ethers::signers::LocalWallet;
 use ethers::types::transaction::eip712::Eip712Error;
-use ethers::types::Signature;
+use ethers::types::{Signature, H160};
+use ethers::{
+    signers::{LocalWallet, Signer},
+    utils::hex,
+};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use ethers::utils::hex;
 use ethers::{types::U256, utils::keccak256};
 
+use crate::models::SubaccountDto;
 use crate::{domain_config::DOMAINS, enums::Environment};
 
 pub fn to_scaled_e9(value: f64) -> u128 {
@@ -78,5 +81,53 @@ pub trait Eip712 {
         let domain_separator = get_domain_separator(env);
         let full_hash = make_full_hash(&domain_separator, &self.struct_hash()?);
         Ok(full_hash)
+    }
+}
+
+#[derive(Clone)]
+pub struct EipSigningFields {
+    pub sender: H160,
+    pub subaccount: [u8; 32],
+    pub nonce: u64,
+    pub signed_at: u64,
+}
+
+#[derive(Clone)]
+pub struct DtoSigningFields {
+    pub sender: String,
+    pub subaccount: String,
+    pub nonce: String,
+    pub signed_at: i64,
+}
+pub struct SigningContext<'a> {
+    wallet: &'a LocalWallet,
+    subaccount: &'a SubaccountDto,
+    pub nonce: u64,
+    pub signed_at: u64,
+}
+impl<'a> SigningContext<'a> {
+    pub fn eip_signing_fields(&self) -> EipSigningFields {
+        EipSigningFields {
+            sender: self.wallet.address(),
+            subaccount: hex_to_bytes32(&self.subaccount.name).unwrap(),
+            nonce: self.nonce,
+            signed_at: self.signed_at,
+        }
+    }
+    pub fn dto_signing_fields(&self) -> DtoSigningFields {
+        DtoSigningFields {
+            sender: self.wallet.address().to_string(),
+            subaccount: self.subaccount.name.clone(),
+            nonce: self.nonce.to_string(),
+            signed_at: self.signed_at as i64,
+        }
+    }
+    pub fn new(wallet: &'a LocalWallet, subaccount: &'a SubaccountDto) -> Self {
+        SigningContext {
+            wallet,
+            subaccount,
+            nonce: get_nonce(),
+            signed_at: get_now() as u64,
+        }
     }
 }

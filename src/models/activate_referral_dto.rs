@@ -17,14 +17,11 @@ pub struct ActivateReferralDto {
     #[serde(rename = "signature")]
     pub signature: String,
     #[serde(rename = "data")]
-    pub data: Box<models::ActivateReferralDtoData>,
+    pub data: models::ActivateReferralDtoData,
 }
 
 impl ActivateReferralDto {
     pub fn new(signature: String, data: models::ActivateReferralDtoData) -> ActivateReferralDto {
-        ActivateReferralDto {
-            signature,
-            data: Box::new(data),
-        }
+        ActivateReferralDto { signature, data }
     }
 }

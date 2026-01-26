@@ -17,7 +17,7 @@ pub struct RefreshLinkedSignerDto {
     #[serde(rename = "signature")]
     pub signature: String,
     #[serde(rename = "data")]
-    pub data: Box<models::RefreshLinkedSignerDtoData>,
+    pub data: models::RefreshLinkedSignerDtoData,
 }
 
 impl RefreshLinkedSignerDto {
@@ -25,9 +25,6 @@ impl RefreshLinkedSignerDto {
         signature: String,
         data: models::RefreshLinkedSignerDtoData,
     ) -> RefreshLinkedSignerDto {
-        RefreshLinkedSignerDto {
-            signature,
-            data: Box::new(data),
-        }
+        RefreshLinkedSignerDto { signature, data }
     }
 }

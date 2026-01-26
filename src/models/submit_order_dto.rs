@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SubmitOrderDto {
     #[serde(rename = "data")]
-    pub data: Box<models::SubmitOrderDtoData>,
+    pub data: models::SubmitOrderDtoData,
     /// The signature from signTypedData(...) signed by the sender
     #[serde(rename = "signature")]
     pub signature: String,
@@ -22,9 +22,6 @@ pub struct SubmitOrderDto {
 
 impl SubmitOrderDto {
     pub fn new(data: models::SubmitOrderDtoData, signature: String) -> SubmitOrderDto {
-        SubmitOrderDto {
-            data: Box::new(data),
-            signature,
-        }
+        SubmitOrderDto { data, signature }
     }
 }

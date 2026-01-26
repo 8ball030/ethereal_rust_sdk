@@ -16,7 +16,7 @@ pub struct BadRequestDto {
     #[serde(rename = "statusCode")]
     pub status_code: StatusCode,
     #[serde(rename = "message")]
-    pub message: Box<models::BadRequestDtoMessage>,
+    pub message: models::BadRequestDtoMessage,
     #[serde(rename = "error")]
     pub error: Error,
 }
@@ -29,7 +29,7 @@ impl BadRequestDto {
     ) -> BadRequestDto {
         BadRequestDto {
             status_code,
-            message: Box::new(message),
+            message,
             error,
         }
     }

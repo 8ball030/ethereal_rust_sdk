@@ -29,7 +29,7 @@ use crate::{
         SubmitOrderCreatedDto, SubmitOrderDto, SubmitOrderDtoData, SubmitOrderLimitDtoData,
     },
     signable_messages::{CancelOrder, TradeOrder},
-    signing::{get_nonce, get_now, hex_to_bytes32, to_scaled_e9},
+    signing::{hex_to_bytes32, to_scaled_e9, SigningContext},
 };
 
 use crate::models::submit_order_limit_dto_data::TimeInForce;
@@ -47,8 +47,22 @@ fn get_server_url(environment: &Environment) -> &str {
     }
 }
 
+#[macro_export]
+macro_rules! with_signing_fields {
+    ($signing_fn:ident, $ctx:expr, $struct:ident { $($rest:tt)* }) => {{
+        let s = $ctx.$signing_fn();
+        $struct {
+            sender: s.sender,
+            subaccount: s.subaccount,
+            nonce: s.nonce,
+            signed_at: s.signed_at as _,
+            $($rest)*
+        }
+    }};
+}
+
 pub struct HttpClient {
-    env: Environment,
+    pub env: Environment,
     config: Configuration,
     pub wallet: LocalWallet,
     pub address: String,
@@ -180,41 +194,39 @@ impl HttpClient {
             return Err(format!("Ticker {ticker} not found").into());
         }
         let product_info = self.product_hashmap.get(ticker).unwrap();
-        let nonce = get_nonce(); // implement get_nonce to fetch or generate a nonce
-        let now = get_now();
-        let message = TradeOrder {
-            sender: self.address.parse()?,
-            subaccount: hex_to_bytes32(&self.subaccounts[0].name)?,
-            quantity: to_scaled_e9(quantity),
-            price: to_scaled_e9(price.unwrap_or(0.0)),
-            reduce_only,
-            side: side as u8,
-            engine_type: product_info.engine_type.to_string().parse()?,
-            product_id: product_info.onchain_id.to_string().parse()?,
-            nonce,
-            signed_at: now as u64,
-        };
+        let ctx = SigningContext::new(&self.wallet, &self.subaccounts[0]);
+        let message = with_signing_fields!(
+            eip_signing_fields,
+            ctx,
+            TradeOrder {
+                quantity: to_scaled_e9(quantity),
+                price: to_scaled_e9(price.unwrap_or(0.0)),
+                reduce_only,
+                side: side as u8,
+                engine_type: product_info.engine_type.to_string().parse()?,
+                product_id: product_info.onchain_id.to_string().parse()?,
+            }
+        );
         let signature = message.sign(self.env, &self.wallet)?;
 
+        let order_dto = with_signing_fields!(
+            dto_signing_fields,
+            ctx,
+            SubmitOrderLimitDtoData {
+                quantity: quantity.to_string(),
+                price: price.expect("Price should be present").to_string(),
+                side,
+                onchain_id: product_info.onchain_id,
+                engine_type: product_info.engine_type,
+                reduce_only: Some(reduce_only),
+                post_only,
+                expires_at,
+                time_in_force,
+                ..Default::default()
+            }
+        );
         let dto = SubmitOrderDto {
-            data: Box::new(SubmitOrderDtoData::SubmitOrderLimitDtoData(Box::new(
-                SubmitOrderLimitDtoData {
-                    subaccount: self.subaccounts[0].name.clone(),
-                    sender: self.address.to_string(),
-                    nonce: nonce.to_string(),
-                    quantity: quantity.to_string(),
-                    side,
-                    onchain_id: product_info.onchain_id,
-                    engine_type: product_info.engine_type,
-                    reduce_only: Some(reduce_only),
-                    signed_at: now,
-                    price: price.expect("Price should be present").to_string(),
-                    post_only,
-                    expires_at,
-                    time_in_force,
-                    ..Default::default()
-                },
-            ))),
+            data: SubmitOrderDtoData::SubmitOrderLimitDtoData(order_dto),
             signature: "0x".to_string() + &hex::encode(signature.to_vec()),
         };
 
@@ -236,11 +248,11 @@ impl HttpClient {
     ) -> Result<Vec<CancelOrderResultDto>, Box<dyn std::error::Error>> {
         println!("Cancelling order...");
         let subaccount = &self.subaccounts[0];
-        let nonce = get_nonce(); // implement get_nonce to fetch or generate a nonce
+        let ctx = SigningContext::new(&self.wallet, &self.subaccounts[0]);
         let message = CancelOrder {
             sender: self.address.clone().parse()?,
             subaccount: hex_to_bytes32(&subaccount.name.clone())?,
-            nonce, // increment nonce for the cancel order
+            nonce: ctx.nonce, // increment nonce for the cancel order
         };
 
         let signature = message.sign(self.env, &self.wallet)?;
@@ -252,18 +264,21 @@ impl HttpClient {
             .order()
             .cancel(OrderControllerCancelParams {
                 cancel_order_dto: CancelOrderDto {
-                    data: Box::new(CancelOrderDtoData {
+                    data: CancelOrderDtoData {
                         subaccount: subaccount.name.clone(),
                         sender: self.address.to_string(),
-                        nonce: nonce.to_string(),
+                        nonce: ctx.nonce.to_string(),
                         order_ids: ids.into(),
                         ..Default::default()
-                    }),
+                    },
                     signature: "0x".to_string() + &hex::encode(signature.to_vec()),
                 },
             })
             .await;
-        Ok(cancel_result.unwrap().data)
+        match cancel_result {
+            Err(e) => Err(Box::new(e)),
+            Ok(result) => Ok(result.data),
+        }
     }
     pub async fn get_open_orders(
         &self,
