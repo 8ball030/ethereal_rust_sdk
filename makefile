@@ -60,7 +60,7 @@ codegen:
 	  -i openapi.json \
 	  -g rust \
 	  -o ./generated \
-	--additional-properties=supportAsync=true,useSingleRequestParameter=true
+	--additional-properties=supportAsync=true,useSingleRequestParameter=true,avoidBoxedModels=true
 
 
 	cp ./generated/src/models/* ./src/models/

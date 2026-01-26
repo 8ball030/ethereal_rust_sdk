@@ -14,13 +14,11 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SubmitDryOrderDto {
     #[serde(rename = "data")]
-    pub data: Box<models::SubmitOrderDtoData>,
+    pub data: models::SubmitOrderDtoData,
 }
 
 impl SubmitDryOrderDto {
     pub fn new(data: models::SubmitOrderDtoData) -> SubmitDryOrderDto {
-        SubmitDryOrderDto {
-            data: Box::new(data),
-        }
+        SubmitDryOrderDto { data }
     }
 }

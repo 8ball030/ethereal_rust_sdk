@@ -14,8 +14,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum SubmitOrderDtoData {
-    SubmitOrderMarketDtoData(Box<models::SubmitOrderMarketDtoData>),
-    SubmitOrderLimitDtoData(Box<models::SubmitOrderLimitDtoData>),
+    SubmitOrderMarketDtoData(models::SubmitOrderMarketDtoData),
+    SubmitOrderLimitDtoData(models::SubmitOrderLimitDtoData),
 }
 
 impl Default for SubmitOrderDtoData {

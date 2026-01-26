@@ -17,14 +17,11 @@ pub struct ClaimReferralCodeDto {
     #[serde(rename = "signature")]
     pub signature: String,
     #[serde(rename = "data")]
-    pub data: Box<models::ClaimReferralCodeDtoData>,
+    pub data: models::ClaimReferralCodeDtoData,
 }
 
 impl ClaimReferralCodeDto {
     pub fn new(signature: String, data: models::ClaimReferralCodeDtoData) -> ClaimReferralCodeDto {
-        ClaimReferralCodeDto {
-            signature,
-            data: Box::new(data),
-        }
+        ClaimReferralCodeDto { signature, data }
     }
 }

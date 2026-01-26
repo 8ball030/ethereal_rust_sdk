@@ -22,7 +22,7 @@ pub struct DryRunOrderFailedUnprocessableEntityDto {
     pub error: Error,
     /// Details of the failed dry run
     #[serde(rename = "data")]
-    pub data: Box<models::DryRunOrderFailedDto>,
+    pub data: models::DryRunOrderFailedDto,
 }
 
 impl DryRunOrderFailedUnprocessableEntityDto {
@@ -36,7 +36,7 @@ impl DryRunOrderFailedUnprocessableEntityDto {
             status_code,
             message,
             error,
-            data: Box::new(data),
+            data,
         }
     }
 }
