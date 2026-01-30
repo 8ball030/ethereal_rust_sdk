@@ -3,7 +3,7 @@ use std::{future::Future, sync::Arc};
 use futures_util::FutureExt;
 use log::{error, info};
 use rust_socketio::{
-    asynchronous::{Client, ClientBuilder},
+    asynchronous::{Client, ClientBuilder, ReconnectSettings},
     Error, Payload, TransportType,
 };
 use serde_json::Value;
@@ -33,10 +33,30 @@ pub struct WsClient {
 
 impl WsClient {
     pub fn new(environment: Environment) -> Self {
-        let url = get_server_url(&environment);
-        let client_builder = ClientBuilder::new(url)
+        let url = get_server_url(&environment).to_string();
+        let client_builder = ClientBuilder::new(&url)
             .transport_type(TransportType::Websocket)
-            .namespace("/v1/stream");
+            .namespace("/v1/stream")
+            .reconnect_on_disconnect(true)
+            .reconnect_delay(10, 30)
+            .max_reconnect_attempts(100)
+            .on_reconnect(move || {
+                let url = url.clone();
+                async move {
+                    error!("Websocket reconnecting...");
+                    let mut settings = ReconnectSettings::new();
+                    settings.address(url);
+                    settings
+                }
+                .boxed()
+            })
+            .on("error", |err: Payload, _socket: Client| {
+                async move {
+                    error!("Websocket error: {:?}", err);
+                }
+                .boxed()
+            });
+
         Self {
             client_builder: Some(client_builder),
             client: None,
