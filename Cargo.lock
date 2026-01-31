@@ -674,7 +674,7 @@ dependencies = [
 
 [[package]]
 name = "ethereal_rust_sdk"
-version = "0.1.7"
+version = "0.1.8"
 dependencies = [
  "anyhow",
  "dotenvy",
