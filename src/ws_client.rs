@@ -7,7 +7,7 @@ use rust_socketio::{
     Error, Payload, TransportType,
 };
 use serde_json::Value;
-use tokio::sync::mpsc;
+use tokio::sync::watch;
 
 use crate::{
     channels::public_channels,
@@ -25,10 +25,21 @@ pub async fn run_forever() {
         tokio::time::sleep(tokio::time::Duration::from_secs(60)).await;
     }
 }
+
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+pub enum ConnectionState {
+    Disconnected,
+    Connected,
+    Reconnecting,
+}
+
 pub struct WsClient {
     client_builder: Option<ClientBuilder>,
     client: Option<Client>,
     subscriptions: Arc<Vec<Value>>,
+    state_rx: watch::Receiver<ConnectionState>,
+    state_tx: Arc<watch::Sender<ConnectionState>>,
+    connection_url: String,
 }
 
 impl WsClient {
@@ -36,48 +47,37 @@ impl WsClient {
         let url = get_server_url(&environment).to_string();
         let client_builder = ClientBuilder::new(&url)
             .transport_type(TransportType::Websocket)
-            .namespace("/v1/stream")
-            .reconnect_on_disconnect(true)
-            .reconnect_delay(10, 30)
-            .max_reconnect_attempts(100)
-            .on_reconnect(move || {
-                let url = url.clone();
-                async move {
-                    error!("Websocket reconnecting...");
-                    let mut settings = ReconnectSettings::new();
-                    settings.address(url);
-                    settings
-                }
-                .boxed()
-            })
-            .on("error", |err: Payload, _socket: Client| {
-                async move {
-                    error!("Websocket error: {:?}", err);
-                }
-                .boxed()
-            });
+            .namespace("/v1/stream");
+
+        let (state_tx, state_rx) = watch::channel::<ConnectionState>(ConnectionState::Disconnected);
 
         Self {
             client_builder: Some(client_builder),
             client: None,
             subscriptions: Arc::new(Vec::new()),
+            state_rx,
+            state_tx: Arc::new(state_tx),
+            connection_url: url,
         }
     }
 
     #[allow(clippy::result_large_err)]
     // given a closure as a callback
-    pub async fn connect(mut self) -> Result<(), Error> {
+    pub async fn connect(&mut self) -> Result<(), Error> {
         info!("Connecting websocket...");
         let builder = self.client_builder.take().expect("connect called twice");
 
         // bool channel to indicate connection established.
-        let (_tx, mut rx) = mpsc::channel::<bool>(16);
 
         let subscriptions = Arc::clone(&self.subscriptions); // cheap clone
+        let connection_tx = self.state_tx.clone();
 
         let connect_cb = move |_payload: Payload, socket: Client| {
             {
                 let subscriptions = subscriptions.clone();
+                let tx = connection_tx.clone();
+                tx.send(ConnectionState::Connected)
+                    .expect("Failed to send connected signal");
                 async move {
                     info!("Websocket connected");
                     for sub in subscriptions.iter() {
@@ -87,18 +87,61 @@ impl WsClient {
                             .await
                             .expect("Failed to emit subscribe message");
                     }
-                    // tx.send(true).await.expect("Failed to send connected signal");
                 }
             }
             .boxed()
         };
-        self.client = Some(builder.on("open", connect_cb).connect().await?);
-        // wait for connection to be established
-        match rx.recv().await {
-            Some(_) => info!("Websocket connection established"),
-            None => error!("Websocket connection failed to establish"),
+
+        let url = self.connection_url.clone();
+        let disconnect_tx = self.state_tx.clone();
+        let error_tx = self.state_tx.clone();
+        self.client = Some(
+            builder
+                .on("open", connect_cb)
+                .reconnect_on_disconnect(true)
+                .reconnect_delay(10, 30)
+                .max_reconnect_attempts(100)
+                .on_reconnect(move || {
+                    error!("Websocket reconnecting...");
+                    let tx = disconnect_tx.clone();
+                    tx.send(ConnectionState::Reconnecting)
+                        .expect("Failed to send reconnecting signal");
+                    let url = url.clone();
+                    async move {
+                        error!("Websocket reconnecting...");
+                        let mut settings = ReconnectSettings::new();
+                        settings.address(url);
+                        settings
+                    }
+                    .boxed()
+                })
+                .on("close", move |err: Payload, _socket: Client| {
+                    error!("Websocket closed......");
+                    let tx = error_tx.clone();
+                    tx.send(ConnectionState::Disconnected)
+                        .expect("Failed to send disconnected signal");
+                    async move {
+                        error!("Websocket error: {:?}", err);
+                    }
+                    .boxed()
+                })
+                .connect()
+                .await?,
+        );
+        match self.run_till_event().await {
+            ConnectionState::Connected => {
+                info!("All connected!")
+            }
+            _ => return Err(Error::StoppedEngineIoSocket),
         }
+
         Ok(())
+    }
+
+    // runs till one of the state changes is detected.
+    pub async fn run_till_event(&mut self) -> ConnectionState {
+        self.state_rx.changed().await.unwrap();
+        *self.state_rx.borrow()
     }
 
     fn subscribe_with_product(&mut self, channel: &str, product_id: &str) {

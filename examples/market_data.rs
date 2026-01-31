@@ -1,5 +1,5 @@
-use ethereal_rust_sdk::ws_client::run_forever;
-use log::info;
+use ethereal_rust_sdk::ws_client::ConnectionState;
+use log::{error, info};
 mod common;
 
 use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
@@ -27,6 +27,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     ws_client.connect().await?;
-    run_forever().await;
+    loop {
+        match ws_client.run_till_event().await {
+            ConnectionState::Connected => {
+                info!("Called detects connected")
+            }
+            ConnectionState::Disconnected => {
+                error!("State is disconncted!");
+                break;
+            }
+            ConnectionState::Reconnecting => {
+                error!("Client trying to reconnect!")
+            }
+        }
+    }
     Ok(())
 }
