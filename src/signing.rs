@@ -116,7 +116,7 @@ impl<'a> SigningContext<'a> {
     }
     pub fn dto_signing_fields(&self) -> DtoSigningFields {
         DtoSigningFields {
-            sender: self.wallet.address().to_string(),
+            sender: format!("{:?}", self.wallet.address()),
             subaccount: self.subaccount.name.clone(),
             nonce: self.nonce.to_string(),
             signed_at: self.signed_at as i64,
