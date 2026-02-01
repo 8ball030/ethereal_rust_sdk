@@ -1,6 +1,6 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use serde_json::Value;
 use ethereal_rust_sdk::types::{ProductSubscriptionMessage, SubaccountSubscriptionMessage};
+use serde_json::Value;
 
 fn bench_serialize_product_subscription(c: &mut Criterion) {
     c.bench_function("serialize_product_subscription", |b| {

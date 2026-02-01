@@ -1,6 +1,6 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use serde_json::Value;
 use ethereal_rust_sdk::types::ProductSubscriptionMessage;
+use serde_json::Value;
 
 // Create test subscriptions
 fn create_subscription(channel: &str, product_id: &str) -> Value {
@@ -17,7 +17,7 @@ fn bench_subscriptions_clone_10(c: &mut Criterion) {
     for i in 0..10 {
         subscriptions.push(create_subscription("MarketPrice", &format!("PROD-{}", i)));
     }
-    
+
     c.bench_function("subscriptions_clone_10", |b| {
         b.iter(|| {
             let _ = black_box(&subscriptions).clone();
@@ -30,7 +30,7 @@ fn bench_subscriptions_clone_50(c: &mut Criterion) {
     for i in 0..50 {
         subscriptions.push(create_subscription("MarketPrice", &format!("PROD-{}", i)));
     }
-    
+
     c.bench_function("subscriptions_clone_50", |b| {
         b.iter(|| {
             let _ = black_box(&subscriptions).clone();
@@ -43,7 +43,7 @@ fn bench_subscriptions_clone_100(c: &mut Criterion) {
     for i in 0..100 {
         subscriptions.push(create_subscription("MarketPrice", &format!("PROD-{}", i)));
     }
-    
+
     c.bench_function("subscriptions_clone_100", |b| {
         b.iter(|| {
             let _ = black_box(&subscriptions).clone();
@@ -54,7 +54,7 @@ fn bench_subscriptions_clone_100(c: &mut Criterion) {
 // Benchmark Value::to_string() (as in resubscribe)
 fn bench_value_to_string_single(c: &mut Criterion) {
     let subscription = create_subscription("MarketPrice", "ETH-USD");
-    
+
     c.bench_function("value_to_string_single", |b| {
         b.iter(|| {
             let _ = black_box(&subscription).to_string();
@@ -66,7 +66,7 @@ fn bench_value_to_string_10(c: &mut Criterion) {
     let subscriptions: Vec<Value> = (0..10)
         .map(|i| create_subscription("MarketPrice", &format!("PROD-{}", i)))
         .collect();
-    
+
     c.bench_function("value_to_string_10", |b| {
         b.iter(|| {
             for sub in subscriptions.iter() {
@@ -80,7 +80,7 @@ fn bench_value_to_string_50(c: &mut Criterion) {
     let subscriptions: Vec<Value> = (0..50)
         .map(|i| create_subscription("MarketPrice", &format!("PROD-{}", i)))
         .collect();
-    
+
     c.bench_function("value_to_string_50", |b| {
         b.iter(|| {
             for sub in subscriptions.iter() {
@@ -94,7 +94,7 @@ fn bench_value_to_string_100(c: &mut Criterion) {
     let subscriptions: Vec<Value> = (0..100)
         .map(|i| create_subscription("MarketPrice", &format!("PROD-{}", i)))
         .collect();
-    
+
     c.bench_function("value_to_string_100", |b| {
         b.iter(|| {
             for sub in subscriptions.iter() {
@@ -109,7 +109,7 @@ fn bench_resubscribe_10(c: &mut Criterion) {
     let subscriptions: Vec<Value> = (0..10)
         .map(|i| create_subscription("MarketPrice", &format!("PROD-{}", i)))
         .collect();
-    
+
     c.bench_function("resubscribe_10", |b| {
         b.iter(|| {
             for sub in subscriptions.iter() {
@@ -125,7 +125,7 @@ fn bench_resubscribe_50(c: &mut Criterion) {
     let subscriptions: Vec<Value> = (0..50)
         .map(|i| create_subscription("MarketPrice", &format!("PROD-{}", i)))
         .collect();
-    
+
     c.bench_function("resubscribe_50", |b| {
         b.iter(|| {
             for sub in subscriptions.iter() {
@@ -140,7 +140,7 @@ fn bench_resubscribe_100(c: &mut Criterion) {
     let subscriptions: Vec<Value> = (0..100)
         .map(|i| create_subscription("MarketPrice", &format!("PROD-{}", i)))
         .collect();
-    
+
     c.bench_function("resubscribe_100", |b| {
         b.iter(|| {
             for sub in subscriptions.iter() {
@@ -152,12 +152,13 @@ fn bench_resubscribe_100(c: &mut Criterion) {
 }
 
 // Benchmark subscription addition (push to Vec)
+#[allow(clippy::vec_init_then_push)]
 fn bench_subscription_push(c: &mut Criterion) {
     let subscription = create_subscription("MarketPrice", "ETH-USD");
-    
+
     c.bench_function("subscription_push", |b| {
         b.iter(|| {
-            let mut subscriptions = Vec::new();
+            let mut subscriptions = vec![];
             subscriptions.push(black_box(&subscription).clone());
         });
     });

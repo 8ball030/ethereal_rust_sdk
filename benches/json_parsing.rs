@@ -7,7 +7,8 @@ use serde_json::Value;
 
 // Example messages that may come from the exchange
 const RPC_RESPONSE_SMALL: &str = r#"{"id":123,"result":{"status":"ok"}}"#;
-const MARKET_PRICE_MESSAGE: &str = r#"{"type":"MarketPrice","productId":"ETH-USD","price":"2500.50","timestamp":1234567890}"#;
+const MARKET_PRICE_MESSAGE: &str =
+    r#"{"type":"MarketPrice","productId":"ETH-USD","price":"2500.50","timestamp":1234567890}"#;
 const ORDERBOOK_MESSAGE: &str = r#"{"type":"BookDepth","productId":"ETH-USD","bids":[["2500.00","1.5"],["2499.50","2.0"]],"asks":[["2501.00","1.2"],["2501.50","0.8"]]}"#;
 const LARGE_MESSAGE: &str = r#"{"type":"TradeFill","productId":"ETH-USD","trades":[{"price":"2500.00","size":"1.5","side":"buy","timestamp":1234567890},{"price":"2500.10","size":"0.8","side":"sell","timestamp":1234567891},{"price":"2500.20","size":"2.0","side":"buy","timestamp":1234567892}]}"#;
 
