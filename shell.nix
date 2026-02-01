@@ -38,7 +38,7 @@ pkgs.mkShell {
     ];
   
   shellHook = ''
-    rustup default 1.88.0
+    rustup default 1.93.0
     rustup component add rust-src
     export PATH=/home/$(whoami)/.cargo/bin:$PATH
   '';

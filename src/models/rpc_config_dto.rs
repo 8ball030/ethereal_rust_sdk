@@ -15,10 +15,10 @@ use serde::{Deserialize, Serialize};
 pub struct RpcConfigDto {
     /// Domain type
     #[serde(rename = "domain")]
-    pub domain: Box<models::DomainTypeDto>,
+    pub domain: models::DomainTypeDto,
     /// Signature types
     #[serde(rename = "signatureTypes")]
-    pub signature_types: Box<models::SignatureTypesDto>,
+    pub signature_types: models::SignatureTypesDto,
 }
 
 impl RpcConfigDto {
@@ -27,8 +27,8 @@ impl RpcConfigDto {
         signature_types: models::SignatureTypesDto,
     ) -> RpcConfigDto {
         RpcConfigDto {
-            domain: Box::new(domain),
-            signature_types: Box::new(signature_types),
+            domain,
+            signature_types,
         }
     }
 }

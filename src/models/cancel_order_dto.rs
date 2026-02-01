@@ -17,14 +17,11 @@ pub struct CancelOrderDto {
     #[serde(rename = "signature")]
     pub signature: String,
     #[serde(rename = "data")]
-    pub data: Box<models::CancelOrderDtoData>,
+    pub data: models::CancelOrderDtoData,
 }
 
 impl CancelOrderDto {
     pub fn new(signature: String, data: models::CancelOrderDtoData) -> CancelOrderDto {
-        CancelOrderDto {
-            signature,
-            data: Box::new(data),
-        }
+        CancelOrderDto { signature, data }
     }
 }

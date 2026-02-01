@@ -44,10 +44,8 @@ release: version package tag
 lint: 
 	cargo clippy --all-features --all-targets --examples --tests -- -D warnings 
 fmt:
-	cargo fmt --all 
+	cargo fmt --all
 	cargo clippy --all-features --all-targets --examples --tests --fix --allow-dirty -- -D warnings
-	# format examples
-	rustfmt examples/*.rs
 build:
 	cargo build --all-features
 test:
@@ -62,7 +60,7 @@ codegen:
 	  -i openapi.json \
 	  -g rust \
 	  -o ./generated \
-	--additional-properties=supportAsync=false,useSingleRequestParameter=true
+	--additional-properties=supportAsync=true,useSingleRequestParameter=true,avoidBoxedModels=true
 
 
 	cp ./generated/src/models/* ./src/models/
@@ -93,4 +91,8 @@ codegen:
 	done
 	python build_scripts/post_processing.py
 
-all: codegen fmt lint build test
+docs:
+	python build_scripts/readme.py
+
+all: codegen fmt lint build test docs
+	@echo "All tasks completed successfully."

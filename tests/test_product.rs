@@ -3,38 +3,38 @@ use ethereal_rust_sdk::apis::product_api::{
     ProductControllerGetByIdParams, ProductControllerGetMarketLiquidityParams,
     ProductControllerGetMarketPriceParams, ProductControllerListParams,
 };
-use ethereal_rust_sdk::sync_client::client::HttpClient;
+use ethereal_rust_sdk::async_client::client::HttpClient;
 use uuid::Uuid;
 
-fn client_and_first_product() -> (HttpClient, Uuid) {
-    let client = common::create_test_client().unwrap();
+async fn client_and_first_product() -> (HttpClient, Uuid) {
+    let client = common::create_test_client().await.unwrap();
 
-    let product = common::get_product(&client).unwrap();
+    let product = common::get_product(&client).await.unwrap();
 
     (client, product.id)
 }
 
-#[test]
-fn test_get_by_id() {
-    let (client, product_id) = client_and_first_product();
+#[tokio::test]
+async fn test_get_by_id() {
+    let (client, product_id) = client_and_first_product().await;
 
     let params = ProductControllerGetByIdParams {
         id: product_id.to_string(),
     };
 
-    let result = client.product().get_by_id(params);
+    let result = client.product().get_by_id(params).await;
     assert!(result.is_ok(), "get_by_id failed: {:?}", result.err());
 }
 
-#[test]
-fn test_get_market_liquidity() {
-    let (client, product_id) = client_and_first_product();
+#[tokio::test]
+async fn test_get_market_liquidity() {
+    let (client, product_id) = client_and_first_product().await;
 
     let params = ProductControllerGetMarketLiquidityParams {
         product_id: product_id.to_string(),
     };
 
-    let result = client.product().get_market_liquidity(params);
+    let result = client.product().get_market_liquidity(params).await;
     assert!(
         result.is_ok(),
         "get_market_liquidity failed: {:?}",
@@ -42,15 +42,15 @@ fn test_get_market_liquidity() {
     );
 }
 
-#[test]
-fn test_get_market_price() {
-    let (client, product_id) = client_and_first_product();
+#[tokio::test]
+async fn test_get_market_price() {
+    let (client, product_id) = client_and_first_product().await;
 
     let params = ProductControllerGetMarketPriceParams {
         product_ids: vec![product_id],
     };
 
-    let result = client.product().get_market_price(params);
+    let result = client.product().get_market_price(params).await;
     assert!(
         result.is_ok(),
         "get_market_price failed: {:?}",
@@ -58,11 +58,12 @@ fn test_get_market_price() {
     );
 }
 
-#[test]
-fn test_list() {
-    let client = common::create_test_client().unwrap();
+#[tokio::test]
+async fn test_list() {
+    let client = common::create_test_client().await.unwrap();
     let result = client
         .product()
-        .list(ProductControllerListParams::default());
+        .list(ProductControllerListParams::default())
+        .await;
     assert!(result.is_ok(), "list failed: {:?}", result.err());
 }

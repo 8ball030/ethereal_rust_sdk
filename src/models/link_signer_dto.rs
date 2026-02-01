@@ -20,7 +20,7 @@ pub struct LinkSignerDto {
     #[serde(rename = "signerSignature")]
     pub signer_signature: String,
     #[serde(rename = "data")]
-    pub data: Box<models::LinkSignerDtoData>,
+    pub data: models::LinkSignerDtoData,
 }
 
 impl LinkSignerDto {
@@ -32,7 +32,7 @@ impl LinkSignerDto {
         LinkSignerDto {
             signature,
             signer_signature,
-            data: Box::new(data),
+            data,
         }
     }
 }

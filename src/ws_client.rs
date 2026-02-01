@@ -1,85 +1,147 @@
-use serde_json::Value;
+use std::{future::Future, sync::Arc};
 
+use futures_util::FutureExt;
 use log::{error, info};
-use rust_socketio::{ClientBuilder, Error, Payload, RawClient, TransportType};
-use std::{
-    result::Result::Ok,
-    sync::{
-        Arc,
-        atomic::{AtomicBool, Ordering},
+use rust_socketio::{
+    asynchronous::{Client, ClientBuilder, ReconnectSettings},
+    Error, Payload, TransportType,
+};
+use serde_json::Value;
+use tokio::sync::watch;
+
+use crate::{
+    channels::public_channels,
+    enums::Environment,
+    models::{
+        BookDepthMessage, MarketPriceDto, PageOfOrderDtos, PageOfOrderFillDtos,
+        SubaccountLiquidation, TradeStreamMessage, TransferDto,
     },
-    time::Duration,
+    types::{ProductSubscriptionMessage, SubaccountSubscriptionMessage},
+    utils::{get_server_url, get_typed_callback},
 };
 
-use crate::types::{ProductSubscriptionMessage, SubaccountSubscriptionMessage};
-use crate::{channels::public_channels, enums::Environment};
-use rust_socketio::client::Client;
-
-fn get_server_url(environment: &Environment) -> &str {
-    match environment {
-        Environment::Mainnet => "wss://ws.ethereal.trade",
-        Environment::Testnet => "wss://ws.etherealtest.net",
+pub async fn run_forever() {
+    loop {
+        tokio::time::sleep(tokio::time::Duration::from_secs(60)).await;
     }
 }
 
-#[derive(Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+pub enum ConnectionState {
+    Disconnected,
+    Connected,
+    Reconnecting,
+}
+
 pub struct WsClient {
-    client_builder: ClientBuilder,
+    client_builder: Option<ClientBuilder>,
     client: Option<Client>,
-    subscriptions: Vec<Value>,
+    subscriptions: Arc<Vec<Value>>,
+    state_rx: watch::Receiver<ConnectionState>,
+    state_tx: Arc<watch::Sender<ConnectionState>>,
+    connection_url: String,
 }
 
 impl WsClient {
     pub fn new(environment: Environment) -> Self {
-        let url = get_server_url(&environment);
-        let client_builder = ClientBuilder::new(url)
+        let url = get_server_url(&environment).to_string();
+        let client_builder = ClientBuilder::new(&url)
             .transport_type(TransportType::Websocket)
             .namespace("/v1/stream");
+
+        let (state_tx, state_rx) = watch::channel::<ConnectionState>(ConnectionState::Disconnected);
+
         Self {
-            client_builder,
+            client_builder: Some(client_builder),
             client: None,
-            subscriptions: Vec::new(),
+            subscriptions: Arc::new(Vec::new()),
+            state_rx,
+            state_tx: Arc::new(state_tx),
+            connection_url: url,
         }
     }
 
     #[allow(clippy::result_large_err)]
     // given a closure as a callback
-    pub fn connect(&mut self) -> Result<(), Error> {
+    pub async fn connect(&mut self) -> Result<(), Error> {
         info!("Connecting websocket...");
+        let builder = self.client_builder.take().expect("connect called twice");
 
-        let connected_flag = Arc::new(AtomicBool::new(false));
-        let flag_for_cb = Arc::clone(&connected_flag);
+        // bool channel to indicate connection established.
 
-        let subscriptions = self.subscriptions.clone();
+        let subscriptions = Arc::clone(&self.subscriptions); // cheap clone
+        let connection_tx = self.state_tx.clone();
 
-        let builder =
-            self.client_builder
-                .clone()
-                .on("open", move |_payload: Payload, _socket: RawClient| {
+        let connect_cb = move |_payload: Payload, socket: Client| {
+            {
+                let subscriptions = subscriptions.clone();
+                let tx = connection_tx.clone();
+                tx.send(ConnectionState::Connected)
+                    .expect("Failed to send connected signal");
+                async move {
                     info!("Websocket connected");
-                    flag_for_cb.store(true, Ordering::SeqCst);
                     for sub in subscriptions.iter() {
-                        info!("Resubscribing to channel: {sub:?}");
-                        if let Err(e) = _socket.emit("subscribe", Payload::from(sub.to_string())) {
-                            error!("Resubscribe failed for channel {sub:?}: {e}");
-                        }
+                        info!("Subscribing to channel: {sub:?}");
+                        socket
+                            .emit("subscribe", Payload::from(sub.to_string()))
+                            .await
+                            .expect("Failed to emit subscribe message");
                     }
-                });
+                }
+            }
+            .boxed()
+        };
 
-        let c = builder.connect()?;
-
-        while !connected_flag.load(Ordering::SeqCst) {
-            std::thread::sleep(Duration::from_millis(100));
+        let url = self.connection_url.clone();
+        let disconnect_tx = self.state_tx.clone();
+        let error_tx = self.state_tx.clone();
+        self.client = Some(
+            builder
+                .on("open", connect_cb)
+                .reconnect_on_disconnect(true)
+                .reconnect_delay(10, 30)
+                .max_reconnect_attempts(100)
+                .on_reconnect(move || {
+                    error!("Websocket reconnecting...");
+                    let tx = disconnect_tx.clone();
+                    tx.send(ConnectionState::Reconnecting)
+                        .expect("Failed to send reconnecting signal");
+                    let url = url.clone();
+                    async move {
+                        error!("Websocket reconnecting...");
+                        let mut settings = ReconnectSettings::new();
+                        settings.address(url);
+                        settings
+                    }
+                    .boxed()
+                })
+                .on("close", move |err: Payload, _socket: Client| {
+                    error!("Websocket closed......");
+                    let tx = error_tx.clone();
+                    tx.send(ConnectionState::Disconnected)
+                        .expect("Failed to send disconnected signal");
+                    async move {
+                        error!("Websocket error: {:?}", err);
+                    }
+                    .boxed()
+                })
+                .connect()
+                .await?,
+        );
+        match self.run_till_event().await {
+            ConnectionState::Connected => {
+                info!("All connected!")
+            }
+            _ => return Err(Error::StoppedEngineIoSocket),
         }
 
-        self.client = Some(c);
         Ok(())
     }
 
-    pub fn run_forever(&self) {
-        loop {
-            std::thread::sleep(Duration::from_secs(60));
-        }
+    // runs till one of the state changes is detected.
+    pub async fn run_till_event(&mut self) -> ConnectionState {
+        self.state_rx.changed().await.unwrap();
+        *self.state_rx.borrow()
     }
 
     fn subscribe_with_product(&mut self, channel: &str, product_id: &str) {
@@ -95,7 +157,9 @@ impl WsClient {
                 return;
             }
         };
-        self.subscriptions.push(json_msg.clone());
+        let subscriptions = Arc::get_mut(&mut self.subscriptions)
+            .expect("Failed to get mutable reference to subscriptions");
+        subscriptions.push(json_msg.clone());
     }
 
     fn subscribe_with_subaccount(&mut self, channel: &str, subaccount_id: &str) {
@@ -111,47 +175,60 @@ impl WsClient {
                 return;
             }
         };
-        self.subscriptions.push(json_msg.clone());
+        let subscriptions = Arc::get_mut(&mut self.subscriptions)
+            .expect("Failed to get mutable reference to subscriptions");
+        subscriptions.push(json_msg.clone());
     }
 
-    fn register_callback_internal<F>(&mut self, channel: &str, callback: F)
+    fn register_callback_internal<F, T, Fut>(&mut self, channel: &str, callback: F)
     where
-        F: Fn(Payload, RawClient) + Send + Sync + 'static,
+        T: serde::de::DeserializeOwned + Send + 'static,
+        F: Fn(T) -> Fut + Send + Sync + 'static,
+        Fut: Future<Output = ()> + Send + 'static,
     {
-        let builder = self.client_builder.clone().on(channel, callback);
-        self.client_builder = builder;
+        // we wrap the user callback to parse the payload into the expected type
+        let callback = get_typed_callback::<T, F, Fut>(callback);
+        self.client_builder = self
+            .client_builder
+            .take()
+            .expect("client_builder not set")
+            .on(channel, callback)
+            .into();
         info!("Callback registered channel={channel}");
+    }
+
+    pub fn register_market_data_callback<F, Fut>(&mut self, callback: F)
+    where
+        F: Fn(MarketPriceDto) -> Fut + Send + Sync + 'static,
+        Fut: Future<Output = ()> + Send + 'static,
+    {
+        self.register_callback_internal(public_channels::MARKET_PRICE, callback);
     }
 
     pub fn subscribe_market_data(&mut self, product_id: &str) {
         self.subscribe_with_product(public_channels::MARKET_PRICE, product_id);
     }
 
-    pub fn register_market_price_callback<F>(&mut self, callback: F)
+    pub fn register_orderbook_callback<F, Fut>(&mut self, callback: F)
     where
-        F: Fn(Payload, RawClient) + Send + Sync + 'static,
+        F: Fn(BookDepthMessage) -> Fut + Send + Sync + 'static,
+        Fut: Future<Output = ()> + Send + 'static,
     {
-        self.register_callback_internal(public_channels::MARKET_PRICE, callback);
+        self.register_callback_internal(public_channels::BOOK_DEPTH, callback);
     }
 
     pub fn subscribe_orderbook_data(&mut self, product_id: &str) {
         self.subscribe_with_product(public_channels::BOOK_DEPTH, product_id);
     }
 
-    pub fn register_orderbook_callback<F>(&mut self, callback: F)
-    where
-        F: Fn(Payload, RawClient) + Send + Sync + 'static,
-    {
-        self.register_callback_internal(public_channels::BOOK_DEPTH, callback);
-    }
-
     pub fn subscribe_trade_fill_data(&mut self, product_id: &str) {
         self.subscribe_with_product(public_channels::TRADE_FILL, product_id);
     }
 
-    pub fn register_trade_fill_callback<F>(&mut self, callback: F)
+    pub fn register_trade_fill_callback<F, Fut>(&mut self, callback: F)
     where
-        F: Fn(Payload, RawClient) + Send + Sync + 'static,
+        F: Fn(TradeStreamMessage) -> Fut + Send + Sync + 'static,
+        Fut: Future<Output = ()> + Send + 'static,
     {
         self.register_callback_internal(public_channels::TRADE_FILL, callback);
     }
@@ -160,9 +237,10 @@ impl WsClient {
         self.subscribe_with_subaccount(public_channels::TOKEN_TRANSFER, subaccount_id);
     }
 
-    pub fn register_transfer_callback<F>(&mut self, callback: F)
+    pub fn register_transfer_callback<F, Fut>(&mut self, callback: F)
     where
-        F: Fn(Payload, RawClient) + Send + Sync + 'static,
+        F: Fn(TransferDto) -> Fut + Send + Sync + 'static,
+        Fut: Future<Output = ()> + Send + 'static,
     {
         self.register_callback_internal(public_channels::TOKEN_TRANSFER, callback);
     }
@@ -171,9 +249,10 @@ impl WsClient {
         self.subscribe_with_subaccount(public_channels::ORDER_FILL, subaccount_id);
     }
 
-    pub fn register_order_fill_callback<F>(&mut self, callback: F)
+    pub fn register_order_fill_callback<F, Fut>(&mut self, callback: F)
     where
-        F: Fn(Payload, RawClient) + Send + Sync + 'static,
+        F: Fn(PageOfOrderFillDtos) -> Fut + Send + Sync + 'static,
+        Fut: Future<Output = ()> + Send + 'static,
     {
         self.register_callback_internal(public_channels::ORDER_FILL, callback);
     }
@@ -182,9 +261,10 @@ impl WsClient {
         self.subscribe_with_subaccount(public_channels::ORDER_UPDATE, subaccount_id);
     }
 
-    pub fn register_order_update_callback<F>(&mut self, callback: F)
+    pub fn register_order_update_callback<F, Fut>(&mut self, callback: F)
     where
-        F: Fn(Payload, RawClient) + Send + Sync + 'static,
+        F: Fn(PageOfOrderDtos) -> Fut + Send + Sync + 'static,
+        Fut: Future<Output = ()> + Send + 'static,
     {
         self.register_callback_internal(public_channels::ORDER_UPDATE, callback);
     }
@@ -193,9 +273,10 @@ impl WsClient {
         self.subscribe_with_subaccount(public_channels::SUBACCOUNT_LIQUIDATION, subaccount_id);
     }
 
-    pub fn register_subaccount_liquidation_callback<F>(&mut self, callback: F)
+    pub fn register_subaccount_liquidation_callback<F, Fut>(&mut self, callback: F)
     where
-        F: Fn(Payload, RawClient) + Send + Sync + 'static,
+        F: Fn(SubaccountLiquidation) -> Fut + Send + Sync + 'static,
+        Fut: Future<Output = ()> + Send + 'static,
     {
         self.register_callback_internal(public_channels::SUBACCOUNT_LIQUIDATION, callback);
     }

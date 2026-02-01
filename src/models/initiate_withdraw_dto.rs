@@ -17,14 +17,11 @@ pub struct InitiateWithdrawDto {
     #[serde(rename = "signature")]
     pub signature: String,
     #[serde(rename = "data")]
-    pub data: Box<models::InitiateWithdrawDtoData>,
+    pub data: models::InitiateWithdrawDtoData,
 }
 
 impl InitiateWithdrawDto {
     pub fn new(signature: String, data: models::InitiateWithdrawDtoData) -> InitiateWithdrawDto {
-        InitiateWithdrawDto {
-            signature,
-            data: Box::new(data),
-        }
+        InitiateWithdrawDto { signature, data }
     }
 }
