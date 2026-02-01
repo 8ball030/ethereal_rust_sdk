@@ -67,7 +67,7 @@ pub struct HttpClient {
     pub wallet: LocalWallet,
     pub address: String,
     pub subaccounts: Vec<SubaccountDto>,
-    product_hashmap: std::collections::HashMap<String, crate::models::ProductDto>,
+    pub product_hashmap: std::collections::HashMap<String, crate::models::ProductDto>,
 }
 
 impl HttpClient {
@@ -187,9 +187,6 @@ impl HttpClient {
         reduce_only: bool,
         expires_at: Option<i64>,
     ) -> Result<SubmitOrderCreatedDto, Box<dyn std::error::Error>> {
-        println!(
-            "Submitting order... of type {type:?} and side {side:?} for {quantity} {ticker} at {price:?} reduce only: {reduce_only} post only: {post_only} expires at: {expires_at:?}"
-        );
         if !self.product_hashmap.contains_key(ticker) {
             return Err(format!("Ticker {ticker} not found").into());
         }
@@ -222,6 +219,7 @@ impl HttpClient {
                 post_only,
                 expires_at,
                 time_in_force,
+                r#type,
                 ..Default::default()
             }
         );
@@ -246,7 +244,6 @@ impl HttpClient {
         &self,
         order_ids: Vec<String>,
     ) -> Result<Vec<CancelOrderResultDto>, Box<dyn std::error::Error>> {
-        println!("Cancelling order...");
         let subaccount = &self.subaccounts[0];
         let ctx = SigningContext::new(&self.wallet, &self.subaccounts[0]);
         let message = CancelOrder {
