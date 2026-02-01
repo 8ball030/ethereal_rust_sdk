@@ -12,7 +12,7 @@ async fn test_simple_order() {
     println!("Creating order...");
 
     let ticker = "BTC-USD";
-    let quantity = 0.001;
+    let quantity = 0.00010;
     let price = 40000.0;
     let side = OrderSide::BUY;
     let r#type = OrderType::Limit;
@@ -38,6 +38,7 @@ async fn test_simple_order() {
         )
         .await
         .unwrap();
+    println!("Order created: {:?}", order);
 
     assert!(order.result == Result::Ok);
     assert!(order.filled == "0");

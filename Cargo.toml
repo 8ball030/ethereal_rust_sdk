@@ -47,3 +47,7 @@ harness = false
 [[bench]]
 name = "connect_latency"
 harness = false
+
+[[bench]]
+name = "signing"
+harness = false
