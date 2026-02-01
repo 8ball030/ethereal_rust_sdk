@@ -26,8 +26,6 @@ use ethereal_rust_sdk::{
 use ethers::utils::hex;
 use tokio::runtime::Runtime;
 
-// ---- import your crate types here ----
-
 pub async fn create_test_client() -> anyhow::Result<HttpClient> {
     let env = Environment::Testnet;
     let private_key = "0bb5d63b84421e1268dda020818ae30cf26e7f10e321fb820a8aa69216dea92a";
@@ -175,21 +173,3 @@ fn bench_submit_order_build_and_sign(c: &mut Criterion) {
 
 criterion_group!(benches, bench_submit_order_build_and_sign);
 criterion_main!(benches);
-
-/* ------------------------ No library changes option -------------------------
-
-If you can’t touch Client, create a tiny “bench-only” function that copies the block
-verbatim and takes the minimal dependencies as parameters.
-
-Example layout:
-
-- benches/submit_order.rs:
-    - define a struct BenchCtx { wallet, subaccount0, product_hashmap, env, ... }
-    - define async fn build_dto(ctx: &BenchCtx, ...args...) -> Result<SubmitOrderDto, _>
-      containing your snippet’s code.
-    - bench that function exactly like above.
-
-This keeps the benchmark accurate for the block while avoiding calling the real submit_order
-that might do HTTP.
-
----------------------------------------------------------------------------- */
