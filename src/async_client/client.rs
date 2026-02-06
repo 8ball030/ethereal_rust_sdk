@@ -39,7 +39,7 @@ use ethers::{
     signers::{LocalWallet, Signer},
     utils::hex,
 };
-use log::{debug};
+use log::debug;
 use rust_decimal::Decimal;
 use std::str::FromStr;
 use uuid::Uuid;
