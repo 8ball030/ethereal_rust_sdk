@@ -31,6 +31,7 @@ use crate::{
     signable_messages::{CancelOrder, TradeOrder},
     signing::{hex_to_bytes32, to_scaled_e9, SigningContext},
 };
+use anyhow::Result;
 
 use crate::models::submit_order_limit_dto_data::TimeInForce;
 use crate::signing::Eip712;
@@ -38,6 +39,9 @@ use ethers::{
     signers::{LocalWallet, Signer},
     utils::hex,
 };
+use log::{debug};
+use rust_decimal::Decimal;
+use std::str::FromStr;
 use uuid::Uuid;
 
 fn get_server_url(environment: &Environment) -> &str {
@@ -45,6 +49,14 @@ fn get_server_url(environment: &Environment) -> &str {
         Environment::Mainnet => "https://api.ethereal.trade",
         Environment::Testnet => "https://api.etherealtest.net",
     }
+}
+
+fn round_to_tick(value: Decimal, tick_size: Decimal) -> Result<Decimal> {
+    if tick_size.is_zero() {
+        return Ok(value);
+    }
+    let ticks = (value / tick_size).round();
+    Ok(ticks * tick_size)
 }
 
 #[macro_export]
@@ -178,8 +190,8 @@ impl HttpClient {
     pub async fn submit_order(
         &self,
         ticker: &str,
-        quantity: f64,
-        price: Option<f64>,
+        quantity: Decimal,
+        price: Decimal,
         side: crate::models::OrderSide,
         r#type: crate::models::OrderType,
         time_in_force: TimeInForce,
@@ -191,27 +203,38 @@ impl HttpClient {
             return Err(format!("Ticker {ticker} not found").into());
         }
         let product_info = self.product_hashmap.get(ticker).unwrap();
+        let tick_size = Decimal::from_str(&product_info.tick_size)?;
+        let lot_size = Decimal::from_str(&product_info.lot_size)?;
+
+        let price = round_to_tick(price, tick_size)?;
+        let quantity = round_to_tick(quantity, lot_size)?;
+
+        debug!(
+            "Submitting order with quantity: {}, price: {}, side: {:?}, type: {:?}, time_in_force: {:?}, post_only: {}, reduce_only: {}, expires_at: {:?}",
+            quantity, price, side, r#type, time_in_force, post_only, reduce_only, expires_at
+        );
+
         let ctx = SigningContext::new(&self.wallet, &self.subaccounts[0]);
         let message = with_signing_fields!(
             eip_signing_fields,
             ctx,
             TradeOrder {
-                quantity: to_scaled_e9(quantity),
-                price: to_scaled_e9(price.unwrap_or(0.0)),
+                quantity: to_scaled_e9(quantity)?,
+                price: to_scaled_e9(price)?,
                 reduce_only,
                 side: side as u8,
                 engine_type: product_info.engine_type.to_string().parse()?,
                 product_id: product_info.onchain_id.to_string().parse()?,
             }
         );
-        let signature = message.sign(self.env, &self.wallet)?;
 
+        let signature = message.sign(self.env, &self.wallet)?;
         let order_dto = with_signing_fields!(
             dto_signing_fields,
             ctx,
             SubmitOrderLimitDtoData {
-                quantity: quantity.to_string(),
-                price: price.expect("Price should be present").to_string(),
+                quantity,
+                price,
                 side,
                 onchain_id: product_info.onchain_id,
                 engine_type: product_info.engine_type,

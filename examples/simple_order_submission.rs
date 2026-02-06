@@ -1,5 +1,6 @@
 mod common;
 use ethereal_rust_sdk::models::{submit_order_limit_dto_data, OrderSide, OrderType};
+use rust_decimal_macros::dec;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -8,8 +9,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Creating order...");
 
     let ticker = "BTC-USD";
-    let quantity = 0.001;
-    let price = 80000.0;
+    let quantity = dec!(0.001);
+    let price = dec!(80000.0);
     let side = OrderSide::BUY;
     let r#type = OrderType::Limit;
 
@@ -24,7 +25,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .submit_order(
             ticker,
             quantity,
-            Some(price),
+            price,
             side,
             r#type,
             time_in_force,
@@ -44,7 +45,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .submit_order(
             ticker,
             quantity,
-            Some(price),
+            price,
             side,
             r#type,
             time_in_force,
@@ -65,7 +66,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .submit_order(
             ticker,
             quantity,
-            Some(price),
+            price,
             side,
             r#type,
             time_in_force,

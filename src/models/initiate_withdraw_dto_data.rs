@@ -24,7 +24,7 @@ pub struct InitiateWithdrawDtoData {
     pub token: String,
     /// Amount to withdraw in native units expressed as a decimal (precision: 9)
     #[serde(rename = "amount")]
-    pub amount: String,
+    pub amount: rust_decimal::Decimal,
     /// Bytes32 encoded LayerZero destination address (with 0x prefix, left zero padded)
     #[serde(rename = "lzDestinationAddress")]
     pub lz_destination_address: String,
@@ -44,7 +44,7 @@ impl InitiateWithdrawDtoData {
         account: String,
         subaccount: String,
         token: String,
-        amount: String,
+        amount: rust_decimal::Decimal,
         lz_destination_address: String,
         lz_destination_eid: LzDestinationEid,
         nonce: String,

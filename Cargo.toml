@@ -27,6 +27,8 @@ ethers-contract-derive = "2.0"
 dotenvy = "0.15.7"
 futures-util = "0.3.31"
 tokio = { version = "1.49.0", features = ["sync", "rt-multi-thread", "macros"] }
+rust_decimal = "1.40.0"
+rust_decimal_macros = "1.40.0"
 
 [dev-dependencies]
 criterion = { version = "0.5", features = ["html_reports"] }

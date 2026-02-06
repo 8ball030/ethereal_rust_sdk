@@ -60,6 +60,7 @@ codegen:
 	  -i openapi.json \
 	  -g rust \
 	  -o ./generated \
+	  --type-mappings decimal=rust_decimal::Decimal \
 	--additional-properties=supportAsync=true,useSingleRequestParameter=true,avoidBoxedModels=true
 
 

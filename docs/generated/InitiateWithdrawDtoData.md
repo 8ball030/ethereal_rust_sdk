@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **account** | **String** | Account address to withdraw from | 
 **subaccount** | **String** | Bytes32 encoded subaccount name (0x prefix, zero padded) | 
 **token** | **String** | Address of token to be withdrawn | 
-**amount** | **String** | Amount to withdraw in native units expressed as a decimal (precision: 9) | 
+**amount** | [**rust_decimal::Decimal**](rust_decimal::Decimal.md) | Amount to withdraw in native units expressed as a decimal (precision: 9) | 
 **lz_destination_address** | **String** | Bytes32 encoded LayerZero destination address (with 0x prefix, left zero padded) | 
 **lz_destination_eid** | **f64** | LayerZero destination endpoint ID for the transfer (zero if not bridging) | 
 **nonce** | **String** | Message nonce timestamp (nanoseconds since Unix Epoch) | 

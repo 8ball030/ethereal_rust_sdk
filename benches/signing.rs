@@ -24,6 +24,8 @@ use ethereal_rust_sdk::{
     with_signing_fields,
 };
 use ethers::utils::hex;
+use rust_decimal::Decimal;
+use rust_decimal_macros::dec;
 use tokio::runtime::Runtime;
 
 pub async fn create_test_client() -> anyhow::Result<HttpClient> {
@@ -37,8 +39,8 @@ pub async fn create_test_client() -> anyhow::Result<HttpClient> {
 pub fn build_submit_order_dto_for_bench(
     client: &HttpClient,
     ticker: &str,
-    quantity: f64,
-    price: Option<f64>,
+    quantity: Decimal,
+    price: Decimal,
     side: OrderSide,
     _type: OrderType,
     time_in_force: TimeInForce,
@@ -55,8 +57,8 @@ pub fn build_submit_order_dto_for_bench(
         eip_signing_fields,
         ctx,
         TradeOrder {
-            quantity: to_scaled_e9(quantity),
-            price: to_scaled_e9(price.unwrap_or(0.0)),
+            quantity: to_scaled_e9(quantity)?,
+            price: to_scaled_e9(price)?,
             reduce_only,
             side: side as u8,
             engine_type: product_info.engine_type.to_string().parse()?,
@@ -69,8 +71,8 @@ pub fn build_submit_order_dto_for_bench(
         dto_signing_fields,
         ctx,
         SubmitOrderLimitDtoData {
-            quantity: quantity.to_string(),
-            price: price.expect("Price should be present").to_string(),
+            quantity: quantity,
+            price: price,
             side,
             onchain_id: product_info.onchain_id,
             engine_type: product_info.engine_type,
@@ -108,8 +110,8 @@ fn bench_submit_order_build_and_sign(c: &mut Criterion) {
 
     // Fixed inputs, keep them realistic.
     let ticker = "BTC-USD";
-    let quantity = 0.01_f64;
-    let price = Some(50_000.0_f64);
+    let quantity = dec!(0.01);
+    let price = dec!(50_000.0);
     let side = OrderSide::BUY;
     let r#type = OrderType::Limit;
     let time_in_force = TimeInForce::Ioc;
