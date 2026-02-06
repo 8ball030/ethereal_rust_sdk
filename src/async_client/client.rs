@@ -39,7 +39,7 @@ use ethers::{
     signers::{LocalWallet, Signer},
     utils::hex,
 };
-use log::info;
+use log::{debug};
 use rust_decimal::Decimal;
 use std::str::FromStr;
 use uuid::Uuid;
@@ -51,8 +51,12 @@ fn get_server_url(environment: &Environment) -> &str {
     }
 }
 
-fn round_to_decimal_places(value: Decimal, decimal_places: Decimal) -> Result<Decimal> {
-    Ok((value * decimal_places).round() / decimal_places)
+fn round_to_tick(value: Decimal, tick_size: Decimal) -> Result<Decimal> {
+    if tick_size.is_zero() {
+        return Ok(value);
+    }
+    let ticks = (value / tick_size).round();
+    Ok(ticks * tick_size)
 }
 
 #[macro_export]
@@ -201,8 +205,14 @@ impl HttpClient {
         let product_info = self.product_hashmap.get(ticker).unwrap();
         let tick_size = Decimal::from_str(&product_info.tick_size)?;
         let lot_size = Decimal::from_str(&product_info.lot_size)?;
-        let price = round_to_decimal_places(price, tick_size)?;
-        let quantity = round_to_decimal_places(quantity, lot_size)?;
+
+        let price = round_to_tick(price, tick_size)?;
+        let quantity = round_to_tick(quantity, lot_size)?;
+
+        debug!(
+            "Submitting order with quantity: {}, price: {}, side: {:?}, type: {:?}, time_in_force: {:?}, post_only: {}, reduce_only: {}, expires_at: {:?}",
+            quantity, price, side, r#type, time_in_force, post_only, reduce_only, expires_at
+        );
 
         let ctx = SigningContext::new(&self.wallet, &self.subaccounts[0]);
         let message = with_signing_fields!(
@@ -219,10 +229,6 @@ impl HttpClient {
         );
 
         let signature = message.sign(self.env, &self.wallet)?;
-        info!(
-            "Submitting order with quantity: {}, price: {:?}, side: {:?}",
-            quantity, price, side,
-        );
         let order_dto = with_signing_fields!(
             dto_signing_fields,
             ctx,
