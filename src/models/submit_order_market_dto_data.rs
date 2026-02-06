@@ -27,7 +27,7 @@ pub struct SubmitOrderMarketDtoData {
     pub r#type: Type,
     /// Non-directional quantity of product in native units expressed as a decimal (precision: 9)
     #[serde(rename = "quantity")]
-    pub quantity: String,
+    pub quantity: rust_decimal::Decimal,
     #[serde(rename = "side")]
     pub side: models::OrderSide,
     /// Onchain generated productId from prior product registration
@@ -46,7 +46,7 @@ pub struct SubmitOrderMarketDtoData {
     pub close: Option<bool>,
     /// Stop price expressed as a decimal (precision: 9), requires stopType
     #[serde(rename = "stopPrice", skip_serializing_if = "Option::is_none")]
-    pub stop_price: Option<String>,
+    pub stop_price: Option<rust_decimal::Decimal>,
     /// Stop type, either 0 (take-profit) or 1 (stop-loss), requires non-zero stopPrice
     #[serde(rename = "stopType", skip_serializing_if = "Option::is_none")]
     pub stop_type: Option<StopType>,
@@ -73,7 +73,7 @@ impl SubmitOrderMarketDtoData {
         sender: String,
         nonce: String,
         r#type: Type,
-        quantity: String,
+        quantity: rust_decimal::Decimal,
         side: models::OrderSide,
         onchain_id: i32,
         engine_type: models::EngineType,

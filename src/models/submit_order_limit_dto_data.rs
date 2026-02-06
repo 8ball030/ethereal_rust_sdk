@@ -26,7 +26,7 @@ pub struct SubmitOrderLimitDtoData {
     pub r#type: models::OrderType,
     /// Non-directional quantity of product in native units expressed as a decimal (precision: 9)
     #[serde(rename = "quantity")]
-    pub quantity: String,
+    pub quantity: rust_decimal::Decimal,
     #[serde(rename = "side")]
     pub side: models::OrderSide,
     /// Onchain generated productId from prior product registration
@@ -45,7 +45,7 @@ pub struct SubmitOrderLimitDtoData {
     pub close: Option<bool>,
     /// Stop price expressed as a decimal (precision: 9), requires stopType
     #[serde(rename = "stopPrice", skip_serializing_if = "Option::is_none")]
-    pub stop_price: Option<String>,
+    pub stop_price: Option<rust_decimal::Decimal>,
     /// Stop type, either 0 (take-profit) or 1 (stop-loss), requires non-zero stopPrice
     #[serde(rename = "stopType", skip_serializing_if = "Option::is_none")]
     pub stop_type: Option<StopType>,
@@ -66,7 +66,7 @@ pub struct SubmitOrderLimitDtoData {
     pub group_contingency_type: Option<GroupContingencyType>,
     /// Limit price expressed as a decimal (precision: 9)
     #[serde(rename = "price")]
-    pub price: String,
+    pub price: rust_decimal::Decimal,
     /// How long an order will remain until executed/expired
     #[serde(rename = "timeInForce")]
     pub time_in_force: TimeInForce,
@@ -81,12 +81,12 @@ impl SubmitOrderLimitDtoData {
         sender: String,
         nonce: String,
         r#type: models::OrderType,
-        quantity: String,
+        quantity: rust_decimal::Decimal,
         side: models::OrderSide,
         onchain_id: i32,
         engine_type: models::EngineType,
         signed_at: i64,
-        price: String,
+        price: rust_decimal::Decimal,
         time_in_force: TimeInForce,
         post_only: bool,
     ) -> SubmitOrderLimitDtoData {

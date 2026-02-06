@@ -2,6 +2,7 @@ mod common;
 use ethereal_rust_sdk::apis::order_api::OrderControllerListBySubaccountIdParams;
 use ethereal_rust_sdk::models::submit_order_created_dto::Result;
 use ethereal_rust_sdk::models::{submit_order_limit_dto_data, OrderSide, OrderType};
+use rust_decimal_macros::dec;
 
 #[tokio::test]
 async fn test_simple_order() {
@@ -12,8 +13,8 @@ async fn test_simple_order() {
     println!("Creating order...");
 
     let ticker = "BTC-USD";
-    let quantity = 0.00010;
-    let price = 40000.0;
+    let quantity = dec!(0.00010);
+    let price = dec!(40000.0);
     let side = OrderSide::BUY;
     let r#type = OrderType::Limit;
 
@@ -28,7 +29,7 @@ async fn test_simple_order() {
         .submit_order(
             ticker,
             quantity,
-            Some(price),
+            price,
             side,
             r#type,
             time_in_force,

@@ -27,13 +27,13 @@ pub struct SubaccountBalanceDto {
     pub token_name: String,
     /// Token balance in native units expressed as a decimal (precision: 9)
     #[serde(rename = "amount")]
-    pub amount: String,
+    pub amount: rust_decimal::Decimal,
     /// Portion of balance transferrable in native units expressed as a decimal (precision: 9)
     #[serde(rename = "available")]
-    pub available: String,
+    pub available: rust_decimal::Decimal,
     /// Portion of balance non-transferrable in native units expressed as a decimal (precision: 9)
     #[serde(rename = "totalUsed")]
-    pub total_used: String,
+    pub total_used: rust_decimal::Decimal,
     /// Token balance last updated timestamp (ms since Unix Epoch)
     #[serde(rename = "updatedAt")]
     pub updated_at: f64,
@@ -45,9 +45,9 @@ impl SubaccountBalanceDto {
         token_id: uuid::Uuid,
         token_address: String,
         token_name: String,
-        amount: String,
-        available: String,
-        total_used: String,
+        amount: rust_decimal::Decimal,
+        available: rust_decimal::Decimal,
+        total_used: rust_decimal::Decimal,
         updated_at: f64,
     ) -> SubaccountBalanceDto {
         SubaccountBalanceDto {

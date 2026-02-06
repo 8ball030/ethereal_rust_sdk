@@ -6,6 +6,7 @@ use ethereal_rust_sdk::signing::{
 };
 use ethers::signers::{LocalWallet, Signer};
 use ethers::utils::hex;
+use rust_decimal_macros::dec;
 
 fn get_test_order() -> TradeOrder {
     TradeOrder {
@@ -16,8 +17,8 @@ fn get_test_order() -> TradeOrder {
             "0x123456789abcde00000000000000000000000000000000000000000000000000",
         )
         .unwrap(),
-        quantity: to_scaled_e9(1.0),
-        price: to_scaled_e9(3000.0),
+        quantity: to_scaled_e9(dec!(1.0)).expect("Failed to scale quantity"),
+        price: to_scaled_e9(dec!(3000.0)).expect("Failed to scale price"),
         reduce_only: false,
         side: 0,
         engine_type: 0,
@@ -29,8 +30,8 @@ fn get_test_order() -> TradeOrder {
 
 #[test]
 fn test_to_scaled_e9() {
-    let value = 1.23456789;
-    let scaled = to_scaled_e9(value);
+    let value = dec!(1.23456789);
+    let scaled = to_scaled_e9(value).unwrap();
     assert_eq!(scaled, 1_234_567_890, "Scaled value is incorrect");
 }
 //

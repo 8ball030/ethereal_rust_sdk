@@ -4,6 +4,9 @@ use ethers::{
     signers::{LocalWallet, Signer},
     utils::hex,
 };
+use rust_decimal::prelude::ToPrimitive;
+use rust_decimal::Decimal;
+use rust_decimal_macros::dec;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use ethers::{types::U256, utils::keccak256};
@@ -11,8 +14,11 @@ use ethers::{types::U256, utils::keccak256};
 use crate::models::SubaccountDto;
 use crate::{domain_config::DOMAINS, enums::Environment};
 
-pub fn to_scaled_e9(value: f64) -> u128 {
-    (value * 1e9) as u128
+use anyhow::Result;
+pub fn to_scaled_e9(value: Decimal) -> Result<u128> {
+    Ok((value * dec!(1_000_000_000))
+        .to_u128()
+        .expect("Value too large to fit in u128"))
 }
 
 pub fn get_nonce() -> u64 {
