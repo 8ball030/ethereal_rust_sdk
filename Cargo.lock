@@ -867,7 +867,7 @@ dependencies = [
 
 [[package]]
 name = "ethereal_rust_sdk"
-version = "0.1.12"
+version = "0.1.13"
 dependencies = [
  "anyhow",
  "criterion",
