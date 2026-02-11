@@ -25,8 +25,9 @@ use crate::{
     },
     enums::Environment,
     models::{
-        CancelOrderDto, CancelOrderDtoData, CancelOrderResultDto, OrderStatus, SubaccountDto,
-        SubmitOrderCreatedDto, SubmitOrderDto, SubmitOrderDtoData, SubmitOrderLimitDtoData,
+        CancelOrderDto, CancelOrderDtoData, CancelOrderResultDto, OrderStatus, ProductDto,
+        SubaccountDto, SubmitOrderCreatedDto, SubmitOrderDto, SubmitOrderDtoData,
+        SubmitOrderLimitDtoData,
     },
     signable_messages::{CancelOrder, TradeOrder},
     signing::{hex_to_bytes32, to_scaled_e9, SigningContext},
@@ -41,7 +42,7 @@ use ethers::{
 };
 use log::debug;
 use rust_decimal::Decimal;
-use std::str::FromStr;
+use std::{collections::HashMap, str::FromStr};
 use uuid::Uuid;
 
 fn get_server_url(environment: &Environment) -> &str {
@@ -79,7 +80,8 @@ pub struct HttpClient {
     pub wallet: LocalWallet,
     pub address: String,
     pub subaccounts: Vec<SubaccountDto>,
-    pub product_hashmap: std::collections::HashMap<String, crate::models::ProductDto>,
+    pub product_hashmap: HashMap<String, ProductDto>,
+    pub product_id_hashmap: HashMap<Uuid, ProductDto>,
 }
 
 impl HttpClient {
@@ -108,6 +110,16 @@ impl HttpClient {
             .into_iter()
             .map(|p| (p.display_ticker.clone(), p))
             .collect();
+        let product_id_hashmap = product::ProductClient { config: &config }
+            .list(ProductControllerListParams {
+                ..Default::default()
+            })
+            .await
+            .unwrap()
+            .data
+            .into_iter()
+            .map(|p| (p.id, p))
+            .collect();
 
         Self {
             env,
@@ -116,6 +128,7 @@ impl HttpClient {
             address,
             subaccounts,
             product_hashmap,
+            product_id_hashmap,
         }
     }
 
