@@ -45,3 +45,6 @@ jobs:
 
       - name: Test
         run: make test
+
+      - name: Docs
+        run: make docs
