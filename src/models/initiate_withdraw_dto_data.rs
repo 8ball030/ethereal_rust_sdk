@@ -28,15 +28,14 @@ pub struct InitiateWithdrawDtoData {
     /// Bytes32 encoded LayerZero destination address (with 0x prefix, left zero padded)
     #[serde(rename = "lzDestinationAddress")]
     pub lz_destination_address: String,
-    /// LayerZero destination endpoint ID for the transfer (zero if not bridging)
     #[serde(rename = "lzDestinationEid")]
-    pub lz_destination_eid: LzDestinationEid,
+    pub lz_destination_eid: models::LzDestinationEidEnum,
     /// Message nonce timestamp (nanoseconds since Unix Epoch)
     #[serde(rename = "nonce")]
     pub nonce: String,
     /// Message signedAt current timestamp (seconds since Unix Epoch)
     #[serde(rename = "signedAt")]
-    pub signed_at: i64,
+    pub signed_at: f64,
 }
 
 impl InitiateWithdrawDtoData {
@@ -46,9 +45,9 @@ impl InitiateWithdrawDtoData {
         token: String,
         amount: rust_decimal::Decimal,
         lz_destination_address: String,
-        lz_destination_eid: LzDestinationEid,
+        lz_destination_eid: models::LzDestinationEidEnum,
         nonce: String,
-        signed_at: i64,
+        signed_at: f64,
     ) -> InitiateWithdrawDtoData {
         InitiateWithdrawDtoData {
             account,
@@ -60,29 +59,5 @@ impl InitiateWithdrawDtoData {
             nonce,
             signed_at,
         }
-    }
-}
-/// LayerZero destination endpoint ID for the transfer (zero if not bridging)
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum LzDestinationEid {
-    #[serde(rename = "0")]
-    NONE,
-    #[serde(rename = "40422")]
-    ETHEREAL_TESTNET,
-    #[serde(rename = "40231")]
-    ARBITRUM_SEPOLIA,
-    #[serde(rename = "40161")]
-    ETHEREUM_SEPOLIA,
-    #[serde(rename = "30391")]
-    ETHEREAL_MAINNET,
-    #[serde(rename = "30110")]
-    ARBITRUM_MAINNET,
-    #[serde(rename = "30101")]
-    ETHEREUM_MAINNET,
-}
-
-impl Default for LzDestinationEid {
-    fn default() -> LzDestinationEid {
-        Self::NONE
     }
 }

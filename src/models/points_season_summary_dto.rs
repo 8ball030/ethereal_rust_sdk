@@ -22,16 +22,16 @@ pub struct PointsSeasonSummaryDto {
     /// Season number
     #[serde(rename = "season")]
     pub season: f64,
-    /// Total points earned including referral points in this season expressed as a decimal (precision: 9)
+    /// Total points earned (excluding referral points) in this season expressed as a decimal (precision: 9)
     #[serde(rename = "totalPoints")]
     pub total_points: String,
-    /// Total points earned before most recent distribution expressed as a decimal (precision: 9)
+    /// Total points earned (excluding referral points) before most recent distribution expressed as a decimal (precision: 9)
     #[serde(rename = "previousTotalPoints")]
     pub previous_total_points: String,
-    /// Referral points earned expressed as a decimal (precision: 9)
+    /// Referral points earned in this season expressed as a decimal (precision: 9)
     #[serde(rename = "referralPoints")]
     pub referral_points: String,
-    /// Referral points earned before most recent distribution expressed as a decimal (precision: 9)
+    /// Referral points earned in this season before most recent distribution expressed as a decimal (precision: 9)
     #[serde(rename = "previousReferralPoints")]
     pub previous_referral_points: String,
     /// Current rank in this season
@@ -40,9 +40,8 @@ pub struct PointsSeasonSummaryDto {
     /// Rank before most recent distribution
     #[serde(rename = "previousRank")]
     pub previous_rank: f64,
-    /// Account tier derived based on activity this season
     #[serde(rename = "tier")]
-    pub tier: Tier,
+    pub tier: models::TierEnum,
     /// Points season summary creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
     pub created_at: f64,
@@ -62,7 +61,7 @@ impl PointsSeasonSummaryDto {
         previous_referral_points: String,
         rank: f64,
         previous_rank: f64,
-        tier: Tier,
+        tier: models::TierEnum,
         created_at: f64,
         updated_at: f64,
     ) -> PointsSeasonSummaryDto {
@@ -80,27 +79,5 @@ impl PointsSeasonSummaryDto {
             created_at,
             updated_at,
         }
-    }
-}
-/// Account tier derived based on activity this season
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Tier {
-    #[serde(rename = "0")]
-    TIER_0,
-    #[serde(rename = "1")]
-    TIER_1,
-    #[serde(rename = "2")]
-    TIER_2,
-    #[serde(rename = "3")]
-    TIER_3,
-    #[serde(rename = "4")]
-    TIER_4,
-    #[serde(rename = "5")]
-    TIER_5,
-}
-
-impl Default for Tier {
-    fn default() -> Tier {
-        Self::TIER_0
     }
 }

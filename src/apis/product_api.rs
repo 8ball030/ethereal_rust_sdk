@@ -44,7 +44,7 @@ pub struct ProductControllerListParams {
     pub cursor: Option<String>,
     /// Order by field
     pub order_by: Option<String>,
-    /// Filter products by ticker (case insensitive)
+    /// Filter products by ticker (alphanumeic and case insensitive)
     pub ticker: Option<String>,
 }
 

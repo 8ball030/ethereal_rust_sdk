@@ -11,20 +11,18 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-///
+/// OrderType : Extracted enum for OrderType
+/// Extracted enum for OrderType
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 pub enum OrderType {
     #[serde(rename = "LIMIT")]
     Limit,
-    #[serde(rename = "MARKET")]
-    Market,
 }
 
 impl std::fmt::Display for OrderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::Limit => write!(f, "LIMIT"),
-            Self::Market => write!(f, "MARKET"),
         }
     }
 }

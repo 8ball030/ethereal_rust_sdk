@@ -22,62 +22,21 @@ pub struct SubmitOrderCreatedDto {
     /// Filled amount in native units expressed as a decimal (precision: 9)
     #[serde(rename = "filled")]
     pub filled: String,
-    /// Code indicating the result of the submission
     #[serde(rename = "result")]
-    pub result: Result,
+    pub result: models::ResultEnum,
 }
 
 impl SubmitOrderCreatedDto {
-    pub fn new(id: uuid::Uuid, filled: String, result: Result) -> SubmitOrderCreatedDto {
+    pub fn new(
+        id: uuid::Uuid,
+        filled: String,
+        result: models::ResultEnum,
+    ) -> SubmitOrderCreatedDto {
         SubmitOrderCreatedDto {
             id,
             client_order_id: None,
             filled,
             result,
         }
-    }
-}
-/// Code indicating the result of the submission
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Result {
-    #[serde(rename = "AccountSuspended")]
-    AccountSuspended,
-    #[serde(rename = "CausesImmediateLiquidation")]
-    CausesImmediateLiquidation,
-    #[serde(rename = "DuplicateSameSideOco")]
-    DuplicateSameSideOco,
-    #[serde(rename = "ImmediateMatchPostOnly")]
-    ImmediateMatchPostOnly,
-    #[serde(rename = "InsufficientBalance")]
-    InsufficientBalance,
-    #[serde(rename = "LiquidationError")]
-    LiquidationError,
-    #[serde(rename = "MarketOrderReachedMaxSlippage")]
-    MarketOrderReachedMaxSlippage,
-    #[serde(rename = "OcoFilled")]
-    OcoFilled,
-    #[serde(rename = "Ok")]
-    Ok,
-    #[serde(rename = "OpenValueCapExceeded")]
-    OpenValueCapExceeded,
-    #[serde(rename = "OrderIncreasesPosition")]
-    OrderIncreasesPosition,
-    #[serde(rename = "RiskLimitExceeded")]
-    RiskLimitExceeded,
-    #[serde(rename = "SignerRevoked")]
-    SignerRevoked,
-    #[serde(rename = "TriggerCanceledError")]
-    TriggerCanceledError,
-    #[serde(rename = "UnfilledFillOrKill")]
-    UnfilledFillOrKill,
-    #[serde(rename = "UnfilledImmediateOrCancel")]
-    UnfilledImmediateOrCancel,
-    #[serde(rename = "UnfilledMarketOrder")]
-    UnfilledMarketOrder,
-}
-
-impl Default for Result {
-    fn default() -> Result {
-        Self::AccountSuspended
     }
 }

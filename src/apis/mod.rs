@@ -121,6 +121,7 @@ pub mod order_api;
 pub mod points_api;
 pub mod position_api;
 pub mod product_api;
+pub mod rate_limit_api;
 pub mod referral_api;
 pub mod rpc_api;
 pub mod subaccount_api;

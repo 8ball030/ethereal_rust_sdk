@@ -53,7 +53,8 @@ The client has been generated using the OpenAPI specification provided by Ethere
 ```rust
 // examples/simple_order_submission.rs
 mod common;
-use ethereal_rust_sdk::models::{submit_order_limit_dto_data, OrderSide, OrderType};
+use ethereal_rust_sdk::models::{OrderSide, OrderType, TimeInForce};
+use rust_decimal_macros::dec;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -62,13 +63,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Creating order...");
 
     let ticker = "BTC-USD";
-    let quantity = 0.001;
-    let price = 80000.0;
+    let quantity = dec!(0.001);
+    let price = dec!(80000.0);
     let side = OrderSide::BUY;
     let r#type = OrderType::Limit;
 
     let expires_at = None;
-    let time_in_force = submit_order_limit_dto_data::TimeInForce::Gtd;
+    let time_in_force = TimeInForce::Gtd;
 
     // We have a few more options when creating an order now.
     let mut post_only = false;
@@ -78,7 +79,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .submit_order(
             ticker,
             quantity,
-            Some(price),
+            price,
             side,
             r#type,
             time_in_force,
@@ -98,7 +99,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .submit_order(
             ticker,
             quantity,
-            Some(price),
+            price,
             side,
             r#type,
             time_in_force,
@@ -119,7 +120,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .submit_order(
             ticker,
             quantity,
-            Some(price),
+            price,
             side,
             r#type,
             time_in_force,
@@ -192,8 +193,8 @@ In order to proces messages from the websocket client, the user must first regis
 ## Market Data Subscription
 ```rust
 // examples/market_data.rs
-use ethereal_rust_sdk::ws_client::run_forever;
-use log::info;
+use ethereal_rust_sdk::ws_client::ConnectionState;
+use log::{error, info};
 mod common;
 
 use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
@@ -221,7 +222,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     ws_client.connect().await?;
-    run_forever().await;
+    loop {
+        match ws_client.run_till_event().await {
+            ConnectionState::Connected => {
+                info!("Called detects connected")
+            }
+            ConnectionState::Disconnected => {
+                error!("State is disconncted!");
+                break;
+            }
+            ConnectionState::Reconnecting => {
+                error!("Client trying to reconnect!")
+            }
+        }
+    }
     Ok(())
 }
 
@@ -373,7 +387,7 @@ make fmt
 make lint
 make build
 make test
-
+make docs
 # Or simpler
 make all
 ```

@@ -28,9 +28,8 @@ pub struct OrderFillDto {
     /// Quantity filled in native units expressed as a decimal (precision: 9)
     #[serde(rename = "filled")]
     pub filled: String,
-    /// The provided order's type e.g. MARKET or LIMIT
     #[serde(rename = "type")]
-    pub r#type: Type,
+    pub r#type: models::OrderFillDtoOrderType,
     #[serde(rename = "side")]
     pub side: models::OrderSide,
     /// Indicates if the fill is reduce only
@@ -59,7 +58,7 @@ impl OrderFillDto {
         order_id: uuid::Uuid,
         price: String,
         filled: String,
-        r#type: Type,
+        r#type: models::OrderFillDtoOrderType,
         side: models::OrderSide,
         reduce_only: bool,
         fee_usd: String,
@@ -83,19 +82,5 @@ impl OrderFillDto {
             subaccount_id,
             created_at,
         }
-    }
-}
-/// The provided order's type e.g. MARKET or LIMIT
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Type {
-    #[serde(rename = "MARKET")]
-    Market,
-    #[serde(rename = "LIMIT")]
-    Limit,
-}
-
-impl Default for Type {
-    fn default() -> Type {
-        Self::Market
     }
 }

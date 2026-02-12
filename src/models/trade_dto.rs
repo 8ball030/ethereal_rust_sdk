@@ -41,9 +41,9 @@ pub struct TradeDto {
     #[serde(rename = "filled")]
     pub filled: String,
     #[serde(rename = "makerSide")]
-    pub maker_side: models::OrderSide,
+    pub maker_side: models::MakerSideEnum,
     #[serde(rename = "takerSide")]
-    pub taker_side: models::OrderSide,
+    pub taker_side: models::TakerSideEnum,
     /// Id of product the trade was made against
     #[serde(rename = "productId")]
     pub product_id: uuid::Uuid,
@@ -61,8 +61,8 @@ impl TradeDto {
         taker_fee_usd: String,
         price: String,
         filled: String,
-        maker_side: models::OrderSide,
-        taker_side: models::OrderSide,
+        maker_side: models::MakerSideEnum,
+        taker_side: models::TakerSideEnum,
         product_id: uuid::Uuid,
         created_at: f64,
     ) -> TradeDto {

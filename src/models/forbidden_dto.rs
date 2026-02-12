@@ -18,11 +18,15 @@ pub struct ForbiddenDto {
     #[serde(rename = "message")]
     pub message: String,
     #[serde(rename = "error")]
-    pub error: Error,
+    pub error: models::ForbiddenDtoErrorEnum,
 }
 
 impl ForbiddenDto {
-    pub fn new(status_code: StatusCode, message: String, error: Error) -> ForbiddenDto {
+    pub fn new(
+        status_code: StatusCode,
+        message: String,
+        error: models::ForbiddenDtoErrorEnum,
+    ) -> ForbiddenDto {
         ForbiddenDto {
             status_code,
             message,
@@ -40,17 +44,5 @@ pub enum StatusCode {
 impl Default for StatusCode {
     fn default() -> StatusCode {
         Self::Variant403
-    }
-}
-///
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Error {
-    #[serde(rename = "Forbidden")]
-    Forbidden,
-}
-
-impl Default for Error {
-    fn default() -> Error {
-        Self::Forbidden
     }
 }

@@ -22,9 +22,8 @@ pub struct SubmitOrderMarketDtoData {
     /// Message nonce timestamp (nanoseconds since Unix Epoch)
     #[serde(rename = "nonce")]
     pub nonce: String,
-    /// Market order type
     #[serde(rename = "type")]
-    pub r#type: Type,
+    pub r#type: models::OrderType,
     /// Non-directional quantity of product in native units expressed as a decimal (precision: 9)
     #[serde(rename = "quantity")]
     pub quantity: rust_decimal::Decimal,
@@ -32,9 +31,9 @@ pub struct SubmitOrderMarketDtoData {
     pub side: models::OrderSide,
     /// Onchain generated productId from prior product registration
     #[serde(rename = "onchainId")]
-    pub onchain_id: i32,
+    pub onchain_id: f64,
     #[serde(rename = "engineType")]
-    pub engine_type: models::EngineType,
+    pub engine_type: models::EngineTypeEnum,
     /// A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)
     #[serde(rename = "clientOrderId", skip_serializing_if = "Option::is_none")]
     pub client_order_id: Option<String>,
@@ -47,24 +46,22 @@ pub struct SubmitOrderMarketDtoData {
     /// Stop price expressed as a decimal (precision: 9), requires stopType
     #[serde(rename = "stopPrice", skip_serializing_if = "Option::is_none")]
     pub stop_price: Option<rust_decimal::Decimal>,
-    /// Stop type, either 0 (take-profit) or 1 (stop-loss), requires non-zero stopPrice
     #[serde(rename = "stopType", skip_serializing_if = "Option::is_none")]
-    pub stop_type: Option<StopType>,
+    pub stop_type: Option<models::StopTypeEnum>,
     /// Message signedAt current timestamp (seconds since Unix Epoch)
     #[serde(rename = "signedAt")]
-    pub signed_at: i64,
+    pub signed_at: f64,
     /// Order expiry timestamp (seconds since Unix Epoch), defaults to the maximum allowed value: signedAt + 6652800
     #[serde(rename = "expiresAt", skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<i64>,
+    pub expires_at: Option<f64>,
     /// Group Id (UUID) for linking orders together in OCO/OTO relationships
     #[serde(rename = "groupId", skip_serializing_if = "Option::is_none")]
     pub group_id: Option<uuid::Uuid>,
-    /// Contingency type for order groups: OTO (Order-Triggers-Order) or OCO (One-Cancels-Other)
     #[serde(
         rename = "groupContingencyType",
         skip_serializing_if = "Option::is_none"
     )]
-    pub group_contingency_type: Option<GroupContingencyType>,
+    pub group_contingency_type: Option<models::GroupContingencyTypeEnum>,
 }
 
 impl SubmitOrderMarketDtoData {
@@ -72,12 +69,12 @@ impl SubmitOrderMarketDtoData {
         subaccount: String,
         sender: String,
         nonce: String,
-        r#type: Type,
+        r#type: models::OrderType,
         quantity: rust_decimal::Decimal,
         side: models::OrderSide,
-        onchain_id: i32,
-        engine_type: models::EngineType,
-        signed_at: i64,
+        onchain_id: f64,
+        engine_type: models::EngineTypeEnum,
+        signed_at: f64,
     ) -> SubmitOrderMarketDtoData {
         SubmitOrderMarketDtoData {
             subaccount,
@@ -98,45 +95,5 @@ impl SubmitOrderMarketDtoData {
             group_id: None,
             group_contingency_type: None,
         }
-    }
-}
-/// Market order type
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Type {
-    #[serde(rename = "MARKET")]
-    Market,
-}
-
-impl Default for Type {
-    fn default() -> Type {
-        Self::Market
-    }
-}
-/// Stop type, either 0 (take-profit) or 1 (stop-loss), requires non-zero stopPrice
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum StopType {
-    #[serde(rename = "0")]
-    GAIN,
-    #[serde(rename = "1")]
-    LOSS,
-}
-
-impl Default for StopType {
-    fn default() -> StopType {
-        Self::GAIN
-    }
-}
-/// Contingency type for order groups: OTO (Order-Triggers-Order) or OCO (One-Cancels-Other)
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum GroupContingencyType {
-    #[serde(rename = "0")]
-    OTO,
-    #[serde(rename = "1")]
-    OCO,
-}
-
-impl Default for GroupContingencyType {
-    fn default() -> GroupContingencyType {
-        Self::OTO
     }
 }

@@ -7,9 +7,10 @@ pkgs.mkShell {
     cargo
     # node stuff
     # node stuff
-    nodejs_22
-    corepack_22
-    typeshare
+    # nodejs_22
+    # corepack_22
+    # typeshare
+    redocly
     openapi-generator-cli
     python312
 

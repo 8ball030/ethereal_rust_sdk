@@ -15,15 +15,18 @@ use serde::{Deserialize, Serialize};
 pub struct SubmitOrderFailedDto {
     #[serde(rename = "statusCode")]
     pub status_code: StatusCode,
-    /// Code indicating the reason for failure
     #[serde(rename = "message")]
-    pub message: Message,
+    pub message: models::MessageEnum,
     #[serde(rename = "error")]
-    pub error: Error,
+    pub error: models::SubmitOrderFailedDtoErrorEnum,
 }
 
 impl SubmitOrderFailedDto {
-    pub fn new(status_code: StatusCode, message: Message, error: Error) -> SubmitOrderFailedDto {
+    pub fn new(
+        status_code: StatusCode,
+        message: models::MessageEnum,
+        error: models::SubmitOrderFailedDtoErrorEnum,
+    ) -> SubmitOrderFailedDto {
         SubmitOrderFailedDto {
             status_code,
             message,
@@ -41,71 +44,5 @@ pub enum StatusCode {
 impl Default for StatusCode {
     fn default() -> StatusCode {
         Self::Variant422
-    }
-}
-/// Code indicating the reason for failure
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Message {
-    #[serde(rename = "AccountSuspended")]
-    AccountSuspended,
-    #[serde(rename = "DuplicateClientOrderId")]
-    DuplicateClientOrderId,
-    #[serde(rename = "ExchangeSuspended")]
-    ExchangeSuspended,
-    #[serde(rename = "InsufficientBalance")]
-    InsufficientBalance,
-    #[serde(rename = "InvalidBinaryData")]
-    InvalidBinaryData,
-    #[serde(rename = "InvalidExpireTime")]
-    InvalidExpireTime,
-    #[serde(rename = "InvalidGroupContingencyType")]
-    InvalidGroupContingencyType,
-    #[serde(rename = "InvalidNonceForSigner")]
-    InvalidNonceForSigner,
-    #[serde(rename = "InvalidSigner")]
-    InvalidSigner,
-    #[serde(rename = "InvalidSignerAddress")]
-    InvalidSignerAddress,
-    #[serde(rename = "InvalidTimeInForce")]
-    InvalidTimeInForce,
-    #[serde(rename = "LiquidationError")]
-    LiquidationError,
-    #[serde(rename = "MarginAccountBalanceZero")]
-    MarginAccountBalanceZero,
-    #[serde(rename = "NonceAlreadyUsed")]
-    NonceAlreadyUsed,
-    #[serde(rename = "PriceAboveMaximum")]
-    PriceAboveMaximum,
-    #[serde(rename = "PriceBelowMinimum")]
-    PriceBelowMinimum,
-    #[serde(rename = "RiskLimitExceeded")]
-    RiskLimitExceeded,
-    #[serde(rename = "TooManyOpenOrders")]
-    TooManyOpenOrders,
-    #[serde(rename = "TooManyPositions")]
-    TooManyPositions,
-    #[serde(rename = "TooManyStopOrders")]
-    TooManyStopOrders,
-    #[serde(rename = "InsuranceFundCannotOpenPositions")]
-    InsuranceFundCannotOpenPositions,
-    #[serde(rename = "InstrumentOpenValueCapExceeded")]
-    InstrumentOpenValueCapExceeded,
-}
-
-impl Default for Message {
-    fn default() -> Message {
-        Self::AccountSuspended
-    }
-}
-///
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Error {
-    #[serde(rename = "Unprocessable Entity")]
-    UnprocessableEntity,
-}
-
-impl Default for Error {
-    fn default() -> Error {
-        Self::UnprocessableEntity
     }
 }

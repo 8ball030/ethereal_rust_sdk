@@ -16,6 +16,7 @@ use crate::{
         points::PointsClient,
         position::PositionClient,
         product::{self, ProductClient},
+        rate_limit::RateLimitClient,
         referral::ReferralClient,
         rpc::RpcClient,
         subaccount::SubaccountClient,
@@ -25,16 +26,15 @@ use crate::{
     },
     enums::Environment,
     models::{
-        CancelOrderDto, CancelOrderDtoData, CancelOrderResultDto, OrderStatus, ProductDto,
-        SubaccountDto, SubmitOrderCreatedDto, SubmitOrderDto, SubmitOrderDtoData,
-        SubmitOrderLimitDtoData,
+        CancelOrderDto, CancelOrderDtoData, CancelOrderResultDto, OrderSide, OrderStatus,
+        OrderType, ProductDto, SubaccountDto, SubmitOrderCreatedDto, SubmitOrderDto,
+        SubmitOrderDtoData, SubmitOrderLimitDtoData, TimeInForce,
     },
     signable_messages::{CancelOrder, TradeOrder},
     signing::{hex_to_bytes32, to_scaled_e9, SigningContext},
 };
 use anyhow::Result;
 
-use crate::models::submit_order_limit_dto_data::TimeInForce;
 use crate::signing::Eip712;
 use ethers::{
     signers::{LocalWallet, Signer},
@@ -199,14 +199,20 @@ impl HttpClient {
         }
     }
 
+    pub fn rate_limits(&self) -> RateLimitClient<'_> {
+        RateLimitClient {
+            config: &self.config,
+        }
+    }
+
     #[allow(clippy::too_many_arguments)]
     pub async fn submit_order(
         &self,
         ticker: &str,
         quantity: Decimal,
         price: Decimal,
-        side: crate::models::OrderSide,
-        r#type: crate::models::OrderType,
+        side: OrderSide,
+        r#type: OrderType,
         time_in_force: TimeInForce,
         post_only: bool,
         reduce_only: bool,
@@ -214,6 +220,9 @@ impl HttpClient {
     ) -> Result<SubmitOrderCreatedDto, Box<dyn std::error::Error>> {
         if !self.product_hashmap.contains_key(ticker) {
             return Err(format!("Ticker {ticker} not found").into());
+        }
+        if OrderType::Limit != r#type {
+            return Err("Only limit orders are supported in this method".into());
         }
         let product_info = self.product_hashmap.get(ticker).unwrap();
         let tick_size = Decimal::from_str(&product_info.tick_size)?;
@@ -253,7 +262,7 @@ impl HttpClient {
                 engine_type: product_info.engine_type,
                 reduce_only: Some(reduce_only),
                 post_only,
-                expires_at,
+                expires_at: expires_at.map(|ts| ts as f64),
                 time_in_force,
                 r#type,
                 ..Default::default()

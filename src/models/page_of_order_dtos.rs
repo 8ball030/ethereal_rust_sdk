@@ -14,8 +14,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PageOfOrderDtos {
     /// Whether there are more objects to paginate through
-    #[serde(rename = "hasNext", skip_serializing_if = "Option::is_none")]
-    pub has_next: Option<bool>,
+    #[serde(rename = "hasNext")]
+    pub has_next: bool,
     /// Pointer to the next page in pagination dataset
     #[serde(rename = "nextCursor", skip_serializing_if = "Option::is_none")]
     pub next_cursor: Option<String>,
@@ -25,9 +25,9 @@ pub struct PageOfOrderDtos {
 }
 
 impl PageOfOrderDtos {
-    pub fn new(data: Vec<models::OrderDto>) -> PageOfOrderDtos {
+    pub fn new(has_next: bool, data: Vec<models::OrderDto>) -> PageOfOrderDtos {
         PageOfOrderDtos {
-            has_next: None,
+            has_next,
             next_cursor: None,
             data,
         }
