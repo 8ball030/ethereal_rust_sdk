@@ -48,3 +48,6 @@ jobs:
 
       - name: Docs
         run: make docs
+
+      - name: Check for diffs
+        run: git diff --exit-code
