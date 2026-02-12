@@ -6686,7 +6686,6 @@
           }
         },
         "required": [
-          "hasNext",
           "data"
         ]
       },
@@ -6927,7 +6926,6 @@
           }
         },
         "required": [
-          "hasNext",
           "data"
         ]
       },

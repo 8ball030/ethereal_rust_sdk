@@ -26,10 +26,6 @@ def write_json(file_path: Path, data: dict):
 def extract_all_enums(spec: dict):
     old_models = spec.get("components", {}).get("schemas", {})
 
-    def to_camel_case(snake_str):
-        components = snake_str.split('_')
-        return ''.join(x.title() for x in components)
-
     new_enums = dict()
     name_to_x_enum_varnames = dict()
     name_to_types = dict()
@@ -88,16 +84,14 @@ def patch_integer_properties(spec: dict):
     return spec
 
 
-def patch_schema_to_nullable(spec: dict):
+def patch_schema_has_next_to_optional(spec: dict):
     schemas = [
-        "OptionPublicDetailsSchema", 
-        "ERC20PublicDetailsSchema",
-        "PerpPublicDetailsSchema",
+        "PageOfPositionDtos", 
+        "PageOfOrderFillDtos", 
         ]
     for schema_name in schemas:
         schema = spec.get("components", {}).get("schemas", {}).get(schema_name, {})
-        if schema:
-            schema["nullable"] = True
+        schema["required"].remove("hasNext")
     print("Patched path parameters to be nullable where applicable.")
     return spec
 
@@ -108,9 +102,7 @@ def main():
     
     # patch_candidates(candidates)
     data = extract_all_enums(data)
-    # data = patch_integer_properties(data)
-    # data = make_nullable(data)
-    # data = patch_schema_to_nullable(data)
+    data = patch_schema_has_next_to_optional(data)
     
     write_json(file_path, data)
     print(f"Patched: {file_path}")
