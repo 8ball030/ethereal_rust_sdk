@@ -16,12 +16,11 @@ pub struct ClaimReferralCodeDtoData {
     /// Address that signed this message
     #[serde(rename = "sender")]
     pub sender: String,
-    /// Intent of the message (action to be taken)
     #[serde(rename = "intent")]
-    pub intent: Intent,
+    pub intent: models::IntentEnum,
     /// Message signedAt current timestamp (seconds since Unix Epoch)
     #[serde(rename = "signedAt")]
-    pub signed_at: i64,
+    pub signed_at: f64,
     /// The referral code to claim
     #[serde(rename = "code")]
     pub code: String,
@@ -30,8 +29,8 @@ pub struct ClaimReferralCodeDtoData {
 impl ClaimReferralCodeDtoData {
     pub fn new(
         sender: String,
-        intent: Intent,
-        signed_at: i64,
+        intent: models::IntentEnum,
+        signed_at: f64,
         code: String,
     ) -> ClaimReferralCodeDtoData {
         ClaimReferralCodeDtoData {
@@ -40,21 +39,5 @@ impl ClaimReferralCodeDtoData {
             signed_at,
             code,
         }
-    }
-}
-/// Intent of the message (action to be taken)
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Intent {
-    #[serde(rename = "0")]
-    REFERRAL_ACTIVATION,
-    #[serde(rename = "1")]
-    REFERRAL_CLAIM,
-    #[serde(rename = "2")]
-    REFERRAL_READ,
-}
-
-impl Default for Intent {
-    fn default() -> Intent {
-        Self::REFERRAL_ACTIVATION
     }
 }

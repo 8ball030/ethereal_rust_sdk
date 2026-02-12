@@ -19,6 +19,19 @@ pub struct SubaccountControllerGetBySubaccountIdParams {
     pub id: String,
 }
 
+/// struct for passing parameters to the method [`subaccount_controller_list`]
+#[derive(Clone, Debug, Default)]
+pub struct SubaccountControllerListParams {
+    /// Direction to paginate through objects
+    pub order: Option<String>,
+    /// Limit the number of objects to return
+    pub limit: Option<f64>,
+    /// Pointer to the current object in pagination dataset
+    pub cursor: Option<String>,
+    /// Order by field
+    pub order_by: Option<String>,
+}
+
 /// struct for passing parameters to the method [`subaccount_controller_list_by_account`]
 #[derive(Clone, Debug, Default)]
 pub struct SubaccountControllerListByAccountParams {
@@ -55,6 +68,20 @@ pub struct SubaccountControllerListSubaccountBalancesParams {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum SubaccountControllerGetBySubaccountIdError {
+    Status400(models::BadRequestDto),
+    Status401(models::UnauthorizedDto),
+    Status403(models::ForbiddenDto),
+    Status404(models::NotFoundDto),
+    Status422(models::UnprocessableEntityDto),
+    Status429(models::TooManyRequestsDto),
+    Status500(),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`subaccount_controller_list`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum SubaccountControllerListError {
     Status400(models::BadRequestDto),
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
@@ -130,6 +157,58 @@ pub async fn subaccount_controller_get_by_subaccount_id(
         let content = resp.text().await?;
         let entity: Option<SubaccountControllerGetBySubaccountIdError> =
             serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+pub async fn subaccount_controller_list(
+    configuration: &configuration::Configuration,
+    params: SubaccountControllerListParams,
+) -> Result<models::PageOfSubaccountDtos, Error<SubaccountControllerListError>> {
+    let uri_str = format!("{}/v1/subaccount/all", configuration.base_path);
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = params.order {
+        req_builder = req_builder.query(&[("order", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = params.limit {
+        req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = params.cursor {
+        req_builder = req_builder.query(&[("cursor", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = params.order_by {
+        req_builder = req_builder.query(&[("orderBy", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::PageOfSubaccountDtos`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::PageOfSubaccountDtos`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<SubaccountControllerListError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

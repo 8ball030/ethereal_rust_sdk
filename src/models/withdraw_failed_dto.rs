@@ -15,15 +15,18 @@ use serde::{Deserialize, Serialize};
 pub struct WithdrawFailedDto {
     #[serde(rename = "statusCode")]
     pub status_code: StatusCode,
-    /// Error code indicating the reason for failure
     #[serde(rename = "message")]
-    pub message: Message,
+    pub message: models::WithdrawFailedDtoMessageEnum,
     #[serde(rename = "error")]
-    pub error: Error,
+    pub error: models::WithdrawFailedDtoErrorEnum,
 }
 
 impl WithdrawFailedDto {
-    pub fn new(status_code: StatusCode, message: Message, error: Error) -> WithdrawFailedDto {
+    pub fn new(
+        status_code: StatusCode,
+        message: models::WithdrawFailedDtoMessageEnum,
+        error: models::WithdrawFailedDtoErrorEnum,
+    ) -> WithdrawFailedDto {
         WithdrawFailedDto {
             status_code,
             message,
@@ -41,35 +44,5 @@ pub enum StatusCode {
 impl Default for StatusCode {
     fn default() -> StatusCode {
         Self::Variant422
-    }
-}
-/// Error code indicating the reason for failure
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Message {
-    #[serde(rename = "AccountSuspended")]
-    AccountSuspended,
-    #[serde(rename = "EngineSuspended")]
-    EngineSuspended,
-    #[serde(rename = "InsufficientBalance")]
-    InsufficientBalance,
-    #[serde(rename = "InsuranceFundCannotWithdraw")]
-    InsuranceFundCannotWithdraw,
-}
-
-impl Default for Message {
-    fn default() -> Message {
-        Self::AccountSuspended
-    }
-}
-///
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Error {
-    #[serde(rename = "Unprocessable Entity")]
-    UnprocessableEntity,
-}
-
-impl Default for Error {
-    fn default() -> Error {
-        Self::UnprocessableEntity
     }
 }

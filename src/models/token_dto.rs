@@ -49,6 +49,12 @@ pub struct TokenDto {
     /// Min deposit amount as native units expressed as a decimal (precision: 9)
     #[serde(rename = "minDeposit")]
     pub min_deposit: String,
+    /// Block number when the token was added
+    #[serde(rename = "addedBlockNumber")]
+    pub added_block_number: String,
+    /// Block number when the token was removed (undefined if not removed)
+    #[serde(rename = "removedBlockNumber", skip_serializing_if = "Option::is_none")]
+    pub removed_block_number: Option<String>,
     /// Token creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
     pub created_at: f64,
@@ -65,6 +71,7 @@ impl TokenDto {
         deposit_fee: String,
         withdraw_fee: String,
         min_deposit: String,
+        added_block_number: String,
         created_at: f64,
     ) -> TokenDto {
         TokenDto {
@@ -80,6 +87,8 @@ impl TokenDto {
             deposit_fee,
             withdraw_fee,
             min_deposit,
+            added_block_number,
+            removed_block_number: None,
             created_at,
         }
     }

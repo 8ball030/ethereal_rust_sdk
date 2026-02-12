@@ -25,10 +25,10 @@ pub struct PointsPeriodDto {
     /// Epoch number within the season
     #[serde(rename = "epoch")]
     pub epoch: f64,
-    /// Points earned in this epoch expressed as a decimal (precision: 9)
+    /// Points earned in this period (excluding referral points) expressed as a decimal (precision: 9)
     #[serde(rename = "points")]
     pub points: String,
-    /// Referral points earned in this epoch expressed as a decimal (precision: 9)
+    /// Referral points earned in this period expressed as a decimal (precision: 9)
     #[serde(rename = "referralPoints")]
     pub referral_points: String,
     /// Beginning of points period (ms since Unix Epoch)

@@ -29,7 +29,7 @@ pub struct PositionLiquidationDto {
     #[serde(rename = "liquidationPrice")]
     pub liquidation_price: String,
     #[serde(rename = "cause")]
-    pub cause: models::PositionLiquidationCause,
+    pub cause: models::CauseEnum,
     /// Position cost at the time of liquidation in USD expressed as a decimal (precision: 9)
     #[serde(rename = "cost")]
     pub cost: String,
@@ -37,7 +37,7 @@ pub struct PositionLiquidationDto {
     #[serde(rename = "fundingChargeUsd", skip_serializing_if = "Option::is_none")]
     pub funding_charge_usd: Option<String>,
     #[serde(rename = "positionSide")]
-    pub position_side: models::PositionSide,
+    pub position_side: models::PositionSideEnum,
     /// Position liquidation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
     pub created_at: f64,
@@ -50,9 +50,9 @@ impl PositionLiquidationDto {
         product_id: uuid::Uuid,
         position_id: uuid::Uuid,
         liquidation_price: String,
-        cause: models::PositionLiquidationCause,
+        cause: models::CauseEnum,
         cost: String,
-        position_side: models::PositionSide,
+        position_side: models::PositionSideEnum,
         created_at: f64,
     ) -> PositionLiquidationDto {
         PositionLiquidationDto {

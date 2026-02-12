@@ -22,11 +22,10 @@ pub struct PositionFillDto {
     /// Realized PnL from the fill in USD expressed as a decimal (precision: 9)
     #[serde(rename = "realizedPnl")]
     pub realized_pnl: String,
-    /// Corresponding order type that led to the position fill, LIQUIDATED if takeover
     #[serde(rename = "type")]
-    pub r#type: Type,
+    pub r#type: models::PositionFillDtoOrderType,
     #[serde(rename = "side")]
-    pub side: models::PositionSide,
+    pub side: models::OrderSide,
     /// Indicates if the fill is reduce only
     #[serde(rename = "reduceOnly")]
     pub reduce_only: bool,
@@ -43,8 +42,8 @@ impl PositionFillDto {
         price: String,
         filled: String,
         realized_pnl: String,
-        r#type: Type,
-        side: models::PositionSide,
+        r#type: models::PositionFillDtoOrderType,
+        side: models::OrderSide,
         reduce_only: bool,
         fee_usd: String,
         created_at: f64,
@@ -59,25 +58,5 @@ impl PositionFillDto {
             fee_usd,
             created_at,
         }
-    }
-}
-/// Corresponding order type that led to the position fill, LIQUIDATED if takeover
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Type {
-    #[serde(rename = "MARKET")]
-    Market,
-    #[serde(rename = "LIMIT")]
-    Limit,
-    #[serde(rename = "REALIZED_PNL")]
-    RealizedPnl,
-    #[serde(rename = "LIQUIDATION")]
-    Liquidation,
-    #[serde(rename = "REALIZED_FUNDING")]
-    RealizedFunding,
-}
-
-impl Default for Type {
-    fn default() -> Type {
-        Self::Market
     }
 }

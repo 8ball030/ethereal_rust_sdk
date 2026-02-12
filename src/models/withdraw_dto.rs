@@ -28,9 +28,8 @@ pub struct WithdrawDto {
         skip_serializing_if = "Option::is_none"
     )]
     pub finalized_block_number: Option<String>,
-    /// Current status of the withdraw
     #[serde(rename = "status")]
-    pub status: Status,
+    pub status: models::WithdrawDtoOrderStatus,
     /// Bytes32 encoded subaccount name (0x prefix, zero padded)
     #[serde(rename = "subaccount")]
     pub subaccount: String,
@@ -60,7 +59,7 @@ pub struct WithdrawDto {
 impl WithdrawDto {
     pub fn new(
         id: uuid::Uuid,
-        status: Status,
+        status: models::WithdrawDtoOrderStatus,
         subaccount: String,
         token: String,
         amount: String,
@@ -80,23 +79,5 @@ impl WithdrawDto {
             created_at,
             withdraw_digest,
         }
-    }
-}
-/// Current status of the withdraw
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Status {
-    #[serde(rename = "SUBMITTED")]
-    Submitted,
-    #[serde(rename = "PENDING")]
-    Pending,
-    #[serde(rename = "COMPLETED")]
-    Completed,
-    #[serde(rename = "REJECTED")]
-    Rejected,
-}
-
-impl Default for Status {
-    fn default() -> Status {
-        Self::Submitted
     }
 }

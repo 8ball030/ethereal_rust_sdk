@@ -28,9 +28,8 @@ pub struct DryRunOrderFailedDto {
     /// Risk available for the product in USD expressed as a decimal (precision: 9)
     #[serde(rename = "riskAvailable")]
     pub risk_available: String,
-    /// Code indicating the reason for failure
     #[serde(rename = "code")]
-    pub code: Code,
+    pub code: models::DryRunOrderFailedDtoCodeEnum,
 }
 
 impl DryRunOrderFailedDto {
@@ -40,7 +39,7 @@ impl DryRunOrderFailedDto {
         total_used_margin: String,
         risk_used: String,
         risk_available: String,
-        code: Code,
+        code: models::DryRunOrderFailedDtoCodeEnum,
     ) -> DryRunOrderFailedDto {
         DryRunOrderFailedDto {
             margin_required,
@@ -50,59 +49,5 @@ impl DryRunOrderFailedDto {
             risk_available,
             code,
         }
-    }
-}
-/// Code indicating the reason for failure
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Code {
-    #[serde(rename = "AccountSuspended")]
-    AccountSuspended,
-    #[serde(rename = "DuplicateClientOrderId")]
-    DuplicateClientOrderId,
-    #[serde(rename = "ExchangeSuspended")]
-    ExchangeSuspended,
-    #[serde(rename = "InsufficientBalance")]
-    InsufficientBalance,
-    #[serde(rename = "InvalidBinaryData")]
-    InvalidBinaryData,
-    #[serde(rename = "InvalidExpireTime")]
-    InvalidExpireTime,
-    #[serde(rename = "InvalidGroupContingencyType")]
-    InvalidGroupContingencyType,
-    #[serde(rename = "InvalidNonceForSigner")]
-    InvalidNonceForSigner,
-    #[serde(rename = "InvalidSigner")]
-    InvalidSigner,
-    #[serde(rename = "InvalidSignerAddress")]
-    InvalidSignerAddress,
-    #[serde(rename = "InvalidTimeInForce")]
-    InvalidTimeInForce,
-    #[serde(rename = "LiquidationError")]
-    LiquidationError,
-    #[serde(rename = "MarginAccountBalanceZero")]
-    MarginAccountBalanceZero,
-    #[serde(rename = "NonceAlreadyUsed")]
-    NonceAlreadyUsed,
-    #[serde(rename = "PriceAboveMaximum")]
-    PriceAboveMaximum,
-    #[serde(rename = "PriceBelowMinimum")]
-    PriceBelowMinimum,
-    #[serde(rename = "RiskLimitExceeded")]
-    RiskLimitExceeded,
-    #[serde(rename = "TooManyOpenOrders")]
-    TooManyOpenOrders,
-    #[serde(rename = "TooManyPositions")]
-    TooManyPositions,
-    #[serde(rename = "TooManyStopOrders")]
-    TooManyStopOrders,
-    #[serde(rename = "InsuranceFundCannotOpenPositions")]
-    InsuranceFundCannotOpenPositions,
-    #[serde(rename = "InstrumentOpenValueCapExceeded")]
-    InstrumentOpenValueCapExceeded,
-}
-
-impl Default for Code {
-    fn default() -> Code {
-        Self::AccountSuspended
     }
 }

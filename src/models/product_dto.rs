@@ -35,10 +35,12 @@ pub struct ProductDto {
     #[serde(rename = "quoteTokenName")]
     pub quote_token_name: String,
     #[serde(rename = "engineType")]
-    pub engine_type: models::EngineType,
+    pub engine_type: models::EngineTypeEnum,
     /// The productId generated onchain after registering for the first time
     #[serde(rename = "onchainId")]
-    pub onchain_id: i32,
+    pub onchain_id: f64,
+    #[serde(rename = "status")]
+    pub status: models::ProductDtoOrderStatus,
     /// Block number this product was registered on
     #[serde(rename = "blockNumber")]
     pub block_number: String,
@@ -96,6 +98,12 @@ pub struct ProductDto {
     /// Max position notional value, in USD expressed as a decimal (precision: 9)
     #[serde(rename = "maxPositionNotionalUsd")]
     pub max_position_notional_usd: String,
+    /// Funding clamp APR expressed as a decimal (precision: 9)
+    #[serde(rename = "fundingClampApr")]
+    pub funding_clamp_apr: String,
+    /// Funding baseline APR expressed as a decimal (precision: 9)
+    #[serde(rename = "fundingBaselineApr")]
+    pub funding_baseline_apr: String,
 }
 
 impl ProductDto {
@@ -107,8 +115,9 @@ impl ProductDto {
         quote_token_address: String,
         base_token_name: String,
         quote_token_name: String,
-        engine_type: models::EngineType,
-        onchain_id: i32,
+        engine_type: models::EngineTypeEnum,
+        onchain_id: f64,
+        status: models::ProductDtoOrderStatus,
         block_number: String,
         cumulative_funding_usd: String,
         created_at: f64,
@@ -127,6 +136,8 @@ impl ProductDto {
         open_interest: String,
         max_open_interest_usd: String,
         max_position_notional_usd: String,
+        funding_clamp_apr: String,
+        funding_baseline_apr: String,
     ) -> ProductDto {
         ProductDto {
             id,
@@ -138,6 +149,7 @@ impl ProductDto {
             quote_token_name,
             engine_type,
             onchain_id,
+            status,
             block_number,
             cumulative_funding_usd,
             created_at,
@@ -157,6 +169,8 @@ impl ProductDto {
             open_interest,
             max_open_interest_usd,
             max_position_notional_usd,
+            funding_clamp_apr,
+            funding_baseline_apr,
         }
     }
 }

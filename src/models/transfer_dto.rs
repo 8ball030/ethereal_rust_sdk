@@ -28,9 +28,8 @@ pub struct TransferDto {
         skip_serializing_if = "Option::is_none"
     )]
     pub finalized_block_number: Option<String>,
-    /// Current status of the transfer
     #[serde(rename = "status")]
-    pub status: Status,
+    pub status: models::TransferDtoOrderStatus,
     /// Id representing the registered subaccount
     #[serde(rename = "subaccountId")]
     pub subaccount_id: uuid::Uuid,
@@ -40,9 +39,8 @@ pub struct TransferDto {
     /// Address of token transferred (non-checksummed)
     #[serde(rename = "tokenAddress")]
     pub token_address: String,
-    /// Type of transfer (WITHDRAW or DEPOSIT)
     #[serde(rename = "type")]
-    pub r#type: Type,
+    pub r#type: models::TransferDtoOrderType,
     /// Amount of tokens transferred in native units expressed as a decimal (precision: 9)
     #[serde(rename = "amount")]
     pub amount: String,
@@ -78,11 +76,11 @@ pub struct TransferDto {
 impl TransferDto {
     pub fn new(
         id: uuid::Uuid,
-        status: Status,
+        status: models::TransferDtoOrderStatus,
         subaccount_id: uuid::Uuid,
         token_name: String,
         token_address: String,
-        r#type: Type,
+        r#type: models::TransferDtoOrderType,
         amount: String,
         fee: String,
         created_at: f64,
@@ -104,37 +102,5 @@ impl TransferDto {
             initiated_transaction_hash: None,
             finalized_transaction_hash: None,
         }
-    }
-}
-/// Current status of the transfer
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Status {
-    #[serde(rename = "SUBMITTED")]
-    Submitted,
-    #[serde(rename = "PENDING")]
-    Pending,
-    #[serde(rename = "COMPLETED")]
-    Completed,
-    #[serde(rename = "REJECTED")]
-    Rejected,
-}
-
-impl Default for Status {
-    fn default() -> Status {
-        Self::Submitted
-    }
-}
-/// Type of transfer (WITHDRAW or DEPOSIT)
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Type {
-    #[serde(rename = "DEPOSIT")]
-    Deposit,
-    #[serde(rename = "WITHDRAW")]
-    Withdraw,
-}
-
-impl Default for Type {
-    fn default() -> Type {
-        Self::Deposit
     }
 }

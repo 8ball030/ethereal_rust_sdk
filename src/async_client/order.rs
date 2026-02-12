@@ -4,12 +4,13 @@ use crate::{
         order_api::{
             order_controller_cancel, order_controller_dry_run, order_controller_get_by_id,
             order_controller_list_by_subaccount_id, order_controller_list_fills_by_subaccount_id,
-            order_controller_list_trades, order_controller_submit, OrderControllerCancelError,
-            OrderControllerCancelParams, OrderControllerDryRunError, OrderControllerDryRunParams,
-            OrderControllerGetByIdError, OrderControllerGetByIdParams,
-            OrderControllerListBySubaccountIdError, OrderControllerListBySubaccountIdParams,
-            OrderControllerListFillsBySubaccountIdError,
-            OrderControllerListFillsBySubaccountIdParams, OrderControllerListTradesError,
+            order_controller_list_group_by_order_id, order_controller_list_trades,
+            order_controller_submit, OrderControllerCancelError, OrderControllerCancelParams,
+            OrderControllerDryRunError, OrderControllerDryRunParams, OrderControllerGetByIdError,
+            OrderControllerGetByIdParams, OrderControllerListBySubaccountIdError,
+            OrderControllerListBySubaccountIdParams, OrderControllerListFillsBySubaccountIdError,
+            OrderControllerListFillsBySubaccountIdParams, OrderControllerListGroupByOrderIdError,
+            OrderControllerListGroupByOrderIdParams, OrderControllerListTradesError,
             OrderControllerListTradesParams, OrderControllerSubmitError,
             OrderControllerSubmitParams,
         },
@@ -58,6 +59,13 @@ impl<'a> OrderClient<'a> {
         params: OrderControllerListFillsBySubaccountIdParams,
     ) -> Result<PageOfOrderFillDtos, Error<OrderControllerListFillsBySubaccountIdError>> {
         order_controller_list_fills_by_subaccount_id(self.config, params).await
+    }
+
+    pub async fn list_group_by_order_id(
+        &self,
+        params: OrderControllerListGroupByOrderIdParams,
+    ) -> Result<PageOfOrderDtos, Error<OrderControllerListGroupByOrderIdError>> {
+        order_controller_list_group_by_order_id(self.config, params).await
     }
 
     pub async fn list_trades(

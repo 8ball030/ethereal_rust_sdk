@@ -16,8 +16,8 @@ use ethereal_rust_sdk::{
     async_client::client::HttpClient,
     enums::Environment,
     models::{
-        submit_order_limit_dto_data::TimeInForce, OrderSide, OrderType, SubmitOrderDto,
-        SubmitOrderDtoData, SubmitOrderLimitDtoData,
+        OrderSide, OrderType, SubmitOrderDto, SubmitOrderDtoData, SubmitOrderLimitDtoData,
+        TimeInForce,
     },
     signable_messages::TradeOrder,
     signing::{to_scaled_e9, Eip712, SigningContext},
@@ -46,7 +46,7 @@ pub fn build_submit_order_dto_for_bench(
     time_in_force: TimeInForce,
     post_only: bool,
     reduce_only: bool,
-    expires_at: Option<i64>,
+    expires_at: Option<f64>,
 ) -> Result<SubmitOrderDto, Box<dyn std::error::Error>> {
     if !client.product_hashmap.contains_key(ticker) {
         return Err(format!("Ticker {ticker} not found").into());

@@ -2,12 +2,12 @@ use crate::{
     apis::{
         configuration::Configuration,
         subaccount_api::{
-            subaccount_controller_get_by_subaccount_id, subaccount_controller_list_by_account,
-            subaccount_controller_list_subaccount_balances,
+            subaccount_controller_get_by_subaccount_id, subaccount_controller_list,
+            subaccount_controller_list_by_account, subaccount_controller_list_subaccount_balances,
             SubaccountControllerGetBySubaccountIdError,
             SubaccountControllerGetBySubaccountIdParams, SubaccountControllerListByAccountError,
-            SubaccountControllerListByAccountParams,
-            SubaccountControllerListSubaccountBalancesError,
+            SubaccountControllerListByAccountParams, SubaccountControllerListError,
+            SubaccountControllerListParams, SubaccountControllerListSubaccountBalancesError,
             SubaccountControllerListSubaccountBalancesParams,
         },
         Error,
@@ -24,6 +24,13 @@ impl<'a> SubaccountClient<'a> {
         params: SubaccountControllerGetBySubaccountIdParams,
     ) -> Result<SubaccountDto, Error<SubaccountControllerGetBySubaccountIdError>> {
         subaccount_controller_get_by_subaccount_id(self.config, params).await
+    }
+
+    pub async fn list(
+        &self,
+        params: SubaccountControllerListParams,
+    ) -> Result<PageOfSubaccountDtos, Error<SubaccountControllerListError>> {
+        subaccount_controller_list(self.config, params).await
     }
 
     pub async fn list_by_account(

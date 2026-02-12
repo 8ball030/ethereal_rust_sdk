@@ -18,11 +18,15 @@ pub struct NotFoundDto {
     #[serde(rename = "message")]
     pub message: String,
     #[serde(rename = "error")]
-    pub error: Error,
+    pub error: models::NotFoundDtoErrorEnum,
 }
 
 impl NotFoundDto {
-    pub fn new(status_code: StatusCode, message: String, error: Error) -> NotFoundDto {
+    pub fn new(
+        status_code: StatusCode,
+        message: String,
+        error: models::NotFoundDtoErrorEnum,
+    ) -> NotFoundDto {
         NotFoundDto {
             status_code,
             message,
@@ -40,17 +44,5 @@ pub enum StatusCode {
 impl Default for StatusCode {
     fn default() -> StatusCode {
         Self::Variant404
-    }
-}
-///
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Error {
-    #[serde(rename = "Not Found")]
-    NotFound,
-}
-
-impl Default for Error {
-    fn default() -> Error {
-        Self::NotFound
     }
 }

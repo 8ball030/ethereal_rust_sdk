@@ -55,6 +55,18 @@ run:
 
 codegen:
 	bash build_scripts/pre_processing.sh
+	python build_scripts/patch_spec.py
+
+	redocly bundle ws_messages.json -o ws_spec_updated.json
+	openapi-generator-cli generate \
+	  -i ws_spec_updated.json \
+	  -g rust \
+	  -o ./generated \
+	  --type-mappings decimal=rust_decimal::Decimal \
+	--additional-properties=supportAsync=true,useSingleRequestParameter=true,avoidBoxedModels=true \
+	--skip-validate-spec
+	cp ./generated/src/models/* ./src/models/
+	rm -rf ./generated ws_spec_updated.json
 
 	openapi-generator-cli generate \
 	  -i openapi.json \
@@ -63,9 +75,7 @@ codegen:
 	  --type-mappings decimal=rust_decimal::Decimal \
 	--additional-properties=supportAsync=true,useSingleRequestParameter=true,avoidBoxedModels=true
 
-
 	cp ./generated/src/models/* ./src/models/
-	cp ./generated/docs/* ./docs/generated/
 	cp -r ./generated/src/apis ./src/
 
 	# rebuild mod.rs

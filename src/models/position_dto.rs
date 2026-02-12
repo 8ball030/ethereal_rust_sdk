@@ -47,7 +47,7 @@ pub struct PositionDto {
     #[serde(rename = "totalDecreaseQuantity")]
     pub total_decrease_quantity: String,
     #[serde(rename = "side")]
-    pub side: models::PositionSide,
+    pub side: models::OrderSide,
     /// Id of product to this position belongs to
     #[serde(rename = "productId")]
     pub product_id: uuid::Uuid,
@@ -78,7 +78,7 @@ impl PositionDto {
         total_increase_quantity: String,
         total_decrease_notional: String,
         total_decrease_quantity: String,
-        side: models::PositionSide,
+        side: models::OrderSide,
         product_id: uuid::Uuid,
         updated_at: f64,
         created_at: f64,

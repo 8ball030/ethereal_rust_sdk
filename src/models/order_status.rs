@@ -11,8 +11,8 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// OrderStatus : Status of the order
-/// Status of the order
+/// OrderStatus : Extracted enum for OrderStatus
+/// Extracted enum for OrderStatus
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 pub enum OrderStatus {
     #[serde(rename = "NEW")]

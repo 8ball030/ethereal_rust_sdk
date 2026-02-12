@@ -1,0 +1,139 @@
+{
+  "openapi": "3.0.0",
+  "components": {
+    "schemas": {
+      "BookDepthMessage": {
+        "type": "object",
+        "description": "Server-to-client BookDepth event message. First message is the full book (up to 100 levels per side). Subsequent messages are price-level diffs with absolute quantities. A zero quantity removes that level.",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64",
+            "description": "System timestamp in milliseconds when this BookDepth was emitted."
+          },
+          "previousTimestamp": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Timestamp in ms of the previous BookDepth event for this product."
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Identifier of the product."
+          },
+          "asks": {
+            "type": "array",
+            "description": "Array of ask levels as [price, quantity] string tuples.",
+            "minItems": 0,
+            "maxItems": 100,
+            "items": {
+              "type": "array",
+              "description": "Single ask level as [price, quantity].",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "string",
+                "description": "Price or quantity as decimal string."
+              }
+            }
+          },
+          "bids": {
+            "type": "array",
+            "description": "Array of bid levels as [price, quantity] string tuples.",
+            "minItems": 0,
+            "maxItems": 100,
+            "items": {
+              "type": "array",
+              "description": "Single bid level as [price, quantity].",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "string",
+                "description": "Price or quantity as decimal string."
+              }
+            }
+          }
+        },
+        "required": [
+          "timestamp",
+          "previousTimestamp",
+          "productId",
+          "asks",
+          "bids"
+        ]
+      },
+      "SubaccountLiquidation": {
+        "type": "object",
+        "properties": {
+          "subaccountId": {
+            "type": "string",
+            "example": "9036443a-441a-4a66-87f2-bd5c44cdca7a",
+            "description": "Id representing the registered subaccount",
+            "format": "uuid"
+          },
+          "liquidatedAt": {
+            "type": "number",
+            "example": 1712019600000,
+            "description": "Timestamp of when the subaccount was liquidated (ms since Unix Epoch)"
+          }
+        },
+        "required": [
+          "subaccountId",
+          "liquidatedAt"
+        ]
+      },
+      "TradeStreamMessage": {
+        "type": "object",
+        "description": "Server-to-client TradeStreams event message containing recent trades for a product.",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "Array of trade objects.",
+            "items": {
+              "type": "object",
+              "description": "Single trade object.",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Unique identifier of the trade."
+                },
+                "price": {
+                  "type": "string",
+                  "description": "Trade price as a decimal string."
+                },
+                "filled": {
+                  "type": "string",
+                  "description": "Filled quantity as a decimal string."
+                },
+                "takerSide": {
+                  "$ref": "./openapi.json#/components/schemas/TakerSideEnum"
+                },
+                "createdAt": {
+                  "type": "number",
+                  "description": "Timestamp of when the trade was created (ms since Unix Epoch)."
+                }
+              },
+              "required": [
+                "id",
+                "price",
+                "filled",
+                "takerSide",
+                "createdAt"
+              ]
+            }
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Identifier of the product."
+          }
+        },
+        "required": [
+          "data",
+          "productId"
+        ]
+      }
+    }
+  }
+}

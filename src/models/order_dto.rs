@@ -19,9 +19,8 @@ pub struct OrderDto {
     /// A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)
     #[serde(rename = "clientOrderId", skip_serializing_if = "Option::is_none")]
     pub client_order_id: Option<String>,
-    /// Trade order type e.g. MARKET or LIMIT
     #[serde(rename = "type")]
-    pub r#type: Type,
+    pub r#type: models::OrderType,
     /// Remaining quantity (if modified or reduced) in native units expressed as a decimal (precision: 9)
     #[serde(rename = "availableQuantity")]
     pub available_quantity: String,
@@ -62,36 +61,34 @@ pub struct OrderDto {
     /// Stop price expressed as a decimal (zero if not a stop order, precision: 9)
     #[serde(rename = "stopPrice")]
     pub stop_price: String,
-    /// Side as either BUY (0) or SELL (1)
     #[serde(rename = "stopType", skip_serializing_if = "Option::is_none")]
-    pub stop_type: Option<StopType>,
-    /// Type of stop price (stop orders only)
+    pub stop_type: Option<models::StopTypeEnum>,
     #[serde(rename = "stopPriceType", skip_serializing_if = "Option::is_none")]
-    pub stop_price_type: Option<StopPriceType>,
-    /// How long an order will remain until executed/expired (required if limit)
+    pub stop_price_type: Option<models::StopPriceTypeEnum>,
     #[serde(rename = "timeInForce", skip_serializing_if = "Option::is_none")]
-    pub time_in_force: Option<TimeInForce>,
+    pub time_in_force: Option<models::TimeInForce>,
     /// Order expiry timestamp (seconds since Unix Epoch)
     #[serde(rename = "expiresAt")]
     pub expires_at: f64,
     /// Only add order if it does not immediately fill (limit only)
     #[serde(rename = "postOnly", skip_serializing_if = "Option::is_none")]
     pub post_only: Option<bool>,
-    /// Type of OTOCO relationship (OTO or OCO)
     #[serde(
         rename = "groupContingencyType",
         skip_serializing_if = "Option::is_none"
     )]
-    pub group_contingency_type: Option<GroupContingencyType>,
+    pub group_contingency_type: Option<models::GroupContingencyTypeEnum>,
     /// Id of the group this order belongs to
     #[serde(rename = "groupId", skip_serializing_if = "Option::is_none")]
     pub group_id: Option<uuid::Uuid>,
+    #[serde(rename = "triggered")]
+    pub triggered: models::TriggeredEnum,
 }
 
 impl OrderDto {
     pub fn new(
         id: uuid::Uuid,
-        r#type: Type,
+        r#type: models::OrderType,
         available_quantity: String,
         quantity: String,
         side: models::OrderSide,
@@ -107,6 +104,7 @@ impl OrderDto {
         filled: String,
         stop_price: String,
         expires_at: f64,
+        triggered: models::TriggeredEnum,
     ) -> OrderDto {
         OrderDto {
             id,
@@ -133,78 +131,7 @@ impl OrderDto {
             post_only: None,
             group_contingency_type: None,
             group_id: None,
+            triggered,
         }
-    }
-}
-/// Trade order type e.g. MARKET or LIMIT
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Type {
-    #[serde(rename = "MARKET")]
-    Market,
-    #[serde(rename = "LIMIT")]
-    Limit,
-}
-
-impl Default for Type {
-    fn default() -> Type {
-        Self::Market
-    }
-}
-/// Side as either BUY (0) or SELL (1)
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum StopType {
-    #[serde(rename = "0")]
-    GAIN,
-    #[serde(rename = "1")]
-    LOSS,
-}
-
-impl Default for StopType {
-    fn default() -> StopType {
-        Self::GAIN
-    }
-}
-/// Type of stop price (stop orders only)
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum StopPriceType {
-    #[serde(rename = "0")]
-    LAST_PRICE,
-    #[serde(rename = "1")]
-    MARK_PRICE,
-}
-
-impl Default for StopPriceType {
-    fn default() -> StopPriceType {
-        Self::LAST_PRICE
-    }
-}
-/// How long an order will remain until executed/expired (required if limit)
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum TimeInForce {
-    #[serde(rename = "GTD")]
-    Gtd,
-    #[serde(rename = "IOC")]
-    Ioc,
-    #[serde(rename = "FOK")]
-    Fok,
-}
-
-impl Default for TimeInForce {
-    fn default() -> TimeInForce {
-        Self::Gtd
-    }
-}
-/// Type of OTOCO relationship (OTO or OCO)
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum GroupContingencyType {
-    #[serde(rename = "0")]
-    OTO,
-    #[serde(rename = "1")]
-    OCO,
-}
-
-impl Default for GroupContingencyType {
-    fn default() -> GroupContingencyType {
-        Self::OTO
     }
 }

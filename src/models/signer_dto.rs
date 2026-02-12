@@ -19,9 +19,8 @@ pub struct SignerDto {
     /// Address of the signer linked with the subaccount (non-checksummed)
     #[serde(rename = "signer")]
     pub signer: String,
-    /// Status of the signer
     #[serde(rename = "status")]
-    pub status: Status,
+    pub status: models::SignerDtoOrderStatus,
     /// Block number the signer has been linked on. Undefined means it has not be processed
     #[serde(rename = "blockNumber", skip_serializing_if = "Option::is_none")]
     pub block_number: Option<String>,
@@ -46,7 +45,7 @@ impl SignerDto {
     pub fn new(
         id: String,
         signer: String,
-        status: Status,
+        status: models::SignerDtoOrderStatus,
         expires_at: f64,
         created_at: f64,
     ) -> SignerDto {
@@ -61,25 +60,5 @@ impl SignerDto {
             expires_at,
             created_at,
         }
-    }
-}
-/// Status of the signer
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Status {
-    #[serde(rename = "PENDING")]
-    Pending,
-    #[serde(rename = "ACTIVE")]
-    Active,
-    #[serde(rename = "PENDING_REVOKE")]
-    PendingRevoke,
-    #[serde(rename = "REVOKED")]
-    Revoked,
-    #[serde(rename = "REJECTED")]
-    Rejected,
-}
-
-impl Default for Status {
-    fn default() -> Status {
-        Self::Pending
     }
 }

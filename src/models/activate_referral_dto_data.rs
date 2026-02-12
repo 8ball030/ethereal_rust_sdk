@@ -16,12 +16,11 @@ pub struct ActivateReferralDtoData {
     /// Address that signed this message
     #[serde(rename = "sender")]
     pub sender: String,
-    /// Intent of the message (action to be taken)
     #[serde(rename = "intent")]
-    pub intent: Intent,
+    pub intent: models::IntentEnum,
     /// Message signedAt current timestamp (seconds since Unix Epoch)
     #[serde(rename = "signedAt")]
-    pub signed_at: i32,
+    pub signed_at: f64,
     /// Bytes32 encoded subaccount name (0x prefix, zero padded)
     #[serde(rename = "subaccount")]
     pub subaccount: String,
@@ -30,8 +29,8 @@ pub struct ActivateReferralDtoData {
 impl ActivateReferralDtoData {
     pub fn new(
         sender: String,
-        intent: Intent,
-        signed_at: i32,
+        intent: models::IntentEnum,
+        signed_at: f64,
         subaccount: String,
     ) -> ActivateReferralDtoData {
         ActivateReferralDtoData {
@@ -40,21 +39,5 @@ impl ActivateReferralDtoData {
             signed_at,
             subaccount,
         }
-    }
-}
-/// Intent of the message (action to be taken)
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Intent {
-    #[serde(rename = "0")]
-    REFERRAL_ACTIVATION,
-    #[serde(rename = "1")]
-    REFERRAL_CLAIM,
-    #[serde(rename = "2")]
-    REFERRAL_READ,
-}
-
-impl Default for Intent {
-    fn default() -> Intent {
-        Self::REFERRAL_ACTIVATION
     }
 }

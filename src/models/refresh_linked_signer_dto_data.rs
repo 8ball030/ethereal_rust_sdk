@@ -30,7 +30,7 @@ pub struct RefreshLinkedSignerDtoData {
     pub nonce: String,
     /// Message signedAt current timestamp (seconds since Unix Epoch)
     #[serde(rename = "signedAt")]
-    pub signed_at: i32,
+    pub signed_at: f64,
 }
 
 impl RefreshLinkedSignerDtoData {
@@ -40,7 +40,7 @@ impl RefreshLinkedSignerDtoData {
         subaccount: String,
         signer: String,
         nonce: String,
-        signed_at: i32,
+        signed_at: f64,
     ) -> RefreshLinkedSignerDtoData {
         RefreshLinkedSignerDtoData {
             subaccount_id,

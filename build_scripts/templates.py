@@ -22,18 +22,18 @@ METHOD_TEMPLATE = Template("""
 """)
 
 TEST_METHOD_TEMPLATE_WITH_PARAMS = Template("""
-#[test]
-fn test_$short_function_name() {
-    let client = common::create_test_client().unwrap();
+#[tokio::test]
+async fn test_$short_function_name() {
+    let client = common::create_test_client().await.unwrap();
     let params = $params_struct_name::default();
     let result = client.$api_name().$short_function_name(params);
     assert!(result.is_ok());
 }
 """)
 TEST_METHOD_TEMPLATE_WITHOUT_PARAMS = Template("""
-#[test]
-fn test_$short_function_name() {
-    let client = common::create_test_client().unwrap();
+#[tokio::test]
+async fn test_$short_function_name() {
+    let client = common::create_test_client().await.unwrap();
     let result = client.$api_name().$short_function_name();
     assert!(result.is_ok());
 }

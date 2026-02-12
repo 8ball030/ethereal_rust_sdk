@@ -18,18 +18,17 @@ pub struct TooManyRequestsDto {
     #[serde(rename = "message")]
     pub message: String,
     #[serde(rename = "error")]
-    pub error: Error,
-    /// Specific rate limit type that was exceeded
+    pub error: models::TooManyRequestsDtoErrorEnum,
     #[serde(rename = "type")]
-    pub r#type: Type,
+    pub r#type: models::TooManyRequestsDtoOrderType,
 }
 
 impl TooManyRequestsDto {
     pub fn new(
         status_code: StatusCode,
         message: String,
-        error: Error,
-        r#type: Type,
+        error: models::TooManyRequestsDtoErrorEnum,
+        r#type: models::TooManyRequestsDtoOrderType,
     ) -> TooManyRequestsDto {
         TooManyRequestsDto {
             status_code,
@@ -49,35 +48,5 @@ pub enum StatusCode {
 impl Default for StatusCode {
     fn default() -> StatusCode {
         Self::Variant429
-    }
-}
-///
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Error {
-    #[serde(rename = "Too Many Requests")]
-    TooManyRequests,
-}
-
-impl Default for Error {
-    fn default() -> Error {
-        Self::TooManyRequests
-    }
-}
-/// Specific rate limit type that was exceeded
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Type {
-    #[serde(rename = "RATE_LIMIT_IP")]
-    RateLimitIp,
-    #[serde(rename = "RATE_LIMIT_ACCOUNT")]
-    RateLimitAccount,
-    #[serde(rename = "RATE_LIMIT_WITHDRAW")]
-    RateLimitWithdraw,
-    #[serde(rename = "RATE_LIMIT_LINKED_SIGNER")]
-    RateLimitLinkedSigner,
-}
-
-impl Default for Type {
-    fn default() -> Type {
-        Self::RateLimitIp
     }
 }

@@ -615,7 +615,7 @@
             "name": "side",
             "required": false,
             "in": "query",
-            "description": "Side as either BUY (0) or SELL (1)",
+            "description": "Side of the maker as either BUY (0) or SELL (1)",
             "x-enum-varnames": [
               "BUY",
               "SELL"
@@ -650,6 +650,16 @@
             "required": false,
             "in": "query",
             "description": "Explicitly include self trades (excluded by default)",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "expandSelfTrades",
+            "required": false,
+            "in": "query",
+            "description": "When true and includeSelfTrades is also true, returns both maker and taker perspectives for self-trades as separate rows.",
             "schema": {
               "default": false,
               "type": "boolean"
@@ -873,6 +883,144 @@
           }
         },
         "summary": "Returns a filtered array of trades",
+        "tags": [
+          "Order"
+        ]
+      }
+    },
+    "/v1/order/{id}/group": {
+      "get": {
+        "operationId": "OrderController_listGroupByOrderId",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "required": false,
+            "in": "query",
+            "description": "Direction to paginate through objects",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Limit the number of objects to return",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Pointer to the current object in pagination dataset",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderBy",
+            "required": false,
+            "in": "query",
+            "description": "Order by field",
+            "schema": {
+              "example": "createdAt",
+              "type": "string",
+              "enum": [
+                "createdAt"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOfOrderDtos"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntityDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Returns all orders in the same contingency group as the specified order",
         "tags": [
           "Order"
         ]
@@ -1713,10 +1861,11 @@
             "name": "ticker",
             "required": false,
             "in": "query",
-            "description": "Filter products by ticker (case insensitive)",
+            "description": "Filter products by ticker (alphanumeic and case insensitive)",
             "schema": {
               "minLength": 1,
-              "maxLength": 32,
+              "maxLength": 16,
+              "pattern": "^[a-zA-Z0-9]+$",
               "example": "ETHUSD",
               "type": "string"
             }
@@ -1911,7 +2060,7 @@
             "description": "Array of product ids",
             "schema": {
               "minItems": 1,
-              "maxItems": 10,
+              "maxItems": 50,
               "uniqueItems": true,
               "type": "array",
               "items": {
@@ -2359,7 +2508,7 @@
             "description": "Array of product ids",
             "schema": {
               "minItems": 1,
-              "maxItems": 10,
+              "maxItems": 50,
               "uniqueItems": true,
               "type": "array",
               "items": {
@@ -2450,6 +2599,91 @@
         ]
       }
     },
+    "/v1/rate-limit/config": {
+      "get": {
+        "operationId": "RateLimitController_getConfig",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitConfigResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntityDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Returns rate limit configurations for all endpoints",
+        "tags": [
+          "RateLimit"
+        ]
+      }
+    },
     "/v1/rpc/config": {
       "get": {
         "operationId": "RpcController_getConfig",
@@ -2532,6 +2766,135 @@
         "summary": "Returns the EIP712 domain data necessary for message signing",
         "tags": [
           "Rpc"
+        ]
+      }
+    },
+    "/v1/subaccount/all": {
+      "get": {
+        "operationId": "SubaccountController_list",
+        "parameters": [
+          {
+            "name": "order",
+            "required": false,
+            "in": "query",
+            "description": "Direction to paginate through objects",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Limit the number of objects to return",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Pointer to the current object in pagination dataset",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderBy",
+            "required": false,
+            "in": "query",
+            "description": "Order by field",
+            "schema": {
+              "example": "createdAt",
+              "type": "string",
+              "enum": [
+                "createdAt"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOfSubaccountDtos"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntityDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Returns all subaccounts",
+        "tags": [
+          "Subaccount"
         ]
       }
     },
@@ -4612,6 +4975,116 @@
         ]
       }
     },
+    "/v1/points/total": {
+      "get": {
+        "operationId": "PointsController_getTotalPoints",
+        "parameters": [
+          {
+            "name": "season",
+            "required": false,
+            "in": "query",
+            "description": "Season number",
+            "schema": {
+              "minimum": 0,
+              "maximum": 10,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "epoch",
+            "required": false,
+            "in": "query",
+            "description": "Epoch number within season",
+            "schema": {
+              "minimum": 1,
+              "maximum": 256,
+              "example": 1,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TotalPointsDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntityDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Returns total exchange-wide points distributed",
+        "tags": [
+          "Points"
+        ]
+      }
+    },
     "/v1/referral/code/{code}": {
       "get": {
         "operationId": "ReferralController_getCodeUsage",
@@ -5280,13 +5753,7 @@
             "description": "A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)"
           },
           "type": {
-            "type": "string",
-            "example": "LIMIT",
-            "description": "Trade order type e.g. MARKET or LIMIT",
-            "enum": [
-              "MARKET",
-              "LIMIT"
-            ]
+            "$ref": "#/components/schemas/OrderType"
           },
           "availableQuantity": {
             "type": "string",
@@ -5357,40 +5824,13 @@
             "description": "Stop price expressed as a decimal (zero if not a stop order, precision: 9)"
           },
           "stopType": {
-            "enum": [
-              0,
-              1
-            ],
-            "type": "number",
-            "example": 1,
-            "description": "Side as either BUY (0) or SELL (1)",
-            "x-enum-varnames": [
-              "GAIN",
-              "LOSS"
-            ]
+            "$ref": "#/components/schemas/StopTypeEnum"
           },
           "stopPriceType": {
-            "enum": [
-              0,
-              1
-            ],
-            "type": "number",
-            "example": 1,
-            "description": "Type of stop price (stop orders only)",
-            "x-enum-varnames": [
-              "LAST_PRICE",
-              "MARK_PRICE"
-            ]
+            "$ref": "#/components/schemas/StopPriceTypeEnum"
           },
           "timeInForce": {
-            "type": "string",
-            "example": "GTD",
-            "description": "How long an order will remain until executed/expired (required if limit)",
-            "enum": [
-              "GTD",
-              "IOC",
-              "FOK"
-            ]
+            "$ref": "#/components/schemas/TimeInForce"
           },
           "expiresAt": {
             "type": "number",
@@ -5403,23 +5843,16 @@
             "description": "Only add order if it does not immediately fill (limit only)"
           },
           "groupContingencyType": {
-            "enum": [
-              0,
-              1
-            ],
-            "type": "number",
-            "description": "Type of OTOCO relationship (OTO or OCO)",
-            "example": 0,
-            "x-enum-varnames": [
-              "OTO",
-              "OCO"
-            ]
+            "$ref": "#/components/schemas/GroupContingencyTypeEnum"
           },
           "groupId": {
             "type": "string",
             "description": "Id of the group this order belongs to",
             "example": "9036443a-441a-4a66-87f2-bd5c44cdca7a",
             "format": "uuid"
+          },
+          "triggered": {
+            "$ref": "#/components/schemas/TriggeredEnum"
           }
         },
         "required": [
@@ -5439,7 +5872,8 @@
           "price",
           "filled",
           "stopPrice",
-          "expiresAt"
+          "expiresAt",
+          "triggered"
         ]
       },
       "PageOfOrderDtos": {
@@ -5463,6 +5897,7 @@
           }
         },
         "required": [
+          "hasNext",
           "data"
         ]
       },
@@ -5496,11 +5931,7 @@
             ]
           },
           "error": {
-            "type": "string",
-            "default": "Bad Request",
-            "enum": [
-              "Bad Request"
-            ]
+            "$ref": "#/components/schemas/ErrorEnum"
           }
         },
         "required": [
@@ -5523,11 +5954,7 @@
             "type": "string"
           },
           "error": {
-            "type": "string",
-            "default": "Unauthorized",
-            "enum": [
-              "Unauthorized"
-            ]
+            "$ref": "#/components/schemas/UnauthorizedDtoErrorEnum"
           }
         },
         "required": [
@@ -5550,11 +5977,7 @@
             "type": "string"
           },
           "error": {
-            "type": "string",
-            "default": "Forbidden",
-            "enum": [
-              "Forbidden"
-            ]
+            "$ref": "#/components/schemas/ForbiddenDtoErrorEnum"
           }
         },
         "required": [
@@ -5577,11 +6000,7 @@
             "type": "string"
           },
           "error": {
-            "type": "string",
-            "default": "Not Found",
-            "enum": [
-              "Not Found"
-            ]
+            "$ref": "#/components/schemas/NotFoundDtoErrorEnum"
           }
         },
         "required": [
@@ -5604,11 +6023,7 @@
             "type": "string"
           },
           "error": {
-            "type": "string",
-            "default": "Unprocessable Entity",
-            "enum": [
-              "Unprocessable Entity"
-            ]
+            "$ref": "#/components/schemas/UnprocessableEntityDtoErrorEnum"
           }
         },
         "required": [
@@ -5631,21 +6046,10 @@
             "type": "string"
           },
           "error": {
-            "type": "string",
-            "default": "Too Many Requests",
-            "enum": [
-              "Too Many Requests"
-            ]
+            "$ref": "#/components/schemas/TooManyRequestsDtoErrorEnum"
           },
           "type": {
-            "enum": [
-              "RATE_LIMIT_IP",
-              "RATE_LIMIT_ACCOUNT",
-              "RATE_LIMIT_WITHDRAW",
-              "RATE_LIMIT_LINKED_SIGNER"
-            ],
-            "type": "string",
-            "description": "Specific rate limit type that was exceeded"
+            "$ref": "#/components/schemas/TooManyRequestsDtoOrderType"
           }
         },
         "required": [
@@ -5676,12 +6080,7 @@
             "description": "Message nonce timestamp (nanoseconds since Unix Epoch)"
           },
           "type": {
-            "enum": [
-              "MARKET"
-            ],
-            "type": "string",
-            "example": "MARKET",
-            "description": "Market order type"
+            "$ref": "#/components/schemas/OrderType"
           },
           "quantity": {
             "type": "string",
@@ -5693,13 +6092,13 @@
             "$ref": "#/components/schemas/OrderSide"
           },
           "onchainId": {
-            "type": "integer",
+            "type": "number",
             "minimum": 1,
             "example": 1,
             "description": "Onchain generated productId from prior product registration"
           },
           "engineType": {
-            "$ref": "#/components/schemas/EngineType"
+            "$ref": "#/components/schemas/EngineTypeEnum"
           },
           "clientOrderId": {
             "type": "string",
@@ -5724,28 +6123,16 @@
             "format": "decimal"
           },
           "stopType": {
-            "enum": [
-              0,
-              1
-            ],
-            "type": "number",
-            "example": 1,
-            "description": "Stop type, either 0 (take-profit) or 1 (stop-loss), requires non-zero stopPrice",
-            "x-enum-varnames": [
-              "GAIN",
-              "LOSS"
-            ]
+            "$ref": "#/components/schemas/StopTypeEnum"
           },
           "signedAt": {
-            "type": "integer",
+            "type": "number",
             "example": 1712019600,
-            "description": "Message signedAt current timestamp (seconds since Unix Epoch)",
-            "format": "int64"
+            "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
           },
           "expiresAt": {
-            "type": "integer",
-            "description": "Order expiry timestamp (seconds since Unix Epoch), defaults to the maximum allowed value: signedAt + 6652800",
-            "format": "int64"
+            "type": "number",
+            "description": "Order expiry timestamp (seconds since Unix Epoch), defaults to the maximum allowed value: signedAt + 6652800"
           },
           "groupId": {
             "type": "string",
@@ -5753,16 +6140,7 @@
             "description": "Group Id (UUID) for linking orders together in OCO/OTO relationships"
           },
           "groupContingencyType": {
-            "enum": [
-              0,
-              1
-            ],
-            "type": "number",
-            "description": "Contingency type for order groups: OTO (Order-Triggers-Order) or OCO (One-Cancels-Other)",
-            "x-enum-varnames": [
-              "OTO",
-              "OCO"
-            ]
+            "$ref": "#/components/schemas/GroupContingencyTypeEnum"
           }
         },
         "required": [
@@ -5810,13 +6188,13 @@
             "$ref": "#/components/schemas/OrderSide"
           },
           "onchainId": {
-            "type": "integer",
+            "type": "number",
             "minimum": 1,
             "example": 1,
             "description": "Onchain generated productId from prior product registration"
           },
           "engineType": {
-            "$ref": "#/components/schemas/EngineType"
+            "$ref": "#/components/schemas/EngineTypeEnum"
           },
           "clientOrderId": {
             "type": "string",
@@ -5841,28 +6219,16 @@
             "format": "decimal"
           },
           "stopType": {
-            "enum": [
-              0,
-              1
-            ],
-            "type": "number",
-            "example": 1,
-            "description": "Stop type, either 0 (take-profit) or 1 (stop-loss), requires non-zero stopPrice",
-            "x-enum-varnames": [
-              "GAIN",
-              "LOSS"
-            ]
+            "$ref": "#/components/schemas/StopTypeEnum"
           },
           "signedAt": {
-            "type": "integer",
+            "type": "number",
             "example": 1712019600,
-            "description": "Message signedAt current timestamp (seconds since Unix Epoch)",
-            "format": "int64"
+            "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
           },
           "expiresAt": {
-            "type": "integer",
-            "description": "Order expiry timestamp (seconds since Unix Epoch), defaults to the maximum allowed value: signedAt + 6652800",
-            "format": "int64"
+            "type": "number",
+            "description": "Order expiry timestamp (seconds since Unix Epoch), defaults to the maximum allowed value: signedAt + 6652800"
           },
           "groupId": {
             "type": "string",
@@ -5870,16 +6236,7 @@
             "description": "Group Id (UUID) for linking orders together in OCO/OTO relationships"
           },
           "groupContingencyType": {
-            "enum": [
-              0,
-              1
-            ],
-            "type": "number",
-            "description": "Contingency type for order groups: OTO (Order-Triggers-Order) or OCO (One-Cancels-Other)",
-            "x-enum-varnames": [
-              "OTO",
-              "OCO"
-            ]
+            "$ref": "#/components/schemas/GroupContingencyTypeEnum"
           },
           "price": {
             "type": "string",
@@ -5888,15 +6245,7 @@
             "format": "decimal"
           },
           "timeInForce": {
-            "default": "GTD",
-            "enum": [
-              "GTD",
-              "IOC",
-              "FOK"
-            ],
-            "type": "string",
-            "example": "IOC",
-            "description": "How long an order will remain until executed/expired"
+            "$ref": "#/components/schemas/TimeInForce"
           },
           "postOnly": {
             "type": "boolean",
@@ -5963,28 +6312,7 @@
             "description": "Filled amount in native units expressed as a decimal (precision: 9)"
           },
           "result": {
-            "enum": [
-              "AccountSuspended",
-              "CausesImmediateLiquidation",
-              "DuplicateSameSideOco",
-              "ImmediateMatchPostOnly",
-              "InsufficientBalance",
-              "LiquidationError",
-              "MarketOrderReachedMaxSlippage",
-              "OcoFilled",
-              "Ok",
-              "OpenValueCapExceeded",
-              "OrderIncreasesPosition",
-              "RiskLimitExceeded",
-              "SignerRevoked",
-              "TriggerCanceledError",
-              "UnfilledFillOrKill",
-              "UnfilledImmediateOrCancel",
-              "UnfilledMarketOrder"
-            ],
-            "type": "string",
-            "example": "Ok",
-            "description": "Code indicating the result of the submission"
+            "$ref": "#/components/schemas/ResultEnum"
           }
         },
         "required": [
@@ -6004,40 +6332,10 @@
             ]
           },
           "message": {
-            "type": "string",
-            "enum": [
-              "AccountSuspended",
-              "DuplicateClientOrderId",
-              "ExchangeSuspended",
-              "InsufficientBalance",
-              "InvalidBinaryData",
-              "InvalidExpireTime",
-              "InvalidGroupContingencyType",
-              "InvalidNonceForSigner",
-              "InvalidSigner",
-              "InvalidSignerAddress",
-              "InvalidTimeInForce",
-              "LiquidationError",
-              "MarginAccountBalanceZero",
-              "NonceAlreadyUsed",
-              "PriceAboveMaximum",
-              "PriceBelowMinimum",
-              "RiskLimitExceeded",
-              "TooManyOpenOrders",
-              "TooManyPositions",
-              "TooManyStopOrders",
-              "InsuranceFundCannotOpenPositions",
-              "InstrumentOpenValueCapExceeded"
-            ],
-            "example": "TooManyOpenOrders",
-            "description": "Code indicating the reason for failure"
+            "$ref": "#/components/schemas/MessageEnum"
           },
           "error": {
-            "type": "string",
-            "default": "Unprocessable Entity",
-            "enum": [
-              "Unprocessable Entity"
-            ]
+            "$ref": "#/components/schemas/SubmitOrderFailedDtoErrorEnum"
           }
         },
         "required": [
@@ -6093,28 +6391,7 @@
             "description": "Risk available for the product in USD expressed as a decimal (precision: 9)"
           },
           "code": {
-            "enum": [
-              "AccountSuspended",
-              "CausesImmediateLiquidation",
-              "DuplicateSameSideOco",
-              "ImmediateMatchPostOnly",
-              "InsufficientBalance",
-              "LiquidationError",
-              "MarketOrderReachedMaxSlippage",
-              "OcoFilled",
-              "Ok",
-              "OpenValueCapExceeded",
-              "OrderIncreasesPosition",
-              "RiskLimitExceeded",
-              "SignerRevoked",
-              "TriggerCanceledError",
-              "UnfilledFillOrKill",
-              "UnfilledImmediateOrCancel",
-              "UnfilledMarketOrder"
-            ],
-            "type": "string",
-            "example": "Ok",
-            "description": "Code indicating a result of the dry run"
+            "$ref": "#/components/schemas/CodeEnum"
           }
         },
         "required": [
@@ -6155,33 +6432,7 @@
             "description": "Risk available for the product in USD expressed as a decimal (precision: 9)"
           },
           "code": {
-            "enum": [
-              "AccountSuspended",
-              "DuplicateClientOrderId",
-              "ExchangeSuspended",
-              "InsufficientBalance",
-              "InvalidBinaryData",
-              "InvalidExpireTime",
-              "InvalidGroupContingencyType",
-              "InvalidNonceForSigner",
-              "InvalidSigner",
-              "InvalidSignerAddress",
-              "InvalidTimeInForce",
-              "LiquidationError",
-              "MarginAccountBalanceZero",
-              "NonceAlreadyUsed",
-              "PriceAboveMaximum",
-              "PriceBelowMinimum",
-              "RiskLimitExceeded",
-              "TooManyOpenOrders",
-              "TooManyPositions",
-              "TooManyStopOrders",
-              "InsuranceFundCannotOpenPositions",
-              "InstrumentOpenValueCapExceeded"
-            ],
-            "type": "string",
-            "example": "TooManyOpenOrders",
-            "description": "Code indicating the reason for failure"
+            "$ref": "#/components/schemas/DryRunOrderFailedDtoCodeEnum"
           }
         },
         "required": [
@@ -6204,40 +6455,10 @@
             ]
           },
           "message": {
-            "type": "string",
-            "enum": [
-              "AccountSuspended",
-              "DuplicateClientOrderId",
-              "ExchangeSuspended",
-              "InsufficientBalance",
-              "InvalidBinaryData",
-              "InvalidExpireTime",
-              "InvalidGroupContingencyType",
-              "InvalidNonceForSigner",
-              "InvalidSigner",
-              "InvalidSignerAddress",
-              "InvalidTimeInForce",
-              "LiquidationError",
-              "MarginAccountBalanceZero",
-              "NonceAlreadyUsed",
-              "PriceAboveMaximum",
-              "PriceBelowMinimum",
-              "RiskLimitExceeded",
-              "TooManyOpenOrders",
-              "TooManyPositions",
-              "TooManyStopOrders",
-              "InsuranceFundCannotOpenPositions",
-              "InstrumentOpenValueCapExceeded"
-            ],
-            "example": "TooManyOpenOrders",
-            "description": "Code indicating the reason for failure"
+            "$ref": "#/components/schemas/MessageEnum"
           },
           "error": {
-            "type": "string",
-            "default": "Unprocessable Entity",
-            "enum": [
-              "Unprocessable Entity"
-            ]
+            "$ref": "#/components/schemas/DryRunOrderFailedUnprocessableEntityDtoErrorEnum"
           },
           "data": {
             "description": "Details of the failed dry run",
@@ -6338,18 +6559,7 @@
             "description": "A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)"
           },
           "result": {
-            "enum": [
-              "AlreadyCanceled",
-              "AlreadyExpired",
-              "AlreadyFilled",
-              "NotFound",
-              "Ok",
-              "NonceAlreadyUsed",
-              "Unknown"
-            ],
-            "type": "string",
-            "example": "Ok",
-            "description": "Code indicating the result of the submission"
+            "$ref": "#/components/schemas/CancelOrderResultDtoResultEnum"
           }
         },
         "required": [
@@ -6403,13 +6613,7 @@
             "description": "Quantity filled in native units expressed as a decimal (precision: 9)"
           },
           "type": {
-            "type": "string",
-            "example": "LIMIT",
-            "description": "The provided order's type e.g. MARKET or LIMIT",
-            "enum": [
-              "MARKET",
-              "LIMIT"
-            ]
+            "$ref": "#/components/schemas/OrderFillDtoOrderType"
           },
           "side": {
             "$ref": "#/components/schemas/OrderSide"
@@ -6482,6 +6686,7 @@
           }
         },
         "required": [
+          "hasNext",
           "data"
         ]
       },
@@ -6537,10 +6742,10 @@
             "description": "Quantity filled in native units expressed as a decimal (precision: 9)"
           },
           "makerSide": {
-            "$ref": "#/components/schemas/OrderSide"
+            "$ref": "#/components/schemas/MakerSideEnum"
           },
           "takerSide": {
-            "$ref": "#/components/schemas/OrderSide"
+            "$ref": "#/components/schemas/TakerSideEnum"
           },
           "productId": {
             "type": "string",
@@ -6653,7 +6858,7 @@
             "description": "Cumulative quantity of all position decreases expressed as a decimal (precision: 9)"
           },
           "side": {
-            "$ref": "#/components/schemas/PositionSide"
+            "$ref": "#/components/schemas/OrderSide"
           },
           "productId": {
             "type": "string",
@@ -6745,19 +6950,10 @@
             "description": "Realized PnL from the fill in USD expressed as a decimal (precision: 9)"
           },
           "type": {
-            "type": "string",
-            "example": "LIMIT",
-            "description": "Corresponding order type that led to the position fill, LIQUIDATED if takeover",
-            "enum": [
-              "MARKET",
-              "LIMIT",
-              "REALIZED_PNL",
-              "LIQUIDATION",
-              "REALIZED_FUNDING"
-            ]
+            "$ref": "#/components/schemas/PositionFillDtoOrderType"
           },
           "side": {
-            "$ref": "#/components/schemas/PositionSide"
+            "$ref": "#/components/schemas/OrderSide"
           },
           "reduceOnly": {
             "type": "boolean",
@@ -6844,7 +7040,7 @@
             "description": "Liquidation mark price in USD expressed as a decimal (precision: 9)"
           },
           "cause": {
-            "$ref": "#/components/schemas/PositionLiquidationCause"
+            "$ref": "#/components/schemas/CauseEnum"
           },
           "cost": {
             "type": "string",
@@ -6857,7 +7053,7 @@
             "description": "Funding charged in USD expressed as a decimal (precision: 9), undefined if not liquidated due to funding"
           },
           "positionSide": {
-            "$ref": "#/components/schemas/PositionSide"
+            "$ref": "#/components/schemas/PositionSideEnum"
           },
           "createdAt": {
             "type": "number",
@@ -6944,12 +7140,15 @@
             "description": "Name of the quote token (e.g. USD in BTCUSD)"
           },
           "engineType": {
-            "$ref": "#/components/schemas/EngineType"
+            "$ref": "#/components/schemas/EngineTypeEnum"
           },
           "onchainId": {
-            "type": "integer",
+            "type": "number",
             "example": 1,
             "description": "The productId generated onchain after registering for the first time"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ProductDtoOrderStatus"
           },
           "blockNumber": {
             "type": "string",
@@ -7045,6 +7244,16 @@
             "type": "string",
             "example": "50000000.0",
             "description": "Max position notional value, in USD expressed as a decimal (precision: 9)"
+          },
+          "fundingClampApr": {
+            "type": "string",
+            "example": "0.01",
+            "description": "Funding clamp APR expressed as a decimal (precision: 9)"
+          },
+          "fundingBaselineApr": {
+            "type": "string",
+            "example": "0.15",
+            "description": "Funding baseline APR expressed as a decimal (precision: 9)"
           }
         },
         "required": [
@@ -7057,6 +7266,7 @@
           "quoteTokenName",
           "engineType",
           "onchainId",
+          "status",
           "blockNumber",
           "cumulativeFundingUsd",
           "createdAt",
@@ -7074,7 +7284,9 @@
           "fundingRate1h",
           "openInterest",
           "maxOpenInterestUsd",
-          "maxPositionNotionalUsd"
+          "maxPositionNotionalUsd",
+          "fundingClampApr",
+          "fundingBaselineApr"
         ]
       },
       "PageOfProductDtos": {
@@ -7307,6 +7519,126 @@
         },
         "required": [
           "hasNext",
+          "data"
+        ]
+      },
+      "HttpPaginatedRateLimitEndpointDto": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "$ref": "#/components/schemas/MethodEnum"
+          },
+          "path": {
+            "type": "string",
+            "example": "/v1/order/",
+            "description": "API endpoint path"
+          },
+          "protocol": {
+            "$ref": "#/components/schemas/ProtocolEnum"
+          },
+          "type": {
+            "$ref": "#/components/schemas/HttpPaginatedRateLimitEndpointDtoOrderType"
+          },
+          "basePoints": {
+            "type": "number",
+            "description": "Base points consumed per request",
+            "example": 1
+          },
+          "pointsPerRow": {
+            "type": "number",
+            "description": "Points consumed per row in paginated response",
+            "example": 1
+          }
+        },
+        "required": [
+          "method",
+          "path",
+          "protocol",
+          "type",
+          "basePoints",
+          "pointsPerRow"
+        ]
+      },
+      "HttpFixedRateLimitEndpointDto": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "$ref": "#/components/schemas/MethodEnum"
+          },
+          "path": {
+            "type": "string",
+            "example": "/v1/order/",
+            "description": "API endpoint path"
+          },
+          "protocol": {
+            "$ref": "#/components/schemas/ProtocolEnum"
+          },
+          "type": {
+            "$ref": "#/components/schemas/HttpFixedRateLimitEndpointDtoOrderType"
+          },
+          "fixedPoints": {
+            "type": "number",
+            "description": "Fixed points consumed per request",
+            "example": 5
+          }
+        },
+        "required": [
+          "method",
+          "path",
+          "protocol",
+          "type",
+          "fixedPoints"
+        ]
+      },
+      "WsFixedRateLimitEndpointDto": {
+        "type": "object",
+        "properties": {
+          "namespace": {
+            "type": "string",
+            "example": "orders",
+            "description": "WebSocket namespace"
+          },
+          "protocol": {
+            "$ref": "#/components/schemas/WsFixedRateLimitEndpointDtoProtocolEnum"
+          },
+          "type": {
+            "$ref": "#/components/schemas/WsFixedRateLimitEndpointDtoOrderType"
+          },
+          "fixedPoints": {
+            "type": "number",
+            "description": "Fixed points consumed per request",
+            "example": 5
+          }
+        },
+        "required": [
+          "namespace",
+          "protocol",
+          "type",
+          "fixedPoints"
+        ]
+      },
+      "RateLimitConfigResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "List of rate limit endpoint configurations",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/HttpPaginatedRateLimitEndpointDto"
+                },
+                {
+                  "$ref": "#/components/schemas/HttpFixedRateLimitEndpointDto"
+                },
+                {
+                  "$ref": "#/components/schemas/WsFixedRateLimitEndpointDto"
+                }
+              ]
+            }
+          }
+        },
+        "required": [
           "data"
         ]
       },
@@ -7594,7 +7926,7 @@
             "description": "Message nonce timestamp (nanoseconds since Unix Epoch)"
           },
           "signedAt": {
-            "type": "integer",
+            "type": "number",
             "example": 1712019600,
             "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
           }
@@ -7646,16 +7978,7 @@
             "format": "hex"
           },
           "status": {
-            "type": "string",
-            "example": "PENDING",
-            "description": "Status of the signer",
-            "enum": [
-              "PENDING",
-              "ACTIVE",
-              "PENDING_REVOKE",
-              "REVOKED",
-              "REJECTED"
-            ]
+            "$ref": "#/components/schemas/SignerDtoOrderStatus"
           },
           "blockNumber": {
             "type": "string",
@@ -7729,7 +8052,7 @@
             "description": "Message nonce timestamp (nanoseconds since Unix Epoch)"
           },
           "signedAt": {
-            "type": "integer",
+            "type": "number",
             "example": 1712019600,
             "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
           }
@@ -7793,7 +8116,7 @@
             "description": "Message nonce timestamp (nanoseconds since Unix Epoch)"
           },
           "signedAt": {
-            "type": "integer",
+            "type": "number",
             "example": 1712019600,
             "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
           }
@@ -7900,15 +8223,7 @@
             "description": "Block number the withdraw was completed on"
           },
           "status": {
-            "type": "string",
-            "example": "PENDING",
-            "description": "Current status of the withdraw",
-            "enum": [
-              "SUBMITTED",
-              "PENDING",
-              "COMPLETED",
-              "REJECTED"
-            ]
+            "$ref": "#/components/schemas/WithdrawDtoOrderStatus"
           },
           "subaccount": {
             "type": "string",
@@ -8003,15 +8318,7 @@
             "description": "Block number the transfer was completed on"
           },
           "status": {
-            "type": "string",
-            "example": "PENDING",
-            "description": "Current status of the transfer",
-            "enum": [
-              "SUBMITTED",
-              "PENDING",
-              "COMPLETED",
-              "REJECTED"
-            ]
+            "$ref": "#/components/schemas/TransferDtoOrderStatus"
           },
           "subaccountId": {
             "type": "string",
@@ -8031,13 +8338,7 @@
             "format": "hex"
           },
           "type": {
-            "type": "string",
-            "example": "WITHDRAW",
-            "description": "Type of transfer (WITHDRAW or DEPOSIT)",
-            "enum": [
-              "DEPOSIT",
-              "WITHDRAW"
-            ]
+            "$ref": "#/components/schemas/TransferDtoOrderType"
           },
           "amount": {
             "type": "string",
@@ -8148,27 +8449,7 @@
             "format": "hex"
           },
           "lzDestinationEid": {
-            "enum": [
-              0,
-              40422,
-              40231,
-              40161,
-              30391,
-              30110,
-              30101
-            ],
-            "type": "number",
-            "example": 40231,
-            "description": "LayerZero destination endpoint ID for the transfer (zero if not bridging)",
-            "x-enum-varnames": [
-              "NONE",
-              "ETHEREAL_TESTNET",
-              "ARBITRUM_SEPOLIA",
-              "ETHEREUM_SEPOLIA",
-              "ETHEREAL_MAINNET",
-              "ARBITRUM_MAINNET",
-              "ETHEREUM_MAINNET"
-            ]
+            "$ref": "#/components/schemas/LzDestinationEidEnum"
           },
           "nonce": {
             "type": "string",
@@ -8176,8 +8457,7 @@
             "description": "Message nonce timestamp (nanoseconds since Unix Epoch)"
           },
           "signedAt": {
-            "type": "integer",
-            "format": "int64",
+            "type": "number",
             "example": 1712019600,
             "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
           }
@@ -8221,22 +8501,10 @@
             ]
           },
           "message": {
-            "type": "string",
-            "enum": [
-              "AccountSuspended",
-              "EngineSuspended",
-              "InsufficientBalance",
-              "InsuranceFundCannotWithdraw"
-            ],
-            "example": "InsufficientBalance",
-            "description": "Error code indicating the reason for failure"
+            "$ref": "#/components/schemas/WithdrawFailedDtoMessageEnum"
           },
           "error": {
-            "type": "string",
-            "default": "Unprocessable Entity",
-            "enum": [
-              "Unprocessable Entity"
-            ]
+            "$ref": "#/components/schemas/WithdrawFailedDtoErrorEnum"
           }
         },
         "required": [
@@ -8311,6 +8579,15 @@
             "example": "10.123456",
             "description": "Min deposit amount as native units expressed as a decimal (precision: 9)"
           },
+          "addedBlockNumber": {
+            "type": "string",
+            "example": "838808",
+            "description": "Block number when the token was added"
+          },
+          "removedBlockNumber": {
+            "type": "string",
+            "description": "Block number when the token was removed (undefined if not removed)"
+          },
           "createdAt": {
             "type": "number",
             "example": 1712019600000,
@@ -8327,6 +8604,7 @@
           "depositFee",
           "withdrawFee",
           "minDeposit",
+          "addedBlockNumber",
           "createdAt"
         ]
       },
@@ -8409,12 +8687,12 @@
           "points": {
             "type": "string",
             "example": "13.256",
-            "description": "Points earned in this epoch expressed as a decimal (precision: 9)"
+            "description": "Points earned in this period (excluding referral points) expressed as a decimal (precision: 9)"
           },
           "referralPoints": {
             "type": "string",
             "example": "1.95",
-            "description": "Referral points earned in this epoch expressed as a decimal (precision: 9)"
+            "description": "Referral points earned in this period expressed as a decimal (precision: 9)"
           },
           "startedAt": {
             "type": "number",
@@ -8488,22 +8766,22 @@
           "totalPoints": {
             "type": "string",
             "example": "13.256",
-            "description": "Total points earned including referral points in this season expressed as a decimal (precision: 9)"
+            "description": "Total points earned (excluding referral points) in this season expressed as a decimal (precision: 9)"
           },
           "previousTotalPoints": {
             "type": "string",
             "example": "13.256",
-            "description": "Total points earned before most recent distribution expressed as a decimal (precision: 9)"
+            "description": "Total points earned (excluding referral points) before most recent distribution expressed as a decimal (precision: 9)"
           },
           "referralPoints": {
             "type": "string",
             "example": "1.95",
-            "description": "Referral points earned expressed as a decimal (precision: 9)"
+            "description": "Referral points earned in this season expressed as a decimal (precision: 9)"
           },
           "previousReferralPoints": {
             "type": "string",
             "example": "1.95",
-            "description": "Referral points earned before most recent distribution expressed as a decimal (precision: 9)"
+            "description": "Referral points earned in this season before most recent distribution expressed as a decimal (precision: 9)"
           },
           "rank": {
             "type": "number",
@@ -8516,25 +8794,7 @@
             "description": "Rank before most recent distribution"
           },
           "tier": {
-            "enum": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5
-            ],
-            "type": "number",
-            "example": 0,
-            "description": "Account tier derived based on activity this season",
-            "x-enum-varnames": [
-              "TIER_0",
-              "TIER_1",
-              "TIER_2",
-              "TIER_3",
-              "TIER_4",
-              "TIER_5"
-            ]
+            "$ref": "#/components/schemas/TierEnum"
           },
           "createdAt": {
             "type": "number",
@@ -8575,6 +8835,25 @@
         },
         "required": [
           "data"
+        ]
+      },
+      "TotalPointsDto": {
+        "type": "object",
+        "properties": {
+          "totalPoints": {
+            "type": "string",
+            "example": "1234567.89",
+            "description": "Total points distributed (precision: 9)"
+          },
+          "referralPoints": {
+            "type": "string",
+            "example": "123456.78",
+            "description": "Total referral points distributed (precision: 9)"
+          }
+        },
+        "required": [
+          "totalPoints",
+          "referralPoints"
         ]
       },
       "ReferralCodeUsageDto": {
@@ -8681,25 +8960,12 @@
             "format": "hex"
           },
           "intent": {
-            "enum": [
-              0,
-              1,
-              2
-            ],
-            "type": "number",
-            "example": 0,
-            "description": "Intent of the message (action to be taken)",
-            "x-enum-varnames": [
-              "REFERRAL_ACTIVATION",
-              "REFERRAL_CLAIM",
-              "REFERRAL_READ"
-            ]
+            "$ref": "#/components/schemas/IntentEnum"
           },
           "signedAt": {
-            "type": "integer",
+            "type": "number",
             "example": 1712019600,
-            "description": "Message signedAt current timestamp (seconds since Unix Epoch)",
-            "format": "int64"
+            "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
           },
           "code": {
             "type": "string",
@@ -8744,22 +9010,10 @@
             "format": "hex"
           },
           "intent": {
-            "enum": [
-              0,
-              1,
-              2
-            ],
-            "type": "number",
-            "example": 0,
-            "description": "Intent of the message (action to be taken)",
-            "x-enum-varnames": [
-              "REFERRAL_ACTIVATION",
-              "REFERRAL_CLAIM",
-              "REFERRAL_READ"
-            ]
+            "$ref": "#/components/schemas/IntentEnum"
           },
           "signedAt": {
-            "type": "integer",
+            "type": "number",
             "example": 1712019600,
             "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
           },
@@ -8807,223 +9061,523 @@
           "isEnabled"
         ]
       },
-      "EngineType": {
-        "type": "integer",
-        "format": "int32",
+      "OrderType": {
+        "type": "string",
         "enum": [
-          0,
-          1
+          "LIMIT"
         ],
-        "x-enum-varnames": [
-          "PERP",
-          "SPOT"
-        ],
-        "description": "Type of trading engine",
-        "example": 1
-      },
-      "BookDepthMessage": {
-        "type": "object",
-        "description": "Server-to-client BookDepth event message. First message is the full book (up to 100 levels per side). Subsequent messages are price-level diffs with absolute quantities. A zero quantity removes that level.",
-        "properties": {
-          "timestamp": {
-            "type": "integer",
-            "format": "int64",
-            "description": "System timestamp in milliseconds when this BookDepth was emitted."
-          },
-          "previousTimestamp": {
-            "type": "integer",
-            "format": "int64",
-            "description": "Timestamp in ms of the previous BookDepth event for this product."
-          },
-          "productId": {
-            "type": "string",
-            "format": "uuid",
-            "description": "Identifier of the product."
-          },
-          "asks": {
-            "type": "array",
-            "description": "Array of ask levels as [price, quantity] string tuples.",
-            "minItems": 0,
-            "maxItems": 100,
-            "items": {
-              "type": "array",
-              "description": "Single ask level as [price, quantity].",
-              "minItems": 2,
-              "maxItems": 2,
-              "items": {
-                "type": "string",
-                "description": "Price or quantity as decimal string."
-              }
-            }
-          },
-          "bids": {
-            "type": "array",
-            "description": "Array of bid levels as [price, quantity] string tuples.",
-            "minItems": 0,
-            "maxItems": 100,
-            "items": {
-              "type": "array",
-              "description": "Single bid level as [price, quantity].",
-              "minItems": 2,
-              "maxItems": 2,
-              "items": {
-                "type": "string",
-                "description": "Price or quantity as decimal string."
-              }
-            }
-          }
-        },
-        "required": [
-          "timestamp",
-          "previousTimestamp",
-          "productId",
-          "asks",
-          "bids"
-        ]
-      },
-      "TradeStreamMessage": {
-        "type": "object",
-        "description": "Server-to-client TradeStreams event message containing recent trades for a product.",
-        "properties": {
-          "data": {
-            "type": "array",
-            "description": "Array of trade objects.",
-            "items": {
-              "type": "object",
-              "description": "Single trade object.",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid",
-                  "description": "Unique identifier of the trade."
-                },
-                "price": {
-                  "type": "string",
-                  "description": "Trade price as a decimal string."
-                },
-                "filled": {
-                  "type": "string",
-                  "description": "Filled quantity as a decimal string."
-                },
-                "takerSide": {
-                  "$ref": "#/components/schemas/TakerSide"
-                },
-                "createdAt": {
-                  "type": "number",
-                  "description": "Timestamp of when the trade was created (ms since Unix Epoch)."
-                }
-              },
-              "required": [
-                "id",
-                "price",
-                "filled",
-                "takerSide",
-                "createdAt"
-              ]
-            }
-          },
-          "productId": {
-            "type": "string",
-            "format": "uuid",
-            "description": "Identifier of the product."
-          }
-        },
-        "required": [
-          "data",
-          "productId"
-        ]
-      },
-      "TakerSide": {
-        "type": "integer",
-        "format": "int32",
-        "enum": [
-          0,
-          1
-        ],
-        "x-enum-varnames": [
-          "BUY",
-          "SELL"
-        ],
-        "description": "Side of the trade",
-        "example": 0
+        "description": "Extracted enum for OrderType"
       },
       "OrderSide": {
         "type": "integer",
-        "format": "int32",
         "enum": [
           0,
           1
         ],
+        "description": "Extracted enum for OrderSide",
         "x-enum-varnames": [
           "BUY",
           "SELL"
-        ],
-        "description": "Side of the order",
-        "example": 0
-      },
-      "SubaccountLiquidation": {
-        "type": "object",
-        "properties": {
-          "subaccountId": {
-            "type": "string",
-            "example": "9036443a-441a-4a66-87f2-bd5c44cdca7a",
-            "description": "Id representing the registered subaccount",
-            "format": "uuid"
-          },
-          "liquidatedAt": {
-            "type": "number",
-            "example": 1712019600000,
-            "description": "Timestamp of when the subaccount was liquidated (ms since Unix Epoch)"
-          }
-        },
-        "required": [
-          "subaccountId",
-          "liquidatedAt"
         ]
       },
-      "PositionSide": {
+      "OrderStatus": {
+        "type": "string",
+        "enum": [
+          "NEW",
+          "PENDING",
+          "FILLED_PARTIAL",
+          "FILLED",
+          "REJECTED",
+          "CANCELED",
+          "EXPIRED"
+        ],
+        "description": "Extracted enum for OrderStatus"
+      },
+      "StopTypeEnum": {
         "type": "integer",
-        "format": "int32",
         "enum": [
           0,
           1
         ],
+        "description": "Extracted enum for StopTypeEnum",
+        "x-enum-varnames": [
+          "GAIN",
+          "LOSS"
+        ]
+      },
+      "StopPriceTypeEnum": {
+        "type": "integer",
+        "enum": [
+          0,
+          1
+        ],
+        "description": "Extracted enum for StopPriceTypeEnum",
+        "x-enum-varnames": [
+          "LAST_PRICE",
+          "MARK_PRICE"
+        ]
+      },
+      "TimeInForce": {
+        "type": "string",
+        "enum": [
+          "GTD",
+          "IOC",
+          "FOK"
+        ],
+        "description": "Extracted enum for TimeInForce"
+      },
+      "GroupContingencyTypeEnum": {
+        "type": "integer",
+        "enum": [
+          0,
+          1
+        ],
+        "description": "Extracted enum for GroupContingencyTypeEnum",
+        "x-enum-varnames": [
+          "OTO",
+          "OCO"
+        ]
+      },
+      "TriggeredEnum": {
+        "type": "string",
+        "enum": [
+          "NOT_TRIGGERED",
+          "TRIGGERED",
+          "STOP_ORDER_TRIGGERED",
+          "OCO_ORDER_TRIGGERED",
+          "OTO_ORDER_TRIGGERED"
+        ],
+        "description": "Extracted enum for TriggeredEnum"
+      },
+      "ErrorEnum": {
+        "type": "string",
+        "enum": [
+          "Bad Request"
+        ],
+        "description": "Extracted enum for ErrorEnum"
+      },
+      "UnauthorizedDtoErrorEnum": {
+        "type": "string",
+        "enum": [
+          "Unauthorized"
+        ],
+        "description": "Extracted enum for UnauthorizedDtoErrorEnum"
+      },
+      "ForbiddenDtoErrorEnum": {
+        "type": "string",
+        "enum": [
+          "Forbidden"
+        ],
+        "description": "Extracted enum for ForbiddenDtoErrorEnum"
+      },
+      "NotFoundDtoErrorEnum": {
+        "type": "string",
+        "enum": [
+          "Not Found"
+        ],
+        "description": "Extracted enum for NotFoundDtoErrorEnum"
+      },
+      "UnprocessableEntityDtoErrorEnum": {
+        "type": "string",
+        "enum": [
+          "Unprocessable Entity"
+        ],
+        "description": "Extracted enum for UnprocessableEntityDtoErrorEnum"
+      },
+      "TooManyRequestsDtoErrorEnum": {
+        "type": "string",
+        "enum": [
+          "Too Many Requests"
+        ],
+        "description": "Extracted enum for TooManyRequestsDtoErrorEnum"
+      },
+      "TooManyRequestsDtoOrderType": {
+        "type": "string",
+        "enum": [
+          "RATE_LIMIT_IP",
+          "RATE_LIMIT_ACCOUNT",
+          "RATE_LIMIT_WITHDRAW",
+          "RATE_LIMIT_LINKED_SIGNER"
+        ],
+        "description": "Extracted enum for TooManyRequestsDtoOrderType"
+      },
+      "EngineTypeEnum": {
+        "type": "integer",
+        "enum": [
+          0,
+          1
+        ],
+        "description": "Extracted enum for EngineTypeEnum",
+        "x-enum-varnames": [
+          "PERP",
+          "SPOT"
+        ]
+      },
+      "ResultEnum": {
+        "type": "string",
+        "enum": [
+          "AccountSuspended",
+          "CausesImmediateLiquidation",
+          "DuplicateSameSideOco",
+          "ImmediateMatchPostOnly",
+          "InsufficientBalance",
+          "LiquidationError",
+          "MarketOrderReachedMaxSlippage",
+          "OcoFilled",
+          "Ok",
+          "OpenValueCapExceeded",
+          "OrderIncreasesPosition",
+          "RiskLimitExceeded",
+          "SignerRevoked",
+          "TriggerCanceledError",
+          "UnfilledFillOrKill",
+          "UnfilledImmediateOrCancel",
+          "UnfilledMarketOrder"
+        ],
+        "description": "Extracted enum for ResultEnum"
+      },
+      "MessageEnum": {
+        "type": "string",
+        "enum": [
+          "AccountSuspended",
+          "DuplicateClientOrderId",
+          "ExchangeSuspended",
+          "InsufficientBalance",
+          "InvalidBinaryData",
+          "InvalidExpireTime",
+          "InvalidGroupContingencyType",
+          "InvalidNonceForSigner",
+          "InvalidSigner",
+          "InvalidSignerAddress",
+          "InvalidTimeInForce",
+          "LiquidationError",
+          "MarginAccountBalanceZero",
+          "NonceAlreadyUsed",
+          "PriceAboveMaximum",
+          "PriceBelowMinimum",
+          "RiskLimitExceeded",
+          "TooManyOpenOrders",
+          "TooManyPositions",
+          "TooManyStopOrders",
+          "InsuranceFundCannotOpenPositions",
+          "InstrumentOpenValueCapExceeded",
+          "QuantityAboveMaximum",
+          "QuantityNotMultipleOfLotSize",
+          "OrderWithZeroQuantity"
+        ],
+        "description": "Extracted enum for MessageEnum"
+      },
+      "SubmitOrderFailedDtoErrorEnum": {
+        "type": "string",
+        "enum": [
+          "Unprocessable Entity"
+        ],
+        "description": "Extracted enum for SubmitOrderFailedDtoErrorEnum"
+      },
+      "CodeEnum": {
+        "type": "string",
+        "enum": [
+          "AccountSuspended",
+          "CausesImmediateLiquidation",
+          "DuplicateSameSideOco",
+          "ImmediateMatchPostOnly",
+          "InsufficientBalance",
+          "LiquidationError",
+          "MarketOrderReachedMaxSlippage",
+          "OcoFilled",
+          "Ok",
+          "OpenValueCapExceeded",
+          "OrderIncreasesPosition",
+          "RiskLimitExceeded",
+          "SignerRevoked",
+          "TriggerCanceledError",
+          "UnfilledFillOrKill",
+          "UnfilledImmediateOrCancel",
+          "UnfilledMarketOrder"
+        ],
+        "description": "Extracted enum for CodeEnum"
+      },
+      "DryRunOrderFailedDtoCodeEnum": {
+        "type": "string",
+        "enum": [
+          "AccountSuspended",
+          "DuplicateClientOrderId",
+          "ExchangeSuspended",
+          "InsufficientBalance",
+          "InvalidBinaryData",
+          "InvalidExpireTime",
+          "InvalidGroupContingencyType",
+          "InvalidNonceForSigner",
+          "InvalidSigner",
+          "InvalidSignerAddress",
+          "InvalidTimeInForce",
+          "LiquidationError",
+          "MarginAccountBalanceZero",
+          "NonceAlreadyUsed",
+          "PriceAboveMaximum",
+          "PriceBelowMinimum",
+          "RiskLimitExceeded",
+          "TooManyOpenOrders",
+          "TooManyPositions",
+          "TooManyStopOrders",
+          "InsuranceFundCannotOpenPositions",
+          "InstrumentOpenValueCapExceeded",
+          "QuantityAboveMaximum",
+          "QuantityNotMultipleOfLotSize",
+          "OrderWithZeroQuantity"
+        ],
+        "description": "Extracted enum for DryRunOrderFailedDtoCodeEnum"
+      },
+      "DryRunOrderFailedUnprocessableEntityDtoErrorEnum": {
+        "type": "string",
+        "enum": [
+          "Unprocessable Entity"
+        ],
+        "description": "Extracted enum for DryRunOrderFailedUnprocessableEntityDtoErrorEnum"
+      },
+      "CancelOrderResultDtoResultEnum": {
+        "type": "string",
+        "enum": [
+          "AlreadyCanceled",
+          "AlreadyExpired",
+          "AlreadyFilled",
+          "NotFound",
+          "Ok",
+          "NonceAlreadyUsed",
+          "Unknown"
+        ],
+        "description": "Extracted enum for CancelOrderResultDtoResultEnum"
+      },
+      "OrderFillDtoOrderType": {
+        "type": "string",
+        "enum": [
+          "MARKET",
+          "LIMIT"
+        ],
+        "description": "Extracted enum for OrderFillDtoOrderType"
+      },
+      "MakerSideEnum": {
+        "type": "integer",
+        "enum": [
+          0,
+          1
+        ],
+        "description": "Extracted enum for MakerSideEnum",
         "x-enum-varnames": [
           "BUY",
           "SELL"
-        ],
-        "description": "Side of the position",
-        "example": 0
+        ]
       },
-      "PositionLiquidationCause": {
+      "TakerSideEnum": {
+        "type": "integer",
+        "enum": [
+          0,
+          1
+        ],
+        "description": "Extracted enum for TakerSideEnum",
+        "x-enum-varnames": [
+          "BUY",
+          "SELL"
+        ]
+      },
+      "PositionFillDtoOrderType": {
+        "type": "string",
+        "enum": [
+          "MARKET",
+          "LIMIT",
+          "REALIZED_PNL",
+          "LIQUIDATION",
+          "REALIZED_FUNDING"
+        ],
+        "description": "Extracted enum for PositionFillDtoOrderType"
+      },
+      "CauseEnum": {
+        "type": "string",
         "enum": [
           "MarkChanged",
           "Funding"
         ],
-        "type": "string",
-        "example": "MarkUpdate",
-        "description": "Cause of liquidation (either MarkChanged or Funding)"
+        "description": "Extracted enum for CauseEnum"
       },
-      "OrderType": {
-        "type": "enum",
+      "PositionSideEnum": {
+        "type": "integer",
         "enum": [
-          "LIMIT",
-          "MARKET"
+          0,
+          1
+        ],
+        "description": "Extracted enum for PositionSideEnum",
+        "x-enum-varnames": [
+          "BUY",
+          "SELL"
         ]
       },
-      "OrderStatus": {
-            "type": "string",
-            "example": "FILLED",
-            "description": "Status of the order",
-            "enum": [
-              "NEW",
-              "PENDING",
-              "FILLED_PARTIAL",
-              "FILLED",
-              "REJECTED",
-              "CANCELED",
-              "EXPIRED"
-            ]
+      "ProductDtoOrderStatus": {
+        "type": "string",
+        "enum": [
+          "PENDING",
+          "ACTIVE"
+        ],
+        "description": "Extracted enum for ProductDtoOrderStatus"
+      },
+      "MethodEnum": {
+        "type": "string",
+        "enum": [
+          "GET",
+          "POST",
+          "PUT",
+          "DELETE",
+          "PATCH",
+          "OPTIONS",
+          "HEAD"
+        ],
+        "description": "Extracted enum for MethodEnum"
+      },
+      "ProtocolEnum": {
+        "type": "string",
+        "enum": [
+          "HTTP"
+        ],
+        "description": "Extracted enum for ProtocolEnum"
+      },
+      "HttpPaginatedRateLimitEndpointDtoOrderType": {
+        "type": "string",
+        "enum": [
+          "PAGINATED"
+        ],
+        "description": "Extracted enum for HttpPaginatedRateLimitEndpointDtoOrderType"
+      },
+      "HttpFixedRateLimitEndpointDtoOrderType": {
+        "type": "string",
+        "enum": [
+          "FIXED"
+        ],
+        "description": "Extracted enum for HttpFixedRateLimitEndpointDtoOrderType"
+      },
+      "WsFixedRateLimitEndpointDtoProtocolEnum": {
+        "type": "string",
+        "enum": [
+          "WS"
+        ],
+        "description": "Extracted enum for WsFixedRateLimitEndpointDtoProtocolEnum"
+      },
+      "WsFixedRateLimitEndpointDtoOrderType": {
+        "type": "string",
+        "enum": [
+          "FIXED"
+        ],
+        "description": "Extracted enum for WsFixedRateLimitEndpointDtoOrderType"
+      },
+      "SignerDtoOrderStatus": {
+        "type": "string",
+        "enum": [
+          "PENDING",
+          "ACTIVE",
+          "PENDING_REVOKE",
+          "REVOKED",
+          "REJECTED"
+        ],
+        "description": "Extracted enum for SignerDtoOrderStatus"
+      },
+      "WithdrawDtoOrderStatus": {
+        "type": "string",
+        "enum": [
+          "SUBMITTED",
+          "PENDING",
+          "COMPLETED",
+          "REJECTED"
+        ],
+        "description": "Extracted enum for WithdrawDtoOrderStatus"
+      },
+      "TransferDtoOrderStatus": {
+        "type": "string",
+        "enum": [
+          "SUBMITTED",
+          "PENDING",
+          "COMPLETED",
+          "REJECTED"
+        ],
+        "description": "Extracted enum for TransferDtoOrderStatus"
+      },
+      "TransferDtoOrderType": {
+        "type": "string",
+        "enum": [
+          "DEPOSIT",
+          "WITHDRAW"
+        ],
+        "description": "Extracted enum for TransferDtoOrderType"
+      },
+      "LzDestinationEidEnum": {
+        "type": "integer",
+        "enum": [
+          0,
+          40422,
+          40231,
+          40161,
+          30391,
+          30110,
+          30101
+        ],
+        "description": "Extracted enum for LzDestinationEidEnum",
+        "x-enum-varnames": [
+          "NONE",
+          "ETHEREAL_TESTNET",
+          "ARBITRUM_SEPOLIA",
+          "ETHEREUM_SEPOLIA",
+          "ETHEREAL_MAINNET",
+          "ARBITRUM_MAINNET",
+          "ETHEREUM_MAINNET"
+        ]
+      },
+      "WithdrawFailedDtoMessageEnum": {
+        "type": "string",
+        "enum": [
+          "AccountSuspended",
+          "EngineSuspended",
+          "InsufficientBalance",
+          "InsuranceFundCannotWithdraw"
+        ],
+        "description": "Extracted enum for WithdrawFailedDtoMessageEnum"
+      },
+      "WithdrawFailedDtoErrorEnum": {
+        "type": "string",
+        "enum": [
+          "Unprocessable Entity"
+        ],
+        "description": "Extracted enum for WithdrawFailedDtoErrorEnum"
+      },
+      "TierEnum": {
+        "type": "integer",
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "description": "Extracted enum for TierEnum",
+        "x-enum-varnames": [
+          "TIER_0",
+          "TIER_1",
+          "TIER_2",
+          "TIER_3",
+          "TIER_4",
+          "TIER_5"
+        ]
+      },
+      "IntentEnum": {
+        "type": "integer",
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "description": "Extracted enum for IntentEnum",
+        "x-enum-varnames": [
+          "REFERRAL_ACTIVATION",
+          "REFERRAL_CLAIM",
+          "REFERRAL_READ"
+        ]
       }
     }
   }

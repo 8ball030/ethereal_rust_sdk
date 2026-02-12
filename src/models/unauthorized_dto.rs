@@ -18,11 +18,15 @@ pub struct UnauthorizedDto {
     #[serde(rename = "message")]
     pub message: String,
     #[serde(rename = "error")]
-    pub error: Error,
+    pub error: models::UnauthorizedDtoErrorEnum,
 }
 
 impl UnauthorizedDto {
-    pub fn new(status_code: StatusCode, message: String, error: Error) -> UnauthorizedDto {
+    pub fn new(
+        status_code: StatusCode,
+        message: String,
+        error: models::UnauthorizedDtoErrorEnum,
+    ) -> UnauthorizedDto {
         UnauthorizedDto {
             status_code,
             message,
@@ -40,17 +44,5 @@ pub enum StatusCode {
 impl Default for StatusCode {
     fn default() -> StatusCode {
         Self::Variant401
-    }
-}
-///
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Error {
-    #[serde(rename = "Unauthorized")]
-    Unauthorized,
-}
-
-impl Default for Error {
-    fn default() -> Error {
-        Self::Unauthorized
     }
 }

@@ -1,7 +1,6 @@
 mod common;
 use ethereal_rust_sdk::apis::order_api::OrderControllerListBySubaccountIdParams;
-use ethereal_rust_sdk::models::submit_order_created_dto::Result;
-use ethereal_rust_sdk::models::{submit_order_limit_dto_data, OrderSide, OrderType};
+use ethereal_rust_sdk::models::{OrderSide, OrderType, ResultEnum, TimeInForce};
 use rust_decimal_macros::dec;
 
 #[tokio::test]
@@ -19,7 +18,7 @@ async fn test_simple_order() {
     let r#type = OrderType::Limit;
 
     let expires_at = None;
-    let time_in_force = submit_order_limit_dto_data::TimeInForce::Gtd;
+    let time_in_force = TimeInForce::Gtd;
 
     // We have a few more options when creating an order now.
     let post_only = false;
@@ -41,7 +40,7 @@ async fn test_simple_order() {
         .unwrap();
     println!("Order created: {:?}", order);
 
-    assert!(order.result == Result::Ok);
+    assert!(order.result == ResultEnum::Ok);
     assert!(order.filled == "0");
 }
 

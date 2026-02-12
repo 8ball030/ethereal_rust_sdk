@@ -19,41 +19,16 @@ pub struct CancelOrderResultDto {
     /// A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)
     #[serde(rename = "clientOrderId", skip_serializing_if = "Option::is_none")]
     pub client_order_id: Option<String>,
-    /// Code indicating the result of the submission
     #[serde(rename = "result")]
-    pub result: Result,
+    pub result: models::CancelOrderResultDtoResultEnum,
 }
 
 impl CancelOrderResultDto {
-    pub fn new(id: String, result: Result) -> CancelOrderResultDto {
+    pub fn new(id: String, result: models::CancelOrderResultDtoResultEnum) -> CancelOrderResultDto {
         CancelOrderResultDto {
             id,
             client_order_id: None,
             result,
         }
-    }
-}
-/// Code indicating the result of the submission
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Result {
-    #[serde(rename = "AlreadyCanceled")]
-    AlreadyCanceled,
-    #[serde(rename = "AlreadyExpired")]
-    AlreadyExpired,
-    #[serde(rename = "AlreadyFilled")]
-    AlreadyFilled,
-    #[serde(rename = "NotFound")]
-    NotFound,
-    #[serde(rename = "Ok")]
-    Ok,
-    #[serde(rename = "NonceAlreadyUsed")]
-    NonceAlreadyUsed,
-    #[serde(rename = "Unknown")]
-    Unknown,
-}
-
-impl Default for Result {
-    fn default() -> Result {
-        Self::AlreadyCanceled
     }
 }
