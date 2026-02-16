@@ -40,6 +40,7 @@ pub struct WsClient {
     state_rx: watch::Receiver<ConnectionState>,
     state_tx: Arc<watch::Sender<ConnectionState>>,
     connection_url: String,
+    pub environment: Environment,
 }
 
 impl WsClient {
@@ -58,6 +59,7 @@ impl WsClient {
             state_rx,
             state_tx: Arc::new(state_tx),
             connection_url: url,
+            environment,
         }
     }
 
