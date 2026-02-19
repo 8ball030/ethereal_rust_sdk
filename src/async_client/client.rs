@@ -79,13 +79,14 @@ pub struct HttpClient {
     config: Configuration,
     pub wallet: LocalWallet,
     pub address: String,
+    pub owner_address: Option<String>,
     pub subaccounts: Vec<SubaccountDto>,
     pub product_hashmap: HashMap<String, ProductDto>,
     pub product_id_hashmap: HashMap<Uuid, ProductDto>,
 }
 
 impl HttpClient {
-    pub async fn new(env: Environment, private_key: &str, owner_address: Option<&str>) -> Self {
+    pub async fn new(env: Environment, private_key: &str, owner_address: Option<String>) -> Self {
         let config = Configuration {
             base_path: get_server_url(&env).to_string(),
             ..Default::default()
@@ -93,6 +94,7 @@ impl HttpClient {
         let wallet = private_key.parse::<LocalWallet>().unwrap();
         let address = format!("{:?}", wallet.address());
         let sender_address = owner_address
+            .clone()
             .map(|s| s.to_string())
             .unwrap_or_else(|| address.clone());
         let subaccounts = SubaccountClient { config: &config }
@@ -129,6 +131,7 @@ impl HttpClient {
             config,
             wallet,
             address,
+            owner_address,
             subaccounts,
             product_hashmap,
             product_id_hashmap,
