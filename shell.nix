@@ -5,15 +5,10 @@ pkgs.mkShell {
   packages = with pkgs; [
     rustup
     cargo
-    # node stuff
-    # node stuff
-    # nodejs_22
-    # corepack_22
-    # typeshare
     redocly
     openapi-generator-cli
     python312
-
+    stdenv.cc
   ];
   nativeBuildInputs =
     with pkgs;

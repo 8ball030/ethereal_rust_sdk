@@ -85,16 +85,19 @@ pub struct HttpClient {
 }
 
 impl HttpClient {
-    pub async fn new(env: Environment, private_key: &str) -> Self {
+    pub async fn new(env: Environment, private_key: &str, owner_address: Option<&str>) -> Self {
         let config = Configuration {
             base_path: get_server_url(&env).to_string(),
             ..Default::default()
         };
         let wallet = private_key.parse::<LocalWallet>().unwrap();
         let address = format!("{:?}", wallet.address());
+        let sender_address = owner_address
+            .map(|s| s.to_string())
+            .unwrap_or_else(|| address.clone());
         let subaccounts = SubaccountClient { config: &config }
             .list_by_account(SubaccountControllerListByAccountParams {
-                sender: address.clone(),
+                sender: sender_address,
                 ..Default::default()
             })
             .await
