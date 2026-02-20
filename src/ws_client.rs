@@ -46,6 +46,7 @@ pub struct WsClient {
 impl WsClient {
     pub fn new(environment: Environment) -> Self {
         let url = get_server_url(&environment).to_string();
+        info!("Connecting to environment={environment:?} url={url}");
         let client_builder = ClientBuilder::new(&url)
             .transport_type(TransportType::Websocket)
             .namespace("/v1/stream");
