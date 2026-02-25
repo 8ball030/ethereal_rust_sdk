@@ -17,12 +17,15 @@ use serde::{Deserialize, Serialize};
 pub enum OrderType {
     #[serde(rename = "LIMIT")]
     Limit,
+    #[serde(rename = "MARKET")]
+    Market,
 }
 
 impl std::fmt::Display for OrderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::Limit => write!(f, "LIMIT"),
+            Self::Market => write!(f, "MARKET"),
         }
     }
 }

@@ -9062,7 +9062,8 @@
       "OrderType": {
         "type": "string",
         "enum": [
-          "LIMIT"
+          "LIMIT",
+          "MARKET"
         ],
         "description": "Extracted enum for OrderType"
       },
