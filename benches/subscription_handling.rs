@@ -1,4 +1,6 @@
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use std::hint::black_box;
+
+use criterion::{criterion_group, criterion_main, Criterion};
 use ethereal_rust_sdk::types::ProductSubscriptionMessage;
 use serde_json::Value;
 

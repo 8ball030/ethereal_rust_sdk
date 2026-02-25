@@ -13,9 +13,9 @@ serde_json = "1.0.145"
 serde_repr = "0.1"
 
 rust_socketio = { version = "0.6.0", features = ["async"] }
-reqwest = {version = "0.12.24", features = ["json"]}
+reqwest = {version = "0.13.2", features = ["json", "query"]}
 url = "2.5.7"
-uuid = { version = "1.19.0", features = ["serde"] }
+uuid = { version = "1.21.0", features = ["serde"] }
 
 simple_logger = "5.1.0"
 log = "0.4.29"
@@ -28,7 +28,7 @@ rust_decimal = "1.40.0"
 rust_decimal_macros = "1.40.0"
 
 [dev-dependencies]
-criterion = { version = "0.5", features = ["html_reports"] }
+criterion = { version = "0.8", features = ["html_reports"] }
 tokio-test = "0.4"
 
 [[bench]]
