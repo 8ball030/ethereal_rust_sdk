@@ -40,6 +40,7 @@ async fn test_list_by_subaccount_id() {
         ..Default::default()
     };
     let result = client.order().list_by_subaccount_id(params).await;
+    println!("Result: {:?}", result);
     assert!(result.is_ok());
 }
 

@@ -59,6 +59,8 @@ def extract_all_enums(spec: dict):
 
     print(f"Extracted {len(new_enums)} enums.")
     for enum_name, enum_values in new_enums.items():
+        if enum_name == "OrderType":
+            enum_values.append("MARKET")
         old_models[enum_name] = {
             "type": name_to_types.get(enum_name, "string"),
             "enum": enum_values,

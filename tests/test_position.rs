@@ -15,6 +15,7 @@ async fn test_get_active() {
         product_id: product_id.to_string(),
     };
     let result = client.position().get_active(params).await;
+    println!("Result: {result:?}");
     assert!(result.is_ok());
 }
 
@@ -22,15 +23,13 @@ async fn test_get_active() {
 async fn test_get_by_id() {
     let client = common::create_test_client().await.unwrap();
     let subaccount_id = client.subaccounts.first().unwrap().id.clone().to_string();
-    let product_id = common::get_product(&client).await.unwrap().id;
-
-    let params = PositionControllerGetActiveParams {
+    let params = PositionControllerListBySubaccountIdParams {
         subaccount_id,
-        product_id: product_id.to_string(),
+        ..Default::default()
     };
-    let result = client.position().get_active(params).await;
+    let result = client.position().list_by_subaccount_id(params).await;
     let params = PositionControllerGetByIdParams {
-        id: result.unwrap().id.to_string(),
+        id: result.unwrap().data.first().unwrap().id.to_string(),
     };
     let result = client.position().get_by_id(params).await;
     assert!(result.is_ok());
@@ -53,14 +52,13 @@ async fn test_list_by_subaccount_id() {
 async fn test_list_fills_by_position_id() {
     let client = common::create_test_client().await.unwrap();
     let subaccount_id = client.subaccounts.first().unwrap().id.clone().to_string();
-    let product_id = common::get_product(&client).await.unwrap().id;
-    let params = PositionControllerGetActiveParams {
+    let params = PositionControllerListBySubaccountIdParams {
         subaccount_id,
-        product_id: product_id.to_string(),
+        ..Default::default()
     };
-    let result = client.position().get_active(params).await;
+    let result = client.position().list_by_subaccount_id(params).await;
     let params = PositionControllerListFillsByPositionIdParams {
-        position_id: result.unwrap().id.to_string(),
+        position_id: result.unwrap().data.first().unwrap().id.to_string(),
         ..Default::default()
     };
     let result = client.position().list_fills_by_position_id(params).await;
