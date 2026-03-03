@@ -8,12 +8,12 @@
 // This means busy-wait polling adds on average 50ms latency to "connect ready" moment,
 // and worst-case up to 100ms latency.
 
-use criterion::{criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, criterion_group, criterion_main};
 use std::{
     hint::black_box,
     sync::{
-        atomic::{AtomicBool, Ordering},
         Arc,
+        atomic::{AtomicBool, Ordering},
     },
 };
 

@@ -11,7 +11,7 @@
 
 use std::sync::Arc;
 
-use criterion::{criterion_group, criterion_main, BatchSize, Criterion};
+use criterion::{BatchSize, Criterion, criterion_group, criterion_main};
 use ethereal_rust_sdk::{
     async_client::client::HttpClient,
     enums::Environment,
@@ -20,7 +20,7 @@ use ethereal_rust_sdk::{
         TimeInForce,
     },
     signable_messages::TradeOrder,
-    signing::{to_scaled_e9, Eip712, SigningContext},
+    signing::{Eip712, SigningContext, to_scaled_e9},
     with_signing_fields,
 };
 use ethers::utils::hex;
