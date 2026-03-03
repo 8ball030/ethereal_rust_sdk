@@ -1,8 +1,8 @@
 use crate::{
     apis::{
-        configuration::Configuration,
-        rate_limit_api::{rate_limit_controller_get_config, RateLimitControllerGetConfigError},
         Error,
+        configuration::Configuration,
+        rate_limit_api::{RateLimitControllerGetConfigError, rate_limit_controller_get_config},
     },
     models::RateLimitConfigResponseDto,
 };

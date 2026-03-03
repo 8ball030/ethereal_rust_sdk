@@ -1,11 +1,11 @@
 use crate::{
     apis::{
+        Error,
         configuration::Configuration,
         time_api::{
-            time_controller_get_system_time, time_controller_post_system_time,
             TimeControllerGetSystemTimeError, TimeControllerPostSystemTimeError,
+            time_controller_get_system_time, time_controller_post_system_time,
         },
-        Error,
     },
     models::SystemTimeDto,
 };

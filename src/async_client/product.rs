@@ -1,15 +1,15 @@
 use crate::{
     apis::{
+        Error,
         configuration::Configuration,
         product_api::{
-            product_controller_get_by_id, product_controller_get_market_liquidity,
-            product_controller_get_market_price, product_controller_list,
             ProductControllerGetByIdError, ProductControllerGetByIdParams,
             ProductControllerGetMarketLiquidityError, ProductControllerGetMarketLiquidityParams,
             ProductControllerGetMarketPriceError, ProductControllerGetMarketPriceParams,
-            ProductControllerListError, ProductControllerListParams,
+            ProductControllerListError, ProductControllerListParams, product_controller_get_by_id,
+            product_controller_get_market_liquidity, product_controller_get_market_price,
+            product_controller_list,
         },
-        Error,
     },
     models::{ListOfMarketPriceDtos, MarketLiquidityDto, PageOfProductDtos, ProductDto},
 };

@@ -1,8 +1,8 @@
 use crate::{
     apis::{
-        configuration::Configuration,
-        rpc_api::{rpc_controller_get_config, RpcControllerGetConfigError},
         Error,
+        configuration::Configuration,
+        rpc_api::{RpcControllerGetConfigError, rpc_controller_get_config},
     },
     models::RpcConfigDto,
 };

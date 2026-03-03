@@ -31,7 +31,7 @@ use crate::{
         SubmitOrderDtoData, SubmitOrderLimitDtoData, TimeInForce,
     },
     signable_messages::{CancelOrder, TradeOrder},
-    signing::{hex_to_bytes32, to_scaled_e9, SigningContext},
+    signing::{SigningContext, hex_to_bytes32, to_scaled_e9},
 };
 use anyhow::Result;
 

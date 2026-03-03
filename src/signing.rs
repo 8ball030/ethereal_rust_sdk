@@ -1,11 +1,11 @@
 use ethers::types::transaction::eip712::Eip712Error;
-use ethers::types::{Signature, H160};
+use ethers::types::{H160, Signature};
 use ethers::{
     signers::{LocalWallet, Signer},
     utils::hex,
 };
-use rust_decimal::prelude::ToPrimitive;
 use rust_decimal::Decimal;
+use rust_decimal::prelude::ToPrimitive;
 use rust_decimal_macros::dec;
 use std::time::{SystemTime, UNIX_EPOCH};
 

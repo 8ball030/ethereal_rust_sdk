@@ -1,15 +1,14 @@
 use crate::{
     apis::{
+        Error,
         configuration::Configuration,
         points_api::{
-            points_controller_get_total_points, points_controller_list_points_periods,
-            points_controller_list_points_season_summaries, PointsControllerGetTotalPointsError,
-            PointsControllerGetTotalPointsParams, PointsControllerListPointsPeriodsError,
-            PointsControllerListPointsPeriodsParams,
+            PointsControllerGetTotalPointsError, PointsControllerGetTotalPointsParams,
+            PointsControllerListPointsPeriodsError, PointsControllerListPointsPeriodsParams,
             PointsControllerListPointsSeasonSummariesError,
-            PointsControllerListPointsSeasonSummariesParams,
+            PointsControllerListPointsSeasonSummariesParams, points_controller_get_total_points,
+            points_controller_list_points_periods, points_controller_list_points_season_summaries,
         },
-        Error,
     },
     models::{ListOfPointsPeriodDtos, ListOfPointsSeasonSummariesDtos, TotalPointsDto},
 };

@@ -4,6 +4,7 @@ pub mod channels;
 pub mod domain_config;
 pub mod enums;
 pub mod models;
+pub mod routing;
 pub mod signable_messages;
 pub mod signing;
 pub mod types;

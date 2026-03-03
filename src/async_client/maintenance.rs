@@ -1,10 +1,10 @@
 use crate::{
     apis::{
+        Error,
         configuration::Configuration,
         maintenance_api::{
-            maintenance_controller_is_maintenance, MaintenanceControllerIsMaintenanceError,
+            MaintenanceControllerIsMaintenanceError, maintenance_controller_is_maintenance,
         },
-        Error,
     },
     models::MaintenanceDto,
 };

@@ -1,20 +1,19 @@
 use crate::{
     apis::{
+        Error,
         configuration::Configuration,
         position_api::{
-            position_controller_get_active, position_controller_get_by_id,
-            position_controller_list_by_subaccount_id,
-            position_controller_list_fills_by_position_id,
-            position_controller_list_liquidations_by_subaccount_id,
             PositionControllerGetActiveError, PositionControllerGetActiveParams,
             PositionControllerGetByIdError, PositionControllerGetByIdParams,
             PositionControllerListBySubaccountIdError, PositionControllerListBySubaccountIdParams,
             PositionControllerListFillsByPositionIdError,
             PositionControllerListFillsByPositionIdParams,
             PositionControllerListLiquidationsBySubaccountIdError,
-            PositionControllerListLiquidationsBySubaccountIdParams,
+            PositionControllerListLiquidationsBySubaccountIdParams, position_controller_get_active,
+            position_controller_get_by_id, position_controller_list_by_subaccount_id,
+            position_controller_list_fills_by_position_id,
+            position_controller_list_liquidations_by_subaccount_id,
         },
-        Error,
     },
     models::{
         PageOfPositionDtos, PageOfPositionFillDtos, PageOfPositionLiquidationsDto, PositionDto,

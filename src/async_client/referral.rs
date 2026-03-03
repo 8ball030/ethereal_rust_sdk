@@ -1,17 +1,17 @@
 use crate::{
     apis::{
+        Error,
         configuration::Configuration,
         referral_api::{
+            ReferralControllerActivateError, ReferralControllerActivateParams,
+            ReferralControllerClaimCodeError, ReferralControllerClaimCodeParams,
+            ReferralControllerGetCodeUsageError, ReferralControllerGetCodeUsageParams,
+            ReferralControllerGetSummaryError, ReferralControllerGetSummaryParams,
+            ReferralControllerListReferralsError, ReferralControllerListReferralsParams,
             referral_controller_activate, referral_controller_claim_code,
             referral_controller_get_code_usage, referral_controller_get_summary,
-            referral_controller_list_referrals, ReferralControllerActivateError,
-            ReferralControllerActivateParams, ReferralControllerClaimCodeError,
-            ReferralControllerClaimCodeParams, ReferralControllerGetCodeUsageError,
-            ReferralControllerGetCodeUsageParams, ReferralControllerGetSummaryError,
-            ReferralControllerGetSummaryParams, ReferralControllerListReferralsError,
-            ReferralControllerListReferralsParams,
+            referral_controller_list_referrals,
         },
-        Error,
     },
     models::{PageOfReferralDtos, ReferralCodeUsageDto, ReferralDto},
 };

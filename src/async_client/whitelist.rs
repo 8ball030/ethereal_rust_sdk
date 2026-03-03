@@ -1,11 +1,11 @@
 use crate::{
     apis::{
+        Error,
         configuration::Configuration,
         whitelist_api::{
-            whitelist_controller_is_whitelisted, WhitelistControllerIsWhitelistedError,
-            WhitelistControllerIsWhitelistedParams,
+            WhitelistControllerIsWhitelistedError, WhitelistControllerIsWhitelistedParams,
+            whitelist_controller_is_whitelisted,
         },
-        Error,
     },
     models::WhitelistDto,
 };

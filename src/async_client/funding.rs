@@ -1,14 +1,15 @@
 use crate::{
     apis::{
+        Error,
         configuration::Configuration,
         funding_api::{
-            funding_controller_get_projected_funding_rate, funding_controller_list_by_product_id,
-            funding_controller_list_projected_rates, FundingControllerGetProjectedFundingRateError,
+            FundingControllerGetProjectedFundingRateError,
             FundingControllerGetProjectedFundingRateParams, FundingControllerListByProductIdError,
             FundingControllerListByProductIdParams, FundingControllerListProjectedRatesError,
             FundingControllerListProjectedRatesParams,
+            funding_controller_get_projected_funding_rate, funding_controller_list_by_product_id,
+            funding_controller_list_projected_rates,
         },
-        Error,
     },
     models::{PageOfFundingDtos, PageOfProjectedFundingDtos, ProjectedFundingDto},
 };

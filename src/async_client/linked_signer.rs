@@ -1,10 +1,8 @@
 use crate::{
     apis::{
+        Error,
         configuration::Configuration,
         linked_signer_api::{
-            linked_signer_controller_get_account_quota, linked_signer_controller_get_signer,
-            linked_signer_controller_link_signer, linked_signer_controller_list_by_subaccount_id,
-            linked_signer_controller_refresh_signer, linked_signer_controller_revoke_signer,
             LinkedSignerControllerGetAccountQuotaError,
             LinkedSignerControllerGetAccountQuotaParams, LinkedSignerControllerGetSignerError,
             LinkedSignerControllerGetSignerParams, LinkedSignerControllerLinkSignerError,
@@ -12,8 +10,10 @@ use crate::{
             LinkedSignerControllerListBySubaccountIdParams,
             LinkedSignerControllerRefreshSignerError, LinkedSignerControllerRefreshSignerParams,
             LinkedSignerControllerRevokeSignerError, LinkedSignerControllerRevokeSignerParams,
+            linked_signer_controller_get_account_quota, linked_signer_controller_get_signer,
+            linked_signer_controller_link_signer, linked_signer_controller_list_by_subaccount_id,
+            linked_signer_controller_refresh_signer, linked_signer_controller_revoke_signer,
         },
-        Error,
     },
     models::{AccountSignerQuotaDto, PageOfSignersDto, SignerDto},
 };
