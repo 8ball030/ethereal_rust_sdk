@@ -33,7 +33,7 @@ use crate::{
     signable_messages::{CancelOrder, TradeOrder},
     signing::{hex_to_bytes32, to_scaled_e9, SigningContext},
 };
-use anyhow::Result;
+use anyhow::{Context, Result};
 
 use crate::signing::Eip712;
 use ethers::{
@@ -86,47 +86,48 @@ pub struct HttpClient {
 }
 
 impl HttpClient {
-    pub async fn new(env: Environment, private_key: &str, owner_address: Option<String>) -> Self {
+    pub async fn new(
+        env: Environment,
+        private_key: &str,
+        owner_address: Option<String>,
+    ) -> Result<Self> {
         let config = Configuration {
             base_path: get_server_url(&env).to_string(),
             ..Default::default()
         };
-        let wallet = private_key.parse::<LocalWallet>().unwrap();
+
+        let wallet = private_key
+            .parse::<LocalWallet>()
+            .context("invalid private key")?;
+
         let address = format!("{:?}", wallet.address());
-        let sender_address = owner_address
-            .clone()
-            .map(|s| s.to_string())
-            .unwrap_or_else(|| address.clone());
+        let sender_address = owner_address.clone().unwrap_or_else(|| address.clone());
+
         let subaccounts = SubaccountClient { config: &config }
             .list_by_account(SubaccountControllerListByAccountParams {
                 sender: sender_address,
                 ..Default::default()
             })
             .await
-            .unwrap()
+            .context("failed to fetch subaccounts")?
             .data;
-        let product_hashmap = product::ProductClient { config: &config }
+
+        let products = product::ProductClient { config: &config }
             .list(ProductControllerListParams {
                 ..Default::default()
             })
             .await
-            .unwrap()
-            .data
-            .into_iter()
-            .map(|p| (p.display_ticker.clone(), p))
-            .collect();
-        let product_id_hashmap = product::ProductClient { config: &config }
-            .list(ProductControllerListParams {
-                ..Default::default()
-            })
-            .await
-            .unwrap()
-            .data
-            .into_iter()
-            .map(|p| (p.id, p))
+            .context("failed to fetch products")?
+            .data;
+
+        let product_hashmap = products
+            .iter()
+            .map(|p| (p.display_ticker.clone(), p.clone()))
             .collect();
 
-        Self {
+        let product_id_hashmap = products.into_iter().map(|p| (p.id, p)).collect();
+
+        Ok(Self {
             env,
             config,
             wallet,
@@ -135,7 +136,7 @@ impl HttpClient {
             subaccounts,
             product_hashmap,
             product_id_hashmap,
-        }
+        })
     }
 
     pub fn product(&self) -> ProductClient<'_> {
