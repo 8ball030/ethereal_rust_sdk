@@ -1,4 +1,5 @@
 use serde::Serialize;
+use tokio::sync::oneshot;
 
 #[derive(Debug, Serialize)]
 pub struct ProductSubscriptionMessage {
@@ -14,3 +15,5 @@ pub struct SubaccountSubscriptionMessage {
     #[serde(rename = "subaccountId")]
     pub subaccount_id: String,
 }
+
+pub type ResponseSender = oneshot::Sender<String>;
