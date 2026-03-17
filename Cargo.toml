@@ -28,6 +28,7 @@ rust_decimal_macros = "1.40.0"
 yawc = { version = "0.3.3", features = ["rustls-aws-lc-rs", "reqwest"] }
 dashmap = "6.1.0"
 futures = "0.3.32"
+bytes = "1.11.1"
 
 [dev-dependencies]
 criterion = { version = "0.8", features = ["html_reports"] }

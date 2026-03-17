@@ -1,6 +1,9 @@
 /// Example WebSocket client that connects to Bybit's public trade stream
+mod common;
 use std::time::Duration;
 
+use bytes::Bytes;
+use ethereal_rust_sdk::{apis::product_api::ProductControllerListParams, enums::{Channels, Environment}, types::{ProductSubscriptionMessage, SubscriptionMessage}};
 use futures::{SinkExt, StreamExt};
 use tokio::time::interval;
 use yawc::{Frame, OpCode, Options, WebSocket};
@@ -10,23 +13,26 @@ async fn main() {
     // Initialize logging
     simple_logger::init_with_level(log::Level::Debug).expect("log");
 
+    let env = Environment::Testnet;
+    let (http_client, mut ws_client) = common::create_test_clients().await.unwrap();
+    let params = ProductControllerListParams::default();
+    let products = http_client.product().list(params).await.unwrap().data;
+
+
     // Connect to the WebSocket server with fast compression enabled
-    let mut client = WebSocket::connect("wss://stream.bybit.com/v5/public/linear".parse().unwrap())
+    let mut client = WebSocket::connect(env.get_server_url().parse().unwrap())
         .with_options(Options::default().with_high_compression())
         .await
         .expect("connection");
 
-    // JSON-formatted subscription request
-    let text = r#"{
-        "req_id": "1",
-        "op": "subscribe",
-        "args": [
-            "publicTrade.BTCUSDT"
-        ]
-    }"#;
+    for product in products.iter() {
+        let text = ProductSubscriptionMessage {
+            msg_type: Channels::Ticker,
+            symbol: product.display_ticker.clone().replace("-", ""),
+        };
 
-    // Send subscription request
-    let _ = client.send(Frame::text(text)).await;
+        let _ = client.send(Frame::text(text)).await;
+    }
 
     // Set up an interval to send pings every 3 seconds
     let mut ival = interval(Duration::from_secs(3));

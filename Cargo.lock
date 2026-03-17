@@ -921,6 +921,7 @@ name = "ethereal_rust_sdk"
 version = "0.1.23"
 dependencies = [
  "anyhow",
+ "bytes",
  "criterion",
  "dashmap",
  "ethers",

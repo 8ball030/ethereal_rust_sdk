@@ -17,12 +17,6 @@ pub async fn create_client(
     Ok((http_client, ws_client))
 }
 
-pub fn get_server_url(environment: &Environment) -> &str {
-    match environment {
-        Environment::Mainnet => "wss://ws.ethereal.trade",
-        Environment::Testnet => "wss://ws.etherealtest.net",
-    }
-}
 
 // fn parse_payload_to_type<T>(payload: Payload) -> Result<Vec<T>, SerdeError>
 // where
