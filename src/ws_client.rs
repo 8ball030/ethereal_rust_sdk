@@ -5,7 +5,7 @@ use std::{
     future::Future,
     sync::{
         atomic::{AtomicU64, Ordering},
-        Arc, Mutex,
+        Arc,
     },
     time::Duration,
 };
@@ -16,7 +16,10 @@ use futures_util::StreamExt;
 use thiserror::Error;
 use tokio::{
     net::TcpStream,
-    sync::{mpsc, oneshot, watch},
+    sync::{
+        mpsc::{self, UnboundedSender},
+        oneshot, watch, Mutex,
+    },
     task::JoinHandle,
     time::{interval, sleep, Instant, MissedTickBehavior},
 };
@@ -39,6 +42,7 @@ pub enum ConnectionState {
     Disconnected,
     Connected,
     Reconnecting,
+    Exited,
 }
 pub enum InternalCommand {
     Send(Frame),
@@ -58,19 +62,19 @@ pub enum ClientError {
     #[error("Deserialization error: {0}")]
     Deserialization(#[from] serde_json::Error),
 }
+type SubscriptionMap = Arc<DashMap<String, (UnboundedSender<bytes::Bytes>, Vec<bytes::Bytes>)>>;
 
 pub struct WsClient {
-    env: Environment,
-    write_tx: mpsc::UnboundedSender<InternalCommand>,
+    write_tx: UnboundedSender<InternalCommand>,
     state_rx: watch::Receiver<ConnectionState>,
-    state_tx: watch::Sender<ConnectionState>,
     pub environment: Environment,
-    supervisor_handle: Option<Arc<Mutex<JoinHandle<()>>>>,
-    subs: Arc<DashMap<String, mpsc::UnboundedSender<Bytes>>>,
+    supervisor_handle: Arc<Mutex<JoinHandle<()>>>,
+    subs: SubscriptionMap,
     pending_requests: Arc<DashMap<u64, ResponseSender>>,
     shutdown_tx: watch::Sender<bool>,
     next_id: Arc<AtomicU64>,
     subscription_tasks: Arc<Mutex<Vec<JoinHandle<()>>>>,
+    current_connection_state: Arc<Mutex<ConnectionState>>,
 }
 
 #[inline(always)]
@@ -92,7 +96,7 @@ impl WsClient {
     pub fn new(environment: Environment) -> Self {
         let (state_tx, state_rx) = watch::channel::<ConnectionState>(ConnectionState::Disconnected);
         let pending_requests = Arc::new(DashMap::new());
-        let subs = Arc::new(DashMap::new());
+        let subs: SubscriptionMap = Arc::new(DashMap::new());
 
         let (cmd_tx, cmd_rx) = mpsc::unbounded_channel::<InternalCommand>();
         let (shutdown_tx, shutdown_rx) = watch::channel(false);
@@ -110,17 +114,16 @@ impl WsClient {
         let subscription_tasks = Arc::new(Mutex::new(Vec::new()));
 
         Self {
-            env: environment,
             write_tx: cmd_tx.clone(),
             state_rx,
-            state_tx,
             environment,
-            supervisor_handle: Some(Arc::new(Mutex::new(supervisor_handle))),
+            supervisor_handle: Arc::new(Mutex::new(supervisor_handle)),
             subs,
             pending_requests,
             shutdown_tx,
             next_id,
             subscription_tasks,
+            current_connection_state: Arc::new(Mutex::new(ConnectionState::Disconnected)),
         }
     }
 
@@ -140,7 +143,7 @@ impl WsClient {
     {
         let (tx, mut rx) = mpsc::unbounded_channel::<Bytes>();
 
-        self.subs.insert(event.as_string(), tx);
+        self.subs.insert(event.as_string(), (tx, payloads.clone()));
         debug!("Subscribing to public channel: {event:?}");
 
         let handle = tokio::spawn(async move {
@@ -167,10 +170,7 @@ impl WsClient {
             }
         }
         println!("Subscription result: ok! Channel: {event:?}");
-        self.subscription_tasks
-            .lock()
-            .expect("Unable to subscribe")
-            .push(handle);
+        self.subscription_tasks.lock().await.push(handle);
         Ok(())
     }
 
@@ -204,6 +204,59 @@ impl WsClient {
         let envelope: T = deserialise_to_type(&resp)?;
         Ok(envelope)
     }
+    pub async fn run_till_event(&self) -> ConnectionState {
+        let mut rx = self.state_rx.clone();
+
+        loop {
+            if rx.changed().await.is_ok() {
+                let state = *rx.borrow_and_update();
+                let mut current_state = self.current_connection_state.lock().await;
+                if state != *current_state {
+                    info!("Connection state changed to: {:?}", state);
+                    *current_state = state;
+                    return state;
+                }
+            } else {
+                return ConnectionState::Exited;
+            }
+        }
+    }
+
+    pub async fn shutdown(&self, reason: &'static str) -> Result<(), ClientError> {
+        debug!("Shutdown requested: {reason}");
+        self.subs.clear();
+        let _ = self.shutdown_tx.send(true);
+        let _ = self.write_tx.send(InternalCommand::Close);
+        // we join the supervisor task to ensure it has fully exited before we return from shutdown
+        let supervisor_handle = self.supervisor_handle.lock().await;
+        supervisor_handle.abort();
+        for task in self.subscription_tasks.lock().await.drain(..) {
+            task.abort();
+        }
+        Ok(())
+    }
+
+    pub async fn resubscribe_all(&self) -> Result<(), ClientError> {
+        debug!("Resubscribing to all channels");
+        for entry in self.subs.iter() {
+            let channel = entry.key();
+            let (_sender, payloads) = entry.value();
+            debug!("Resubscribing to channel: {channel} with payloads: {payloads:?}");
+            for payload in payloads {
+                let res = self.send_rpc_nowait(payload.to_owned()).await;
+                match res {
+                    Ok(_) => debug!("Resubscription message sent for channel: {channel:?}"),
+                    Err(e) => {
+                        error!(
+                            "Failed to send resubscription message for channel {channel:?}: {e}"
+                        );
+                        return Err(e);
+                    }
+                }
+            }
+        }
+        Ok(())
+    }
 }
 
 async fn connection_supervisor(
@@ -211,7 +264,7 @@ async fn connection_supervisor(
     mut cmd_rx: mpsc::UnboundedReceiver<InternalCommand>,
     mut shutdown_rx: watch::Receiver<bool>,
     pending_requests: Arc<DashMap<u64, ResponseSender>>,
-    subscriptions: Arc<DashMap<String, mpsc::UnboundedSender<Bytes>>>,
+    subscriptions: SubscriptionMap,
     connection_state_tx: watch::Sender<ConnectionState>,
 ) {
     loop {
@@ -264,7 +317,7 @@ async fn run_single_connection(
     cmd_rx: &mut mpsc::UnboundedReceiver<InternalCommand>,
     shutdown_rx: &mut watch::Receiver<bool>,
     pending_requests: &Arc<DashMap<u64, ResponseSender>>,
-    subscriptions: &Arc<DashMap<String, mpsc::UnboundedSender<Bytes>>>,
+    subscriptions: &SubscriptionMap,
 ) -> Result<(), ClientError> {
     // Set up ping interval
     let mut ping_interval = interval(PING_INTERVAL);
@@ -352,12 +405,13 @@ async fn run_single_connection(
 pub async fn handle_incoming(
     bytes: &Bytes,
     _pending_requests: &Arc<DashMap<u64, ResponseSender>>,
-    subscriptions: &Arc<DashMap<String, mpsc::UnboundedSender<Bytes>>>,
+    subscriptions: &SubscriptionMap,
 ) {
     // // ---- fast path: channel_name ----
     if let Some(channel) = extract_event(bytes) {
         for routes in [subscriptions] {
-            if let Some(sender) = routes.get(channel) {
+            if let Some(subscription) = routes.get(channel) {
+                let (sender, _payloads) = subscription.value();
                 if sender.send(bytes.to_owned()).is_err() {
                     routes.remove(channel);
                 }
