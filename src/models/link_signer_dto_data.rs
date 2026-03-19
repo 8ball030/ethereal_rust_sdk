@@ -30,7 +30,12 @@ pub struct LinkSignerDtoData {
     pub nonce: String,
     /// Message signedAt current timestamp (seconds since Unix Epoch)
     #[serde(rename = "signedAt")]
-    pub signed_at: f64,
+    pub signed_at: i64,
+    /// Optional name for the linked signer
+    #[serde(rename = "name", skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(rename = "category", skip_serializing_if = "Option::is_none")]
+    pub category: Option<models::CategoryEnum>,
 }
 
 impl LinkSignerDtoData {
@@ -40,7 +45,7 @@ impl LinkSignerDtoData {
         subaccount: String,
         signer: String,
         nonce: String,
-        signed_at: f64,
+        signed_at: i64,
     ) -> LinkSignerDtoData {
         LinkSignerDtoData {
             subaccount_id,
@@ -49,6 +54,8 @@ impl LinkSignerDtoData {
             signer,
             nonce,
             signed_at,
+            name: None,
+            category: None,
         }
     }
 }

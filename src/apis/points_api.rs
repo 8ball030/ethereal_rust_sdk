@@ -17,9 +17,9 @@ use serde::{de::Error as _, Deserialize, Serialize};
 #[derive(Clone, Debug, Default)]
 pub struct PointsControllerGetTotalPointsParams {
     /// Season number
-    pub season: Option<f64>,
+    pub season: Option<i32>,
     /// Epoch number within season
-    pub epoch: Option<f64>,
+    pub epoch: Option<i32>,
 }
 
 /// struct for passing parameters to the method [`points_controller_list_points_periods`]
@@ -28,9 +28,9 @@ pub struct PointsControllerListPointsPeriodsParams {
     /// Address of account
     pub address: String,
     /// Season number
-    pub season: f64,
+    pub season: i32,
     /// Epoch number within the season
-    pub epoch: f64,
+    pub epoch: i32,
 }
 
 /// struct for passing parameters to the method [`points_controller_list_points_season_summaries`]

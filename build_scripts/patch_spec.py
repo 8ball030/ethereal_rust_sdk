@@ -4,6 +4,7 @@ patch script to replace certain ids in openapi.json
 
 import json
 from pathlib import Path
+import sys
 
 CUSTOM_ENUM_OVERRIDE = {
     "SubmitOrderMarketDtoDataOrderType": "OrderType",
@@ -100,11 +101,14 @@ def patch_schema_has_next_to_optional(spec: dict):
 
 def main():
     file_path = Path("openapi.json")
+
+    if not file_path.exists():
+        print(f"File not found: {file_path}")
+        sys.exit(1)
     data = read_json(file_path)
-    
-    # patch_candidates(candidates)
     data = extract_all_enums(data)
     data = patch_schema_has_next_to_optional(data)
+    data = patch_integer_properties(data)
     
     write_json(file_path, data)
     print(f"Patched: {file_path}")

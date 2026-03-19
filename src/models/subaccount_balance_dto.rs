@@ -36,7 +36,7 @@ pub struct SubaccountBalanceDto {
     pub total_used: rust_decimal::Decimal,
     /// Token balance last updated timestamp (ms since Unix Epoch)
     #[serde(rename = "updatedAt")]
-    pub updated_at: f64,
+    pub updated_at: i64,
 }
 
 impl SubaccountBalanceDto {
@@ -48,7 +48,7 @@ impl SubaccountBalanceDto {
         amount: rust_decimal::Decimal,
         available: rust_decimal::Decimal,
         total_used: rust_decimal::Decimal,
-        updated_at: f64,
+        updated_at: i64,
     ) -> SubaccountBalanceDto {
         SubaccountBalanceDto {
             subaccount_id,

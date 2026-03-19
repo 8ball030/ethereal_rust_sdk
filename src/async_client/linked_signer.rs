@@ -2,11 +2,15 @@ use crate::{
     apis::{
         configuration::Configuration,
         linked_signer_api::{
-            linked_signer_controller_get_account_quota, linked_signer_controller_get_signer,
+            linked_signer_controller_extend_signer, linked_signer_controller_get_account_quota,
+            linked_signer_controller_get_signer, linked_signer_controller_get_signer_by_address,
             linked_signer_controller_link_signer, linked_signer_controller_list_by_subaccount_id,
             linked_signer_controller_refresh_signer, linked_signer_controller_revoke_signer,
+            LinkedSignerControllerExtendSignerError, LinkedSignerControllerExtendSignerParams,
             LinkedSignerControllerGetAccountQuotaError,
-            LinkedSignerControllerGetAccountQuotaParams, LinkedSignerControllerGetSignerError,
+            LinkedSignerControllerGetAccountQuotaParams,
+            LinkedSignerControllerGetSignerByAddressError,
+            LinkedSignerControllerGetSignerByAddressParams, LinkedSignerControllerGetSignerError,
             LinkedSignerControllerGetSignerParams, LinkedSignerControllerLinkSignerError,
             LinkedSignerControllerLinkSignerParams, LinkedSignerControllerListBySubaccountIdError,
             LinkedSignerControllerListBySubaccountIdParams,
@@ -22,6 +26,13 @@ pub struct LinkedSignerClient<'a> {
 }
 
 impl<'a> LinkedSignerClient<'a> {
+    pub async fn extend_signer(
+        &self,
+        params: LinkedSignerControllerExtendSignerParams,
+    ) -> Result<SignerDto, Error<LinkedSignerControllerExtendSignerError>> {
+        linked_signer_controller_extend_signer(self.config, params).await
+    }
+
     pub async fn get_account_quota(
         &self,
         params: LinkedSignerControllerGetAccountQuotaParams,
@@ -34,6 +45,13 @@ impl<'a> LinkedSignerClient<'a> {
         params: LinkedSignerControllerGetSignerParams,
     ) -> Result<SignerDto, Error<LinkedSignerControllerGetSignerError>> {
         linked_signer_controller_get_signer(self.config, params).await
+    }
+
+    pub async fn get_signer_by_address(
+        &self,
+        params: LinkedSignerControllerGetSignerByAddressParams,
+    ) -> Result<SignerDto, Error<LinkedSignerControllerGetSignerByAddressError>> {
+        linked_signer_controller_get_signer_by_address(self.config, params).await
     }
 
     pub async fn link_signer(

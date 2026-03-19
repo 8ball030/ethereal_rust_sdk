@@ -52,13 +52,13 @@ pub struct TransferDto {
     pub lz_destination_address: Option<String>,
     /// LayerZero destination endpoint ID for the transfer (if withdraw)
     #[serde(rename = "lzDestinationEid", skip_serializing_if = "Option::is_none")]
-    pub lz_destination_eid: Option<f64>,
+    pub lz_destination_eid: Option<i64>,
     /// Fee paid for the transfer in native units expressed as a decimal (precision: 9)
     #[serde(rename = "fee")]
     pub fee: String,
     /// Transfer creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
-    pub created_at: f64,
+    pub created_at: i64,
     /// Transaction hash for the initiation of the transfer
     #[serde(
         rename = "initiatedTransactionHash",
@@ -83,7 +83,7 @@ impl TransferDto {
         r#type: models::TransferDtoOrderType,
         amount: String,
         fee: String,
-        created_at: f64,
+        created_at: i64,
     ) -> TransferDto {
         TransferDto {
             id,

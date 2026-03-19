@@ -33,7 +33,7 @@ pub struct SubaccountDto {
     pub registered_block_number: Option<String>,
     /// Subaccount creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
-    pub created_at: f64,
+    pub created_at: i64,
 }
 
 impl SubaccountDto {
@@ -42,7 +42,7 @@ impl SubaccountDto {
         name: String,
         account: String,
         created_block_number: String,
-        created_at: f64,
+        created_at: i64,
     ) -> SubaccountDto {
         SubaccountDto {
             id,

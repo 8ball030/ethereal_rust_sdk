@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from templates import (
+    CHANNEL_ENUM_TEMPLATE,
     METHOD_TEMPLATE,
     SIGNABLE_MESSAGE_HEADER,
     SIGNABLE_MESSAGE_TEMPLATE,
@@ -306,12 +307,33 @@ def gather_signable_messages():
         generated_types.append(generated_file)
     signable_messages_file = CRATE_ROOT / "signable_messages.rs"
     signable_messages_file.write_text(SIGNABLE_MESSAGE_HEADER + "\n".join(generated_types))
-
     return fields
+
+def extract_channels():
+    """
+    Read the ws_messages.json and extract the channel enum.
+    """
+    file_path = Path("ws_messages.json")
+    if not file_path.exists():
+        print(f"File not found: {file_path}")
+        return
+    data = json.loads(file_path.read_text())
+    channels = set()
+
+    for msg_name in data.get("components", {}).get("schemas", {}):
+        channel_name = msg_name.replace("Message", "")
+        channels.add(channel_name)
+    data = CHANNEL_ENUM_TEMPLATE.substitute(
+        variants="\n".join([f"    {channel}, "
+                            for channel in sorted(channels)])
+    )
+    with open("src/channels.rs", "w") as f:
+        f.write(data)
 
 if __name__ == "__main__":
     generate_domain_config_files()
     generated_files = gather_generated_files(API_SOURCE_DIR)
     post_process_generated_files(generated_files)
     gather_signable_messages()
+    extract_channels()
     print("Post-processing completed.")

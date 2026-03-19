@@ -1,8 +1,3 @@
-use serde_json::Error as SerdeError;
-use std::{future::Future, marker::Send, pin::Pin};
-use std::{io, sync::Arc};
-
-use log::error;
 // use rust_socketio::{asynchronous::Client, Payload};
 
 use crate::{async_client::client::HttpClient, enums::Environment, ws_client::WsClient};
@@ -16,7 +11,6 @@ pub async fn create_client(
     let ws_client = WsClient::new(env);
     Ok((http_client, ws_client))
 }
-
 
 // fn parse_payload_to_type<T>(payload: Payload) -> Result<Vec<T>, SerdeError>
 // where

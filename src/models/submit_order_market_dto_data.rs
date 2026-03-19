@@ -31,7 +31,7 @@ pub struct SubmitOrderMarketDtoData {
     pub side: models::OrderSide,
     /// Onchain generated productId from prior product registration
     #[serde(rename = "onchainId")]
-    pub onchain_id: f64,
+    pub onchain_id: i64,
     #[serde(rename = "engineType")]
     pub engine_type: models::EngineTypeEnum,
     /// A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)
@@ -50,10 +50,10 @@ pub struct SubmitOrderMarketDtoData {
     pub stop_type: Option<models::StopTypeEnum>,
     /// Message signedAt current timestamp (seconds since Unix Epoch)
     #[serde(rename = "signedAt")]
-    pub signed_at: f64,
+    pub signed_at: i64,
     /// Order expiry timestamp (seconds since Unix Epoch), defaults to the maximum allowed value: signedAt + 6652800
     #[serde(rename = "expiresAt", skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<f64>,
+    pub expires_at: Option<i64>,
     /// Group Id (UUID) for linking orders together in OCO/OTO relationships
     #[serde(rename = "groupId", skip_serializing_if = "Option::is_none")]
     pub group_id: Option<uuid::Uuid>,
@@ -72,9 +72,9 @@ impl SubmitOrderMarketDtoData {
         r#type: models::OrderType,
         quantity: rust_decimal::Decimal,
         side: models::OrderSide,
-        onchain_id: f64,
+        onchain_id: i64,
         engine_type: models::EngineTypeEnum,
-        signed_at: f64,
+        signed_at: i64,
     ) -> SubmitOrderMarketDtoData {
         SubmitOrderMarketDtoData {
             subaccount,

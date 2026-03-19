@@ -15,14 +15,14 @@ use serde::{Deserialize, Serialize};
 pub struct FundingDto {
     /// Funding charge timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
-    pub created_at: f64,
+    pub created_at: i64,
     /// Hourly funding rate
     #[serde(rename = "fundingRate1h")]
     pub funding_rate1h: String,
 }
 
 impl FundingDto {
-    pub fn new(created_at: f64, funding_rate1h: String) -> FundingDto {
+    pub fn new(created_at: i64, funding_rate1h: String) -> FundingDto {
         FundingDto {
             created_at,
             funding_rate1h,

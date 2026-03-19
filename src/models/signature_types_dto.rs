@@ -31,6 +31,9 @@ pub struct SignatureTypesDto {
     /// RefreshLinkedSigner signature type
     #[serde(rename = "RefreshLinkedSigner")]
     pub refresh_linked_signer: String,
+    /// ExtendLinkedSigner signature type
+    #[serde(rename = "ExtendLinkedSigner")]
+    pub extend_linked_signer: String,
     /// EIP712Auth signature type
     #[serde(rename = "EIP712Auth")]
     pub eip712_auth: String,
@@ -44,6 +47,7 @@ impl SignatureTypesDto {
         revoke_linked_signer: String,
         cancel_order: String,
         refresh_linked_signer: String,
+        extend_linked_signer: String,
         eip712_auth: String,
     ) -> SignatureTypesDto {
         SignatureTypesDto {
@@ -53,6 +57,7 @@ impl SignatureTypesDto {
             revoke_linked_signer,
             cancel_order,
             refresh_linked_signer,
+            extend_linked_signer,
             eip712_auth,
         }
     }

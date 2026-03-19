@@ -1,0 +1,36 @@
+use std::future::Future;
+
+use bytes::Bytes;
+
+use crate::{
+    channels::Channels,
+    models::TickerMessage,
+    types::ProductSubscriptionMessage,
+    ws_client::{ClientError, WsClient},
+};
+
+pub struct Subscriptions<'a> {
+    pub client: &'a WsClient,
+}
+impl<'a> Subscriptions<'a> {
+    pub async fn ticker<F, Fut>(&self, tickers: Vec<String>, callback: F) -> Result<(), ClientError>
+    where
+        F: FnMut(TickerMessage) -> Fut + Send + 'static,
+        Fut: Future<Output = ()> + Send + 'static,
+    {
+        let payloads = tickers
+            .iter()
+            .map(|ticker| {
+                ProductSubscriptionMessage {
+                    msg_type: Channels::Ticker,
+                    symbol: ticker.to_string(),
+                }
+                .into()
+            })
+            .collect::<Vec<Bytes>>();
+        self.client
+            .subscribe_channels(Channels::Ticker, payloads, callback)
+            .await?;
+        Ok(())
+    }
+}

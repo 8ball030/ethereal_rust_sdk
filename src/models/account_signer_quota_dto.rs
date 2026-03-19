@@ -15,24 +15,24 @@ use serde::{Deserialize, Serialize};
 pub struct AccountSignerQuotaDto {
     /// Ratelimit period in days for linking signers per account
     #[serde(rename = "maxLinkedSignersPeriodDays")]
-    pub max_linked_signers_period_days: f64,
+    pub max_linked_signers_period_days: i64,
     /// Max number of signer that can be linked within ratelimit period
     #[serde(rename = "maxLinkedSignersInPeriod")]
-    pub max_linked_signers_in_period: f64,
+    pub max_linked_signers_in_period: i64,
     /// Number of signers linked within current ratelimit period
     #[serde(rename = "linkedSignersUsedInPeriod")]
-    pub linked_signers_used_in_period: f64,
+    pub linked_signers_used_in_period: i64,
     /// Hours before expiry when a signer can be refreshed
     #[serde(rename = "linkedSignerRefreshHoursBeforeExpiry")]
-    pub linked_signer_refresh_hours_before_expiry: f64,
+    pub linked_signer_refresh_hours_before_expiry: i64,
 }
 
 impl AccountSignerQuotaDto {
     pub fn new(
-        max_linked_signers_period_days: f64,
-        max_linked_signers_in_period: f64,
-        linked_signers_used_in_period: f64,
-        linked_signer_refresh_hours_before_expiry: f64,
+        max_linked_signers_period_days: i64,
+        max_linked_signers_in_period: i64,
+        linked_signers_used_in_period: i64,
+        linked_signer_refresh_hours_before_expiry: i64,
     ) -> AccountSignerQuotaDto {
         AccountSignerQuotaDto {
             max_linked_signers_period_days,

@@ -132,3 +132,17 @@ $fields_encoding
     }
 }
 """)
+
+CHANNEL_ENUM_TEMPLATE = Template("""
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum Channels {
+$variants
+}
+impl Channels {
+    pub fn as_string(&self) -> String {
+        serde_json::to_string(self).unwrap().replace('"', "")
+    }
+}
+""")

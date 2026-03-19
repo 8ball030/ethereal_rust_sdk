@@ -15,10 +15,10 @@ use serde::{Deserialize, Serialize};
 pub struct MarketLiquidityDto {
     /// Most recent book update, created timestamp if never updated (ms since Unix Epoch)
     #[serde(rename = "timestamp")]
-    pub timestamp: f64,
+    pub timestamp: i64,
     /// Previous book update, undefined if never updated (ms since Unix Epoch)
     #[serde(rename = "previousTimestamp", skip_serializing_if = "Option::is_none")]
-    pub previous_timestamp: Option<f64>,
+    pub previous_timestamp: Option<i64>,
     /// Id representing the product
     #[serde(rename = "productId")]
     pub product_id: uuid::Uuid,
@@ -32,7 +32,7 @@ pub struct MarketLiquidityDto {
 
 impl MarketLiquidityDto {
     pub fn new(
-        timestamp: f64,
+        timestamp: i64,
         product_id: uuid::Uuid,
         asks: Vec<Vec<serde_json::Value>>,
         bids: Vec<Vec<serde_json::Value>>,

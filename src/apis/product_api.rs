@@ -39,12 +39,12 @@ pub struct ProductControllerListParams {
     /// Direction to paginate through objects
     pub order: Option<String>,
     /// Limit the number of objects to return
-    pub limit: Option<f64>,
+    pub limit: Option<i32>,
     /// Pointer to the current object in pagination dataset
     pub cursor: Option<String>,
     /// Order by field
     pub order_by: Option<String>,
-    /// Filter products by ticker (alphanumeic and case insensitive)
+    /// Filter products by ticker (alphanumeric and case insensitive)
     pub ticker: Option<String>,
 }
 

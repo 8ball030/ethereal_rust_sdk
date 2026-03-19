@@ -30,7 +30,7 @@ pub struct FundingControllerListByProductIdParams {
     /// Direction to paginate through objects
     pub order: Option<String>,
     /// Limit the number of objects to return
-    pub limit: Option<f64>,
+    pub limit: Option<i32>,
     /// Pointer to the current object in pagination dataset
     pub cursor: Option<String>,
     /// Order by field
@@ -86,6 +86,7 @@ pub enum FundingControllerListProjectedRatesError {
     UnknownValue(serde_json::Value),
 }
 
+/// Deprecated: Use GET /funding/projected-rate instead
 pub async fn funding_controller_get_projected_funding_rate(
     configuration: &configuration::Configuration,
     params: FundingControllerGetProjectedFundingRateParams,

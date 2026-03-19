@@ -21,7 +21,7 @@ pub struct PointsSeasonSummaryDto {
     pub address: String,
     /// Season number
     #[serde(rename = "season")]
-    pub season: f64,
+    pub season: i64,
     /// Total points earned (excluding referral points) in this season expressed as a decimal (precision: 9)
     #[serde(rename = "totalPoints")]
     pub total_points: String,
@@ -36,34 +36,34 @@ pub struct PointsSeasonSummaryDto {
     pub previous_referral_points: String,
     /// Current rank in this season
     #[serde(rename = "rank")]
-    pub rank: f64,
+    pub rank: i64,
     /// Rank before most recent distribution
     #[serde(rename = "previousRank")]
-    pub previous_rank: f64,
+    pub previous_rank: i64,
     #[serde(rename = "tier")]
     pub tier: models::TierEnum,
     /// Points season summary creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
-    pub created_at: f64,
+    pub created_at: i64,
     /// Points season summary last update timestamp (ms since Unix Epoch)
     #[serde(rename = "updatedAt")]
-    pub updated_at: f64,
+    pub updated_at: i64,
 }
 
 impl PointsSeasonSummaryDto {
     pub fn new(
         id: uuid::Uuid,
         address: String,
-        season: f64,
+        season: i64,
         total_points: String,
         previous_total_points: String,
         referral_points: String,
         previous_referral_points: String,
-        rank: f64,
-        previous_rank: f64,
+        rank: i64,
+        previous_rank: i64,
         tier: models::TierEnum,
-        created_at: f64,
-        updated_at: f64,
+        created_at: i64,
+        updated_at: i64,
     ) -> PointsSeasonSummaryDto {
         PointsSeasonSummaryDto {
             id,

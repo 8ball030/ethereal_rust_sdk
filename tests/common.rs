@@ -1,5 +1,7 @@
 use anyhow::Result;
-use ethereal_rust_sdk::{async_client::client::HttpClient, enums::Environment, models::ProductDto, ws_client::WsClient};
+use ethereal_rust_sdk::{
+    async_client::client::HttpClient, enums::Environment, models::ProductDto, ws_client::WsClient,
+};
 
 pub async fn create_test_client() -> Result<HttpClient> {
     let env = Environment::Testnet;

@@ -34,6 +34,9 @@ pub struct PositionDto {
     /// Realized PnL in USD expressed as a decimal (precision: 9)
     #[serde(rename = "realizedPnl")]
     pub realized_pnl: String,
+    /// Unrealized PnL in USD (negative if loss, positive if profit) approximated against the latest mark price, expressed as a decimal (precision: 9)
+    #[serde(rename = "unrealizedPnl", skip_serializing_if = "Option::is_none")]
+    pub unrealized_pnl: Option<String>,
     /// Cumulative USD value of all position increases expressed as a decimal (precision: 9)
     #[serde(rename = "totalIncreaseNotional")]
     pub total_increase_notional: String,
@@ -53,10 +56,10 @@ pub struct PositionDto {
     pub product_id: uuid::Uuid,
     /// Position last updated timestamp (ms since Unix Epoch)
     #[serde(rename = "updatedAt")]
-    pub updated_at: f64,
+    pub updated_at: i64,
     /// Position creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
-    pub created_at: f64,
+    pub created_at: i64,
     /// Whether the position was liquidated
     #[serde(rename = "isLiquidated")]
     pub is_liquidated: bool,
@@ -80,8 +83,8 @@ impl PositionDto {
         total_decrease_quantity: String,
         side: models::OrderSide,
         product_id: uuid::Uuid,
-        updated_at: f64,
-        created_at: f64,
+        updated_at: i64,
+        created_at: i64,
         is_liquidated: bool,
     ) -> PositionDto {
         PositionDto {
@@ -92,6 +95,7 @@ impl PositionDto {
             funding_accrued_usd,
             fees_accrued_usd,
             realized_pnl,
+            unrealized_pnl: None,
             total_increase_notional,
             total_increase_quantity,
             total_decrease_notional,

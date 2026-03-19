@@ -935,6 +935,7 @@ dependencies = [
  "serde_json",
  "serde_repr",
  "simple_logger",
+ "thiserror 2.0.18",
  "tokio",
  "tokio-test",
  "url",

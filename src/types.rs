@@ -1,10 +1,8 @@
-use std::ops::Sub;
-
 use bytes::Bytes;
 use serde::Serialize;
 use tokio::sync::oneshot;
 
-use crate::enums::Channels;
+use crate::channels::Channels;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -13,14 +11,19 @@ pub struct ProductSubscriptionMessage {
     pub msg_type: Channels,
     pub symbol: String,
 }
-impl Into<Bytes> for ProductSubscriptionMessage {
-    fn into(self) -> Bytes {
+impl From<ProductSubscriptionMessage> for Bytes {
+    fn from(val: ProductSubscriptionMessage) -> Self {
         let msg: SubscriptionMessage<ProductSubscriptionMessage> = SubscriptionMessage {
             event: "subscribe".to_string(),
-            data: self,
+            data: val,
         };
         let json = serde_json::to_string(&msg).expect("json");
         Bytes::from(json)
+    }
+}
+impl ProductSubscriptionMessage {
+    pub fn get_channel_id(&self) -> String {
+        format!("{:?}:{}", self.msg_type, self.symbol)
     }
 }
 #[derive(Debug, Serialize)]
@@ -30,11 +33,16 @@ pub struct SubaccountSubscriptionMessage {
     pub msg_type: Channels,
     pub subaccount_id: String,
 }
-impl Into<Bytes> for SubaccountSubscriptionMessage {
-    fn into(self) -> Bytes {
+impl SubaccountSubscriptionMessage {
+    pub fn get_channel_id(&self) -> String {
+        format!("{:?}:{}", self.msg_type, self.subaccount_id)
+    }
+}
+impl From<SubaccountSubscriptionMessage> for Bytes {
+    fn from(val: SubaccountSubscriptionMessage) -> Self {
         let msg: SubscriptionMessage<SubaccountSubscriptionMessage> = SubscriptionMessage {
             event: "subscribe".to_string(),
-            data: self,
+            data: val,
         };
         let json = serde_json::to_string(&msg).expect("json");
         Bytes::from(json)
@@ -43,9 +51,9 @@ impl Into<Bytes> for SubaccountSubscriptionMessage {
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct SubscriptionMessage<T>{
+pub struct SubscriptionMessage<T> {
     pub event: String,
     pub data: T,
 }
 
-pub type ResponseSender = oneshot::Sender<String>;
+pub type ResponseSender = oneshot::Sender<Bytes>;

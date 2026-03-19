@@ -13,6 +13,12 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
+/// struct for passing parameters to the method [`linked_signer_controller_extend_signer`]
+#[derive(Clone, Debug, Default)]
+pub struct LinkedSignerControllerExtendSignerParams {
+    pub extend_linked_signer_dto: models::ExtendLinkedSignerDto,
+}
+
 /// struct for passing parameters to the method [`linked_signer_controller_get_account_quota`]
 #[derive(Clone, Debug, Default)]
 pub struct LinkedSignerControllerGetAccountQuotaParams {
@@ -24,6 +30,13 @@ pub struct LinkedSignerControllerGetAccountQuotaParams {
 #[derive(Clone, Debug, Default)]
 pub struct LinkedSignerControllerGetSignerParams {
     pub id: String,
+}
+
+/// struct for passing parameters to the method [`linked_signer_controller_get_signer_by_address`]
+#[derive(Clone, Debug, Default)]
+pub struct LinkedSignerControllerGetSignerByAddressParams {
+    /// Address of linked signer
+    pub address: String,
 }
 
 /// struct for passing parameters to the method [`linked_signer_controller_link_signer`]
@@ -40,7 +53,7 @@ pub struct LinkedSignerControllerListBySubaccountIdParams {
     /// Direction to paginate through objects
     pub order: Option<String>,
     /// Limit the number of objects to return
-    pub limit: Option<f64>,
+    pub limit: Option<i32>,
     /// Pointer to the current object in pagination dataset
     pub cursor: Option<String>,
     /// Filters signers by statuses
@@ -61,6 +74,20 @@ pub struct LinkedSignerControllerRevokeSignerParams {
     pub revoke_linked_signer_dto: models::RevokeLinkedSignerDto,
 }
 
+/// struct for typed errors of method [`linked_signer_controller_extend_signer`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum LinkedSignerControllerExtendSignerError {
+    Status400(models::BadRequestDto),
+    Status401(models::UnauthorizedDto),
+    Status403(models::ForbiddenDto),
+    Status404(models::NotFoundDto),
+    Status422(models::UnprocessableEntityDto),
+    Status429(models::TooManyRequestsDto),
+    Status500(),
+    UnknownValue(serde_json::Value),
+}
+
 /// struct for typed errors of method [`linked_signer_controller_get_account_quota`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -79,6 +106,20 @@ pub enum LinkedSignerControllerGetAccountQuotaError {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum LinkedSignerControllerGetSignerError {
+    Status400(models::BadRequestDto),
+    Status401(models::UnauthorizedDto),
+    Status403(models::ForbiddenDto),
+    Status404(models::NotFoundDto),
+    Status422(models::UnprocessableEntityDto),
+    Status429(models::TooManyRequestsDto),
+    Status500(),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`linked_signer_controller_get_signer_by_address`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum LinkedSignerControllerGetSignerByAddressError {
     Status400(models::BadRequestDto),
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
@@ -143,6 +184,50 @@ pub enum LinkedSignerControllerRevokeSignerError {
     Status429(models::TooManyRequestsDto),
     Status500(),
     UnknownValue(serde_json::Value),
+}
+
+pub async fn linked_signer_controller_extend_signer(
+    configuration: &configuration::Configuration,
+    params: LinkedSignerControllerExtendSignerParams,
+) -> Result<models::SignerDto, Error<LinkedSignerControllerExtendSignerError>> {
+    let uri_str = format!("{}/v1/linked-signer/extend", configuration.base_path);
+    let mut req_builder = configuration
+        .client
+        .request(reqwest::Method::POST, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.json(&params.extend_linked_signer_dto);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::SignerDto`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::SignerDto`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<LinkedSignerControllerExtendSignerError> =
+            serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
 }
 
 pub async fn linked_signer_controller_get_account_quota(
@@ -223,6 +308,51 @@ pub async fn linked_signer_controller_get_signer(
     } else {
         let content = resp.text().await?;
         let entity: Option<LinkedSignerControllerGetSignerError> =
+            serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+pub async fn linked_signer_controller_get_signer_by_address(
+    configuration: &configuration::Configuration,
+    params: LinkedSignerControllerGetSignerByAddressParams,
+) -> Result<models::SignerDto, Error<LinkedSignerControllerGetSignerByAddressError>> {
+    let uri_str = format!(
+        "{}/v1/linked-signer/address/{address}",
+        configuration.base_path,
+        address = crate::apis::urlencode(params.address)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::SignerDto`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::SignerDto`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<LinkedSignerControllerGetSignerByAddressError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
