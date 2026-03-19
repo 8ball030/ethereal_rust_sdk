@@ -193,50 +193,59 @@ In order to proces messages from the websocket client, the user must first regis
 ## Market Data Subscription
 ```rust
 // examples/market_data.rs
-use ethereal_rust_sdk::ws_client::ConnectionState;
-use log::{error, info};
 mod common;
 
-use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
-use ethereal_rust_sdk::models::MarketPriceDto;
-
-async fn market_data_callback(market_price: MarketPriceDto) {
-    info!(
-        "Market Price Update - Product ID: {:?}, Best Bid: {:?}, Best Ask: {:?}",
-        market_price.product_id, market_price.best_bid_price, market_price.best_ask_price
-    );
-}
+use ethereal_rust_sdk::{
+    apis::product_api::ProductControllerListParams, models::TickerMessage,
+    ws_client::ConnectionState,
+};
+use log::info;
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    simple_logger::init_with_level(log::Level::Info).unwrap();
-
-    let (http_client, mut ws_client) = common::create_test_clients().await?;
+async fn main() {
+    // Initialize logging
+    simple_logger::init_with_level(log::Level::Info).expect("log");
+    let (http_client, ws_client) = common::create_test_clients().await.unwrap();
+    info!("HTTP client and WS client created");
     let params = ProductControllerListParams::default();
+    info!("Fetching products with params: {params:?}");
     let products = http_client.product().list(params).await.unwrap().data;
 
-    ws_client.register_market_data_callback(market_data_callback);
-
-    for product in products.iter() {
-        ws_client.subscribe_market_data(&product.id.to_string());
+    async fn ticker_callback(msg: TickerMessage) {
+        info!("Received ticker message: {:?}", msg);
     }
 
-    ws_client.connect().await?;
+    let tickers = products
+        .iter()
+        .map(|p| p.ticker.clone())
+        .collect::<Vec<_>>();
+
+    ws_client
+        .subscriptions()
+        .ticker(tickers, ticker_callback)
+        .await
+        .unwrap();
+
+    info!("Starting event loop...");
     loop {
+        ws_client.wait_for_connection().await;
         match ws_client.run_till_event().await {
             ConnectionState::Connected => {
-                info!("Called detects connected")
+                info!("WebSocket connected");
+                ws_client.resubscribe_all().await.unwrap();
             }
             ConnectionState::Disconnected => {
-                error!("State is disconncted!");
+                info!("WebSocket disconnected");
+            }
+            ConnectionState::Exited => {
+                info!("WebSocket exited");
                 break;
             }
             ConnectionState::Reconnecting => {
-                error!("Client trying to reconnect!")
+                info!("WebSocket reconnecting...");
             }
         }
     }
-    Ok(())
 }
 
 ```
@@ -246,7 +255,7 @@ As can be seen, the SDK provides both asynchronous HTTP clients and WebSocket cl
 
 The following example demonstrates how to register for order updates.
 
-```rust
+```rust1
 // examples/order_updates.rs
 mod common;
 
@@ -324,7 +333,7 @@ An order fill callback can be registered and subscribed to in a similar manner, 
 
 Additionally, it should be pointed out that a different data model is used for order fills, namely `PageOfOrderFillDtos`.
 
-```rust
+```rust1
 // examples/order_fills.rs
 mod common;
 use ethereal_rust_sdk::apis::subaccount_api::SubaccountControllerListByAccountParams;
@@ -406,8 +415,8 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [x] Write tests for all modules and functionalities.
 - [x] Add more examples and documentation.
 - [x] Publish the crate to crates.io.
-- [ ] Template all other signable apis.
-- [ ] Create abstraction for signable requests.
+- [x] Template all other signable apis.
+- [x] Create abstraction for signable requests.
 - [ ] Parse stringified numbers into appropriate numeric types.
 
 ## Acknowledgements

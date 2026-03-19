@@ -257,6 +257,23 @@ impl WsClient {
         }
         Ok(())
     }
+    pub async fn wait_for_connection(&self) {
+        let mut rx = self.state_rx.clone();
+
+        // If already connected, return immediately
+        if *rx.borrow_and_update() == ConnectionState::Connected {
+            let mut current_state = self.current_connection_state.lock().await;
+            *current_state = ConnectionState::Connected;
+            return;
+        }
+        while rx.changed().await.is_ok() {
+            if *rx.borrow_and_update() == ConnectionState::Connected {
+                let mut current_state = self.current_connection_state.lock().await;
+                *current_state = ConnectionState::Connected;
+                return;
+            }
+        }
+    }
 }
 
 async fn connection_supervisor(
@@ -333,7 +350,7 @@ async fn run_single_connection(
                     warn!("Failed to send ping for connection {e}");
                     return Err(ClientError::WebsocketError(e));
                 }
-                info!("Ping sent successfully");
+                debug!("Ping sent successfully");
             }
 
             _ = shutdown_rx.changed() => {
@@ -381,7 +398,7 @@ async fn run_single_connection(
                                 ).await;
                             },
                             OpCode::Pong => {
-                                info!("Received pong frame");
+                                debug!("Received pong frame");
                             },
                             _ => {
                                 warn!("Received unsupported non-text frame, opcode: {opcode:?}");
