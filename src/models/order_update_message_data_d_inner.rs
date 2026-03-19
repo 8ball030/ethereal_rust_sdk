@@ -18,7 +18,7 @@ pub struct OrderUpdateMessageDataDInner {
     #[serde(rename = "cloid", skip_serializing_if = "Option::is_none")]
     pub cloid: Option<String>,
     #[serde(rename = "otyp")]
-    pub otyp: Otyp,
+    pub otyp: models::OrderType,
     #[serde(rename = "qty")]
     pub qty: String,
     #[serde(rename = "aqty")]
@@ -28,7 +28,7 @@ pub struct OrderUpdateMessageDataDInner {
     #[serde(rename = "px", skip_serializing_if = "Option::is_none")]
     pub px: Option<String>,
     #[serde(rename = "sd")]
-    pub sd: Sd,
+    pub sd: models::OrderSide,
     #[serde(rename = "s")]
     pub s: String,
     #[serde(rename = "sid")]
@@ -36,7 +36,7 @@ pub struct OrderUpdateMessageDataDInner {
     #[serde(rename = "sn")]
     pub sn: String,
     #[serde(rename = "st")]
-    pub st: String,
+    pub st: models::OrderStatus,
     #[serde(rename = "t")]
     pub t: i64,
     #[serde(rename = "ro")]
@@ -66,15 +66,15 @@ pub struct OrderUpdateMessageDataDInner {
 impl OrderUpdateMessageDataDInner {
     pub fn new(
         id: uuid::Uuid,
-        otyp: Otyp,
+        otyp: models::OrderType,
         qty: String,
         aqty: String,
         fill: String,
-        sd: Sd,
+        sd: models::OrderSide,
         s: String,
         sid: uuid::Uuid,
         sn: String,
-        st: String,
+        st: models::OrderStatus,
         t: i64,
         ro: bool,
         cl: bool,
@@ -107,33 +107,5 @@ impl OrderUpdateMessageDataDInner {
             gtyp: None,
             gid: None,
         }
-    }
-}
-///
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Otyp {
-    #[serde(rename = "LIMIT")]
-    Limit,
-    #[serde(rename = "MARKET")]
-    Market,
-}
-
-impl Default for Otyp {
-    fn default() -> Otyp {
-        Self::Limit
-    }
-}
-///
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Sd {
-    #[serde(rename = "0")]
-    Variant0,
-    #[serde(rename = "1")]
-    Variant1,
-}
-
-impl Default for Sd {
-    fn default() -> Sd {
-        Self::Variant0
     }
 }

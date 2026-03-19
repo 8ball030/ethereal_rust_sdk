@@ -24,9 +24,9 @@ pub struct OrderFillMessageDataDInner {
     #[serde(rename = "sz")]
     pub sz: String,
     #[serde(rename = "typ")]
-    pub typ: Typ,
+    pub typ: models::OrderType,
     #[serde(rename = "sd")]
-    pub sd: Sd,
+    pub sd: models::OrderSide,
     #[serde(rename = "s")]
     pub s: String,
     #[serde(rename = "sid")]
@@ -48,8 +48,8 @@ impl OrderFillMessageDataDInner {
         cloid: String,
         px: String,
         sz: String,
-        typ: Typ,
-        sd: Sd,
+        typ: models::OrderType,
+        sd: models::OrderSide,
         s: String,
         sid: uuid::Uuid,
         ro: bool,
@@ -72,33 +72,5 @@ impl OrderFillMessageDataDInner {
             m,
             t,
         }
-    }
-}
-///
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Typ {
-    #[serde(rename = "LIMIT")]
-    Limit,
-    #[serde(rename = "MARKET")]
-    Market,
-}
-
-impl Default for Typ {
-    fn default() -> Typ {
-        Self::Limit
-    }
-}
-///
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Sd {
-    #[serde(rename = "0")]
-    Variant0,
-    #[serde(rename = "1")]
-    Variant1,
-}
-
-impl Default for Sd {
-    fn default() -> Sd {
-        Self::Variant0
     }
 }

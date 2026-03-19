@@ -321,6 +321,8 @@ def extract_channels():
     channels = set()
 
     for msg_name in data.get("components", {}).get("schemas", {}):
+        if "Message" not in msg_name:
+            continue
         channel_name = msg_name.replace("Message", "")
         channels.add(channel_name)
     data = CHANNEL_ENUM_TEMPLATE.substitute(
@@ -329,6 +331,7 @@ def extract_channels():
     )
     with open("src/channels.rs", "w") as f:
         f.write(data)
+    return channels
 
 if __name__ == "__main__":
     generate_domain_config_files()

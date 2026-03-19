@@ -361,8 +361,7 @@
                       "type": "string"
                     },
                     "otyp": {
-                      "type": "string",
-                      "enum": ["LIMIT", "MARKET"]
+                      "$ref": "./openapi.json#/components/schemas/OrderType"
                     },
                     "qty": {
                       "type": "string"
@@ -377,8 +376,7 @@
                       "type": "string"
                     },
                     "sd": {
-                      "type": "integer",
-                      "enum": [0, 1]
+                      "$ref": "./openapi.json#/components/schemas/OrderSide"
                     },
                     "s": {
                       "type": "string"
@@ -391,7 +389,7 @@
                       "type": "string"
                     },
                     "st": {
-                      "type": "string"
+                      "$ref": "./openapi.json#/components/schemas/OrderStatus"
                     },
                     "t": {
                       "type": "integer",
@@ -501,12 +499,10 @@
                       "type": "string"
                     },
                     "typ": {
-                      "type": "string",
-                      "enum": ["LIMIT", "MARKET"]
+                      "$ref": "./openapi.json#/components/schemas/OrderType"
                     },
                     "sd": {
-                      "type": "integer",
-                      "enum": [0, 1]
+                      "$ref": "./openapi.json#/components/schemas/OrderSide"
                     },
                     "s": {
                       "type": "string"
@@ -538,7 +534,6 @@
         },
         "required": ["e", "t", "data"]
       },
-
       "TokenTransferMessage": {
         "type": "object",
         "description": "Server-to-client TokenTransfer event message.",
