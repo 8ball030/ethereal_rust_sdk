@@ -2,7 +2,7 @@
 This is the Ethereal Rust SDK, which provides tools and libraries for interacting with the [Ethereal](https://ethereal.trade) platform using the Rust programming language.
 
 ## Features
-- Socket.IO client for real-time communication for all supported WebSocket channels
+- Yawc for real-time, zero-copy communication for all supported WebSocket channels
 - JSON serialization and deserialization
 - Async HTTP requests with Reqwest
 - Fully typed data models generated from the Ethereal OpenAPI specification.
@@ -15,12 +15,12 @@ This is the Ethereal Rust SDK, which provides tools and libraries for interactin
 
 At present, the Ethereal Rust SDK is under active development. To get started with the SDK, clone the repository and run the example code;`
 
-We have a number of examples included in the `examples` directory. Here is how to run the `market_data` example:
+We have a number of examples included in the `examples` directory. Here is how to run the `simple_order_submission` example:
 
 ```bash
 git clone https://github.com/8ball030/ethereal_rust_sdk.git
 cd ethereal_rust_sdk
-cargo run --example market_data
+cargo run --example simple_order_submission
 ```
 
 ## Installation
@@ -40,7 +40,7 @@ A convenient utility function is provided to create both clients. Here is an exa
 ```rust
     let env = Environment::Testnet;
     let private_key = "your_private_key_here";
-    let (http_client, ws_client) = create_client(env, private_key).await?;
+    let (http_client, ws_client) = create_client(env, private_key, None).await?;
 ```
 
 ## HTTP Client
@@ -228,7 +228,6 @@ async fn main() {
 
     info!("Starting event loop...");
     loop {
-        ws_client.wait_for_connection().await;
         match ws_client.run_till_event().await {
             ConnectionState::Connected => {
                 info!("WebSocket connected");
@@ -255,23 +254,23 @@ As can be seen, the SDK provides both asynchronous HTTP clients and WebSocket cl
 
 The following example demonstrates how to register for order updates.
 
-```rust1
-// examples/order_updates.rs
+```rust
+// examples/order_update.rs
 mod common;
-
-use ethereal_rust_sdk::apis::position_api::PositionControllerGetActiveParams;
-use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
 use ethereal_rust_sdk::apis::subaccount_api::SubaccountControllerListByAccountParams;
-use ethereal_rust_sdk::models::PageOfOrderDtos;
+use ethereal_rust_sdk::models::OrderUpdateMessage;
 
-use ethereal_rust_sdk::ws_client::run_forever;
+use ethereal_rust_sdk::ws_client::ConnectionState;
 use log::info;
 
-async fn order_update_callback(raw_data: PageOfOrderDtos) {
-    for fill in raw_data.data {
+async fn order_update_callback(raw_data: OrderUpdateMessage) {
+    let data = raw_data.data;
+    let orders = data.d;
+
+    for order in orders {
         info!(
-            "Order update - ID: {}, Product ID: {}, Price: {}, Side: {:?} Quantity: {:?}",
-            fill.id, fill.product_id, fill.price, fill.side, fill.filled
+            "Order update @ ID: {}, Symbol: {}, Price: {:?}, Side: {:?} Quantity: {:?} Status: {:?}",
+            order.id, order.s, order.px, order.sd, order.qty, order.st
         );
     }
 }
@@ -280,50 +279,45 @@ async fn order_update_callback(raw_data: PageOfOrderDtos) {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     simple_logger::init_with_level(log::Level::Info).unwrap();
 
-    let (http_client, mut ws_client) = common::create_test_clients().await?;
+    let (http_client, ws_client) = common::create_test_clients().await?;
     let params = SubaccountControllerListByAccountParams {
         sender: http_client.address.clone(),
         ..Default::default()
     };
     let subaccounts = http_client.subaccount().list_by_account(params).await?;
-    let params = ProductControllerListParams::default();
-    let products = http_client.product().list(params).await?;
-
-    products
+    let subaccount_ids = subaccounts
         .data
-        .first()
-        .expect("No products found in test account");
+        .iter()
+        .map(|subaccount| subaccount.id.to_string())
+        .collect::<Vec<_>>();
 
-    let product_id = &products.data.first().unwrap().id;
-    let params = PositionControllerGetActiveParams {
-        subaccount_id: subaccounts.data.first().unwrap().id.to_string(),
-        product_id: product_id.to_string(),
-    };
-    println!("Params: {params:?}");
+    ws_client
+        .subscriptions()
+        .order_update(subaccount_ids, order_update_callback)
+        .await?;
 
-    ws_client.register_order_update_callback(order_update_callback);
-    subaccounts.data.iter().for_each(|subaccount| {
-        ws_client.subscribe_order_update(&subaccount.id.to_string());
-    });
-    ws_client.connect().await?;
-    run_forever().await;
+    info!("Starting event loop...");
+    loop {
+        match ws_client.run_till_event().await {
+            ConnectionState::Connected => {
+                info!("WebSocket connected");
+                ws_client.resubscribe_all().await.unwrap();
+            }
+            ConnectionState::Disconnected => {
+                info!("WebSocket disconnected");
+            }
+            ConnectionState::Exited => {
+                info!("WebSocket exited");
+                break;
+            }
+            ConnectionState::Reconnecting => {
+                info!("WebSocket reconnecting...");
+            }
+        }
+    }
 
     Ok(())
 }
-
-```
-
-The example can be run with the following command:
-
-```bash
-╰─>$ cargo run --example order_updates 
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.41s
-     Running `target/debug/examples/order_updates`
-2025-12-04T15:19:24.659Z INFO  [ethereal_rust_sdk::ws_client] Callback registered channel=OrderUpdate
-2025-12-04T15:19:24.659Z INFO  [ethereal_rust_sdk::ws_client] Connecting websocket...
-2025-12-04T15:19:26.294Z INFO  [ethereal_rust_sdk::ws_client] Websocket connected
-2025-12-04T15:19:26.295Z INFO  [ethereal_rust_sdk::ws_client] Subscribed to channel=OrderUpdate subaccount_id=11111111-2222-3333-4444-444444444444
-2025-12-04T15:19:41.089Z INFO  [order_updates] Order update - ID: 11111111-2222-3333-4444-555555555555, Product ID: dce327cc-4fbb-4d5d-9ede-1c1fca7ef4ba, Price: 92324, Side: SELL Quantity: "0.001"
 
 ```
 
@@ -377,7 +371,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     info!("Starting event loop...");
     loop {
-        ws_client.wait_for_connection().await;
         match ws_client.run_till_event().await {
             ConnectionState::Connected => {
                 info!("WebSocket connected");
@@ -449,6 +442,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Acknowledgements
 - [Ethereal](https://ethereal.trade) for providing the platform and API.
 - [Reqwest](https://docs.rs/reqwest/) for HTTP requests in Rust.
-- [Rust Socket.IO](https://docs.rs/rust_socketio/) for Socket.IO client functionality in Rust.
+- [YAWC](https://docs.rs/yawc/) for WebSocket communication in Rust.
 - [Serde](https://serde.rs/) for serialization and deserialization in Rust.
 - [Serde JSON](https://docs.rs/serde_json/) for JSON support in Rust.

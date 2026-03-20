@@ -9,6 +9,8 @@ from templates import (
     METHOD_TEMPLATE,
     SIGNABLE_MESSAGE_HEADER,
     SIGNABLE_MESSAGE_TEMPLATE,
+    SUBSCRIPTION_FUNCTION_TEMPLATE,
+    SUBSCRIPTIONS_TEMPLATE,
     TEST_API_TEMPLATE,
     TEST_METHOD_TEMPLATE_WITH_PARAMS,
     TEST_METHOD_TEMPLATE_WITHOUT_PARAMS,
@@ -16,12 +18,33 @@ from templates import (
     CONFIG_TEMPLATE,
     CONFIG_VALUES_TEMPLATE
 )
+from enum import Enum
 
 CRATE_ROOT = Path(__file__).parent.parent / "src"
 API_SOURCE_DIR = CRATE_ROOT/ "apis"
 ASYNC_CLIENT_PATH = CRATE_ROOT / "async_client"
 DATA_DIR = Path(__file__).parent.parent / "data"
 
+class SubscriptionType(Enum):
+    SYMBOL = "symbol"
+    SUBACCOUNT = "subaccountId"
+
+
+MSG_TO_SUB_TYPE_MAPPING = {
+    "L2BookMessage": SubscriptionType.SYMBOL,
+    "TickerMessage": SubscriptionType.SYMBOL,
+    "TradeFillMessage": SubscriptionType.SYMBOL,
+    "SubaccountLiquidationMessage": SubscriptionType.SUBACCOUNT,
+    "PositionUpdateMessage": SubscriptionType.SUBACCOUNT,
+    "OrderUpdateMessage": SubscriptionType.SUBACCOUNT,
+    "OrderFillMessage": SubscriptionType.SUBACCOUNT,
+    "TokenTransferMessage": SubscriptionType.SUBACCOUNT,
+}
+
+TYPE_TO_SUB_MESSAGE_MAPPING = {
+    SubscriptionType.SYMBOL: "ProductSubscriptionMessage",
+    SubscriptionType.SUBACCOUNT: "SubaccountSubscriptionMessage"
+}
 
 
 def gather_generated_files(generated_dir: Path):
@@ -309,6 +332,8 @@ def gather_signable_messages():
     signable_messages_file.write_text(SIGNABLE_MESSAGE_HEADER + "\n".join(generated_types))
     return fields
 
+
+
 def extract_channels():
     """
     Read the ws_messages.json and extract the channel enum.
@@ -324,19 +349,48 @@ def extract_channels():
         if "Message" not in msg_name:
             continue
         channel_name = msg_name.replace("Message", "")
-        channels.add(channel_name)
+        channels.add((channel_name, msg_name, MSG_TO_SUB_TYPE_MAPPING[msg_name]))
     data = CHANNEL_ENUM_TEMPLATE.substitute(
-        variants="\n".join([f"    {channel}, "
-                            for channel in sorted(channels)])
+        variants="\n".join([f"    {channel[0]}, "
+                            for channel in channels])
     )
     with open("src/channels.rs", "w") as f:
         f.write(data)
     return channels
+
+def build_subscriptions(channels):
+    """
+    Build the subscription methods for each channel.
+    """
+    # This function can be implemented to read the channels and generate subscription methods in the async client.
+    functions = []
+    subscription_message_imports = set()
+    for channel_name, msg_name, sub_type in channels:
+        func_name = to_snake_case(channel_name)
+        subscription_message_imports.add(msg_name)
+        templated_function = SUBSCRIPTION_FUNCTION_TEMPLATE.substitute(
+            func_name=func_name,
+            inputs=to_snake_case(sub_type.value) + "s",
+            result_msg=msg_name,
+            stream_name=channel_name,
+            input_type=to_snake_case(sub_type.value),
+            sub_message=TYPE_TO_SUB_MESSAGE_MAPPING[sub_type]
+        )
+        functions.append(templated_function)
+    file_data = SUBSCRIPTIONS_TEMPLATE.substitute(
+        subscription_message_imports=", ".join(sorted(subscription_message_imports)),
+        functions="\n".join(functions)
+    )
+    print("Generated subscription functions for channels:", ", ".join([channel[0] for channel in channels]))
+    file_path = CRATE_ROOT / "subscriptions.rs"
+    file_path.write_text(file_data)
+
 
 if __name__ == "__main__":
     generate_domain_config_files()
     generated_files = gather_generated_files(API_SOURCE_DIR)
     post_process_generated_files(generated_files)
     gather_signable_messages()
-    extract_channels()
+    channels = extract_channels()
+    build_subscriptions(channels)
     print("Post-processing completed.")

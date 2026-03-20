@@ -40,7 +40,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     info!("Starting event loop...");
     loop {
-        ws_client.wait_for_connection().await;
         match ws_client.run_till_event().await {
             ConnectionState::Connected => {
                 info!("WebSocket connected");

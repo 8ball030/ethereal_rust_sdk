@@ -169,7 +169,7 @@ impl WsClient {
                 }
             }
         }
-        println!("Subscription result: ok! Channel: {event:?}");
+        info!("Subscription result: ok! Channel: {event:?}");
         self.subscription_tasks.lock().await.push(handle);
         Ok(())
     }
