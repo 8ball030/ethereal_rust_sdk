@@ -925,7 +925,6 @@ dependencies = [
  "criterion",
  "dashmap",
  "ethers",
- "futures",
  "futures-util",
  "log",
  "reqwest 0.13.2",

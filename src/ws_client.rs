@@ -298,6 +298,7 @@ async fn connection_supervisor(
         match client {
             Ok(ws_stream) => {
                 info!("Connected to {url}");
+                connection_state_tx.send(ConnectionState::Connected).ok();
                 let result = run_single_connection(
                     ws_stream,
                     &mut cmd_rx,
@@ -310,10 +311,12 @@ async fn connection_supervisor(
 
                 if result.is_ok() {
                     info!("Connection exited normally for {url}");
+                    connection_state_tx.send(ConnectionState::Exited).ok();
                     break;
                 }
                 if let Err(e) = result {
                     error!("Connection error on {url}: {e}");
+                    connection_state_tx.send(ConnectionState::Disconnected).ok();
                 }
             }
             Err(e) => {
