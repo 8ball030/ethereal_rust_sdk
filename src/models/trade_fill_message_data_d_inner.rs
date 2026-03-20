@@ -22,9 +22,8 @@ pub struct TradeFillMessageDataDInner {
     /// Trade size.
     #[serde(rename = "sz")]
     pub sz: String,
-    /// Trade side.
     #[serde(rename = "sd")]
-    pub sd: Sd,
+    pub sd: models::OrderSide,
     /// Related subaccount identifiers.
     #[serde(rename = "sids")]
     pub sids: Vec<uuid::Uuid>,
@@ -35,7 +34,7 @@ impl TradeFillMessageDataDInner {
         id: uuid::Uuid,
         px: String,
         sz: String,
-        sd: Sd,
+        sd: models::OrderSide,
         sids: Vec<uuid::Uuid>,
     ) -> TradeFillMessageDataDInner {
         TradeFillMessageDataDInner {
@@ -45,19 +44,5 @@ impl TradeFillMessageDataDInner {
             sd,
             sids,
         }
-    }
-}
-/// Trade side.
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Sd {
-    #[serde(rename = "0")]
-    Variant0,
-    #[serde(rename = "1")]
-    Variant1,
-}
-
-impl Default for Sd {
-    fn default() -> Sd {
-        Self::Variant0
     }
 }
