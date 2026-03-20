@@ -21,31 +21,31 @@ pub struct TickerMessageData {
     pub t: i64,
     /// Best bid price.
     #[serde(rename = "bidPx", skip_serializing_if = "Option::is_none")]
-    pub bid_px: Option<String>,
+    pub bid_px: Option<rust_decimal::Decimal>,
     /// Best ask price.
     #[serde(rename = "askPx", skip_serializing_if = "Option::is_none")]
-    pub ask_px: Option<String>,
+    pub ask_px: Option<rust_decimal::Decimal>,
     /// Best bid quantity.
     #[serde(rename = "bidAmt", skip_serializing_if = "Option::is_none")]
-    pub bid_amt: Option<String>,
+    pub bid_amt: Option<rust_decimal::Decimal>,
     /// Best ask quantity.
     #[serde(rename = "askAmt", skip_serializing_if = "Option::is_none")]
-    pub ask_amt: Option<String>,
+    pub ask_amt: Option<rust_decimal::Decimal>,
     /// Mark price.
     #[serde(rename = "markPx", skip_serializing_if = "Option::is_none")]
-    pub mark_px: Option<String>,
+    pub mark_px: Option<rust_decimal::Decimal>,
     /// Mark price 24 hours ago.
     #[serde(rename = "markPx24h", skip_serializing_if = "Option::is_none")]
-    pub mark_px24h: Option<String>,
+    pub mark_px24h: Option<rust_decimal::Decimal>,
     /// Open interest.
     #[serde(rename = "oi", skip_serializing_if = "Option::is_none")]
-    pub oi: Option<String>,
+    pub oi: Option<rust_decimal::Decimal>,
     /// Funding rate for 1 hour.
     #[serde(rename = "fr1h", skip_serializing_if = "Option::is_none")]
-    pub fr1h: Option<String>,
+    pub fr1h: Option<rust_decimal::Decimal>,
     /// 24 hour volume.
     #[serde(rename = "vol24h", skip_serializing_if = "Option::is_none")]
-    pub vol24h: Option<String>,
+    pub vol24h: Option<rust_decimal::Decimal>,
 }
 
 impl TickerMessageData {

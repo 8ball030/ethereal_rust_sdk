@@ -18,14 +18,18 @@ pub struct SubaccountLiquidationMessageDataDInner {
     pub s: String,
     /// Price.
     #[serde(rename = "px")]
-    pub px: String,
+    pub px: rust_decimal::Decimal,
     /// Size.
     #[serde(rename = "sz")]
-    pub sz: String,
+    pub sz: rust_decimal::Decimal,
 }
 
 impl SubaccountLiquidationMessageDataDInner {
-    pub fn new(s: String, px: String, sz: String) -> SubaccountLiquidationMessageDataDInner {
+    pub fn new(
+        s: String,
+        px: rust_decimal::Decimal,
+        sz: rust_decimal::Decimal,
+    ) -> SubaccountLiquidationMessageDataDInner {
         SubaccountLiquidationMessageDataDInner { s, px, sz }
     }
 }

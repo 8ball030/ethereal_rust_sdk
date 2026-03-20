@@ -28,10 +28,12 @@ pub struct TokenTransferMessageData {
     pub typ: models::TransferDtoOrderType,
     #[serde(rename = "st")]
     pub st: models::TransferDtoOrderStatus,
+    /// Transfer amount as a decimal string.
     #[serde(rename = "amt")]
-    pub amt: String,
+    pub amt: rust_decimal::Decimal,
+    /// Transfer fee as a decimal string.
     #[serde(rename = "fee")]
-    pub fee: String,
+    pub fee: rust_decimal::Decimal,
     #[serde(rename = "iniBk", skip_serializing_if = "Option::is_none")]
     pub ini_bk: Option<String>,
     #[serde(rename = "finBk", skip_serializing_if = "Option::is_none")]
@@ -58,8 +60,8 @@ impl TokenTransferMessageData {
         t_addr: String,
         typ: models::TransferDtoOrderType,
         st: models::TransferDtoOrderStatus,
-        amt: String,
-        fee: String,
+        amt: rust_decimal::Decimal,
+        fee: rust_decimal::Decimal,
     ) -> TokenTransferMessageData {
         TokenTransferMessageData {
             t,

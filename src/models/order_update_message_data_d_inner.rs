@@ -13,26 +13,35 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct OrderUpdateMessageDataDInner {
+    /// Order identifier.
     #[serde(rename = "id")]
     pub id: uuid::Uuid,
+    /// Client order identifier provided at order placement. May be empty if not provided or for certain order update types.
     #[serde(rename = "cloid", skip_serializing_if = "Option::is_none")]
     pub cloid: Option<String>,
     #[serde(rename = "otyp")]
     pub otyp: models::OrderType,
+    /// Order quantity.
     #[serde(rename = "qty")]
-    pub qty: String,
+    pub qty: rust_decimal::Decimal,
+    /// Available quantity for this order.
     #[serde(rename = "aqty")]
-    pub aqty: String,
+    pub aqty: rust_decimal::Decimal,
+    /// Filled quantity for this order.
     #[serde(rename = "fill")]
-    pub fill: String,
+    pub fill: rust_decimal::Decimal,
+    /// Limit price for this order. May be empty for market orders.
     #[serde(rename = "px", skip_serializing_if = "Option::is_none")]
-    pub px: Option<String>,
+    pub px: Option<rust_decimal::Decimal>,
     #[serde(rename = "sd")]
     pub sd: models::OrderSide,
+    /// Market symbol for this order.
     #[serde(rename = "s")]
     pub s: String,
+    /// Subaccount identifier for this order.
     #[serde(rename = "sid")]
     pub sid: uuid::Uuid,
+    /// Sender address for this order, represented as a hex string. May be empty if not applicable for certain order update types.
     #[serde(rename = "sn")]
     pub sn: String,
     #[serde(rename = "st")]
@@ -49,8 +58,9 @@ pub struct OrderUpdateMessageDataDInner {
     pub et: i64,
     #[serde(rename = "po", skip_serializing_if = "Option::is_none")]
     pub po: Option<bool>,
+    /// Stop price for stop orders. May be empty for non-stop orders.
     #[serde(rename = "spx", skip_serializing_if = "Option::is_none")]
-    pub spx: Option<String>,
+    pub spx: Option<rust_decimal::Decimal>,
     #[serde(rename = "styp", skip_serializing_if = "Option::is_none")]
     pub styp: Option<i32>,
     #[serde(rename = "spxtyp", skip_serializing_if = "Option::is_none")]
@@ -67,9 +77,9 @@ impl OrderUpdateMessageDataDInner {
     pub fn new(
         id: uuid::Uuid,
         otyp: models::OrderType,
-        qty: String,
-        aqty: String,
-        fill: String,
+        qty: rust_decimal::Decimal,
+        aqty: rust_decimal::Decimal,
+        fill: rust_decimal::Decimal,
         sd: models::OrderSide,
         s: String,
         sid: uuid::Uuid,

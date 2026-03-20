@@ -18,10 +18,10 @@ pub struct TradeFillMessageDataDInner {
     pub id: uuid::Uuid,
     /// Trade price.
     #[serde(rename = "px")]
-    pub px: String,
+    pub px: rust_decimal::Decimal,
     /// Trade size.
     #[serde(rename = "sz")]
-    pub sz: String,
+    pub sz: rust_decimal::Decimal,
     #[serde(rename = "sd")]
     pub sd: models::OrderSide,
     /// Related subaccount identifiers.
@@ -32,8 +32,8 @@ pub struct TradeFillMessageDataDInner {
 impl TradeFillMessageDataDInner {
     pub fn new(
         id: uuid::Uuid,
-        px: String,
-        sz: String,
+        px: rust_decimal::Decimal,
+        sz: rust_decimal::Decimal,
         sd: models::OrderSide,
         sids: Vec<uuid::Uuid>,
     ) -> TradeFillMessageDataDInner {

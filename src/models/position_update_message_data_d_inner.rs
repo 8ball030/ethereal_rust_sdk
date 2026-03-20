@@ -13,26 +13,35 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PositionUpdateMessageDataDInner {
+    /// Position identifier.
     #[serde(rename = "id")]
     pub id: uuid::Uuid,
+    /// Subaccount identifier.
     #[serde(rename = "sid")]
     pub sid: uuid::Uuid,
+    /// Symbol.
     #[serde(rename = "s")]
     pub s: String,
     #[serde(rename = "sd")]
-    pub sd: Sd,
+    pub sd: models::PositionSideEnum,
+    /// Position size.
     #[serde(rename = "sz")]
-    pub sz: String,
+    pub sz: rust_decimal::Decimal,
+    /// Position cost.
     #[serde(rename = "cost")]
-    pub cost: String,
+    pub cost: rust_decimal::Decimal,
+    /// Realized PnL for this position update.
     #[serde(rename = "rpnl")]
-    pub rpnl: String,
+    pub rpnl: rust_decimal::Decimal,
+    /// Funding PnL for this position update.
     #[serde(rename = "fpnl")]
-    pub fpnl: String,
+    pub fpnl: rust_decimal::Decimal,
+    /// Fees for this position update.
     #[serde(rename = "fee")]
-    pub fee: String,
+    pub fee: rust_decimal::Decimal,
+    /// Liquidation price for this position.
     #[serde(rename = "lpx", skip_serializing_if = "Option::is_none")]
-    pub lpx: Option<String>,
+    pub lpx: Option<rust_decimal::Decimal>,
 }
 
 impl PositionUpdateMessageDataDInner {
@@ -40,12 +49,12 @@ impl PositionUpdateMessageDataDInner {
         id: uuid::Uuid,
         sid: uuid::Uuid,
         s: String,
-        sd: Sd,
-        sz: String,
-        cost: String,
-        rpnl: String,
-        fpnl: String,
-        fee: String,
+        sd: models::PositionSideEnum,
+        sz: rust_decimal::Decimal,
+        cost: rust_decimal::Decimal,
+        rpnl: rust_decimal::Decimal,
+        fpnl: rust_decimal::Decimal,
+        fee: rust_decimal::Decimal,
     ) -> PositionUpdateMessageDataDInner {
         PositionUpdateMessageDataDInner {
             id,
@@ -59,19 +68,5 @@ impl PositionUpdateMessageDataDInner {
             fee,
             lpx: None,
         }
-    }
-}
-///
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum Sd {
-    #[serde(rename = "0")]
-    Variant0,
-    #[serde(rename = "1")]
-    Variant1,
-}
-
-impl Default for Sd {
-    fn default() -> Sd {
-        Self::Variant0
     }
 }

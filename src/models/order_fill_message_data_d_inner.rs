@@ -13,16 +13,21 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct OrderFillMessageDataDInner {
+    /// Order fill identifier.
     #[serde(rename = "id")]
     pub id: uuid::Uuid,
+    /// Related order identifier for this fill.
     #[serde(rename = "oid")]
     pub oid: uuid::Uuid,
+    /// Client order identifier provided at order placement. May be empty if not provided or for certain order update types.
     #[serde(rename = "cloid")]
     pub cloid: String,
+    /// Price.
     #[serde(rename = "px")]
-    pub px: String,
+    pub px: rust_decimal::Decimal,
+    /// Size.
     #[serde(rename = "sz")]
-    pub sz: String,
+    pub sz: rust_decimal::Decimal,
     #[serde(rename = "typ")]
     pub typ: models::OrderType,
     #[serde(rename = "sd")]
@@ -33,8 +38,10 @@ pub struct OrderFillMessageDataDInner {
     pub sid: uuid::Uuid,
     #[serde(rename = "ro")]
     pub ro: bool,
+    /// Fees for this fill.
     #[serde(rename = "fee")]
-    pub fee: String,
+    pub fee: rust_decimal::Decimal,
+    /// Whether this fill was a maker or taker fill.
     #[serde(rename = "m")]
     pub m: bool,
     #[serde(rename = "t")]
@@ -46,14 +53,14 @@ impl OrderFillMessageDataDInner {
         id: uuid::Uuid,
         oid: uuid::Uuid,
         cloid: String,
-        px: String,
-        sz: String,
+        px: rust_decimal::Decimal,
+        sz: rust_decimal::Decimal,
         typ: models::OrderType,
         sd: models::OrderSide,
         s: String,
         sid: uuid::Uuid,
         ro: bool,
-        fee: String,
+        fee: rust_decimal::Decimal,
         m: bool,
         t: i64,
     ) -> OrderFillMessageDataDInner {

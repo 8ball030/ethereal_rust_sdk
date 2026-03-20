@@ -8,7 +8,9 @@
         "properties": {
           "e": {
             "type": "string",
-            "enum": ["L2Book"],
+            "enum": [
+              "L2Book"
+            ],
             "description": "Event type."
           },
           "t": {
@@ -42,7 +44,8 @@
                   "minItems": 2,
                   "maxItems": 2,
                   "items": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "decimal"
                   }
                 }
               },
@@ -55,24 +58,35 @@
                   "minItems": 2,
                   "maxItems": 2,
                   "items": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "decimal"
                   }
                 }
               }
             },
-            "required": ["s", "t", "a", "b"]
+            "required": [
+              "s",
+              "t",
+              "a",
+              "b"
+            ]
           }
         },
-        "required": ["e", "t", "data"]
+        "required": [
+          "e",
+          "t",
+          "data"
+        ]
       },
-
       "TickerMessage": {
         "type": "object",
         "description": "Server-to-client Ticker event message.",
         "properties": {
           "e": {
             "type": "string",
-            "enum": ["Ticker"],
+            "enum": [
+              "Ticker"
+            ],
             "description": "Event type."
           },
           "t": {
@@ -94,54 +108,71 @@
               },
               "bidPx": {
                 "type": "string",
-                "description": "Best bid price."
+                "description": "Best bid price.",
+                "format": "decimal"
               },
               "askPx": {
                 "type": "string",
-                "description": "Best ask price."
+                "description": "Best ask price.",
+                "format": "decimal"
               },
               "bidAmt": {
                 "type": "string",
-                "description": "Best bid quantity."
+                "description": "Best bid quantity.",
+                "format": "decimal"
               },
               "askAmt": {
                 "type": "string",
-                "description": "Best ask quantity."
+                "description": "Best ask quantity.",
+                "format": "decimal"
               },
               "markPx": {
                 "type": "string",
-                "description": "Mark price."
+                "description": "Mark price.",
+                "format": "decimal"
               },
               "markPx24h": {
                 "type": "string",
-                "description": "Mark price 24 hours ago."
+                "description": "Mark price 24 hours ago.",
+                "format": "decimal"
               },
               "oi": {
                 "type": "string",
-                "description": "Open interest."
+                "description": "Open interest.",
+                "format": "decimal"
               },
               "fr1h": {
                 "type": "string",
-                "description": "Funding rate for 1 hour."
+                "description": "Funding rate for 1 hour.",
+                "format": "decimal"
               },
               "vol24h": {
                 "type": "string",
-                "description": "24 hour volume."
+                "description": "24 hour volume.",
+                "format": "decimal"
               }
             },
-            "required": ["s", "t"]
+            "required": [
+              "s",
+              "t"
+            ]
           }
         },
-        "required": ["e", "t", "data"]
+        "required": [
+          "e",
+          "t",
+          "data"
+        ]
       },
-
       "TradeFillMessage": {
         "type": "object",
         "description": "Server-to-client TradeFill event message containing recent trades for a symbol.",
         "properties": {
           "e": {
             "type": "string",
-            "enum": ["TradeFill"],
+            "enum": [
+              "TradeFill"
+            ],
             "description": "Event type."
           },
           "t": {
@@ -174,11 +205,13 @@
                     },
                     "px": {
                       "type": "string",
-                      "description": "Trade price."
+                      "description": "Trade price.",
+                      "format": "decimal"
                     },
                     "sz": {
                       "type": "string",
-                      "description": "Trade size."
+                      "description": "Trade size.",
+                      "format": "decimal"
                     },
                     "sd": {
                       "$ref": "./openapi.json#/components/schemas/OrderSide"
@@ -192,23 +225,38 @@
                       }
                     }
                   },
-                  "required": ["id", "px", "sz", "sd", "sids"]
+                  "required": [
+                    "id",
+                    "px",
+                    "sz",
+                    "sd",
+                    "sids"
+                  ]
                 }
               }
             },
-            "required": ["s", "t", "d"]
+            "required": [
+              "s",
+              "t",
+              "d"
+            ]
           }
         },
-        "required": ["e", "t", "data"]
+        "required": [
+          "e",
+          "t",
+          "data"
+        ]
       },
-
       "SubaccountLiquidationMessage": {
         "type": "object",
         "description": "Server-to-client SubaccountLiquidation event message.",
         "properties": {
           "e": {
             "type": "string",
-            "enum": ["SubaccountLiquidation"],
+            "enum": [
+              "SubaccountLiquidation"
+            ],
             "description": "Event type."
           },
           "t": {
@@ -241,30 +289,45 @@
                     },
                     "px": {
                       "type": "string",
-                      "description": "Price."
+                      "description": "Price.",
+                      "format": "decimal"
                     },
                     "sz": {
                       "type": "string",
-                      "description": "Size."
+                      "description": "Size.",
+                      "format": "decimal"
                     }
                   },
-                  "required": ["s", "px", "sz"]
+                  "required": [
+                    "s",
+                    "px",
+                    "sz"
+                  ]
                 }
               }
             },
-            "required": ["sid", "t", "d"]
+            "required": [
+              "sid",
+              "t",
+              "d"
+            ]
           }
         },
-        "required": ["e", "t", "data"]
+        "required": [
+          "e",
+          "t",
+          "data"
+        ]
       },
-
       "PositionUpdateMessage": {
         "type": "object",
         "description": "Server-to-client PositionUpdate event message.",
         "properties": {
           "e": {
             "type": "string",
-            "enum": ["PositionUpdate"]
+            "enum": [
+              "PositionUpdate"
+            ]
           },
           "t": {
             "type": "integer",
@@ -285,55 +348,87 @@
                   "properties": {
                     "id": {
                       "type": "string",
-                      "format": "uuid"
+                      "format": "uuid",
+                      "description": "Position identifier."
                     },
                     "sid": {
                       "type": "string",
-                      "format": "uuid"
+                      "format": "uuid",
+                      "description": "Subaccount identifier."
                     },
                     "s": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Symbol."
                     },
                     "sd": {
-                      "type": "integer",
-                      "enum": [0, 1]
+                      "$ref": "./openapi.json#/components/schemas/PositionSideEnum"
                     },
                     "sz": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Position size.",
+                      "format": "decimal"
                     },
                     "cost": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Position cost.",
+                      "format": "decimal"
                     },
                     "rpnl": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Realized PnL for this position update.",
+                      "format": "decimal"
                     },
                     "fpnl": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Funding PnL for this position update.",
+                      "format": "decimal"
                     },
                     "fee": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Fees for this position update.",
+                      "format": "decimal"
                     },
                     "lpx": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Liquidation price for this position.",
+                      "format": "decimal"
                     }
                   },
-                  "required": ["id", "sid", "s", "sd", "sz", "cost", "rpnl", "fpnl", "fee"]
+                  "required": [
+                    "id",
+                    "sid",
+                    "s",
+                    "sd",
+                    "sz",
+                    "cost",
+                    "rpnl",
+                    "fpnl",
+                    "fee"
+                  ]
                 }
               }
             },
-            "required": ["t", "d"]
+            "required": [
+              "t",
+              "d"
+            ]
           }
         },
-        "required": ["e", "t", "data"]
+        "required": [
+          "e",
+          "t",
+          "data"
+        ]
       },
-
       "OrderUpdateMessage": {
         "type": "object",
         "description": "Server-to-client OrderUpdate event message.",
         "properties": {
           "e": {
             "type": "string",
-            "enum": ["OrderUpdate"]
+            "enum": [
+              "OrderUpdate"
+            ]
           },
           "t": {
             "type": "integer",
@@ -353,38 +448,51 @@
                   "properties": {
                     "id": {
                       "type": "string",
-                      "format": "uuid"
+                      "format": "uuid",
+                      "description": "Order identifier."
                     },
                     "cloid": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Client order identifier provided at order placement. May be empty if not provided or for certain order update types."
                     },
                     "otyp": {
                       "$ref": "./openapi.json#/components/schemas/OrderType"
                     },
                     "qty": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Order quantity.",
+                      "format": "decimal"
                     },
                     "aqty": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Available quantity for this order.",
+                      "format": "decimal"
                     },
                     "fill": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Filled quantity for this order.",
+                      "format": "decimal"
                     },
                     "px": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Limit price for this order. May be empty for market orders.",
+                      "format": "decimal"
                     },
                     "sd": {
                       "$ref": "./openapi.json#/components/schemas/OrderSide"
                     },
                     "s": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Market symbol for this order."
                     },
                     "sid": {
                       "type": "string",
-                      "format": "uuid"
+                      "format": "uuid",
+                      "description": "Subaccount identifier for this order."
                     },
                     "sn": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Sender address for this order, represented as a hex string. May be empty if not applicable for certain order update types."
                     },
                     "st": {
                       "$ref": "./openapi.json#/components/schemas/OrderStatus"
@@ -410,7 +518,9 @@
                       "type": "boolean"
                     },
                     "spx": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Stop price for stop orders. May be empty for non-stop orders.",
+                      "format": "decimal"
                     },
                     "styp": {
                       "type": "integer"
@@ -449,19 +559,27 @@
                 }
               }
             },
-            "required": ["t", "d"]
+            "required": [
+              "t",
+              "d"
+            ]
           }
         },
-        "required": ["e", "t", "data"]
+        "required": [
+          "e",
+          "t",
+          "data"
+        ]
       },
-
       "OrderFillMessage": {
         "type": "object",
         "description": "Server-to-client OrderFill event message.",
         "properties": {
           "e": {
             "type": "string",
-            "enum": ["OrderFill"]
+            "enum": [
+              "OrderFill"
+            ]
           },
           "t": {
             "type": "integer",
@@ -481,20 +599,27 @@
                   "properties": {
                     "id": {
                       "type": "string",
-                      "format": "uuid"
+                      "format": "uuid",
+                      "description": "Order fill identifier."
                     },
                     "oid": {
                       "type": "string",
-                      "format": "uuid"
+                      "format": "uuid",
+                      "description": "Related order identifier for this fill."
                     },
                     "cloid": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Client order identifier provided at order placement. May be empty if not provided or for certain order update types."
                     },
                     "px": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Price.",
+                      "format": "decimal"
                     },
                     "sz": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Size.",
+                      "format": "decimal"
                     },
                     "typ": {
                       "$ref": "./openapi.json#/components/schemas/OrderType"
@@ -513,24 +638,48 @@
                       "type": "boolean"
                     },
                     "fee": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Fees for this fill.",
+                      "format": "decimal"
                     },
                     "m": {
-                      "type": "boolean"
+                      "type": "boolean",
+                      "description": "Whether this fill was a maker or taker fill."
                     },
                     "t": {
                       "type": "integer",
                       "format": "int64"
                     }
                   },
-                  "required": ["id", "oid", "cloid", "px", "sz", "typ", "sd", "s", "sid", "ro", "fee", "m", "t"]
+                  "required": [
+                    "id",
+                    "oid",
+                    "cloid",
+                    "px",
+                    "sz",
+                    "typ",
+                    "sd",
+                    "s",
+                    "sid",
+                    "ro",
+                    "fee",
+                    "m",
+                    "t"
+                  ]
                 }
               }
             },
-            "required": ["t", "d"]
+            "required": [
+              "t",
+              "d"
+            ]
           }
         },
-        "required": ["e", "t", "data"]
+        "required": [
+          "e",
+          "t",
+          "data"
+        ]
       },
       "TokenTransferMessage": {
         "type": "object",
@@ -538,7 +687,9 @@
         "properties": {
           "e": {
             "type": "string",
-            "enum": ["TokenTransfer"]
+            "enum": [
+              "TokenTransfer"
+            ]
           },
           "t": {
             "type": "integer",
@@ -573,10 +724,14 @@
                 "$ref": "./openapi.json#/components/schemas/TransferDtoOrderStatus"
               },
               "amt": {
-                "type": "string"
+                "type": "string",
+                "description": "Transfer amount as a decimal string.",
+                "format": "decimal"
               },
               "fee": {
-                "type": "string"
+                "type": "string",
+                "description": "Transfer fee as a decimal string.",
+                "format": "decimal"
               },
               "iniBk": {
                 "type": "string"
@@ -601,10 +756,24 @@
                 "format": "int64"
               }
             },
-            "required": ["t", "id", "sid", "tName", "tAddr", "typ", "st", "amt", "fee"]
+            "required": [
+              "t",
+              "id",
+              "sid",
+              "tName",
+              "tAddr",
+              "typ",
+              "st",
+              "amt",
+              "fee"
+            ]
           }
         },
-        "required": ["e", "t", "data"]
+        "required": [
+          "e",
+          "t",
+          "data"
+        ]
       }
     }
   }

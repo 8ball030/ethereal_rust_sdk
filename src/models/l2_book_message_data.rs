@@ -24,14 +24,19 @@ pub struct L2BookMessageData {
     pub pt: Option<i64>,
     /// Ask levels as [price, quantity] string tuples.
     #[serde(rename = "a")]
-    pub a: Vec<Vec<String>>,
+    pub a: Vec<Vec<rust_decimal::Decimal>>,
     /// Bid levels as [price, quantity] string tuples.
     #[serde(rename = "b")]
-    pub b: Vec<Vec<String>>,
+    pub b: Vec<Vec<rust_decimal::Decimal>>,
 }
 
 impl L2BookMessageData {
-    pub fn new(s: String, t: i64, a: Vec<Vec<String>>, b: Vec<Vec<String>>) -> L2BookMessageData {
+    pub fn new(
+        s: String,
+        t: i64,
+        a: Vec<Vec<rust_decimal::Decimal>>,
+        b: Vec<Vec<rust_decimal::Decimal>>,
+    ) -> L2BookMessageData {
         L2BookMessageData {
             s,
             t,
