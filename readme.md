@@ -227,6 +227,7 @@ async fn main() {
         .unwrap();
 
     info!("Starting event loop...");
+    ws_client.wait_for_connection().await;
     loop {
         match ws_client.run_till_event().await {
             ConnectionState::Connected => {
@@ -297,6 +298,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .await?;
 
     info!("Starting event loop...");
+    ws_client.wait_for_connection().await;
     loop {
         match ws_client.run_till_event().await {
             ConnectionState::Connected => {
@@ -370,6 +372,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .await?;
 
     info!("Starting event loop...");
+    ws_client.wait_for_connection().await;
     loop {
         match ws_client.run_till_event().await {
             ConnectionState::Connected => {
