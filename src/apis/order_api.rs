@@ -39,7 +39,7 @@ pub struct OrderControllerListBySubaccountIdParams {
     /// Direction to paginate through objects
     pub order: Option<String>,
     /// Limit the number of objects to return
-    pub limit: Option<f64>,
+    pub limit: Option<i32>,
     /// Pointer to the current object in pagination dataset
     pub cursor: Option<String>,
     /// Client-generated order id to query for (either a valid UUID or alphanumeric string up to 32 characters)
@@ -47,9 +47,9 @@ pub struct OrderControllerListBySubaccountIdParams {
     /// Array of product ids to filter for
     pub product_ids: Option<Vec<uuid::Uuid>>,
     /// Filter by orders created after timestamp exclusive (ms since Unix epoch)
-    pub created_after: Option<f64>,
+    pub created_after: Option<i32>,
     /// Filter by orders created before timestamp inclusive (ms since Unix epoch)
-    pub created_before: Option<f64>,
+    pub created_before: Option<i32>,
     /// Side of the order to filter for
     pub side: Option<f64>,
     /// Whether the order is a position close order
@@ -72,15 +72,15 @@ pub struct OrderControllerListFillsBySubaccountIdParams {
     /// Direction to paginate through objects
     pub order: Option<String>,
     /// Limit the number of objects to return
-    pub limit: Option<f64>,
+    pub limit: Option<i32>,
     /// Pointer to the current object in pagination dataset
     pub cursor: Option<String>,
     /// Array of product ids to filter for
     pub product_ids: Option<Vec<uuid::Uuid>>,
     /// Filter by order fills created before timestamp exclusive (ms since Unix epoch)
-    pub created_after: Option<f64>,
+    pub created_after: Option<i32>,
     /// Filter by order fills created before timestamp inclusive (ms since Unix epoch)
-    pub created_before: Option<f64>,
+    pub created_before: Option<i32>,
     /// Side of the maker as either BUY (0) or SELL (1)
     pub side: Option<f64>,
     /// Order by field
@@ -98,7 +98,7 @@ pub struct OrderControllerListGroupByOrderIdParams {
     /// Direction to paginate through objects
     pub order: Option<String>,
     /// Limit the number of objects to return
-    pub limit: Option<f64>,
+    pub limit: Option<i32>,
     /// Pointer to the current object in pagination dataset
     pub cursor: Option<String>,
     /// Order by field
@@ -113,7 +113,7 @@ pub struct OrderControllerListTradesParams {
     /// Direction to paginate through objects
     pub order: Option<String>,
     /// Limit the number of objects to return
-    pub limit: Option<f64>,
+    pub limit: Option<i32>,
     /// Pointer to the current object in pagination dataset
     pub cursor: Option<String>,
     /// Order by fields

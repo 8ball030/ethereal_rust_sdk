@@ -45,10 +45,10 @@ pub struct OrderDto {
     pub close: bool,
     /// Order last updated timestamp (ms since Unix Epoch)
     #[serde(rename = "updatedAt")]
-    pub updated_at: f64,
+    pub updated_at: i64,
     /// Order creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
-    pub created_at: f64,
+    pub created_at: i64,
     /// Account or linked signer address that placed this order
     #[serde(rename = "sender")]
     pub sender: String,
@@ -69,7 +69,7 @@ pub struct OrderDto {
     pub time_in_force: Option<models::TimeInForce>,
     /// Order expiry timestamp (seconds since Unix Epoch)
     #[serde(rename = "expiresAt")]
-    pub expires_at: f64,
+    pub expires_at: i64,
     /// Only add order if it does not immediately fill (limit only)
     #[serde(rename = "postOnly", skip_serializing_if = "Option::is_none")]
     pub post_only: Option<bool>,
@@ -97,13 +97,13 @@ impl OrderDto {
         status: models::OrderStatus,
         reduce_only: bool,
         close: bool,
-        updated_at: f64,
-        created_at: f64,
+        updated_at: i64,
+        created_at: i64,
         sender: String,
         price: String,
         filled: String,
         stop_price: String,
-        expires_at: f64,
+        expires_at: i64,
         triggered: models::TriggeredEnum,
     ) -> OrderDto {
         OrderDto {

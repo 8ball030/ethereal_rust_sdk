@@ -19,6 +19,9 @@ pub struct TotalPointsDto {
     /// Total referral points distributed (precision: 9)
     #[serde(rename = "referralPoints")]
     pub referral_points: String,
+    /// Last update timestamp of the aggregated points periods (ms since Unix Epoch)
+    #[serde(rename = "updatedAt", skip_serializing_if = "Option::is_none")]
+    pub updated_at: Option<i64>,
 }
 
 impl TotalPointsDto {
@@ -26,6 +29,7 @@ impl TotalPointsDto {
         TotalPointsDto {
             total_points,
             referral_points,
+            updated_at: None,
         }
     }
 }

@@ -221,3 +221,29 @@ impl Eip712 for RefreshLinkedSigner {
         Ok(ethers::utils::keccak256(&encoded))
     }
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ExtendLinkedSigner {
+    pub sender: Address,
+    pub nonce: u64,
+    pub signed_at: u64,
+}
+impl Eip712 for ExtendLinkedSigner {
+    fn type_hash() -> Result<[u8; 32], Eip712Error> {
+        Ok(ethers::utils::keccak256(
+            "ExtendLinkedSigner(address sender,uint64 nonce,uint64 signedAt)",
+        ))
+    }
+
+    fn struct_hash(&self) -> Result<[u8; 32], Eip712Error> {
+        let mut encoded = Vec::new();
+        encoded.extend_from_slice(&Self::type_hash()?);
+        encoded.extend_from_slice(&ethers::abi::encode(&[
+            ethers::abi::Token::Address(self.sender),
+            ethers::abi::Token::Uint(U256::from(self.nonce)),
+            ethers::abi::Token::Uint(U256::from(self.signed_at)),
+        ]));
+
+        Ok(ethers::utils::keccak256(&encoded))
+    }
+}

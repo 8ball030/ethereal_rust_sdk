@@ -132,3 +132,60 @@ $fields_encoding
     }
 }
 """)
+
+CHANNEL_ENUM_TEMPLATE = Template("""
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum Channels {
+$variants
+}
+impl Channels {
+    pub fn as_string(&self) -> String {
+        serde_json::to_string(self).unwrap().replace('"', "")
+    }
+}
+""")
+
+SUBSCRIPTIONS_TEMPLATE = Template("""
+use std::future::Future;
+
+use bytes::Bytes;
+
+use crate::{
+    channels::Channels,
+    models::{$subscription_message_imports},
+    types::{ProductSubscriptionMessage, SubaccountSubscriptionMessage},
+    ws_client::{ClientError, WsClient},
+};
+
+pub struct Subscriptions<'a> {
+    pub client: &'a WsClient,
+}
+impl<'a> Subscriptions<'a> {
+$functions
+}
+""")
+
+SUBSCRIPTION_FUNCTION_TEMPLATE = Template("""
+    pub async fn $func_name<F, Fut>(&self, $inputs: Vec<String>, callback: F) -> Result<(), ClientError>
+    where
+        F: FnMut($result_msg) -> Fut + Send + 'static,
+        Fut: Future<Output = ()> + Send + 'static,
+    {
+        let payloads = $inputs
+            .iter()
+            .map(|i| {
+                $sub_message {
+                    msg_type: Channels::$stream_name,
+                    $input_type: i.to_string(),
+                }
+                .into()
+            })
+            .collect::<Vec<Bytes>>();
+        self.client
+            .subscribe_channels(Channels::$stream_name, payloads, callback)
+            .await?;
+        Ok(())
+    }
+""")

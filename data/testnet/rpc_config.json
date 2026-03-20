@@ -12,6 +12,7 @@
     "RevokeLinkedSigner": "address sender,address signer,bytes32 subaccount,uint64 nonce,uint64 signedAt",
     "EIP712Auth": "address sender,uint8 intent,uint64 signedAt",
     "CancelOrder": "address sender,bytes32 subaccount,uint64 nonce",
-    "RefreshLinkedSigner": "address sender,address signer,uint64 nonce,uint64 signedAt"
+    "RefreshLinkedSigner": "address sender,address signer,uint64 nonce,uint64 signedAt",
+    "ExtendLinkedSigner": "address sender,uint64 nonce,uint64 signedAt"
   }
 }

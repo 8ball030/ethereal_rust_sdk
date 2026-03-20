@@ -1,10 +1,18 @@
-// Channels available for the Ethereal Streamer
-pub mod public_channels {
-    pub const BOOK_DEPTH: &str = "BookDepth";
-    pub const MARKET_PRICE: &str = "MarketPrice";
-    pub const ORDER_FILL: &str = "OrderFill";
-    pub const TRADE_FILL: &str = "TradeFill";
-    pub const ORDER_UPDATE: &str = "OrderUpdate";
-    pub const SUBACCOUNT_LIQUIDATION: &str = "SubaccountLiquidation";
-    pub const TOKEN_TRANSFER: &str = "TokenTransfer";
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum Channels {
+    PositionUpdate,
+    TokenTransfer,
+    L2Book,
+    OrderFill,
+    SubaccountLiquidation,
+    OrderUpdate,
+    TradeFill,
+    Ticker,
+}
+impl Channels {
+    pub fn as_string(&self) -> String {
+        serde_json::to_string(self).unwrap().replace('"', "")
+    }
 }

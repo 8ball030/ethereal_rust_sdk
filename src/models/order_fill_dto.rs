@@ -46,10 +46,10 @@ pub struct OrderFillDto {
     pub product_id: uuid::Uuid,
     /// Id of the subaccount associated to order fill
     #[serde(rename = "subaccountId")]
-    pub subaccount_id: String,
+    pub subaccount_id: uuid::Uuid,
     /// Fill creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
-    pub created_at: f64,
+    pub created_at: i64,
 }
 
 impl OrderFillDto {
@@ -64,8 +64,8 @@ impl OrderFillDto {
         fee_usd: String,
         is_maker: bool,
         product_id: uuid::Uuid,
-        subaccount_id: String,
-        created_at: f64,
+        subaccount_id: uuid::Uuid,
+        created_at: i64,
     ) -> OrderFillDto {
         OrderFillDto {
             id,

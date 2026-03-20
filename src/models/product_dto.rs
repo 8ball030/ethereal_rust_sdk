@@ -38,7 +38,7 @@ pub struct ProductDto {
     pub engine_type: models::EngineTypeEnum,
     /// The productId generated onchain after registering for the first time
     #[serde(rename = "onchainId")]
-    pub onchain_id: f64,
+    pub onchain_id: i64,
     #[serde(rename = "status")]
     pub status: models::ProductDtoOrderStatus,
     /// Block number this product was registered on
@@ -49,10 +49,10 @@ pub struct ProductDto {
     pub cumulative_funding_usd: String,
     /// Product creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
-    pub created_at: f64,
+    pub created_at: i64,
     /// Unix timestamp when funding was last updated
     #[serde(rename = "fundingUpdatedAt", skip_serializing_if = "Option::is_none")]
-    pub funding_updated_at: Option<f64>,
+    pub funding_updated_at: Option<i64>,
     /// The minimum order quantity in native units expressed as a decimal (precision: 9)
     #[serde(rename = "minQuantity")]
     pub min_quantity: String,
@@ -85,7 +85,7 @@ pub struct ProductDto {
     pub max_leverage: f64,
     /// Pyth price feed id
     #[serde(rename = "pythFeedId")]
-    pub pyth_feed_id: f64,
+    pub pyth_feed_id: i64,
     /// Last computed hourly funding rate expressed as a decimal (precision: 9)
     #[serde(rename = "fundingRate1h")]
     pub funding_rate1h: String,
@@ -104,6 +104,9 @@ pub struct ProductDto {
     /// Funding baseline APR expressed as a decimal (precision: 9)
     #[serde(rename = "fundingBaselineApr")]
     pub funding_baseline_apr: String,
+    /// Maximum funding APR expressed as a decimal, e.g. 2.0 = 200% (precision: 9)
+    #[serde(rename = "fundingMaxApr")]
+    pub funding_max_apr: String,
 }
 
 impl ProductDto {
@@ -116,11 +119,11 @@ impl ProductDto {
         base_token_name: String,
         quote_token_name: String,
         engine_type: models::EngineTypeEnum,
-        onchain_id: f64,
+        onchain_id: i64,
         status: models::ProductDtoOrderStatus,
         block_number: String,
         cumulative_funding_usd: String,
-        created_at: f64,
+        created_at: i64,
         min_quantity: String,
         lot_size: String,
         tick_size: String,
@@ -131,13 +134,14 @@ impl ProductDto {
         max_price: String,
         volume24h: String,
         max_leverage: f64,
-        pyth_feed_id: f64,
+        pyth_feed_id: i64,
         funding_rate1h: String,
         open_interest: String,
         max_open_interest_usd: String,
         max_position_notional_usd: String,
         funding_clamp_apr: String,
         funding_baseline_apr: String,
+        funding_max_apr: String,
     ) -> ProductDto {
         ProductDto {
             id,
@@ -171,6 +175,7 @@ impl ProductDto {
             max_position_notional_usd,
             funding_clamp_apr,
             funding_baseline_apr,
+            funding_max_apr,
         }
     }
 }

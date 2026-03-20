@@ -24,7 +24,7 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -76,7 +76,7 @@
             "in": "query",
             "description": "Filter by orders created after timestamp exclusive (ms since Unix epoch)",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -85,7 +85,7 @@
             "in": "query",
             "description": "Filter by orders created before timestamp inclusive (ms since Unix epoch)",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -93,7 +93,12 @@
             "required": false,
             "in": "query",
             "description": "Side of the order to filter for",
+            "x-enum-varnames": [
+              "BUY",
+              "SELL"
+            ],
             "schema": {
+              "example": 0,
               "type": "number",
               "enum": [
                 0,
@@ -116,6 +121,10 @@
             "in": "query",
             "description": "Array of StopTypes to filter by",
             "deprecated": true,
+            "x-enum-varnames": [
+              "GAIN",
+              "LOSS"
+            ],
             "schema": {
               "uniqueItems": true,
               "example": 0,
@@ -556,7 +565,7 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -599,7 +608,7 @@
             "in": "query",
             "description": "Filter by order fills created before timestamp exclusive (ms since Unix epoch)",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -608,7 +617,7 @@
             "in": "query",
             "description": "Filter by order fills created before timestamp inclusive (ms since Unix epoch)",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -770,7 +779,7 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -919,7 +928,7 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -1143,7 +1152,7 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -1212,7 +1221,7 @@
             "in": "query",
             "description": "Filter by order fills created before timestamp exclusive (ms since Unix epoch)",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -1221,7 +1230,7 @@
             "in": "query",
             "description": "Filter by order fills created before timestamp inclusive (ms since Unix epoch)",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -1557,7 +1566,7 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -1699,7 +1708,7 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -1829,7 +1838,7 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -1861,11 +1870,9 @@
             "name": "ticker",
             "required": false,
             "in": "query",
-            "description": "Filter products by ticker (alphanumeic and case insensitive)",
+            "description": "Filter products by ticker (alphanumeric and case insensitive)",
             "schema": {
-              "minLength": 1,
-              "maxLength": 16,
-              "pattern": "^[a-zA-Z0-9]+$",
+              "pattern": "^[a-zA-Z0-9]{1,16}$",
               "example": "ETHUSD",
               "type": "string"
             }
@@ -2268,7 +2275,7 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -2403,6 +2410,7 @@
     "/v1/funding/projected": {
       "get": {
         "deprecated": true,
+        "description": "Deprecated: Use GET /funding/projected-rate instead",
         "operationId": "FundingController_getProjectedFundingRate",
         "parameters": [
           {
@@ -2491,7 +2499,7 @@
             "description": "Internal Server Error"
           }
         },
-        "summary": "Returns the projected funding rate for a product. Deprecated, use `listProjectedRates` instead.",
+        "summary": "Returns the projected funding rate for a product",
         "tags": [
           "Funding"
         ]
@@ -2791,7 +2799,7 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -2921,7 +2929,7 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -3072,7 +3080,7 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -3564,7 +3572,102 @@
             "description": "Internal Server Error"
           }
         },
-        "summary": "Refreshes the expiry of a linked signer",
+        "summary": "Refreshes the expiry of a linked signer (signed by EOA, supports expired signers)",
+        "tags": [
+          "LinkedSigner"
+        ]
+      }
+    },
+    "/v1/linked-signer/extend": {
+      "post": {
+        "operationId": "LinkedSignerController_extendSigner",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExtendLinkedSignerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignerDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntityDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Extends the expiry of a linked signer (signed by the signer itself)",
         "tags": [
           "LinkedSigner"
         ]
@@ -3661,6 +3764,103 @@
           }
         },
         "summary": "Returns the current signer config for a subaccount",
+        "tags": [
+          "LinkedSigner"
+        ]
+      }
+    },
+    "/v1/linked-signer/address/{address}": {
+      "get": {
+        "operationId": "LinkedSignerController_getSignerByAddress",
+        "parameters": [
+          {
+            "name": "address",
+            "required": true,
+            "in": "path",
+            "description": "Address of linked signer",
+            "schema": {
+              "format": "hex",
+              "example": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignerDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntityDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Returns a signer by its address",
         "tags": [
           "LinkedSigner"
         ]
@@ -3783,7 +3983,7 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -3947,7 +4147,7 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -4097,7 +4297,7 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -4176,7 +4376,7 @@
             "in": "query",
             "description": "Filter by transfers created after timestamp exclusive (ms since Unix epoch)",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -4185,7 +4385,7 @@
             "in": "query",
             "description": "Filter by transfers created before timestamp inclusive (ms since Unix epoch)",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           }
         ],
@@ -4491,7 +4691,7 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -4781,7 +4981,7 @@
               "minimum": 0,
               "maximum": 10,
               "example": 1,
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -4793,7 +4993,7 @@
               "minimum": 1,
               "maximum": 256,
               "example": 1,
-              "type": "number"
+              "type": "integer"
             }
           }
         ],
@@ -4988,7 +5188,7 @@
               "minimum": 0,
               "maximum": 10,
               "example": 1,
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -5000,7 +5200,7 @@
               "minimum": 1,
               "maximum": 256,
               "example": 1,
-              "type": "number"
+              "type": "integer"
             }
           }
         ],
@@ -5348,7 +5548,7 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
@@ -5793,14 +5993,16 @@
             "description": "Order closes the entire current position"
           },
           "updatedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Order last updated timestamp (ms since Unix Epoch)"
+            "description": "Order last updated timestamp (ms since Unix Epoch)",
+            "format": "int64"
           },
           "createdAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Order creation timestamp (ms since Unix Epoch)"
+            "description": "Order creation timestamp (ms since Unix Epoch)",
+            "format": "int64"
           },
           "sender": {
             "type": "string",
@@ -5833,9 +6035,10 @@
             "$ref": "#/components/schemas/TimeInForce"
           },
           "expiresAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600,
-            "description": "Order expiry timestamp (seconds since Unix Epoch)"
+            "description": "Order expiry timestamp (seconds since Unix Epoch)",
+            "format": "int64"
           },
           "postOnly": {
             "type": "boolean",
@@ -6092,10 +6295,11 @@
             "$ref": "#/components/schemas/OrderSide"
           },
           "onchainId": {
-            "type": "number",
+            "type": "integer",
             "minimum": 1,
             "example": 1,
-            "description": "Onchain generated productId from prior product registration"
+            "description": "Onchain generated productId from prior product registration",
+            "format": "int64"
           },
           "engineType": {
             "$ref": "#/components/schemas/EngineTypeEnum"
@@ -6126,13 +6330,15 @@
             "$ref": "#/components/schemas/StopTypeEnum"
           },
           "signedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600,
-            "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
+            "description": "Message signedAt current timestamp (seconds since Unix Epoch)",
+            "format": "int64"
           },
           "expiresAt": {
-            "type": "number",
-            "description": "Order expiry timestamp (seconds since Unix Epoch), defaults to the maximum allowed value: signedAt + 6652800"
+            "type": "integer",
+            "description": "Order expiry timestamp (seconds since Unix Epoch), defaults to the maximum allowed value: signedAt + 6652800",
+            "format": "int64"
           },
           "groupId": {
             "type": "string",
@@ -6188,10 +6394,11 @@
             "$ref": "#/components/schemas/OrderSide"
           },
           "onchainId": {
-            "type": "number",
+            "type": "integer",
             "minimum": 1,
             "example": 1,
-            "description": "Onchain generated productId from prior product registration"
+            "description": "Onchain generated productId from prior product registration",
+            "format": "int64"
           },
           "engineType": {
             "$ref": "#/components/schemas/EngineTypeEnum"
@@ -6222,13 +6429,15 @@
             "$ref": "#/components/schemas/StopTypeEnum"
           },
           "signedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600,
-            "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
+            "description": "Message signedAt current timestamp (seconds since Unix Epoch)",
+            "format": "int64"
           },
           "expiresAt": {
-            "type": "number",
-            "description": "Order expiry timestamp (seconds since Unix Epoch), defaults to the maximum allowed value: signedAt + 6652800"
+            "type": "integer",
+            "description": "Order expiry timestamp (seconds since Unix Epoch), defaults to the maximum allowed value: signedAt + 6652800",
+            "format": "int64"
           },
           "groupId": {
             "type": "string",
@@ -6642,12 +6851,14 @@
           "subaccountId": {
             "type": "string",
             "example": "aa301f94-f5b7-4e54-8b16-01052fccb2f9",
-            "description": "Id of the subaccount associated to order fill"
+            "description": "Id of the subaccount associated to order fill",
+            "format": "uuid"
           },
           "createdAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Fill creation timestamp (ms since Unix Epoch)"
+            "description": "Fill creation timestamp (ms since Unix Epoch)",
+            "format": "int64"
           }
         },
         "required": [
@@ -6753,9 +6964,10 @@
             "format": "uuid"
           },
           "createdAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Trade creation timestamp (ms since Unix Epoch)"
+            "description": "Trade creation timestamp (ms since Unix Epoch)",
+            "format": "int64"
           }
         },
         "required": [
@@ -6836,6 +7048,11 @@
             "example": "-12.5",
             "description": "Realized PnL in USD expressed as a decimal (precision: 9)"
           },
+          "unrealizedPnl": {
+            "type": "string",
+            "example": "4.2",
+            "description": "Unrealized PnL in USD (negative if loss, positive if profit) approximated against the latest mark price, expressed as a decimal (precision: 9)"
+          },
           "totalIncreaseNotional": {
             "type": "string",
             "example": "1000.0",
@@ -6866,14 +7083,16 @@
             "format": "uuid"
           },
           "updatedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Position last updated timestamp (ms since Unix Epoch)"
+            "description": "Position last updated timestamp (ms since Unix Epoch)",
+            "format": "int64"
           },
           "createdAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Position creation timestamp (ms since Unix Epoch)"
+            "description": "Position creation timestamp (ms since Unix Epoch)",
+            "format": "int64"
           },
           "isLiquidated": {
             "type": "boolean",
@@ -6964,9 +7183,10 @@
             "description": "The charged fee in USD expressed as a decimal (precision: 9)"
           },
           "createdAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Fill creation timestamp (ms since Unix Epoch)"
+            "description": "Fill creation timestamp (ms since Unix Epoch)",
+            "format": "int64"
           }
         },
         "required": [
@@ -7054,9 +7274,10 @@
             "$ref": "#/components/schemas/PositionSideEnum"
           },
           "createdAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Position liquidation timestamp (ms since Unix Epoch)"
+            "description": "Position liquidation timestamp (ms since Unix Epoch)",
+            "format": "int64"
           }
         },
         "required": [
@@ -7141,9 +7362,10 @@
             "$ref": "#/components/schemas/EngineTypeEnum"
           },
           "onchainId": {
-            "type": "number",
+            "type": "integer",
             "example": 1,
-            "description": "The productId generated onchain after registering for the first time"
+            "description": "The productId generated onchain after registering for the first time",
+            "format": "int64"
           },
           "status": {
             "$ref": "#/components/schemas/ProductDtoOrderStatus"
@@ -7159,14 +7381,16 @@
             "description": "Cumulative funding in USD of the product (precision: 9)"
           },
           "createdAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Product creation timestamp (ms since Unix Epoch)"
+            "description": "Product creation timestamp (ms since Unix Epoch)",
+            "format": "int64"
           },
           "fundingUpdatedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1721724269,
-            "description": "Unix timestamp when funding was last updated"
+            "description": "Unix timestamp when funding was last updated",
+            "format": "int64"
           },
           "minQuantity": {
             "type": "string",
@@ -7219,9 +7443,10 @@
             "description": "Maximum leverage allowed for the product"
           },
           "pythFeedId": {
-            "type": "number",
+            "type": "integer",
             "example": 2,
-            "description": "Pyth price feed id"
+            "description": "Pyth price feed id",
+            "format": "int64"
           },
           "fundingRate1h": {
             "type": "string",
@@ -7252,6 +7477,11 @@
             "type": "string",
             "example": "0.15",
             "description": "Funding baseline APR expressed as a decimal (precision: 9)"
+          },
+          "fundingMaxApr": {
+            "type": "string",
+            "example": "2.0",
+            "description": "Maximum funding APR expressed as a decimal, e.g. 2.0 = 200% (precision: 9)"
           }
         },
         "required": [
@@ -7284,7 +7514,8 @@
           "maxOpenInterestUsd",
           "maxPositionNotionalUsd",
           "fundingClampApr",
-          "fundingBaselineApr"
+          "fundingBaselineApr",
+          "fundingMaxApr"
         ]
       },
       "PageOfProductDtos": {
@@ -7316,14 +7547,16 @@
         "type": "object",
         "properties": {
           "timestamp": {
-            "type": "number",
+            "type": "integer",
             "example": 1731664105881,
-            "description": "Most recent book update, created timestamp if never updated (ms since Unix Epoch)"
+            "description": "Most recent book update, created timestamp if never updated (ms since Unix Epoch)",
+            "format": "int64"
           },
           "previousTimestamp": {
-            "type": "number",
+            "type": "integer",
             "example": 1731664105881,
-            "description": "Previous book update, undefined if never updated (ms since Unix Epoch)"
+            "description": "Previous book update, undefined if never updated (ms since Unix Epoch)",
+            "format": "int64"
           },
           "productId": {
             "type": "string",
@@ -7430,9 +7663,10 @@
         "type": "object",
         "properties": {
           "createdAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Funding charge timestamp (ms since Unix Epoch)"
+            "description": "Funding charge timestamp (ms since Unix Epoch)",
+            "format": "int64"
           },
           "fundingRate1h": {
             "type": "string",
@@ -7652,8 +7886,9 @@
             "description": "Current major version of the signing domain"
           },
           "chainId": {
-            "type": "number",
-            "description": "The EIP-155 chain id"
+            "type": "integer",
+            "description": "The EIP-155 chain id",
+            "format": "int64"
           },
           "verifyingContract": {
             "type": "string",
@@ -7695,6 +7930,10 @@
             "type": "string",
             "description": "RefreshLinkedSigner signature type"
           },
+          "ExtendLinkedSigner": {
+            "type": "string",
+            "description": "ExtendLinkedSigner signature type"
+          },
           "EIP712Auth": {
             "type": "string",
             "description": "EIP712Auth signature type"
@@ -7707,6 +7946,7 @@
           "RevokeLinkedSigner",
           "CancelOrder",
           "RefreshLinkedSigner",
+          "ExtendLinkedSigner",
           "EIP712Auth"
         ]
       },
@@ -7767,9 +8007,10 @@
             "description": "Block number this subaccount was registered on"
           },
           "createdAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Subaccount creation timestamp (ms since Unix Epoch)"
+            "description": "Subaccount creation timestamp (ms since Unix Epoch)",
+            "format": "int64"
           }
         },
         "required": [
@@ -7850,9 +8091,10 @@
             "format": "decimal"
           },
           "updatedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Token balance last updated timestamp (ms since Unix Epoch)"
+            "description": "Token balance last updated timestamp (ms since Unix Epoch)",
+            "format": "int64"
           }
         },
         "required": [
@@ -7924,9 +8166,20 @@
             "description": "Message nonce timestamp (nanoseconds since Unix Epoch)"
           },
           "signedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600,
-            "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
+            "description": "Message signedAt current timestamp (seconds since Unix Epoch)",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32,
+            "example": "Delegated signer",
+            "description": "Optional name for the linked signer"
+          },
+          "category": {
+            "$ref": "#/components/schemas/CategoryEnum"
           }
         },
         "required": [
@@ -7984,9 +8237,10 @@
             "description": "Block number the signer has been linked on. Undefined means it has not be processed"
           },
           "linkedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019615000,
-            "description": "Onchain linkage timestamp (ms since Unix Epoch)"
+            "description": "Onchain linkage timestamp (ms since Unix Epoch)",
+            "format": "int64"
           },
           "revokedBlockNumber": {
             "type": "string",
@@ -7994,19 +8248,30 @@
             "description": "Block number the signer has been revoked on. Undefined means it has not be processed"
           },
           "revokedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Onchain revocation timestamp (ms since Unix Epoch)"
+            "description": "Onchain revocation timestamp (ms since Unix Epoch)",
+            "format": "int64"
           },
           "expiresAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1713229200000,
-            "description": "Signer expiry timestamp (ms since Unix Epoch)"
+            "description": "Signer expiry timestamp (ms since Unix Epoch)",
+            "format": "int64"
           },
           "createdAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Link signer submission timestamp (ms since Unix Epoch)"
+            "description": "Link signer submission timestamp (ms since Unix Epoch)",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "example": "Delegated signer",
+            "description": "Optional name for the linked signer"
+          },
+          "category": {
+            "$ref": "#/components/schemas/CategoryEnum"
           }
         },
         "required": [
@@ -8050,9 +8315,10 @@
             "description": "Message nonce timestamp (nanoseconds since Unix Epoch)"
           },
           "signedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600,
-            "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
+            "description": "Message signedAt current timestamp (seconds since Unix Epoch)",
+            "format": "int64"
           }
         },
         "required": [
@@ -8114,9 +8380,10 @@
             "description": "Message nonce timestamp (nanoseconds since Unix Epoch)"
           },
           "signedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600,
-            "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
+            "description": "Message signedAt current timestamp (seconds since Unix Epoch)",
+            "format": "int64"
           }
         },
         "required": [
@@ -8145,28 +8412,76 @@
           "data"
         ]
       },
+      "ExtendLinkedSignerDtoData": {
+        "type": "object",
+        "properties": {
+          "sender": {
+            "type": "string",
+            "example": "0x1Db3439a222C519ab44bb1144fC28167b4Fa6EE6",
+            "description": "Address of the linked signer extending itself",
+            "format": "hex"
+          },
+          "nonce": {
+            "type": "string",
+            "example": "2687929537462333",
+            "description": "Message nonce timestamp (nanoseconds since Unix Epoch)"
+          },
+          "signedAt": {
+            "type": "integer",
+            "example": 1712019600,
+            "description": "Message signedAt current timestamp (seconds since Unix Epoch)",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "sender",
+          "nonce",
+          "signedAt"
+        ]
+      },
+      "ExtendLinkedSignerDto": {
+        "type": "object",
+        "properties": {
+          "signature": {
+            "type": "string",
+            "description": "The signature from signTypedData(...) signed by the signer",
+            "format": "hex"
+          },
+          "data": {
+            "$ref": "#/components/schemas/ExtendLinkedSignerDtoData"
+          }
+        },
+        "required": [
+          "signature",
+          "data"
+        ]
+      },
       "AccountSignerQuotaDto": {
         "type": "object",
         "properties": {
           "maxLinkedSignersPeriodDays": {
-            "type": "number",
+            "type": "integer",
             "example": 7,
-            "description": "Ratelimit period in days for linking signers per account"
+            "description": "Ratelimit period in days for linking signers per account",
+            "format": "int64"
           },
           "maxLinkedSignersInPeriod": {
-            "type": "number",
+            "type": "integer",
             "example": 10,
-            "description": "Max number of signer that can be linked within ratelimit period"
+            "description": "Max number of signer that can be linked within ratelimit period",
+            "format": "int64"
           },
           "linkedSignersUsedInPeriod": {
-            "type": "number",
+            "type": "integer",
             "example": 2,
-            "description": "Number of signers linked within current ratelimit period"
+            "description": "Number of signers linked within current ratelimit period",
+            "format": "int64"
           },
           "linkedSignerRefreshHoursBeforeExpiry": {
-            "type": "number",
+            "type": "integer",
             "example": 48,
-            "description": "Hours before expiry when a signer can be refreshed"
+            "description": "Hours before expiry when a signer can be refreshed",
+            "format": "int64"
           }
         },
         "required": [
@@ -8241,9 +8556,10 @@
             "format": "hex"
           },
           "lzDestinationEid": {
-            "type": "number",
+            "type": "integer",
             "example": 30391,
-            "description": "LayerZero destination endpoint ID for the transfer (if withdraw)"
+            "description": "LayerZero destination endpoint ID for the transfer (if withdraw)",
+            "format": "int64"
           },
           "amount": {
             "type": "string",
@@ -8251,9 +8567,10 @@
             "description": "Amount of asset transferred expressed as a decimal"
           },
           "createdAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Withdraw creation timestamp (ms since Unix Epoch)"
+            "description": "Withdraw creation timestamp (ms since Unix Epoch)",
+            "format": "int64"
           },
           "withdrawDigest": {
             "type": "string",
@@ -8349,9 +8666,10 @@
             "format": "hex"
           },
           "lzDestinationEid": {
-            "type": "number",
+            "type": "integer",
             "example": 40422,
-            "description": "LayerZero destination endpoint ID for the transfer (if withdraw)"
+            "description": "LayerZero destination endpoint ID for the transfer (if withdraw)",
+            "format": "int64"
           },
           "fee": {
             "type": "string",
@@ -8359,9 +8677,10 @@
             "description": "Fee paid for the transfer in native units expressed as a decimal (precision: 9)"
           },
           "createdAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Transfer creation timestamp (ms since Unix Epoch)"
+            "description": "Transfer creation timestamp (ms since Unix Epoch)",
+            "format": "int64"
           },
           "initiatedTransactionHash": {
             "type": "string",
@@ -8455,9 +8774,10 @@
             "description": "Message nonce timestamp (nanoseconds since Unix Epoch)"
           },
           "signedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600,
-            "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
+            "description": "Message signedAt current timestamp (seconds since Unix Epoch)",
+            "format": "int64"
           }
         },
         "required": [
@@ -8587,9 +8907,10 @@
             "description": "Block number when the token was removed (undefined if not removed)"
           },
           "createdAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Token creation timestamp (ms since Unix Epoch)"
+            "description": "Token creation timestamp (ms since Unix Epoch)",
+            "format": "int64"
           }
         },
         "required": [
@@ -8673,14 +8994,16 @@
             "format": "hex"
           },
           "season": {
-            "type": "number",
+            "type": "integer",
             "example": 1,
-            "description": "Season number"
+            "description": "Season number",
+            "format": "int64"
           },
           "epoch": {
-            "type": "number",
+            "type": "integer",
             "example": 1,
-            "description": "Epoch number within the season"
+            "description": "Epoch number within the season",
+            "format": "int64"
           },
           "points": {
             "type": "string",
@@ -8693,24 +9016,32 @@
             "description": "Referral points earned in this period expressed as a decimal (precision: 9)"
           },
           "startedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Beginning of points period (ms since Unix Epoch)"
+            "description": "Beginning of points period (ms since Unix Epoch)",
+            "format": "int64"
           },
           "endedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "End of points period (ms since Unix Epoch)"
+            "description": "End of points period (ms since Unix Epoch)",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "description": "Optional name for the points period"
           },
           "createdAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Points period creation timestamp (ms since Unix Epoch)"
+            "description": "Points period creation timestamp (ms since Unix Epoch)",
+            "format": "int64"
           },
           "updatedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Points period last update timestamp (ms since Unix Epoch)"
+            "description": "Points period last update timestamp (ms since Unix Epoch)",
+            "format": "int64"
           }
         },
         "required": [
@@ -8757,9 +9088,10 @@
             "format": "hex"
           },
           "season": {
-            "type": "number",
+            "type": "integer",
             "example": 1,
-            "description": "Season number"
+            "description": "Season number",
+            "format": "int64"
           },
           "totalPoints": {
             "type": "string",
@@ -8782,27 +9114,31 @@
             "description": "Referral points earned in this season before most recent distribution expressed as a decimal (precision: 9)"
           },
           "rank": {
-            "type": "number",
+            "type": "integer",
             "example": 1,
-            "description": "Current rank in this season"
+            "description": "Current rank in this season",
+            "format": "int64"
           },
           "previousRank": {
-            "type": "number",
+            "type": "integer",
             "example": 2,
-            "description": "Rank before most recent distribution"
+            "description": "Rank before most recent distribution",
+            "format": "int64"
           },
           "tier": {
             "$ref": "#/components/schemas/TierEnum"
           },
           "createdAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Points season summary creation timestamp (ms since Unix Epoch)"
+            "description": "Points season summary creation timestamp (ms since Unix Epoch)",
+            "format": "int64"
           },
           "updatedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Points season summary last update timestamp (ms since Unix Epoch)"
+            "description": "Points season summary last update timestamp (ms since Unix Epoch)",
+            "format": "int64"
           }
         },
         "required": [
@@ -8847,6 +9183,12 @@
             "type": "string",
             "example": "123456.78",
             "description": "Total referral points distributed (precision: 9)"
+          },
+          "updatedAt": {
+            "type": "integer",
+            "example": 1712019600000,
+            "description": "Last update timestamp of the aggregated points periods (ms since Unix Epoch)",
+            "format": "int64"
           }
         },
         "required": [
@@ -8961,9 +9303,10 @@
             "$ref": "#/components/schemas/IntentEnum"
           },
           "signedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600,
-            "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
+            "description": "Message signedAt current timestamp (seconds since Unix Epoch)",
+            "format": "int64"
           },
           "code": {
             "type": "string",
@@ -9011,9 +9354,10 @@
             "$ref": "#/components/schemas/IntentEnum"
           },
           "signedAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600,
-            "description": "Message signedAt current timestamp (seconds since Unix Epoch)"
+            "description": "Message signedAt current timestamp (seconds since Unix Epoch)",
+            "format": "int64"
           },
           "subaccount": {
             "type": "string",
@@ -9057,6 +9401,90 @@
         },
         "required": [
           "isEnabled"
+        ]
+      },
+      "TickerWsDataDto": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string",
+            "example": "BTCUSD",
+            "description": "Symbol for the market (e.g. BTCUSD, ETHUSD)"
+          },
+          "t": {
+            "type": "number",
+            "example": 1733200000000,
+            "description": "BBO timestamp (ms since Unix Epoch)"
+          },
+          "bidPx": {
+            "type": "string",
+            "example": "104399.65",
+            "description": "Best bid price in USD expressed as a decimal (precision: 9)"
+          },
+          "askPx": {
+            "type": "string",
+            "example": "104400.1",
+            "description": "Best ask price in USD expressed as a decimal (precision: 9)"
+          },
+          "bidAmt": {
+            "type": "string",
+            "example": "10.5",
+            "description": "Best bid quantity expressed as a decimal (precision: 9)"
+          },
+          "askAmt": {
+            "type": "string",
+            "example": "15.75",
+            "description": "Best ask quantity expressed as a decimal (precision: 9)"
+          },
+          "markPx": {
+            "type": "string",
+            "example": "104399.7",
+            "description": "Oracle price in USD expressed as a decimal (precision: 9)"
+          },
+          "markPx24h": {
+            "type": "string",
+            "example": "101228.38",
+            "description": "Price of product 24hrs ago in USD expressed as a decimal (precision: 9)"
+          },
+          "vol24h": {
+            "type": "string",
+            "example": "1234.567",
+            "description": "24-hour trading volume in base token native units (precision: 9)"
+          },
+          "oi": {
+            "type": "string",
+            "example": "5678.123",
+            "description": "Open interest of both sides in native units (precision: 9)"
+          },
+          "fr1h": {
+            "type": "string",
+            "example": "0.00125",
+            "description": "Projected funding rate for end of current hour (precision: 9)"
+          }
+        },
+        "required": [
+          "s"
+        ]
+      },
+      "TickerWsDto": {
+        "type": "object",
+        "properties": {
+          "e": {
+            "$ref": "#/components/schemas/EEnum"
+          },
+          "t": {
+            "type": "number",
+            "example": 1733200000123,
+            "description": "Server timestamp (ms since Unix Epoch)"
+          },
+          "data": {
+            "$ref": "#/components/schemas/TickerWsDataDto"
+          }
+        },
+        "required": [
+          "e",
+          "t",
+          "data"
         ]
       },
       "OrderType": {
@@ -9466,6 +9894,14 @@
         ],
         "description": "Extracted enum for WsFixedRateLimitEndpointDtoOrderType"
       },
+      "CategoryEnum": {
+        "type": "string",
+        "enum": [
+          "TRADE_SESSION",
+          "API"
+        ],
+        "description": "Extracted enum for CategoryEnum"
+      },
       "SignerDtoOrderStatus": {
         "type": "string",
         "enum": [
@@ -9569,14 +10005,23 @@
         "enum": [
           0,
           1,
-          2
+          2,
+          3
         ],
         "description": "Extracted enum for IntentEnum",
         "x-enum-varnames": [
           "REFERRAL_ACTIVATION",
           "REFERRAL_CLAIM",
-          "REFERRAL_READ"
+          "REFERRAL_READ",
+          "POINTS_READ"
         ]
+      },
+      "EEnum": {
+        "type": "string",
+        "enum": [
+          "Ticker"
+        ],
+        "description": "Extracted enum for EEnum"
       }
     }
   }

@@ -34,7 +34,7 @@ pub struct PositionFillDto {
     pub fee_usd: String,
     /// Fill creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
-    pub created_at: f64,
+    pub created_at: i64,
 }
 
 impl PositionFillDto {
@@ -46,7 +46,7 @@ impl PositionFillDto {
         side: models::OrderSide,
         reduce_only: bool,
         fee_usd: String,
-        created_at: f64,
+        created_at: i64,
     ) -> PositionFillDto {
         PositionFillDto {
             price,

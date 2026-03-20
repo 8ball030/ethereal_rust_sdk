@@ -26,19 +26,24 @@ pub struct SignerDto {
     pub block_number: Option<String>,
     /// Onchain linkage timestamp (ms since Unix Epoch)
     #[serde(rename = "linkedAt", skip_serializing_if = "Option::is_none")]
-    pub linked_at: Option<f64>,
+    pub linked_at: Option<i64>,
     /// Block number the signer has been revoked on. Undefined means it has not be processed
     #[serde(rename = "revokedBlockNumber", skip_serializing_if = "Option::is_none")]
     pub revoked_block_number: Option<String>,
     /// Onchain revocation timestamp (ms since Unix Epoch)
     #[serde(rename = "revokedAt", skip_serializing_if = "Option::is_none")]
-    pub revoked_at: Option<f64>,
+    pub revoked_at: Option<i64>,
     /// Signer expiry timestamp (ms since Unix Epoch)
     #[serde(rename = "expiresAt")]
-    pub expires_at: f64,
+    pub expires_at: i64,
     /// Link signer submission timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
-    pub created_at: f64,
+    pub created_at: i64,
+    /// Optional name for the linked signer
+    #[serde(rename = "name", skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(rename = "category", skip_serializing_if = "Option::is_none")]
+    pub category: Option<models::CategoryEnum>,
 }
 
 impl SignerDto {
@@ -46,8 +51,8 @@ impl SignerDto {
         id: String,
         signer: String,
         status: models::SignerDtoOrderStatus,
-        expires_at: f64,
-        created_at: f64,
+        expires_at: i64,
+        created_at: i64,
     ) -> SignerDto {
         SignerDto {
             id,
@@ -59,6 +64,8 @@ impl SignerDto {
             revoked_at: None,
             expires_at,
             created_at,
+            name: None,
+            category: None,
         }
     }
 }

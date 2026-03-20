@@ -21,10 +21,10 @@ pub struct PointsPeriodDto {
     pub address: String,
     /// Season number
     #[serde(rename = "season")]
-    pub season: f64,
+    pub season: i64,
     /// Epoch number within the season
     #[serde(rename = "epoch")]
-    pub epoch: f64,
+    pub epoch: i64,
     /// Points earned in this period (excluding referral points) expressed as a decimal (precision: 9)
     #[serde(rename = "points")]
     pub points: String,
@@ -33,30 +33,33 @@ pub struct PointsPeriodDto {
     pub referral_points: String,
     /// Beginning of points period (ms since Unix Epoch)
     #[serde(rename = "startedAt")]
-    pub started_at: f64,
+    pub started_at: i64,
     /// End of points period (ms since Unix Epoch)
     #[serde(rename = "endedAt")]
-    pub ended_at: f64,
+    pub ended_at: i64,
+    /// Optional name for the points period
+    #[serde(rename = "name", skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Points period creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
-    pub created_at: f64,
+    pub created_at: i64,
     /// Points period last update timestamp (ms since Unix Epoch)
     #[serde(rename = "updatedAt")]
-    pub updated_at: f64,
+    pub updated_at: i64,
 }
 
 impl PointsPeriodDto {
     pub fn new(
         id: uuid::Uuid,
         address: String,
-        season: f64,
-        epoch: f64,
+        season: i64,
+        epoch: i64,
         points: String,
         referral_points: String,
-        started_at: f64,
-        ended_at: f64,
-        created_at: f64,
-        updated_at: f64,
+        started_at: i64,
+        ended_at: i64,
+        created_at: i64,
+        updated_at: i64,
     ) -> PointsPeriodDto {
         PointsPeriodDto {
             id,
@@ -67,6 +70,7 @@ impl PointsPeriodDto {
             referral_points,
             started_at,
             ended_at,
+            name: None,
             created_at,
             updated_at,
         }

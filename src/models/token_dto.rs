@@ -57,7 +57,7 @@ pub struct TokenDto {
     pub removed_block_number: Option<String>,
     /// Token creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
-    pub created_at: f64,
+    pub created_at: i64,
 }
 
 impl TokenDto {
@@ -72,7 +72,7 @@ impl TokenDto {
         withdraw_fee: String,
         min_deposit: String,
         added_block_number: String,
-        created_at: f64,
+        created_at: i64,
     ) -> TokenDto {
         TokenDto {
             id,

@@ -49,7 +49,7 @@ pub struct TradeDto {
     pub product_id: uuid::Uuid,
     /// Trade creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
-    pub created_at: f64,
+    pub created_at: i64,
 }
 
 impl TradeDto {
@@ -64,7 +64,7 @@ impl TradeDto {
         maker_side: models::MakerSideEnum,
         taker_side: models::TakerSideEnum,
         product_id: uuid::Uuid,
-        created_at: f64,
+        created_at: i64,
     ) -> TradeDto {
         TradeDto {
             id,

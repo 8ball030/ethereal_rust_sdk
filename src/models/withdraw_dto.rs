@@ -44,13 +44,13 @@ pub struct WithdrawDto {
     pub lz_destination_address: Option<String>,
     /// LayerZero destination endpoint ID for the transfer (if withdraw)
     #[serde(rename = "lzDestinationEid", skip_serializing_if = "Option::is_none")]
-    pub lz_destination_eid: Option<f64>,
+    pub lz_destination_eid: Option<i64>,
     /// Amount of asset transferred expressed as a decimal
     #[serde(rename = "amount")]
     pub amount: String,
     /// Withdraw creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
-    pub created_at: f64,
+    pub created_at: i64,
     /// Bytes32 hash of the withdraw data (with 0x prefix)
     #[serde(rename = "withdrawDigest")]
     pub withdraw_digest: String,
@@ -63,7 +63,7 @@ impl WithdrawDto {
         subaccount: String,
         token: String,
         amount: String,
-        created_at: f64,
+        created_at: i64,
         withdraw_digest: String,
     ) -> WithdrawDto {
         WithdrawDto {

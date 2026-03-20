@@ -40,7 +40,7 @@ pub struct PositionLiquidationDto {
     pub position_side: models::PositionSideEnum,
     /// Position liquidation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
-    pub created_at: f64,
+    pub created_at: i64,
 }
 
 impl PositionLiquidationDto {
@@ -53,7 +53,7 @@ impl PositionLiquidationDto {
         cause: models::CauseEnum,
         cost: String,
         position_side: models::PositionSideEnum,
-        created_at: f64,
+        created_at: i64,
     ) -> PositionLiquidationDto {
         PositionLiquidationDto {
             id,

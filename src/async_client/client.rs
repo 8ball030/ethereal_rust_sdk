@@ -268,7 +268,7 @@ impl HttpClient {
                 engine_type: product_info.engine_type,
                 reduce_only: Some(reduce_only),
                 post_only,
-                expires_at: expires_at.map(|ts| ts as f64),
+                expires_at,
                 time_in_force,
                 r#type,
                 ..Default::default()

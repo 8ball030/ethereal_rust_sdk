@@ -12,7 +12,7 @@ async fn test_simple_order() {
     println!("Creating order...");
 
     let ticker = "BTC-USD";
-    let quantity = dec!(0.00010);
+    let quantity = dec!(0.0010);
     let price = dec!(40000.0);
     let side = OrderSide::BUY;
     let r#type = OrderType::Limit;

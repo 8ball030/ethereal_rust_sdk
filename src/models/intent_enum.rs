@@ -22,6 +22,7 @@ pub enum IntentEnum {
     REFERRAL_ACTIVATION = 0,
     REFERRAL_CLAIM = 1,
     REFERRAL_READ = 2,
+    POINTS_READ = 3,
 }
 
 impl std::fmt::Display for IntentEnum {
@@ -33,6 +34,7 @@ impl std::fmt::Display for IntentEnum {
                 Self::REFERRAL_ACTIVATION => "0",
                 Self::REFERRAL_CLAIM => "1",
                 Self::REFERRAL_READ => "2",
+                Self::POINTS_READ => "3",
             }
         )
     }

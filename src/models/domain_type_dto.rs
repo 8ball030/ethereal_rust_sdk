@@ -21,7 +21,7 @@ pub struct DomainTypeDto {
     pub version: String,
     /// The EIP-155 chain id
     #[serde(rename = "chainId")]
-    pub chain_id: f64,
+    pub chain_id: i64,
     /// Address of the contract that will verify the signature
     #[serde(rename = "verifyingContract")]
     pub verifying_contract: String,
@@ -31,7 +31,7 @@ impl DomainTypeDto {
     pub fn new(
         name: String,
         version: String,
-        chain_id: f64,
+        chain_id: i64,
         verifying_contract: String,
     ) -> DomainTypeDto {
         DomainTypeDto {

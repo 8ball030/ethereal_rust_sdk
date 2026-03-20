@@ -48,7 +48,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     }
     // adding a new linked signer is as so;
 
-    let new_signer_pk = "43718d12917ba14f08f2d4a424f8406b0ba20adc4f3a15bcff0d593c57f55dc5";
+    let new_signer_pk = "43718d12917ba14f08f2d4a424f8406b0ba20adc4f3a15bcff0d593c57f55dc6";
     let wallet = new_signer_pk.parse::<LocalWallet>().unwrap();
     let new_signer = format!("{:?}", wallet.address());
     let ctx = SigningContext::new(&http_client.wallet, subaccount_id);
@@ -70,6 +70,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
         LinkSignerDtoData {
             subaccount_id: subaccount_id.id,
             signer: new_signer.to_string(),
+            name: Some("My Linked Signer".to_string()),
+            category: None
         }
     );
     let params = LinkedSignerControllerLinkSignerParams {

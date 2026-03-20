@@ -1,33 +1,26 @@
 mod common;
-use ethereal_rust_sdk::ws_client::run_forever;
+
+use ethereal_rust_sdk::models::TradeFillMessage;
 use log::info;
 
-use ethereal_rust_sdk::apis::product_api::ProductControllerListParams;
-use ethereal_rust_sdk::models::TradeStreamMessage;
-
-async fn trade_fill_callback(trade: TradeStreamMessage) {
-    for fill in trade.data {
-        info!(
-            "Trade Fill - Product ID: {:?}, Price: {:?}, Quantity: {:?}",
-            trade.product_id, fill.price, fill.filled
-        );
-    }
+async fn trade_fill_callback(msg: TradeFillMessage) {
+    info!("Received trade fill message: {:?}", msg);
 }
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    simple_logger::init_with_level(log::Level::Info).unwrap();
+async fn main() {
+    // Initialize logging
+    simple_logger::init_with_level(log::Level::Info).expect("log");
+    let (http_client, ws_client) = common::create_test_clients().await.unwrap();
+    info!("HTTP client and WS client created");
+    let tickers = common::get_product_tickers(&http_client).await.unwrap();
 
-    let (http_client, mut ws_client) = common::create_test_clients().await?;
-    let params = ProductControllerListParams::default();
-    let products = http_client.product().list(params).await?;
+    ws_client
+        .subscriptions()
+        .trade_fill(tickers, trade_fill_callback)
+        .await
+        .unwrap();
 
-    ws_client.register_trade_fill_callback(trade_fill_callback);
-
-    products.data.iter().for_each(|product| {
-        ws_client.subscribe_trade_fill_data(&product.id.to_string());
-    });
-    ws_client.connect().await?;
-    run_forever().await;
-    Ok(())
+    info!("Starting event loop...");
+    common::run_forever(&ws_client).await;
 }
