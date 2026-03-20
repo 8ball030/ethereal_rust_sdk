@@ -342,7 +342,9 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [x] Template all other signable apis.
 - [x] Create abstraction for signable requests.
 - [x] Parse Websocket stringified numbers into appropriate numeric types.
-- [x] Parse Api stringified numbers into appropriate numeric types.
+- [ ] Parse Api stringified numbers into appropriate numeric types.
+- [ ] Add Market Order support for order submission.
+- [ ] Add Stop Order support for order submission.
 
 ## Acknowledgements
 - [Ethereal](https://ethereal.trade) for providing the platform and API.
