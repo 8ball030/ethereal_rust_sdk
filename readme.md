@@ -195,11 +195,12 @@ In order to proces messages from the websocket client, the user must first regis
 // examples/market_data.rs
 mod common;
 
-use ethereal_rust_sdk::{
-    apis::product_api::ProductControllerListParams, models::TickerMessage,
-    ws_client::ConnectionState,
-};
+use ethereal_rust_sdk::models::TickerMessage;
 use log::info;
+
+async fn ticker_callback(msg: TickerMessage) {
+    info!("Received ticker message: {:?}", msg);
+}
 
 #[tokio::main]
 async fn main() {
@@ -207,18 +208,7 @@ async fn main() {
     simple_logger::init_with_level(log::Level::Info).expect("log");
     let (http_client, ws_client) = common::create_test_clients().await.unwrap();
     info!("HTTP client and WS client created");
-    let params = ProductControllerListParams::default();
-    info!("Fetching products with params: {params:?}");
-    let products = http_client.product().list(params).await.unwrap().data;
-
-    async fn ticker_callback(msg: TickerMessage) {
-        info!("Received ticker message: {:?}", msg);
-    }
-
-    let tickers = products
-        .iter()
-        .map(|p| p.ticker.clone())
-        .collect::<Vec<_>>();
+    let tickers = common::get_product_tickers(&http_client).await.unwrap();
 
     ws_client
         .subscriptions()
@@ -227,25 +217,7 @@ async fn main() {
         .unwrap();
 
     info!("Starting event loop...");
-    ws_client.wait_for_connection().await;
-    loop {
-        match ws_client.run_till_event().await {
-            ConnectionState::Connected => {
-                info!("WebSocket connected");
-                ws_client.resubscribe_all().await.unwrap();
-            }
-            ConnectionState::Disconnected => {
-                info!("WebSocket disconnected");
-            }
-            ConnectionState::Exited => {
-                info!("WebSocket exited");
-                break;
-            }
-            ConnectionState::Reconnecting => {
-                info!("WebSocket reconnecting...");
-            }
-        }
-    }
+    common::run_forever(&ws_client).await;
 }
 
 ```
@@ -258,10 +230,8 @@ The following example demonstrates how to register for order updates.
 ```rust
 // examples/order_update.rs
 mod common;
-use ethereal_rust_sdk::apis::subaccount_api::SubaccountControllerListByAccountParams;
 use ethereal_rust_sdk::models::OrderUpdateMessage;
 
-use ethereal_rust_sdk::ws_client::ConnectionState;
 use log::info;
 
 async fn order_update_callback(raw_data: OrderUpdateMessage) {
@@ -281,16 +251,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     simple_logger::init_with_level(log::Level::Info).unwrap();
 
     let (http_client, ws_client) = common::create_test_clients().await?;
-    let params = SubaccountControllerListByAccountParams {
-        sender: http_client.address.clone(),
-        ..Default::default()
-    };
-    let subaccounts = http_client.subaccount().list_by_account(params).await?;
-    let subaccount_ids = subaccounts
-        .data
-        .iter()
-        .map(|subaccount| subaccount.id.to_string())
-        .collect::<Vec<_>>();
+    let subaccount_ids = common::get_subaccount_ids(&http_client).await?;
 
     ws_client
         .subscriptions()
@@ -298,26 +259,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .await?;
 
     info!("Starting event loop...");
-    ws_client.wait_for_connection().await;
-    loop {
-        match ws_client.run_till_event().await {
-            ConnectionState::Connected => {
-                info!("WebSocket connected");
-                ws_client.resubscribe_all().await.unwrap();
-            }
-            ConnectionState::Disconnected => {
-                info!("WebSocket disconnected");
-            }
-            ConnectionState::Exited => {
-                info!("WebSocket exited");
-                break;
-            }
-            ConnectionState::Reconnecting => {
-                info!("WebSocket reconnecting...");
-            }
-        }
-    }
-
+    common::run_forever(&ws_client).await;
     Ok(())
 }
 
@@ -332,10 +274,8 @@ Additionally, it should be pointed out that a different data model is used for o
 ```rust
 // examples/order_fills.rs
 mod common;
-use ethereal_rust_sdk::apis::subaccount_api::SubaccountControllerListByAccountParams;
 use ethereal_rust_sdk::models::OrderFillMessage;
 
-use ethereal_rust_sdk::ws_client::ConnectionState;
 use log::info;
 
 async fn order_fill_callback(raw_data: OrderFillMessage) {
@@ -355,16 +295,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     simple_logger::init_with_level(log::Level::Info).unwrap();
 
     let (http_client, ws_client) = common::create_test_clients().await?;
-    let params = SubaccountControllerListByAccountParams {
-        sender: http_client.address.clone(),
-        ..Default::default()
-    };
-    let subaccounts = http_client.subaccount().list_by_account(params).await?;
-    let subaccount_ids = subaccounts
-        .data
-        .iter()
-        .map(|subaccount| subaccount.id.to_string())
-        .collect::<Vec<_>>();
+    let subaccount_ids = common::get_subaccount_ids(&http_client).await?;
 
     ws_client
         .subscriptions()
@@ -372,40 +303,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .await?;
 
     info!("Starting event loop...");
-    ws_client.wait_for_connection().await;
-    loop {
-        match ws_client.run_till_event().await {
-            ConnectionState::Connected => {
-                info!("WebSocket connected");
-                ws_client.resubscribe_all().await.unwrap();
-            }
-            ConnectionState::Disconnected => {
-                info!("WebSocket disconnected");
-            }
-            ConnectionState::Exited => {
-                info!("WebSocket exited");
-                break;
-            }
-            ConnectionState::Reconnecting => {
-                info!("WebSocket reconnecting...");
-            }
-        }
-    }
-
+    common::run_forever(&ws_client).await;
     Ok(())
 }
 
-```
-
-```bash
-╰─>$ cargo run --example order_fills
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.46s
-     Running `target/debug/examples/order_fills`
-2025-12-04T15:22:11.425Z INFO  [ethereal_rust_sdk::ws_client] Callback registered channel=OrderFill
-2025-12-04T15:22:11.425Z INFO  [ethereal_rust_sdk::ws_client] Connecting websocket...
-2025-12-04T15:22:13.104Z INFO  [ethereal_rust_sdk::ws_client] Websocket connected
-2025-12-04T15:22:13.142Z INFO  [ethereal_rust_sdk::ws_client] Subscribed to channel=OrderFill subaccount_id=11111111-2222-3333-4444-444444444444
-2025-12-04T15:22:26.745Z INFO  [order_fills] Order fill - ID: 11111111-2222-3333-4444-555555555555, Product ID: dce327cc-4fbb-4d5d-9ede-1c1fca7ef4ba, Price: 92724, Side: SELL Quantity: "0.001"
 ```
 
 ## Contributing
@@ -440,7 +341,8 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [x] Publish the crate to crates.io.
 - [x] Template all other signable apis.
 - [x] Create abstraction for signable requests.
-- [ ] Parse stringified numbers into appropriate numeric types.
+- [x] Parse Websocket stringified numbers into appropriate numeric types.
+- [x] Parse Api stringified numbers into appropriate numeric types.
 
 ## Acknowledgements
 - [Ethereal](https://ethereal.trade) for providing the platform and API.
