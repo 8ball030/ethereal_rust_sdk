@@ -25,9 +25,9 @@ pub struct TokenTransferMessageData {
     #[serde(rename = "tAddr")]
     pub t_addr: String,
     #[serde(rename = "typ")]
-    pub typ: String,
+    pub typ: models::TransferDtoOrderType,
     #[serde(rename = "st")]
-    pub st: String,
+    pub st: models::TransferDtoOrderStatus,
     #[serde(rename = "amt")]
     pub amt: String,
     #[serde(rename = "fee")]
@@ -46,7 +46,7 @@ pub struct TokenTransferMessageData {
     #[serde(rename = "lzAddr", skip_serializing_if = "Option::is_none")]
     pub lz_addr: Option<String>,
     #[serde(rename = "lzEid", skip_serializing_if = "Option::is_none")]
-    pub lz_eid: Option<String>,
+    pub lz_eid: Option<i64>,
 }
 
 impl TokenTransferMessageData {
@@ -56,8 +56,8 @@ impl TokenTransferMessageData {
         sid: uuid::Uuid,
         t_name: String,
         t_addr: String,
-        typ: String,
-        st: String,
+        typ: models::TransferDtoOrderType,
+        st: models::TransferDtoOrderStatus,
         amt: String,
         fee: String,
     ) -> TokenTransferMessageData {

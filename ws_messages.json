@@ -567,10 +567,10 @@
                 "description": "Token address as hex string."
               },
               "typ": {
-                "type": "string"
+                "$ref": "./openapi.json#/components/schemas/TransferDtoOrderType"
               },
               "st": {
-                "type": "string"
+                "$ref": "./openapi.json#/components/schemas/TransferDtoOrderStatus"
               },
               "amt": {
                 "type": "string"
@@ -597,7 +597,8 @@
                 "description": "LayerZero address as hex string."
               },
               "lzEid": {
-                "type": "string"
+                "type": "integer",
+                "format": "int64"
               }
             },
             "required": ["t", "id", "sid", "tName", "tAddr", "typ", "st", "amt", "fee"]

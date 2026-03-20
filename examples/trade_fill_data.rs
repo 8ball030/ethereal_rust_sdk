@@ -1,8 +1,7 @@
 mod common;
 
 use ethereal_rust_sdk::{
-    apis::product_api::ProductControllerListParams,
-    models::TradeFillMessage,
+    apis::product_api::ProductControllerListParams, models::TradeFillMessage,
     ws_client::ConnectionState,
 };
 use log::info;
