@@ -654,7 +654,6 @@
                   "required": [
                     "id",
                     "oid",
-                    "cloid",
                     "px",
                     "sz",
                     "typ",
