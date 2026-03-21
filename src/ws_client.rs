@@ -284,6 +284,7 @@ async fn connection_supervisor(
     subscriptions: SubscriptionMap,
     connection_state_tx: watch::Sender<ConnectionState>,
 ) {
+    let mut attempts = 0;
     loop {
         info!("Connection supervisor started for {url}");
 
@@ -298,6 +299,7 @@ async fn connection_supervisor(
         match client {
             Ok(ws_stream) => {
                 info!("Connected to {url}");
+                attempts = 0;
                 connection_state_tx.send(ConnectionState::Connected).ok();
                 let result = run_single_connection(
                     ws_stream,
@@ -320,11 +322,12 @@ async fn connection_supervisor(
                 }
             }
             Err(e) => {
-                error!("Failed to connect to {url}: {e}");
+                attempts += 1;
+                error!("Failed to connect to {url}: {e} - attempt {attempts}");
                 if *shutdown_rx.borrow() || cmd_rx.is_closed() {
                     break;
                 }
-                tokio::time::sleep(std::time::Duration::from_secs(3)).await;
+                tokio::time::sleep(std::time::Duration::from_secs(3 ^ attempts)).await;
                 connection_state_tx.send(ConnectionState::Disconnected).ok();
             }
         }
@@ -402,6 +405,10 @@ async fn run_single_connection(
                             },
                             OpCode::Pong => {
                                 debug!("Received pong frame");
+                            },
+                            OpCode::Close => {
+                                info!("Received close frame from server");
+                                return Err(ClientError::WebsocketError(yawc::WebSocketError::ConnectionClosed));
                             },
                             _ => {
                                 warn!("Received unsupported non-text frame, opcode: {opcode:?}");
