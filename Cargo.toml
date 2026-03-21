@@ -25,7 +25,7 @@ futures-util = "0.3.31"
 tokio = { version = "1.50.0", features = ["sync", "rt-multi-thread", "macros"] }
 rust_decimal = "1.27.0"
 rust_decimal_macros = "1.40.0"
-yawc = { version = "0.3.3", features = ["rustls-aws-lc-rs", "reqwest"] }
+yawc = { version = "0.3.3", default_features = false, features = ["rustls-aws-lc-rs", "reqwest"] }
 dashmap = "6.1.0"
 bytes = "1.11.1"
 thiserror = "2.0.18"
