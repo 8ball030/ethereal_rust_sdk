@@ -20,8 +20,8 @@ pub struct OrderFillMessageDataDInner {
     #[serde(rename = "oid")]
     pub oid: uuid::Uuid,
     /// Client order identifier provided at order placement. May be empty if not provided or for certain order update types.
-    #[serde(rename = "cloid")]
-    pub cloid: String,
+    #[serde(rename = "cloid", skip_serializing_if = "Option::is_none")]
+    pub cloid: Option<String>,
     /// Price.
     #[serde(rename = "px")]
     pub px: rust_decimal::Decimal,
@@ -52,7 +52,6 @@ impl OrderFillMessageDataDInner {
     pub fn new(
         id: uuid::Uuid,
         oid: uuid::Uuid,
-        cloid: String,
         px: rust_decimal::Decimal,
         sz: rust_decimal::Decimal,
         typ: models::OrderType,
@@ -67,7 +66,7 @@ impl OrderFillMessageDataDInner {
         OrderFillMessageDataDInner {
             id,
             oid,
-            cloid,
+            cloid: None,
             px,
             sz,
             typ,
