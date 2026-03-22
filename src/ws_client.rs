@@ -327,7 +327,7 @@ async fn connection_supervisor(
                 if *shutdown_rx.borrow() || cmd_rx.is_closed() {
                     break;
                 }
-                tokio::time::sleep(std::time::Duration::from_secs(3 ^ attempts)).await;
+                tokio::time::sleep(std::time::Duration::from_secs(3u64.pow(attempts))).await;
                 connection_state_tx.send(ConnectionState::Disconnected).ok();
             }
         }
