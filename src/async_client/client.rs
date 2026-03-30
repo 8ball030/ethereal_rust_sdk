@@ -8,6 +8,7 @@ use crate::{
         product_api::ProductControllerListParams,
         subaccount_api::SubaccountControllerListByAccountParams,
     },
+    archive_apis::configuration::Configuration as ArchiveConfiguration,
     async_client::{
         funding::FundingClient,
         linked_signer::LinkedSignerClient,
@@ -20,6 +21,7 @@ use crate::{
         referral::ReferralClient,
         rpc::RpcClient,
         subaccount::SubaccountClient,
+        subaccount_archive::SubaccountArchiveClient,
         time::TimeClient,
         token::TokenClient,
         whitelist::WhitelistClient,
@@ -52,6 +54,13 @@ fn get_server_url(environment: &Environment) -> &str {
     }
 }
 
+fn get_archive_server_url(environment: &Environment) -> &str {
+    match environment {
+        Environment::Mainnet => "https://archive.ethereal.trade",
+        Environment::Testnet => "https://archive.etherealtest.net",
+    }
+}
+
 fn round_to_tick(value: Decimal, tick_size: Decimal) -> Result<Decimal> {
     if tick_size.is_zero() {
         return Ok(value);
@@ -77,6 +86,7 @@ macro_rules! with_signing_fields {
 pub struct HttpClient {
     pub env: Environment,
     config: Configuration,
+    archive_config: ArchiveConfiguration,
     pub wallet: LocalWallet,
     pub address: String,
     pub owner_address: Option<String>,
@@ -91,6 +101,11 @@ impl HttpClient {
             base_path: get_server_url(&env).to_string(),
             ..Default::default()
         };
+        let archive_config = ArchiveConfiguration {
+            base_path: get_archive_server_url(&env).to_string(),
+            ..Default::default()
+        };
+
         let wallet = private_key.parse::<LocalWallet>().unwrap();
         let address = format!("{:?}", wallet.address());
         let sender_address = owner_address
@@ -129,6 +144,7 @@ impl HttpClient {
         Self {
             env,
             config,
+            archive_config,
             wallet,
             address,
             owner_address,
@@ -183,10 +199,14 @@ impl HttpClient {
             config: &self.config,
         }
     }
-
     pub fn subaccount(&self) -> SubaccountClient<'_> {
         SubaccountClient {
             config: &self.config,
+        }
+    }
+    pub fn subaccount_archive(&self) -> SubaccountArchiveClient<'_> {
+        SubaccountArchiveClient {
+            config: &self.archive_config,
         }
     }
     pub fn time(&self) -> TimeClient<'_> {

@@ -14,14 +14,14 @@ use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
 /// struct for passing parameters to the method [`subaccount_archive_controller_get_total_volume`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct SubaccountArchiveControllerGetTotalVolumeParams {
     /// Id of the subaccount to query for
     pub subaccount_id: String,
 }
 
 /// struct for passing parameters to the method [`subaccount_archive_controller_list_balance_history`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct SubaccountArchiveControllerListBalanceHistoryParams {
     /// Start time of the query range (clamped to resolution, ms since Unix epoch)
     pub start_time: f64,
@@ -42,7 +42,7 @@ pub struct SubaccountArchiveControllerListBalanceHistoryParams {
 }
 
 /// struct for passing parameters to the method [`subaccount_archive_controller_list_position_funding_history`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct SubaccountArchiveControllerListPositionFundingHistoryParams {
     /// Start time of the query range (clamped to resolution, ms since Unix epoch)
     pub start_time: f64,
@@ -65,7 +65,7 @@ pub struct SubaccountArchiveControllerListPositionFundingHistoryParams {
 }
 
 /// struct for passing parameters to the method [`subaccount_archive_controller_list_unrealized_pnl_history`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct SubaccountArchiveControllerListUnrealizedPnlHistoryParams {
     /// Start time of the query range (clamped to resolution, ms since Unix epoch)
     pub start_time: f64,
@@ -88,7 +88,7 @@ pub struct SubaccountArchiveControllerListUnrealizedPnlHistoryParams {
 }
 
 /// struct for passing parameters to the method [`subaccount_archive_controller_list_volume_history`]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct SubaccountArchiveControllerListVolumeHistoryParams {
     /// Start time of the query range (clamped to resolution, ms since Unix epoch)
     pub start_time: f64,
