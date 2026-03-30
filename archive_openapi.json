@@ -1,0 +1,1606 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/v1/subaccount/balance": {
+      "get": {
+        "operationId": "SubaccountArchiveController_listBalanceHistory",
+        "parameters": [
+          {
+            "name": "order",
+            "required": false,
+            "in": "query",
+            "description": "Direction to paginate through objects",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Limit the number of objects to return",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Pointer to the current object in pagination dataset",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startTime",
+            "required": true,
+            "in": "query",
+            "description": "Start time of the query range (clamped to resolution, ms since Unix epoch)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "endTime",
+            "required": false,
+            "in": "query",
+            "description": "End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)",
+            "schema": {
+              "default": "2026-03-20T05:33:00.329Z",
+              "type": "number"
+            }
+          },
+          {
+            "name": "resolution",
+            "required": true,
+            "in": "query",
+            "description": "Resolution of the data to be returned",
+            "schema": {
+              "example": "hour2",
+              "type": "string",
+              "enum": [
+                "day1",
+                "month1",
+                "week1",
+                "hour1",
+                "hour12",
+                "hour2",
+                "hour4",
+                "hour8",
+                "minute1",
+                "minute15",
+                "minute3",
+                "minute30",
+                "minute5"
+              ]
+            }
+          },
+          {
+            "name": "orderBy",
+            "required": false,
+            "in": "query",
+            "description": "Order by field",
+            "schema": {
+              "example": "time",
+              "type": "string",
+              "enum": [
+                "time"
+              ]
+            }
+          },
+          {
+            "name": "subaccountId",
+            "required": true,
+            "in": "query",
+            "description": "Id of the subaccount to query for",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOfBalanceHistoryDtos"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntityDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Returns historic balances for a given subaccount",
+        "tags": [
+          "SubaccountArchive"
+        ]
+      }
+    },
+    "/v1/subaccount/funding": {
+      "get": {
+        "operationId": "SubaccountArchiveController_listPositionFundingHistory",
+        "parameters": [
+          {
+            "name": "order",
+            "required": false,
+            "in": "query",
+            "description": "Direction to paginate through objects",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Limit the number of objects to return",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Pointer to the current object in pagination dataset",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startTime",
+            "required": true,
+            "in": "query",
+            "description": "Start time of the query range (clamped to resolution, ms since Unix epoch)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "endTime",
+            "required": false,
+            "in": "query",
+            "description": "End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)",
+            "schema": {
+              "default": "2026-03-20T05:32:59.587Z",
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderBy",
+            "required": false,
+            "in": "query",
+            "description": "Order by field",
+            "schema": {
+              "example": "time",
+              "type": "string",
+              "enum": [
+                "time"
+              ]
+            }
+          },
+          {
+            "name": "subaccountId",
+            "required": true,
+            "in": "query",
+            "description": "Id of the subaccount to query for",
+            "schema": {
+              "format": "uuid",
+              "example": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+              "type": "string"
+            }
+          },
+          {
+            "name": "positionIds",
+            "required": false,
+            "in": "query",
+            "description": "Array of position ids to filter for",
+            "schema": {
+              "minItems": 1,
+              "maxItems": 128,
+              "uniqueItems": true,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          {
+            "name": "productIds",
+            "required": false,
+            "in": "query",
+            "description": "Array of product ids to filter for",
+            "schema": {
+              "minItems": 1,
+              "uniqueItems": true,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOfPositionFundingHistoryDtos"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntityDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Returns funding charge history for a given subaccount",
+        "tags": [
+          "SubaccountArchive"
+        ]
+      }
+    },
+    "/v1/subaccount/unrealized-pnl": {
+      "get": {
+        "operationId": "SubaccountArchiveController_listUnrealizedPnlHistory",
+        "parameters": [
+          {
+            "name": "order",
+            "required": false,
+            "in": "query",
+            "description": "Direction to paginate through objects",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Limit the number of objects to return",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Pointer to the current object in pagination dataset",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startTime",
+            "required": true,
+            "in": "query",
+            "description": "Start time of the query range (clamped to resolution, ms since Unix epoch)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "endTime",
+            "required": false,
+            "in": "query",
+            "description": "End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)",
+            "schema": {
+              "default": "2026-03-20T05:33:00.334Z",
+              "type": "number"
+            }
+          },
+          {
+            "name": "resolution",
+            "required": true,
+            "in": "query",
+            "description": "Resolution of the data to be returned (hourly or coarser only)",
+            "schema": {
+              "example": "hour1",
+              "type": "string",
+              "enum": [
+                "hour1",
+                "hour2",
+                "hour4",
+                "hour8",
+                "hour12",
+                "day1",
+                "week1",
+                "month1"
+              ]
+            }
+          },
+          {
+            "name": "orderBy",
+            "required": false,
+            "in": "query",
+            "description": "Order by field",
+            "schema": {
+              "example": "time",
+              "type": "string",
+              "enum": [
+                "time"
+              ]
+            }
+          },
+          {
+            "name": "subaccountId",
+            "required": true,
+            "in": "query",
+            "description": "Id of the subaccount to query for",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "productIds",
+            "required": false,
+            "in": "query",
+            "description": "Array of product ids to filter for",
+            "schema": {
+              "minItems": 1,
+              "uniqueItems": true,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOfUnrealizedPnlHistoryDtos"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntityDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Returns historic unrealized PnL for a given subaccount",
+        "tags": [
+          "SubaccountArchive"
+        ]
+      }
+    },
+    "/v1/subaccount/volume": {
+      "get": {
+        "operationId": "SubaccountArchiveController_listVolumeHistory",
+        "parameters": [
+          {
+            "name": "order",
+            "required": false,
+            "in": "query",
+            "description": "Direction to paginate through objects",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Limit the number of objects to return",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Pointer to the current object in pagination dataset",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startTime",
+            "required": true,
+            "in": "query",
+            "description": "Start time of the query range (clamped to resolution, ms since Unix epoch)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "endTime",
+            "required": false,
+            "in": "query",
+            "description": "End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)",
+            "schema": {
+              "default": "2026-03-20T05:33:00.336Z",
+              "type": "number"
+            }
+          },
+          {
+            "name": "resolution",
+            "required": true,
+            "in": "query",
+            "description": "Resolution of the data to be returned",
+            "schema": {
+              "example": "hour2",
+              "type": "string",
+              "enum": [
+                "day1",
+                "month1",
+                "week1",
+                "hour1",
+                "hour12",
+                "hour2",
+                "hour4",
+                "hour8",
+                "minute1",
+                "minute15",
+                "minute3",
+                "minute30",
+                "minute5"
+              ]
+            }
+          },
+          {
+            "name": "orderBy",
+            "required": false,
+            "in": "query",
+            "description": "Order by field",
+            "schema": {
+              "example": "time",
+              "type": "string",
+              "enum": [
+                "time"
+              ]
+            }
+          },
+          {
+            "name": "subaccountId",
+            "required": true,
+            "in": "query",
+            "description": "Id of the subaccount to query for",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOfSubaccountVolumeHistoryDtos"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntityDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Returns historic volume for a given subaccount",
+        "tags": [
+          "SubaccountArchive"
+        ]
+      }
+    },
+    "/v1/subaccount/total-volume": {
+      "get": {
+        "operationId": "SubaccountArchiveController_getTotalVolume",
+        "parameters": [
+          {
+            "name": "subaccountId",
+            "required": true,
+            "in": "query",
+            "description": "Id of the subaccount to query for",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TotalSubaccountVolumeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntityDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Returns total volume for a given subaccount",
+        "tags": [
+          "SubaccountArchive"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Ethereal Archive API",
+    "description": "Ethereal HTTP API for archived data, providing historical balance, volume, and PnL data.",
+    "version": "0.1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "https://archive.ethereal.trade/",
+      "description": "Mainnet"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "ExchangeVolumeHistoryDto": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "number",
+            "example": 1712019600000,
+            "description": "Timestamp of the volume record (ms since Unix Epoch)"
+          },
+          "volumeUsd": {
+            "type": "string",
+            "example": "150.75",
+            "description": "Volume in USD during this time interval, expressed as a decimal (precision: 9)"
+          }
+        },
+        "required": [
+          "time",
+          "volumeUsd"
+        ]
+      },
+      "PageOfExchangeVolumeHistoryDtos": {
+        "type": "object",
+        "properties": {
+          "hasNext": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether there are more objects to paginate through"
+          },
+          "nextCursor": {
+            "type": "string",
+            "description": "Pointer to the next page in pagination dataset"
+          },
+          "data": {
+            "description": "Array of global volume history records",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExchangeVolumeHistoryDto"
+            }
+          }
+        },
+        "required": [
+          "hasNext",
+          "data"
+        ]
+      },
+      "BadRequestDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "default": 400,
+            "enum": [
+              400
+            ]
+          },
+          "message": {
+            "description": "Validation error message(s). Can be a single string or an array of strings.",
+            "oneOf": [
+              {
+                "type": "string",
+                "example": "property must be a string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "example": [
+                  "property must be a string",
+                  "nestedProperty.field must be an integer"
+                ]
+              }
+            ]
+          },
+          "error": {
+            "type": "string",
+            "default": "Bad Request",
+            "enum": [
+              "Bad Request"
+            ]
+          }
+        },
+        "required": [
+          "statusCode",
+          "message",
+          "error"
+        ]
+      },
+      "UnauthorizedDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "default": 401,
+            "enum": [
+              401
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string",
+            "default": "Unauthorized",
+            "enum": [
+              "Unauthorized"
+            ]
+          }
+        },
+        "required": [
+          "statusCode",
+          "message",
+          "error"
+        ]
+      },
+      "ForbiddenDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "default": 403,
+            "enum": [
+              403
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string",
+            "default": "Forbidden",
+            "enum": [
+              "Forbidden"
+            ]
+          }
+        },
+        "required": [
+          "statusCode",
+          "message",
+          "error"
+        ]
+      },
+      "NotFoundDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "default": 404,
+            "enum": [
+              404
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string",
+            "default": "Not Found",
+            "enum": [
+              "Not Found"
+            ]
+          }
+        },
+        "required": [
+          "statusCode",
+          "message",
+          "error"
+        ]
+      },
+      "UnprocessableEntityDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "default": 422,
+            "enum": [
+              422
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string",
+            "default": "Unprocessable Entity",
+            "enum": [
+              "Unprocessable Entity"
+            ]
+          }
+        },
+        "required": [
+          "statusCode",
+          "message",
+          "error"
+        ]
+      },
+      "TooManyRequestsDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "default": 429,
+            "enum": [
+              429
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string",
+            "default": "Too Many Requests",
+            "enum": [
+              "Too Many Requests"
+            ]
+          },
+          "type": {
+            "enum": [
+              "RATE_LIMIT_IP",
+              "RATE_LIMIT_ACCOUNT",
+              "RATE_LIMIT_WITHDRAW",
+              "RATE_LIMIT_LINKED_SIGNER"
+            ],
+            "type": "string",
+            "description": "Specific rate limit type that was exceeded"
+          }
+        },
+        "required": [
+          "statusCode",
+          "message",
+          "error",
+          "type"
+        ]
+      },
+      "TotalExchangeVolumeDto": {
+        "type": "object",
+        "properties": {
+          "volumeUsd": {
+            "type": "string",
+            "example": "150.75",
+            "description": "Volume on the exchange up to now in USD, expressed as a decimal (precision: 9)"
+          }
+        },
+        "required": [
+          "volumeUsd"
+        ]
+      },
+      "ProductVolumeHistoryDto": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "number",
+            "example": 1712019600000,
+            "description": "Timestamp of the volume record (ms since Unix Epoch)"
+          },
+          "productId": {
+            "type": "string",
+            "example": "b9876543-1234-5678-9abc-def012345678",
+            "description": "Id representing the product"
+          },
+          "volumeUsd": {
+            "type": "string",
+            "example": "150.75",
+            "description": "Volume in USD during this time interval, expressed as a decimal (precision: 9)"
+          }
+        },
+        "required": [
+          "time",
+          "productId",
+          "volumeUsd"
+        ]
+      },
+      "PageOfProductVolumeHistoryDtos": {
+        "type": "object",
+        "properties": {
+          "hasNext": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether there are more objects to paginate through"
+          },
+          "nextCursor": {
+            "type": "string",
+            "description": "Pointer to the next page in pagination dataset"
+          },
+          "data": {
+            "description": "Array of product volume history records",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductVolumeHistoryDto"
+            }
+          }
+        },
+        "required": [
+          "hasNext",
+          "data"
+        ]
+      },
+      "TotalProductVolumeDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "example": "b9876543-1234-5678-9abc-def012345678",
+            "description": "Id representing the product"
+          },
+          "volumeUsd": {
+            "type": "string",
+            "example": "150.75",
+            "description": "Volume for this product up to now in USD, expressed as a decimal (precision: 9)"
+          }
+        },
+        "required": [
+          "productId",
+          "volumeUsd"
+        ]
+      },
+      "TotalProductVolumeDtos": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Array of product total volume records",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TotalProductVolumeDto"
+            }
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "ExchangeOpenInterestHistoryDto": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "number",
+            "example": 1712019600000,
+            "description": "Timestamp of the open interest record (ms since Unix Epoch)"
+          },
+          "openInterest": {
+            "type": "string",
+            "example": "160311731.25",
+            "description": "Open interest in USD at the end of this time interval, expressed as a decimal (precision: 9)"
+          },
+          "openInterestMin": {
+            "type": "string",
+            "example": "120521731.25",
+            "description": "Minimum open interest in USD during this time interval, expressed as a decimal (precision: 9)"
+          },
+          "openInterestMax": {
+            "type": "string",
+            "example": "850311731.25",
+            "description": "Maximum open interest in USD during this time interval, expressed as a decimal (precision: 9)"
+          }
+        },
+        "required": [
+          "time",
+          "openInterest",
+          "openInterestMin",
+          "openInterestMax"
+        ]
+      },
+      "PageOfExchangeOpenInterestHistoryDtos": {
+        "type": "object",
+        "properties": {
+          "hasNext": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether there are more objects to paginate through"
+          },
+          "nextCursor": {
+            "type": "string",
+            "description": "Pointer to the next page in pagination dataset"
+          },
+          "data": {
+            "description": "Array of exchange open interest history records",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExchangeOpenInterestHistoryDto"
+            }
+          }
+        },
+        "required": [
+          "hasNext",
+          "data"
+        ]
+      },
+      "ProductOpenInterestHistoryDto": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "number",
+            "example": 1712019600000,
+            "description": "Timestamp of the open interest record (ms since Unix Epoch)"
+          },
+          "productId": {
+            "type": "string",
+            "example": "b9876543-1234-5678-9abc-def012345678",
+            "description": "Id representing the product"
+          },
+          "openInterest": {
+            "type": "string",
+            "example": "160311731.25",
+            "description": "Open interest in USD at the end of this time interval, expressed as a decimal (precision: 9)"
+          },
+          "openInterestMin": {
+            "type": "string",
+            "example": "120521731.25",
+            "description": "Minimum open interest in USD during this time interval, expressed as a decimal (precision: 9)"
+          },
+          "openInterestMax": {
+            "type": "string",
+            "example": "850311731.25",
+            "description": "Maximum open interest in USD during this time interval, expressed as a decimal (precision: 9)"
+          }
+        },
+        "required": [
+          "time",
+          "productId",
+          "openInterest",
+          "openInterestMin",
+          "openInterestMax"
+        ]
+      },
+      "PageOfProductOpenInterestHistoryDtos": {
+        "type": "object",
+        "properties": {
+          "hasNext": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether there are more objects to paginate through"
+          },
+          "nextCursor": {
+            "type": "string",
+            "description": "Pointer to the next page in pagination dataset"
+          },
+          "data": {
+            "description": "Array of product open interest history records",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductOpenInterestHistoryDto"
+            }
+          }
+        },
+        "required": [
+          "hasNext",
+          "data"
+        ]
+      },
+      "BalanceHistoryDto": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "number",
+            "example": 1712019600000,
+            "description": "Timestamp of the balance record (ms since Unix Epoch)"
+          },
+          "tradingFee": {
+            "type": "string",
+            "example": "10.5",
+            "description": "Cumulative trading fees paid up to this point in time, expressed as a decimal (precision: 9)"
+          },
+          "realizedFunding": {
+            "type": "string",
+            "example": "5.25",
+            "description": "Cumulative funding realized up to this point in time, expressed as a decimal (precision: 9)"
+          },
+          "realizedPnl": {
+            "type": "string",
+            "example": "150.75",
+            "description": "Cumulative realized PnL up to this point in time, expressed as a decimal (precision: 9)"
+          },
+          "depositFee": {
+            "type": "string",
+            "example": "2.0",
+            "description": "Cumulative deposit fees paid up to this point in time, expressed as a decimal (precision: 9)"
+          },
+          "deposit": {
+            "type": "string",
+            "example": "1000.0",
+            "description": "Cumulative deposits made up to this point in time, expressed as a decimal (precision: 9)"
+          },
+          "withdrawalFee": {
+            "type": "string",
+            "example": "3.5",
+            "description": "Cumulative withdrawal fees paid up to this point in time, expressed as a decimal (precision: 9)"
+          },
+          "withdrawal": {
+            "type": "string",
+            "example": "500.0",
+            "description": "Cumulative withdrawals made up to this point in time, expressed as a decimal (precision: 9)"
+          },
+          "balance": {
+            "type": "string",
+            "example": "680.0",
+            "description": "Total balance at this point in time, expressed as a decimal (precision: 9)"
+          }
+        },
+        "required": [
+          "time",
+          "tradingFee",
+          "realizedFunding",
+          "realizedPnl",
+          "depositFee",
+          "deposit",
+          "withdrawalFee",
+          "withdrawal",
+          "balance"
+        ]
+      },
+      "PageOfBalanceHistoryDtos": {
+        "type": "object",
+        "properties": {
+          "hasNext": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether there are more objects to paginate through"
+          },
+          "nextCursor": {
+            "type": "string",
+            "description": "Pointer to the next page in pagination dataset"
+          },
+          "data": {
+            "description": "Array of balance history records",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BalanceHistoryDto"
+            }
+          }
+        },
+        "required": [
+          "hasNext",
+          "data"
+        ]
+      },
+      "PositionFundingHistoryDto": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "number",
+            "example": 1712019600000,
+            "description": "Timestamp of the funding charge (ms since Unix Epoch)"
+          },
+          "settledAt": {
+            "type": "number",
+            "example": 1712019600000,
+            "description": "Timestamp of the funding settlement (ms since Unix Epoch)"
+          },
+          "productId": {
+            "type": "string",
+            "example": "9036443a-441a-4a66-87f2-bd5c44cdca7a",
+            "description": "Id representing the product"
+          },
+          "productTicker": {
+            "type": "string",
+            "example": "ETHUSD",
+            "description": "Product ticker"
+          },
+          "positionId": {
+            "type": "string",
+            "example": "9036443a-441a-4a66-87f2-bd5c44cdca7a",
+            "description": "Id representing the position"
+          },
+          "positionSide": {
+            "enum": [
+              0,
+              1
+            ],
+            "type": "number",
+            "example": 0,
+            "description": "Position side as either BUY (0) or SELL (1)",
+            "x-enum-varnames": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "positionQuantity": {
+            "type": "string",
+            "example": "10.5",
+            "description": "Position quantity at the time of funding, expressed as a decimal (precision: 9)"
+          },
+          "fundingRate": {
+            "type": "string",
+            "example": "0.0001",
+            "description": "Funding rate for the period, expressed as a decimal (precision: 9)"
+          },
+          "chargePerUnitUsd": {
+            "type": "string",
+            "example": "0.5",
+            "description": "Funding charge per unit in USD, expressed as a decimal (precision: 9)"
+          },
+          "fundingCharge": {
+            "type": "string",
+            "example": "5.25",
+            "description": "Total funding charge for the position (positive means pay, negative means receive), expressed as a decimal (precision: 9)"
+          }
+        },
+        "required": [
+          "time",
+          "settledAt",
+          "productId",
+          "productTicker",
+          "positionId",
+          "positionSide",
+          "positionQuantity",
+          "fundingRate",
+          "chargePerUnitUsd",
+          "fundingCharge"
+        ]
+      },
+      "PageOfPositionFundingHistoryDtos": {
+        "type": "object",
+        "properties": {
+          "hasNext": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether there are more objects to paginate through"
+          },
+          "nextCursor": {
+            "type": "string",
+            "description": "Pointer to the next page in pagination dataset"
+          },
+          "data": {
+            "description": "Array of funding history records",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PositionFundingHistoryDto"
+            }
+          }
+        },
+        "required": [
+          "hasNext",
+          "data"
+        ]
+      },
+      "UnrealizedPnlHistoryDto": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "number",
+            "example": 1712019600000,
+            "description": "Timestamp of the unrealized PnL record (ms since Unix Epoch)"
+          },
+          "unrealizedPnl": {
+            "type": "string",
+            "example": "150.75",
+            "description": "Unrealized PnL at this point in time, expressed as a decimal (precision: 9)"
+          }
+        },
+        "required": [
+          "time",
+          "unrealizedPnl"
+        ]
+      },
+      "PageOfUnrealizedPnlHistoryDtos": {
+        "type": "object",
+        "properties": {
+          "hasNext": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether there are more objects to paginate through"
+          },
+          "nextCursor": {
+            "type": "string",
+            "description": "Pointer to the next page in pagination dataset"
+          },
+          "data": {
+            "description": "Array of unrealized PnL history records",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UnrealizedPnlHistoryDto"
+            }
+          }
+        },
+        "required": [
+          "hasNext",
+          "data"
+        ]
+      },
+      "SubaccountVolumeHistoryDto": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "number",
+            "example": 1712019600000,
+            "description": "Timestamp of the volume record (ms since Unix Epoch)"
+          },
+          "volumeUsd": {
+            "type": "string",
+            "example": "150.75",
+            "description": "Volume in USD during this time interval, expressed as a decimal (precision: 9)"
+          }
+        },
+        "required": [
+          "time",
+          "volumeUsd"
+        ]
+      },
+      "PageOfSubaccountVolumeHistoryDtos": {
+        "type": "object",
+        "properties": {
+          "hasNext": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether there are more objects to paginate through"
+          },
+          "nextCursor": {
+            "type": "string",
+            "description": "Pointer to the next page in pagination dataset"
+          },
+          "data": {
+            "description": "Array of subaccount volume history records",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SubaccountVolumeHistoryDto"
+            }
+          }
+        },
+        "required": [
+          "hasNext",
+          "data"
+        ]
+      },
+      "TotalSubaccountVolumeDto": {
+        "type": "object",
+        "properties": {
+          "volumeUsd": {
+            "type": "string",
+            "example": "150.75",
+            "description": "Volume for the subaccount up to now in USD, expressed as a decimal (precision: 9)"
+          }
+        },
+        "required": [
+          "volumeUsd"
+        ]
+      }
+    }
+  }
+}
