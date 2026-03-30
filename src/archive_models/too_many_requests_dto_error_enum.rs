@@ -13,8 +13,9 @@ use serde::{Deserialize, Serialize};
 
 /// TooManyRequestsDtoErrorEnum : Extracted enum for TooManyRequestsDtoErrorEnum
 /// Extracted enum for TooManyRequestsDtoErrorEnum
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-#[derive(Default)]
+#[derive(
+    Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, Default,
+)]
 pub enum TooManyRequestsDtoErrorEnum {
     #[serde(rename = "Too Many Requests")]
     #[default]
@@ -28,4 +29,3 @@ impl std::fmt::Display for TooManyRequestsDtoErrorEnum {
         }
     }
 }
-

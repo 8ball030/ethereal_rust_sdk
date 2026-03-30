@@ -13,8 +13,9 @@ use serde::{Deserialize, Serialize};
 
 /// OrderType : Extracted enum for OrderType
 /// Extracted enum for OrderType
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-#[derive(Default)]
+#[derive(
+    Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, Default,
+)]
 pub enum OrderType {
     #[serde(rename = "RATE_LIMIT_IP")]
     #[default]
@@ -40,4 +41,3 @@ impl std::fmt::Display for OrderType {
         }
     }
 }
-

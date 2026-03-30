@@ -13,8 +13,9 @@ use serde::{Deserialize, Serialize};
 
 /// ErrorEnum : Extracted enum for ErrorEnum
 /// Extracted enum for ErrorEnum
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-#[derive(Default)]
+#[derive(
+    Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, Default,
+)]
 pub enum ErrorEnum {
     #[serde(rename = "Bad Request")]
     #[default]
@@ -28,4 +29,3 @@ impl std::fmt::Display for ErrorEnum {
         }
     }
 }
-
