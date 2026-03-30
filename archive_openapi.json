@@ -51,7 +51,7 @@
             "in": "query",
             "description": "End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)",
             "schema": {
-              "default": "2026-03-20T05:33:00.508Z",
+              "default": "2026-03-20T05:33:11.640Z",
               "type": "number"
             }
           },
@@ -235,7 +235,7 @@
             "in": "query",
             "description": "End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)",
             "schema": {
-              "default": "2026-03-20T05:32:59.750Z",
+              "default": "2026-03-20T05:33:10.858Z",
               "type": "number"
             }
           },
@@ -426,7 +426,7 @@
             "in": "query",
             "description": "End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)",
             "schema": {
-              "default": "2026-03-20T05:33:00.513Z",
+              "default": "2026-03-20T05:33:11.645Z",
               "type": "number"
             }
           },
@@ -620,7 +620,7 @@
             "in": "query",
             "description": "End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)",
             "schema": {
-              "default": "2026-03-20T05:33:00.515Z",
+              "default": "2026-03-20T05:33:11.647Z",
               "type": "number"
             }
           },
@@ -940,11 +940,7 @@
             ]
           },
           "error": {
-            "type": "string",
-            "default": "Bad Request",
-            "enum": [
-              "Bad Request"
-            ]
+            "$ref": "#/components/schemas/ErrorEnum"
           }
         },
         "required": [
@@ -967,11 +963,7 @@
             "type": "string"
           },
           "error": {
-            "type": "string",
-            "default": "Unauthorized",
-            "enum": [
-              "Unauthorized"
-            ]
+            "$ref": "#/components/schemas/UnauthorizedDtoErrorEnum"
           }
         },
         "required": [
@@ -994,11 +986,7 @@
             "type": "string"
           },
           "error": {
-            "type": "string",
-            "default": "Forbidden",
-            "enum": [
-              "Forbidden"
-            ]
+            "$ref": "#/components/schemas/ForbiddenDtoErrorEnum"
           }
         },
         "required": [
@@ -1021,11 +1009,7 @@
             "type": "string"
           },
           "error": {
-            "type": "string",
-            "default": "Not Found",
-            "enum": [
-              "Not Found"
-            ]
+            "$ref": "#/components/schemas/NotFoundDtoErrorEnum"
           }
         },
         "required": [
@@ -1048,11 +1032,7 @@
             "type": "string"
           },
           "error": {
-            "type": "string",
-            "default": "Unprocessable Entity",
-            "enum": [
-              "Unprocessable Entity"
-            ]
+            "$ref": "#/components/schemas/UnprocessableEntityDtoErrorEnum"
           }
         },
         "required": [
@@ -1075,21 +1055,10 @@
             "type": "string"
           },
           "error": {
-            "type": "string",
-            "default": "Too Many Requests",
-            "enum": [
-              "Too Many Requests"
-            ]
+            "$ref": "#/components/schemas/TooManyRequestsDtoErrorEnum"
           },
           "type": {
-            "enum": [
-              "RATE_LIMIT_IP",
-              "RATE_LIMIT_ACCOUNT",
-              "RATE_LIMIT_WITHDRAW",
-              "RATE_LIMIT_LINKED_SIGNER"
-            ],
-            "type": "string",
-            "description": "Specific rate limit type that was exceeded"
+            "$ref": "#/components/schemas/OrderType"
           }
         },
         "required": [
@@ -1429,17 +1398,7 @@
             "description": "Id representing the position"
           },
           "positionSide": {
-            "enum": [
-              0,
-              1
-            ],
-            "type": "number",
-            "example": 0,
-            "description": "Position side as either BUY (0) or SELL (1)",
-            "x-enum-varnames": [
-              "BUY",
-              "SELL"
-            ]
+            "$ref": "#/components/schemas/PositionSideEnum"
           },
           "positionQuantity": {
             "type": "string",
@@ -1599,6 +1558,71 @@
         },
         "required": [
           "volumeUsd"
+        ]
+      },
+      "ErrorEnum": {
+        "type": "string",
+        "enum": [
+          "Bad Request"
+        ],
+        "description": "Extracted enum for ErrorEnum"
+      },
+      "UnauthorizedDtoErrorEnum": {
+        "type": "string",
+        "enum": [
+          "Unauthorized"
+        ],
+        "description": "Extracted enum for UnauthorizedDtoErrorEnum"
+      },
+      "ForbiddenDtoErrorEnum": {
+        "type": "string",
+        "enum": [
+          "Forbidden"
+        ],
+        "description": "Extracted enum for ForbiddenDtoErrorEnum"
+      },
+      "NotFoundDtoErrorEnum": {
+        "type": "string",
+        "enum": [
+          "Not Found"
+        ],
+        "description": "Extracted enum for NotFoundDtoErrorEnum"
+      },
+      "UnprocessableEntityDtoErrorEnum": {
+        "type": "string",
+        "enum": [
+          "Unprocessable Entity"
+        ],
+        "description": "Extracted enum for UnprocessableEntityDtoErrorEnum"
+      },
+      "TooManyRequestsDtoErrorEnum": {
+        "type": "string",
+        "enum": [
+          "Too Many Requests"
+        ],
+        "description": "Extracted enum for TooManyRequestsDtoErrorEnum"
+      },
+      "OrderType": {
+        "type": "string",
+        "enum": [
+          "RATE_LIMIT_IP",
+          "RATE_LIMIT_ACCOUNT",
+          "RATE_LIMIT_WITHDRAW",
+          "RATE_LIMIT_LINKED_SIGNER",
+          "MARKET"
+        ],
+        "description": "Extracted enum for OrderType"
+      },
+      "PositionSideEnum": {
+        "type": "integer",
+        "enum": [
+          0,
+          1
+        ],
+        "description": "Extracted enum for PositionSideEnum",
+        "x-enum-varnames": [
+          "BUY",
+          "SELL"
         ]
       }
     }

@@ -135,5 +135,12 @@ def main():
     
     write_json(file_path, data)
     print(f"Patched: {file_path}")
+
+    archive_file_path = Path("archive_openapi.json")
+    data = read_json(archive_file_path)
+    data = extract_all_enums(data)
+    write_json(archive_file_path, data)
+    print(f"Patched: {archive_file_path}")  
+
 if __name__ == "__main__":
     main()

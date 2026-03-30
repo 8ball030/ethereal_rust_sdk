@@ -19,14 +19,14 @@ pub struct BadRequestDto {
     #[serde(rename = "message")]
     pub message: archive_models::BadRequestDtoMessage,
     #[serde(rename = "error")]
-    pub error: Error,
+    pub error: archive_models::ErrorEnum,
 }
 
 impl BadRequestDto {
     pub fn new(
         status_code: StatusCode,
         message: archive_models::BadRequestDtoMessage,
-        error: Error,
+        error: archive_models::ErrorEnum,
     ) -> BadRequestDto {
         BadRequestDto {
             status_code,
@@ -42,14 +42,5 @@ pub enum StatusCode {
     #[serde(rename = "400")]
     #[default]
     Variant400,
-}
-
-///
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-#[derive(Default)]
-pub enum Error {
-    #[serde(rename = "Bad Request")]
-    #[default]
-    BadRequest,
 }
 

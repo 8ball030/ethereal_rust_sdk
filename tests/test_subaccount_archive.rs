@@ -56,34 +56,7 @@ async fn test_list_position_funding_history() {
         .subaccount_archive()
         .list_position_funding_history(params.clone())
         .await;
-    if let Err(e) = &result {
-        // attempt to fetch raw response for debugging
-        let cfg = client.subaccount_archive().config;
-        let start_time_str = params.start_time.to_string();
-        let sub_id = params.subaccount_id.clone();
-        let url = format!(
-            "{}/v1/subaccount/funding?startTime={}&subaccountId={}",
-            cfg.base_path, start_time_str, sub_id
-        );
-        let resp = cfg.client.get(&url).send().await;
-        match resp {
-            Ok(r) => {
-                let status = r.status();
-                let body = r
-                    .text()
-                    .await
-                    .unwrap_or_else(|_| "<failed to read body>".to_string());
-                panic!(
-                    "list_position_funding_history failed: {:?}; raw status: {} body: {}",
-                    e, status, body
-                );
-            }
-            Err(reqe) => panic!(
-                "list_position_funding_history failed: {:?}; request failed: {}",
-                e, reqe
-            ),
-        }
-    }
+    assert!(result.is_ok());
 }
 
 #[tokio::test]
