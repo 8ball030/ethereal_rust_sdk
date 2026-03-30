@@ -87,6 +87,7 @@ pub enum FundingControllerListProjectedRatesError {
 }
 
 /// Deprecated: Use GET /funding/projected-rate instead
+#[deprecated]
 pub async fn funding_controller_get_projected_funding_rate(
     configuration: &configuration::Configuration,
     params: FundingControllerGetProjectedFundingRateParams,
