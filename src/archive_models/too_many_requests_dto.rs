@@ -40,9 +40,8 @@ impl TooManyRequestsDto {
     }
 }
 ///
-#[derive(
-    Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, Default,
-)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(Default)]
 pub enum StatusCode {
     #[serde(rename = "429")]
     #[default]
@@ -50,9 +49,8 @@ pub enum StatusCode {
 }
 
 ///
-#[derive(
-    Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, Default,
-)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(Default)]
 pub enum Error {
     #[serde(rename = "Too Many Requests")]
     #[default]
@@ -60,9 +58,8 @@ pub enum Error {
 }
 
 /// Specific rate limit type that was exceeded
-#[derive(
-    Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, Default,
-)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(Default)]
 pub enum Type {
     #[serde(rename = "RATE_LIMIT_IP")]
     #[default]
@@ -74,3 +71,4 @@ pub enum Type {
     #[serde(rename = "RATE_LIMIT_LINKED_SIGNER")]
     RateLimitLinkedSigner,
 }
+

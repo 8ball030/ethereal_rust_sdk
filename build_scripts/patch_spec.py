@@ -98,6 +98,28 @@ def patch_schema_has_next_to_optional(spec: dict):
     print("Patched path parameters to be nullable where applicable.")
     return spec
 
+def remove_deprecated_endpoints(spec: dict):
+    paths = spec.get("paths", {})
+    removed = 0
+    empty_paths = []
+
+    for path, path_item in paths.items():
+        deprecated_methods = [
+            method for method, operation in path_item.items()
+            if isinstance(operation, dict) and operation.get("deprecated") is True
+        ]
+        for method in deprecated_methods:
+            del path_item[method]
+            print(f"Removed deprecated endpoint: {method.upper()} {path}")
+            removed += 1
+        if not path_item:
+            empty_paths.append(path)
+
+    for path in empty_paths:
+        del paths[path]
+
+    print(f"Removed {removed} deprecated endpoints.")
+    return spec
 
 def main():
     file_path = Path("openapi.json")
@@ -106,6 +128,7 @@ def main():
         print(f"File not found: {file_path}")
         sys.exit(1)
     data = read_json(file_path)
+    data = remove_deprecated_endpoints(data)
     data = extract_all_enums(data)
     data = patch_schema_has_next_to_optional(data)
     data = patch_integer_properties(data)

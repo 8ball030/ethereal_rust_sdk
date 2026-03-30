@@ -31,9 +31,8 @@ impl UnprocessableEntityDto {
     }
 }
 ///
-#[derive(
-    Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, Default,
-)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(Default)]
 pub enum StatusCode {
     #[serde(rename = "422")]
     #[default]
@@ -41,11 +40,11 @@ pub enum StatusCode {
 }
 
 ///
-#[derive(
-    Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, Default,
-)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(Default)]
 pub enum Error {
     #[serde(rename = "Unprocessable Entity")]
     #[default]
     UnprocessableEntity,
 }
+

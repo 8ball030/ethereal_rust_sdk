@@ -73,9 +73,8 @@ impl PositionFundingHistoryDto {
     }
 }
 /// Position side as either BUY (0) or SELL (1)
-#[derive(
-    Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, Default,
-)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(Default)]
 pub enum PositionSide {
     #[serde(rename = "0")]
     #[default]
@@ -83,3 +82,4 @@ pub enum PositionSide {
     #[serde(rename = "1")]
     SELL,
 }
+

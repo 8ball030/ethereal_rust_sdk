@@ -13,13 +13,6 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
-/// struct for passing parameters to the method [`funding_controller_get_projected_funding_rate`]
-#[derive(Clone, Debug, Default)]
-pub struct FundingControllerGetProjectedFundingRateParams {
-    /// Id representing the registered product
-    pub product_id: String,
-}
-
 /// struct for passing parameters to the method [`funding_controller_list_by_product_id`]
 #[derive(Clone, Debug, Default)]
 pub struct FundingControllerListByProductIdParams {
@@ -42,20 +35,6 @@ pub struct FundingControllerListByProductIdParams {
 pub struct FundingControllerListProjectedRatesParams {
     /// Array of product ids
     pub product_ids: Vec<uuid::Uuid>,
-}
-
-/// struct for typed errors of method [`funding_controller_get_projected_funding_rate`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum FundingControllerGetProjectedFundingRateError {
-    Status400(models::BadRequestDto),
-    Status401(models::UnauthorizedDto),
-    Status403(models::ForbiddenDto),
-    Status404(models::NotFoundDto),
-    Status422(models::UnprocessableEntityDto),
-    Status429(models::TooManyRequestsDto),
-    Status500(),
-    UnknownValue(serde_json::Value),
 }
 
 /// struct for typed errors of method [`funding_controller_list_by_product_id`]
@@ -84,50 +63,6 @@ pub enum FundingControllerListProjectedRatesError {
     Status429(models::TooManyRequestsDto),
     Status500(),
     UnknownValue(serde_json::Value),
-}
-
-/// Deprecated: Use GET /funding/projected-rate instead
-#[deprecated]
-pub async fn funding_controller_get_projected_funding_rate(
-    configuration: &configuration::Configuration,
-    params: FundingControllerGetProjectedFundingRateParams,
-) -> Result<models::ProjectedFundingDto, Error<FundingControllerGetProjectedFundingRateError>> {
-    let uri_str = format!("{}/v1/funding/projected", configuration.base_path);
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
-
-    req_builder = req_builder.query(&[("productId", &params.product_id.to_string())]);
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
-
-    let status = resp.status();
-    let content_type = resp
-        .headers()
-        .get("content-type")
-        .and_then(|v| v.to_str().ok())
-        .unwrap_or("application/octet-stream");
-    let content_type = super::ContentType::from(content_type);
-
-    if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
-        match content_type {
-            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ProjectedFundingDto`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ProjectedFundingDto`")))),
-        }
-    } else {
-        let content = resp.text().await?;
-        let entity: Option<FundingControllerGetProjectedFundingRateError> =
-            serde_json::from_str(&content).ok();
-        Err(Error::ResponseError(ResponseContent {
-            status,
-            content,
-            entity,
-        }))
-    }
 }
 
 pub async fn funding_controller_list_by_product_id(
