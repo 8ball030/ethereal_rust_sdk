@@ -1,4 +1,6 @@
 pub mod apis;
+pub mod archive_apis;
+pub mod archive_models;
 pub mod async_client;
 pub mod channels;
 pub mod domain_config;

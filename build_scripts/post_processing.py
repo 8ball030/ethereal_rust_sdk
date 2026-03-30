@@ -22,6 +22,7 @@ from enum import Enum
 
 CRATE_ROOT = Path(__file__).parent.parent / "src"
 API_SOURCE_DIR = CRATE_ROOT/ "apis"
+ARCHIVE_API_SOURCE_DIR = CRATE_ROOT / "archive_apis"
 ASYNC_CLIENT_PATH = CRATE_ROOT / "async_client"
 DATA_DIR = Path(__file__).parent.parent / "data"
 
@@ -111,7 +112,7 @@ def check_sync_client_has_sub_client(file_path: Path):
     if expected_client_name not in sync_client_content:
         print(f"    Warning: {ASYNC_CLIENT_PATH} does not have client for {expected_client_name}")
 
-def check_sub_client_methods(file_path: Path):
+def check_sub_client_methods(file_path: Path, models_module: str = "models"):
     """
     Check that the sync client has methods for sub-clients.
     """
@@ -134,7 +135,7 @@ def check_sub_client_methods(file_path: Path):
             func_started = False
             # if short_method_name not in sync_client_content:
             error_name = line.split("Error<")[1].split(">")[0]
-            return_type = line.split("Result<models::")[1].split(",")[0]
+            return_type = line.split(f"Result<{models_module}::")[1].split(",")[0]
 
             params_line = ""
             params_struct_name = ""
@@ -171,7 +172,7 @@ def check_sub_client_methods(file_path: Path):
     return functions, tests, model_imports, client_imports
 
 
-def write_sub_client_file(api_name: str, functions: list[str], model_imports: set[str], client_imports: set[str]):
+def write_sub_client_file(api_name: str, functions: list[str], model_imports: set[str], client_imports: set[str], apis_module: str = "apis", models_module: str = "models"):
     sub_client_file = ASYNC_CLIENT_PATH / f"{api_name[:-4]}.rs"
     client_name = f"{to_upper_camel_case(api_name[:-4])}Client"
     functions_str = "\n".join(functions)
@@ -182,7 +183,9 @@ def write_sub_client_file(api_name: str, functions: list[str], model_imports: se
         client_name=client_name,
         functions=functions_str,
         model_imports=model_imports_str,
-        client_imports=client_imports_str
+        client_imports=client_imports_str,
+        apis_module=apis_module,
+        models_module=models_module,
     )
     sub_client_file.write_text(sub_client_content)
     print(f"    Wrote sub-client file: {sub_client_file.stem}")
@@ -200,7 +203,8 @@ def include_sub_client_in_mod_file(api_name: str):
             mf.write(f"\n{sub_client_mod_line}")
         print(f"    Updated mod.rs to include {api_name[:-4]} sub-client.")
 
-def write_tests_file(api_name: str, tests: list[str], client_imports: set[str]):
+
+def write_tests_file(api_name: str, tests: list[str], client_imports: set[str], apis_module: str = "apis"):
     """
     Write the tests file for the sub-client.
     """
@@ -210,34 +214,34 @@ def write_tests_file(api_name: str, tests: list[str], client_imports: set[str]):
     tests_file.touch()
     tests_content = TEST_API_TEMPLATE.substitute(
         api_name=api_name,
-        client_imports=", ".join(sorted(client_imports))
+        client_imports=", ".join(sorted(client_imports)),
+        apis_module=apis_module,
     )
     tests_content += "\n\n" + "\n".join(tests)
     tests_file.write_text(tests_content)
     print(f"    Wrote tests file: {tests_file.stem}")
 
-def post_process_generated_files(generated_files: list[Path]):
-    """
-    Post-process the gathered generated files.
-    """
+def post_process_generated_files(generated_files: list[Path], apis_module: str = "apis", models_module: str = "models"):
     for file in generated_files:
-        # Perform any necessary post-processing on each file
         add_default_derive_attribute_to_parameter_structs(file)
         if "_api" in file.stem:
             print("Processing API file:", file.stem)
             check_sync_client_has_sub_client(file)
-            functions, tests, model_imports, client_imports = check_sub_client_methods(file)
+            functions, tests, model_imports, client_imports = check_sub_client_methods(file, models_module=models_module)
             write_sub_client_file(
                 api_name=file.stem,
                 functions=functions,
                 model_imports=model_imports,
-                client_imports=client_imports
+                client_imports=client_imports,
+                apis_module=apis_module,
+                models_module=models_module,
             )
             include_sub_client_in_mod_file(file.stem)
             write_tests_file(
                 api_name=file.stem,
                 tests=tests,
-                client_imports=client_imports
+                client_imports=client_imports,
+                apis_module=apis_module,
             )
 
 def generate_domain_config_files():
@@ -388,8 +392,13 @@ def build_subscriptions(channels):
 
 if __name__ == "__main__":
     generate_domain_config_files()
+
     generated_files = gather_generated_files(API_SOURCE_DIR)
     post_process_generated_files(generated_files)
+
+    archive_files = gather_generated_files(ARCHIVE_API_SOURCE_DIR)
+    post_process_generated_files(archive_files, apis_module="archive_apis", models_module="archive_models")
+
     gather_signable_messages()
     channels = extract_channels()
     build_subscriptions(channels)

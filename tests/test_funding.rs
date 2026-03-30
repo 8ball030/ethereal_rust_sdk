@@ -1,19 +1,7 @@
 mod common;
 use ethereal_rust_sdk::apis::funding_api::{
-    FundingControllerGetProjectedFundingRateParams, FundingControllerListByProductIdParams,
-    FundingControllerListProjectedRatesParams,
+    FundingControllerListByProductIdParams, FundingControllerListProjectedRatesParams,
 };
-
-#[tokio::test]
-async fn test_get_projected_funding_rate() {
-    let client = common::create_test_client().await.unwrap();
-    let product = common::get_product(&client).await.unwrap();
-    let params = FundingControllerGetProjectedFundingRateParams {
-        product_id: product.id.to_string(),
-    };
-    let result = client.funding().get_projected_funding_rate(params).await;
-    assert!(result.is_ok());
-}
 
 #[tokio::test]
 async fn test_list_by_product_id() {

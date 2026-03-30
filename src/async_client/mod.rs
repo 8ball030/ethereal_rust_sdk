@@ -9,6 +9,7 @@ mod product;
 mod referral;
 mod rpc;
 mod subaccount;
+mod subaccount_archive;
 mod time;
 mod token;
 mod whitelist;

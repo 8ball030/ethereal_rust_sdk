@@ -75,8 +75,11 @@ codegen:
 	  --type-mappings decimal=rust_decimal::Decimal \
 	--additional-properties=supportAsync=true,useSingleRequestParameter=true,avoidBoxedModels=true
 
+
+
 	cp ./generated/src/models/* ./src/models/
 	cp -r ./generated/src/apis ./src/
+
 
 	# rebuild mod.rs
 	@echo "#![allow(clippy::all)]" > ./src/models/mod.rs
@@ -100,6 +103,27 @@ codegen:
 		echo "pub mod $$name;" >> ./src/models/mod.rs; \
 		echo "pub use $$name::$$camel;" >> ./src/models/mod.rs; \
 	done
+
+	openapi-generator-cli generate \
+	  -i archive_openapi.json \
+	  -g rust \
+	  -o ./generated \
+	  --type-mappings decimal=rust_decimal::Decimal \
+	--additional-properties=supportAsync=true,useSingleRequestParameter=true,avoidBoxedModels=true
+
+	cp ./generated/src/models/* ./src/archive_models
+	cp ./generated/src/apis/* ./src/archive_apis
+	for f in ./src/archive_apis/*.rs ./src/archive_models/*.rs; do \
+		sed -i \
+			-e 's/\bapis::/archive_apis::/g' \
+			-e 's/\bmodels\b/archive_models/g' \
+			"$$f"; \
+	done
+	for f in ./src/archive_models/*.rs; do \
+		sed -i '1s/^/#![allow(clippy::empty_docs, clippy::too_many_arguments)]\n/' "$$f"; \
+	done
+
+	rm -rf ./generated
 	python build_scripts/post_processing.py
 
 docs:

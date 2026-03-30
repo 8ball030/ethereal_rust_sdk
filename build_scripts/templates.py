@@ -25,40 +25,42 @@ TEST_METHOD_TEMPLATE_WITH_PARAMS = Template("""
 #[tokio::test]
 async fn test_$short_function_name() {
     let client = common::create_test_client().await.unwrap();
-    let params = $params_struct_name::default();
-    let result = client.$api_name().$short_function_name(params);
+    let params = ${params_struct_name}::default();
+    let result = client.${api_name}().${short_function_name}(params).await;
     assert!(result.is_ok());
 }
 """)
+
+
 TEST_METHOD_TEMPLATE_WITHOUT_PARAMS = Template("""
 #[tokio::test]
 async fn test_$short_function_name() {
     let client = common::create_test_client().await.unwrap();
-    let result = client.$api_name().$short_function_name();
+    let result = client.${api_name}().${short_function_name}().await;
     assert!(result.is_ok());
 }
 """)
 
 TEST_API_TEMPLATE = Template("""
 mod common;
-use ethereal_rust_sdk::apis::$api_name::{$client_imports};
+use ethereal_rust_sdk::${apis_module}::${api_name}::{${client_imports}};
 """)
 
 SUB_CLIENT_TEMPLATE = Template("""
 use crate::{
-    apis::{
+    ${apis_module}::{
         Error,
         configuration::Configuration,
-        $api_name::{$client_imports},
+        ${api_name}::{${client_imports}},
     },
-    models::{$model_imports},
+    ${models_module}::{${model_imports}},
 };
-pub struct $client_name<'a> {
+pub struct ${client_name}<'a> {
     pub config: &'a Configuration,
 }
 
-impl<'a> $client_name<'a> {
-$functions
+impl<'a> ${client_name}<'a> {
+${functions}
 }
 """)
 
