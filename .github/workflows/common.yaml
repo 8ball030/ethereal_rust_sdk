@@ -40,6 +40,9 @@ jobs:
       - name: Lint
         run: make lint
 
+      - name: Check for diffs
+        run: git diff --exit-code
+
       - name: Build
         run: make build
 
@@ -49,5 +52,3 @@ jobs:
       - name: Docs
         run: make docs
 
-      - name: Check for diffs
-        run: git diff --exit-code
