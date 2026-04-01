@@ -24,7 +24,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -208,7 +209,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -399,7 +401,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -593,7 +596,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {

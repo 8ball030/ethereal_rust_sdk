@@ -32,7 +32,7 @@ pub struct TokenControllerListParams {
     /// Direction to paginate through objects
     pub order: Option<String>,
     /// Limit the number of objects to return
-    pub limit: Option<i32>,
+    pub limit: Option<i64>,
     /// Pointer to the current object in pagination dataset
     pub cursor: Option<String>,
     /// Filters tokens by if its enabled for deposit
@@ -51,7 +51,7 @@ pub struct TokenControllerListTransfersParams {
     /// Direction to paginate through objects
     pub order: Option<String>,
     /// Limit the number of objects to return
-    pub limit: Option<i32>,
+    pub limit: Option<i64>,
     /// Pointer to the current object in pagination dataset
     pub cursor: Option<String>,
     /// Array of transfer statuses to filter by
@@ -61,9 +61,9 @@ pub struct TokenControllerListTransfersParams {
     /// Order by field
     pub order_by: Option<String>,
     /// Filter by transfers created after timestamp exclusive (ms since Unix epoch)
-    pub created_after: Option<i32>,
+    pub created_after: Option<i64>,
     /// Filter by transfers created before timestamp inclusive (ms since Unix epoch)
-    pub created_before: Option<i32>,
+    pub created_before: Option<i64>,
 }
 
 /// struct for passing parameters to the method [`token_controller_list_withdraws`]
@@ -74,7 +74,7 @@ pub struct TokenControllerListWithdrawsParams {
     /// Direction to paginate through objects
     pub order: Option<String>,
     /// Limit the number of objects to return
-    pub limit: Option<i32>,
+    pub limit: Option<i64>,
     /// Pointer to the current object in pagination dataset
     pub cursor: Option<String>,
     /// Filters active withdraws

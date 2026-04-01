@@ -25,7 +25,7 @@ pub struct SubaccountControllerListParams {
     /// Direction to paginate through objects
     pub order: Option<String>,
     /// Limit the number of objects to return
-    pub limit: Option<i32>,
+    pub limit: Option<i64>,
     /// Pointer to the current object in pagination dataset
     pub cursor: Option<String>,
     /// Order by field
@@ -40,7 +40,7 @@ pub struct SubaccountControllerListByAccountParams {
     /// Direction to paginate through objects
     pub order: Option<String>,
     /// Limit the number of objects to return
-    pub limit: Option<i32>,
+    pub limit: Option<i64>,
     /// Pointer to the current object in pagination dataset
     pub cursor: Option<String>,
     /// Bytes32 encoded subaccount name (0x prefix, zero padded)
@@ -57,7 +57,7 @@ pub struct SubaccountControllerListSubaccountBalancesParams {
     /// Direction to paginate through objects
     pub order: Option<String>,
     /// Limit the number of objects to return
-    pub limit: Option<i32>,
+    pub limit: Option<i64>,
     /// Pointer to the current object in pagination dataset
     pub cursor: Option<String>,
     /// Order by field

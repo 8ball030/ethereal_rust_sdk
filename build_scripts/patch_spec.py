@@ -83,6 +83,17 @@ def patch_integer_properties(spec: dict):
             if prop.get("type") == "integer":
                 prop["format"] = "int64"
                 processed += 1
+
+    for path, path_item in spec.get("paths", {}).items():
+        print(f"Processing path: {path}")
+        for method, operation in path_item.items():
+            if not isinstance(operation, dict):
+                continue
+            for param in operation.get("parameters", []):
+                schema = param.get("schema", {})
+                if schema.get("type") == "integer":
+                    schema["format"] = "int64"
+                    processed += 1
     print(f"Processed {processed} integer properties.") 
     return spec
 
@@ -139,6 +150,7 @@ def main():
     archive_file_path = Path("archive_openapi.json")
     data = read_json(archive_file_path)
     data = extract_all_enums(data)
+    data = patch_integer_properties(data)
     write_json(archive_file_path, data)
     print(f"Patched: {archive_file_path}")  
 

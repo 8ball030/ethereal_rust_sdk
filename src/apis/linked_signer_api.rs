@@ -53,7 +53,7 @@ pub struct LinkedSignerControllerListBySubaccountIdParams {
     /// Direction to paginate through objects
     pub order: Option<String>,
     /// Limit the number of objects to return
-    pub limit: Option<i32>,
+    pub limit: Option<i64>,
     /// Pointer to the current object in pagination dataset
     pub cursor: Option<String>,
     /// Filters signers by statuses

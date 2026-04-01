@@ -32,7 +32,7 @@ pub struct SubaccountArchiveControllerListBalanceHistoryParams {
     /// Direction to paginate through objects
     pub order: Option<String>,
     /// Limit the number of objects to return
-    pub limit: Option<i32>,
+    pub limit: Option<i64>,
     /// Pointer to the current object in pagination dataset
     pub cursor: Option<String>,
     /// End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)
@@ -51,7 +51,7 @@ pub struct SubaccountArchiveControllerListPositionFundingHistoryParams {
     /// Direction to paginate through objects
     pub order: Option<String>,
     /// Limit the number of objects to return
-    pub limit: Option<i32>,
+    pub limit: Option<i64>,
     /// Pointer to the current object in pagination dataset
     pub cursor: Option<String>,
     /// End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)
@@ -76,7 +76,7 @@ pub struct SubaccountArchiveControllerListUnrealizedPnlHistoryParams {
     /// Direction to paginate through objects
     pub order: Option<String>,
     /// Limit the number of objects to return
-    pub limit: Option<i32>,
+    pub limit: Option<i64>,
     /// Pointer to the current object in pagination dataset
     pub cursor: Option<String>,
     /// End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)
@@ -99,7 +99,7 @@ pub struct SubaccountArchiveControllerListVolumeHistoryParams {
     /// Direction to paginate through objects
     pub order: Option<String>,
     /// Limit the number of objects to return
-    pub limit: Option<i32>,
+    pub limit: Option<i64>,
     /// Pointer to the current object in pagination dataset
     pub cursor: Option<String>,
     /// End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)
