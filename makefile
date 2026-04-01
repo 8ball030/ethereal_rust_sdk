@@ -11,7 +11,7 @@ PATCH_VERSION := $(shell \
 # Allow override
 NEW_VERSION ?= $(PATCH_VERSION)
 
-.PHONY: version tag release
+.PHONY: version tag release fmt lint codegen
 
 
 version:
