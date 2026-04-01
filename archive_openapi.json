@@ -24,7 +24,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -51,7 +52,6 @@
             "in": "query",
             "description": "End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)",
             "schema": {
-              "default": "2026-03-20T05:33:11.640Z",
               "type": "number"
             }
           },
@@ -208,7 +208,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -235,7 +236,6 @@
             "in": "query",
             "description": "End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)",
             "schema": {
-              "default": "2026-03-20T05:33:10.858Z",
               "type": "number"
             }
           },
@@ -399,7 +399,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -426,7 +427,6 @@
             "in": "query",
             "description": "End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)",
             "schema": {
-              "default": "2026-03-20T05:33:11.645Z",
               "type": "number"
             }
           },
@@ -593,7 +593,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -620,7 +621,6 @@
             "in": "query",
             "description": "End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)",
             "schema": {
-              "default": "2026-03-20T05:33:11.647Z",
               "type": "number"
             }
           },

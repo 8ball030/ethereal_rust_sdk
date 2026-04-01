@@ -78,255 +78,14 @@
           "data"
         ]
       },
-      "TickerMessage": {
+      "OrderFillMessage": {
         "type": "object",
-        "description": "Server-to-client Ticker event message.",
+        "description": "Server-to-client OrderFill event message.",
         "properties": {
           "e": {
             "type": "string",
             "enum": [
-              "Ticker"
-            ],
-            "description": "Event type."
-          },
-          "t": {
-            "type": "integer",
-            "format": "int64",
-            "description": "System timestamp in milliseconds when this message was emitted."
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "s": {
-                "type": "string",
-                "description": "Market symbol, e.g. BTCUSD, ETHUSD."
-              },
-              "t": {
-                "type": "integer",
-                "format": "int64",
-                "description": "Timestamp in milliseconds for this ticker update."
-              },
-              "bidPx": {
-                "type": "string",
-                "description": "Best bid price.",
-                "format": "decimal"
-              },
-              "askPx": {
-                "type": "string",
-                "description": "Best ask price.",
-                "format": "decimal"
-              },
-              "bidAmt": {
-                "type": "string",
-                "description": "Best bid quantity.",
-                "format": "decimal"
-              },
-              "askAmt": {
-                "type": "string",
-                "description": "Best ask quantity.",
-                "format": "decimal"
-              },
-              "markPx": {
-                "type": "string",
-                "description": "Mark price.",
-                "format": "decimal"
-              },
-              "markPx24h": {
-                "type": "string",
-                "description": "Mark price 24 hours ago.",
-                "format": "decimal"
-              },
-              "oi": {
-                "type": "string",
-                "description": "Open interest.",
-                "format": "decimal"
-              },
-              "fr1h": {
-                "type": "string",
-                "description": "Funding rate for 1 hour.",
-                "format": "decimal"
-              },
-              "vol24h": {
-                "type": "string",
-                "description": "24 hour volume.",
-                "format": "decimal"
-              }
-            },
-            "required": [
-              "s",
-              "t"
-            ]
-          }
-        },
-        "required": [
-          "e",
-          "t",
-          "data"
-        ]
-      },
-      "TradeFillMessage": {
-        "type": "object",
-        "description": "Server-to-client TradeFill event message containing recent trades for a symbol.",
-        "properties": {
-          "e": {
-            "type": "string",
-            "enum": [
-              "TradeFill"
-            ],
-            "description": "Event type."
-          },
-          "t": {
-            "type": "integer",
-            "format": "int64",
-            "description": "System timestamp in milliseconds when this message was emitted."
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "s": {
-                "type": "string",
-                "description": "Market symbol."
-              },
-              "t": {
-                "type": "integer",
-                "format": "int64",
-                "description": "Timestamp in milliseconds for this trade update."
-              },
-              "d": {
-                "type": "array",
-                "description": "Array of trade fill objects.",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "description": "Trade identifier."
-                    },
-                    "px": {
-                      "type": "string",
-                      "description": "Trade price.",
-                      "format": "decimal"
-                    },
-                    "sz": {
-                      "type": "string",
-                      "description": "Trade size.",
-                      "format": "decimal"
-                    },
-                    "sd": {
-                      "$ref": "./openapi.json#/components/schemas/OrderSide"
-                    },
-                    "sids": {
-                      "type": "array",
-                      "description": "Related subaccount identifiers.",
-                      "items": {
-                        "type": "string",
-                        "format": "uuid"
-                      }
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "px",
-                    "sz",
-                    "sd",
-                    "sids"
-                  ]
-                }
-              }
-            },
-            "required": [
-              "s",
-              "t",
-              "d"
-            ]
-          }
-        },
-        "required": [
-          "e",
-          "t",
-          "data"
-        ]
-      },
-      "SubaccountLiquidationMessage": {
-        "type": "object",
-        "description": "Server-to-client SubaccountLiquidation event message.",
-        "properties": {
-          "e": {
-            "type": "string",
-            "enum": [
-              "SubaccountLiquidation"
-            ],
-            "description": "Event type."
-          },
-          "t": {
-            "type": "integer",
-            "format": "int64",
-            "description": "System timestamp in milliseconds when this message was emitted."
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "sid": {
-                "type": "string",
-                "format": "uuid",
-                "description": "Subaccount identifier."
-              },
-              "t": {
-                "type": "integer",
-                "format": "int64",
-                "description": "Timestamp in milliseconds of the liquidation event."
-              },
-              "d": {
-                "type": "array",
-                "description": "Liquidated positions or fills.",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "s": {
-                      "type": "string",
-                      "description": "Symbol."
-                    },
-                    "px": {
-                      "type": "string",
-                      "description": "Price.",
-                      "format": "decimal"
-                    },
-                    "sz": {
-                      "type": "string",
-                      "description": "Size.",
-                      "format": "decimal"
-                    }
-                  },
-                  "required": [
-                    "s",
-                    "px",
-                    "sz"
-                  ]
-                }
-              }
-            },
-            "required": [
-              "sid",
-              "t",
-              "d"
-            ]
-          }
-        },
-        "required": [
-          "e",
-          "t",
-          "data"
-        ]
-      },
-      "PositionUpdateMessage": {
-        "type": "object",
-        "description": "Server-to-client PositionUpdate event message.",
-        "properties": {
-          "e": {
-            "type": "string",
-            "enum": [
-              "PositionUpdate"
+              "OrderFill"
             ]
           },
           "t": {
@@ -338,8 +97,7 @@
             "properties": {
               "t": {
                 "type": "integer",
-                "format": "int64",
-                "description": "Timestamp in milliseconds of the position update."
+                "format": "int64"
               },
               "d": {
                 "type": "array",
@@ -349,61 +107,70 @@
                     "id": {
                       "type": "string",
                       "format": "uuid",
-                      "description": "Position identifier."
+                      "description": "Order fill identifier."
                     },
-                    "sid": {
+                    "oid": {
                       "type": "string",
                       "format": "uuid",
-                      "description": "Subaccount identifier."
+                      "description": "Related order identifier for this fill."
                     },
-                    "s": {
+                    "cloid": {
                       "type": "string",
-                      "description": "Symbol."
+                      "description": "Client order identifier provided at order placement. May be empty if not provided or for certain order update types."
                     },
-                    "sd": {
-                      "$ref": "./openapi.json#/components/schemas/PositionSideEnum"
+                    "px": {
+                      "type": "string",
+                      "description": "Price.",
+                      "format": "decimal"
                     },
                     "sz": {
                       "type": "string",
-                      "description": "Position size.",
+                      "description": "Size.",
                       "format": "decimal"
                     },
-                    "cost": {
-                      "type": "string",
-                      "description": "Position cost.",
-                      "format": "decimal"
+                    "typ": {
+                      "$ref": "./openapi.json#/components/schemas/OrderType"
                     },
-                    "rpnl": {
-                      "type": "string",
-                      "description": "Realized PnL for this position update.",
-                      "format": "decimal"
+                    "sd": {
+                      "$ref": "./openapi.json#/components/schemas/OrderSide"
                     },
-                    "fpnl": {
+                    "s": {
+                      "type": "string"
+                    },
+                    "sid": {
                       "type": "string",
-                      "description": "Funding PnL for this position update.",
-                      "format": "decimal"
+                      "format": "uuid"
+                    },
+                    "ro": {
+                      "type": "boolean"
                     },
                     "fee": {
                       "type": "string",
-                      "description": "Fees for this position update.",
+                      "description": "Fees for this fill.",
                       "format": "decimal"
                     },
-                    "lpx": {
-                      "type": "string",
-                      "description": "Liquidation price for this position.",
-                      "format": "decimal"
+                    "m": {
+                      "type": "boolean",
+                      "description": "Whether this fill was a maker or taker fill."
+                    },
+                    "t": {
+                      "type": "integer",
+                      "format": "int64"
                     }
                   },
                   "required": [
                     "id",
-                    "sid",
-                    "s",
-                    "sd",
+                    "oid",
+                    "px",
                     "sz",
-                    "cost",
-                    "rpnl",
-                    "fpnl",
-                    "fee"
+                    "typ",
+                    "sd",
+                    "s",
+                    "sid",
+                    "ro",
+                    "fee",
+                    "m",
+                    "t"
                   ]
                 }
               }
@@ -571,14 +338,14 @@
           "data"
         ]
       },
-      "OrderFillMessage": {
+      "PositionUpdateMessage": {
         "type": "object",
-        "description": "Server-to-client OrderFill event message.",
+        "description": "Server-to-client PositionUpdate event message.",
         "properties": {
           "e": {
             "type": "string",
             "enum": [
-              "OrderFill"
+              "PositionUpdate"
             ]
           },
           "t": {
@@ -590,7 +357,8 @@
             "properties": {
               "t": {
                 "type": "integer",
-                "format": "int64"
+                "format": "int64",
+                "description": "Timestamp in milliseconds of the position update."
               },
               "d": {
                 "type": "array",
@@ -600,16 +368,115 @@
                     "id": {
                       "type": "string",
                       "format": "uuid",
-                      "description": "Order fill identifier."
+                      "description": "Position identifier."
                     },
-                    "oid": {
+                    "sid": {
                       "type": "string",
                       "format": "uuid",
-                      "description": "Related order identifier for this fill."
+                      "description": "Subaccount identifier."
                     },
-                    "cloid": {
+                    "s": {
                       "type": "string",
-                      "description": "Client order identifier provided at order placement. May be empty if not provided or for certain order update types."
+                      "description": "Symbol."
+                    },
+                    "sd": {
+                      "$ref": "./openapi.json#/components/schemas/PositionSideEnum"
+                    },
+                    "sz": {
+                      "type": "string",
+                      "description": "Position size.",
+                      "format": "decimal"
+                    },
+                    "cost": {
+                      "type": "string",
+                      "description": "Position cost.",
+                      "format": "decimal"
+                    },
+                    "rpnl": {
+                      "type": "string",
+                      "description": "Realized PnL for this position update.",
+                      "format": "decimal"
+                    },
+                    "fpnl": {
+                      "type": "string",
+                      "description": "Funding PnL for this position update.",
+                      "format": "decimal"
+                    },
+                    "fee": {
+                      "type": "string",
+                      "description": "Fees for this position update.",
+                      "format": "decimal"
+                    },
+                    "lpx": {
+                      "type": "string",
+                      "description": "Liquidation price for this position.",
+                      "format": "decimal"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "sid",
+                    "s",
+                    "sd",
+                    "sz",
+                    "cost",
+                    "rpnl",
+                    "fpnl",
+                    "fee"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "t",
+              "d"
+            ]
+          }
+        },
+        "required": [
+          "e",
+          "t",
+          "data"
+        ]
+      },
+      "SubaccountLiquidationMessage": {
+        "type": "object",
+        "description": "Server-to-client SubaccountLiquidation event message.",
+        "properties": {
+          "e": {
+            "type": "string",
+            "enum": [
+              "SubaccountLiquidation"
+            ],
+            "description": "Event type."
+          },
+          "t": {
+            "type": "integer",
+            "format": "int64",
+            "description": "System timestamp in milliseconds when this message was emitted."
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "sid": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Subaccount identifier."
+              },
+              "t": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Timestamp in milliseconds of the liquidation event."
+              },
+              "d": {
+                "type": "array",
+                "description": "Liquidated positions or fills.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "s": {
+                      "type": "string",
+                      "description": "Symbol."
                     },
                     "px": {
                       "type": "string",
@@ -620,57 +487,106 @@
                       "type": "string",
                       "description": "Size.",
                       "format": "decimal"
-                    },
-                    "typ": {
-                      "$ref": "./openapi.json#/components/schemas/OrderType"
-                    },
-                    "sd": {
-                      "$ref": "./openapi.json#/components/schemas/OrderSide"
-                    },
-                    "s": {
-                      "type": "string"
-                    },
-                    "sid": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "ro": {
-                      "type": "boolean"
-                    },
-                    "fee": {
-                      "type": "string",
-                      "description": "Fees for this fill.",
-                      "format": "decimal"
-                    },
-                    "m": {
-                      "type": "boolean",
-                      "description": "Whether this fill was a maker or taker fill."
-                    },
-                    "t": {
-                      "type": "integer",
-                      "format": "int64"
                     }
                   },
                   "required": [
-                    "id",
-                    "oid",
-                    "px",
-                    "sz",
-                    "typ",
-                    "sd",
                     "s",
-                    "sid",
-                    "ro",
-                    "fee",
-                    "m",
-                    "t"
+                    "px",
+                    "sz"
                   ]
                 }
               }
             },
             "required": [
+              "sid",
               "t",
               "d"
+            ]
+          }
+        },
+        "required": [
+          "e",
+          "t",
+          "data"
+        ]
+      },
+      "TickerMessage": {
+        "type": "object",
+        "description": "Server-to-client Ticker event message.",
+        "properties": {
+          "e": {
+            "type": "string",
+            "enum": [
+              "Ticker"
+            ],
+            "description": "Event type."
+          },
+          "t": {
+            "type": "integer",
+            "format": "int64",
+            "description": "System timestamp in milliseconds when this message was emitted."
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "s": {
+                "type": "string",
+                "description": "Market symbol, e.g. BTCUSD, ETHUSD."
+              },
+              "t": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Timestamp in milliseconds for this ticker update."
+              },
+              "bidPx": {
+                "type": "string",
+                "description": "Best bid price.",
+                "format": "decimal"
+              },
+              "askPx": {
+                "type": "string",
+                "description": "Best ask price.",
+                "format": "decimal"
+              },
+              "bidAmt": {
+                "type": "string",
+                "description": "Best bid quantity.",
+                "format": "decimal"
+              },
+              "askAmt": {
+                "type": "string",
+                "description": "Best ask quantity.",
+                "format": "decimal"
+              },
+              "markPx": {
+                "type": "string",
+                "description": "Mark price.",
+                "format": "decimal"
+              },
+              "markPx24h": {
+                "type": "string",
+                "description": "Mark price 24 hours ago.",
+                "format": "decimal"
+              },
+              "oi": {
+                "type": "string",
+                "description": "Open interest.",
+                "format": "decimal"
+              },
+              "fr1h": {
+                "type": "string",
+                "description": "Funding rate for 1 hour.",
+                "format": "decimal"
+              },
+              "vol24h": {
+                "type": "string",
+                "description": "24 hour volume.",
+                "format": "decimal"
+              }
+            },
+            "required": [
+              "s",
+              "t"
             ]
           }
         },
@@ -765,6 +681,90 @@
               "st",
               "amt",
               "fee"
+            ]
+          }
+        },
+        "required": [
+          "e",
+          "t",
+          "data"
+        ]
+      },
+      "TradeFillMessage": {
+        "type": "object",
+        "description": "Server-to-client TradeFill event message containing recent trades for a symbol.",
+        "properties": {
+          "e": {
+            "type": "string",
+            "enum": [
+              "TradeFill"
+            ],
+            "description": "Event type."
+          },
+          "t": {
+            "type": "integer",
+            "format": "int64",
+            "description": "System timestamp in milliseconds when this message was emitted."
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "s": {
+                "type": "string",
+                "description": "Market symbol."
+              },
+              "t": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Timestamp in milliseconds for this trade update."
+              },
+              "d": {
+                "type": "array",
+                "description": "Array of trade fill objects.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "Trade identifier."
+                    },
+                    "px": {
+                      "type": "string",
+                      "description": "Trade price.",
+                      "format": "decimal"
+                    },
+                    "sz": {
+                      "type": "string",
+                      "description": "Trade size.",
+                      "format": "decimal"
+                    },
+                    "sd": {
+                      "$ref": "./openapi.json#/components/schemas/OrderSide"
+                    },
+                    "sids": {
+                      "type": "array",
+                      "description": "Related subaccount identifiers.",
+                      "items": {
+                        "type": "string",
+                        "format": "uuid"
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "px",
+                    "sz",
+                    "sd",
+                    "sids"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "s",
+              "t",
+              "d"
             ]
           }
         },

@@ -13,9 +13,8 @@ use serde::{Deserialize, Serialize};
 
 /// NotFoundDtoErrorEnum : Extracted enum for NotFoundDtoErrorEnum
 /// Extracted enum for NotFoundDtoErrorEnum
-#[derive(
-    Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, Default,
-)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(Default)]
 pub enum NotFoundDtoErrorEnum {
     #[serde(rename = "Not Found")]
     #[default]
@@ -29,3 +28,4 @@ impl std::fmt::Display for NotFoundDtoErrorEnum {
         }
     }
 }
+

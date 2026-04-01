@@ -24,7 +24,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -76,7 +77,8 @@
             "in": "query",
             "description": "Filter by orders created after timestamp exclusive (ms since Unix epoch)",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -85,7 +87,8 @@
             "in": "query",
             "description": "Filter by orders created before timestamp inclusive (ms since Unix epoch)",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -565,7 +568,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -608,7 +612,8 @@
             "in": "query",
             "description": "Filter by order fills created before timestamp exclusive (ms since Unix epoch)",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -617,7 +622,8 @@
             "in": "query",
             "description": "Filter by order fills created before timestamp inclusive (ms since Unix epoch)",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -779,7 +785,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -928,7 +935,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -1152,7 +1160,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -1221,7 +1230,8 @@
             "in": "query",
             "description": "Filter by order fills created before timestamp exclusive (ms since Unix epoch)",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -1230,7 +1240,8 @@
             "in": "query",
             "description": "Filter by order fills created before timestamp inclusive (ms since Unix epoch)",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -1566,7 +1577,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -1708,7 +1720,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -1838,7 +1851,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -2275,7 +2289,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -2701,7 +2716,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -2831,7 +2847,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -2982,7 +2999,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -3885,7 +3903,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -4049,7 +4068,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -4199,7 +4219,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -4278,7 +4299,8 @@
             "in": "query",
             "description": "Filter by transfers created after timestamp exclusive (ms since Unix epoch)",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -4287,7 +4309,8 @@
             "in": "query",
             "description": "Filter by transfers created before timestamp inclusive (ms since Unix epoch)",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           }
         ],
@@ -4593,7 +4616,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -4883,7 +4907,8 @@
               "minimum": 0,
               "maximum": 10,
               "example": 1,
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -4895,7 +4920,8 @@
               "minimum": 1,
               "maximum": 256,
               "example": 1,
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           }
         ],
@@ -5090,7 +5116,8 @@
               "minimum": 0,
               "maximum": 10,
               "example": 1,
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {
@@ -5102,7 +5129,8 @@
               "minimum": 1,
               "maximum": 256,
               "example": 1,
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           }
         ],
@@ -5450,7 +5478,8 @@
             "in": "query",
             "description": "Limit the number of objects to return",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           {

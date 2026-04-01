@@ -356,7 +356,7 @@ def extract_channels():
         channels.add((channel_name, msg_name, MSG_TO_SUB_TYPE_MAPPING[msg_name]))
     data = CHANNEL_ENUM_TEMPLATE.substitute(
         variants="\n".join([f"    {channel[0]}, "
-                            for channel in channels])
+                            for channel in sorted(channels, key=lambda x: x[0])])
     )
     with open("src/channels.rs", "w") as f:
         f.write(data)
@@ -369,7 +369,7 @@ def build_subscriptions(channels):
     # This function can be implemented to read the channels and generate subscription methods in the async client.
     functions = []
     subscription_message_imports = set()
-    for channel_name, msg_name, sub_type in channels:
+    for channel_name, msg_name, sub_type in sorted(channels, key=lambda x: x[0]):
         func_name = to_snake_case(channel_name)
         subscription_message_imports.add(msg_name)
         templated_function = SUBSCRIPTION_FUNCTION_TEMPLATE.substitute(

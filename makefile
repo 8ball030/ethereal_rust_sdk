@@ -11,7 +11,7 @@ PATCH_VERSION := $(shell \
 # Allow override
 NEW_VERSION ?= $(PATCH_VERSION)
 
-.PHONY: version tag release
+.PHONY: version tag release fmt lint codegen
 
 
 version:
@@ -57,7 +57,9 @@ codegen:
 	bash build_scripts/pre_processing.sh
 	python build_scripts/patch_spec.py
 
+	jq '.components.schemas |= (to_entries | sort_by(.key) | from_entries)' ws_messages.json > tmp.json && mv tmp.json ws_messages.json
 	redocly bundle ws_messages.json -o ws_spec_updated.json
+
 	openapi-generator-cli generate \
 	  -i ws_spec_updated.json \
 	  -g rust \
@@ -95,13 +97,12 @@ codegen:
 	# cleanup
 	rm -rf ./generated
 
-	@for f in ./src/models/*.rs; do \
-		base=$$(basename $$f); \
-		if [ "$$base" = "mod.rs" ]; then continue; fi; \
+	find ./src/models -maxdepth 1 -type f -name '*.rs' ! -name 'mod.rs' | LC_ALL=C sort | while IFS= read -r f; do \
+		base=$$(basename "$$f"); \
 		name=$${base%.rs}; \
-		camel=$$(echo $$name | sed -E 's/(^|_)([a-z])/\U\2/g'); \
-		echo "pub mod $$name;" >> ./src/models/mod.rs; \
-		echo "pub use $$name::$$camel;" >> ./src/models/mod.rs; \
+		camel=$$(echo "$$name" | sed -E 's/(^|_)([a-z])/\U\2/g'); \
+		printf "\tpub mod %s;\n" "$$name" >> ./src/models/mod.rs; \
+		printf "\tpub use %s::%s;\n" "$$name" "$$camel" >> ./src/models/mod.rs; \
 	done
 
 	openapi-generator-cli generate \
