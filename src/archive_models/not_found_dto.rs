@@ -36,11 +36,11 @@ impl NotFoundDto {
     }
 }
 ///
-#[derive(
-    Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, Default,
-)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(Default)]
 pub enum StatusCode {
     #[serde(rename = "404")]
     #[default]
     Variant404,
 }
+
