@@ -2,14 +2,14 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum Channels {
-    PositionUpdate,
-    TokenTransfer,
     L2Book,
     OrderFill,
-    SubaccountLiquidation,
     OrderUpdate,
-    TradeFill,
+    PositionUpdate,
+    SubaccountLiquidation,
     Ticker,
+    TokenTransfer,
+    TradeFill,
 }
 impl Channels {
     pub fn as_string(&self) -> String {

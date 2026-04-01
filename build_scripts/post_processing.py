@@ -356,7 +356,7 @@ def extract_channels():
         channels.add((channel_name, msg_name, MSG_TO_SUB_TYPE_MAPPING[msg_name]))
     data = CHANNEL_ENUM_TEMPLATE.substitute(
         variants="\n".join([f"    {channel[0]}, "
-                            for channel in channels])
+                            for channel in sorted(channels, key=lambda x: x[0])])
     )
     with open("src/channels.rs", "w") as f:
         f.write(data)
