@@ -57,7 +57,9 @@ codegen:
 	bash build_scripts/pre_processing.sh
 	python build_scripts/patch_spec.py
 
+	jq '.components.schemas |= (to_entries | sort_by(.key) | from_entries)' ws_messages.json > tmp.json && mv tmp.json ws_messages.json
 	redocly bundle ws_messages.json -o ws_spec_updated.json
+
 	openapi-generator-cli generate \
 	  -i ws_spec_updated.json \
 	  -g rust \
