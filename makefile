@@ -97,13 +97,12 @@ codegen:
 	# cleanup
 	rm -rf ./generated
 
-	@for f in ./src/models/*.rs; do \
-		base=$$(basename $$f); \
-		if [ "$$base" = "mod.rs" ]; then continue; fi; \
+	find ./src/models -maxdepth 1 -type f -name '*.rs' ! -name 'mod.rs' | LC_ALL=C sort | while IFS= read -r f; do \
+		base=$$(basename "$$f"); \
 		name=$${base%.rs}; \
-		camel=$$(echo $$name | sed -E 's/(^|_)([a-z])/\U\2/g'); \
-		echo "pub mod $$name;" >> ./src/models/mod.rs; \
-		echo "pub use $$name::$$camel;" >> ./src/models/mod.rs; \
+		camel=$$(echo "$$name" | sed -E 's/(^|_)([a-z])/\U\2/g'); \
+		printf "\tpub mod %s;\n" "$$name" >> ./src/models/mod.rs; \
+		printf "\tpub use %s::%s;\n" "$$name" "$$camel" >> ./src/models/mod.rs; \
 	done
 
 	openapi-generator-cli generate \
