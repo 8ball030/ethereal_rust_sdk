@@ -142,7 +142,7 @@ def remove_default_ts_values(spec: dict):
             for param in operation.get("parameters", []):
                 if param.get("description") == description:
                     print(f"Removing default value from parameter: {param['name']} in {method.upper()} {path}")
-                    param.pop("default", None)
+                    param['schema'].pop("default", None)
     print("Removed default timestamp values from parameters.")
     return spec
 
