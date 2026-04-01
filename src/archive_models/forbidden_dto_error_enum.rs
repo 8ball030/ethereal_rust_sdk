@@ -13,8 +13,9 @@ use serde::{Deserialize, Serialize};
 
 /// ForbiddenDtoErrorEnum : Extracted enum for ForbiddenDtoErrorEnum
 /// Extracted enum for ForbiddenDtoErrorEnum
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-#[derive(Default)]
+#[derive(
+    Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, Default,
+)]
 pub enum ForbiddenDtoErrorEnum {
     #[serde(rename = "Forbidden")]
     #[default]
@@ -28,4 +29,3 @@ impl std::fmt::Display for ForbiddenDtoErrorEnum {
         }
     }
 }
-
