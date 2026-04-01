@@ -52,7 +52,7 @@
             "in": "query",
             "description": "End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)",
             "schema": {
-              "default": "2026-03-20T05:33:11.640Z",
+              "default": "2026-03-20T05:33:00.508Z",
               "type": "number"
             }
           },
@@ -237,7 +237,7 @@
             "in": "query",
             "description": "End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)",
             "schema": {
-              "default": "2026-03-20T05:33:10.858Z",
+              "default": "2026-03-20T05:32:59.750Z",
               "type": "number"
             }
           },
@@ -429,7 +429,7 @@
             "in": "query",
             "description": "End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)",
             "schema": {
-              "default": "2026-03-20T05:33:11.645Z",
+              "default": "2026-03-20T05:33:00.513Z",
               "type": "number"
             }
           },
@@ -624,7 +624,7 @@
             "in": "query",
             "description": "End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)",
             "schema": {
-              "default": "2026-03-20T05:33:11.647Z",
+              "default": "2026-03-20T05:33:00.515Z",
               "type": "number"
             }
           },

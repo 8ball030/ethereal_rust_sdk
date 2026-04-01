@@ -132,6 +132,20 @@ def remove_deprecated_endpoints(spec: dict):
     print(f"Removed {removed} deprecated endpoints.")
     return spec
 
+
+def remove_default_ts_values(spec: dict):
+    description = "End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)"
+    for path, path_item in spec.get("paths", {}).items():
+        for method, operation in path_item.items():
+            if not isinstance(operation, dict):
+                continue
+            for param in operation.get("parameters", []):
+                if param.get("description") == description:
+                    print(f"Removing default value from parameter: {param['name']} in {method.upper()} {path}")
+                    param.pop("default", None)
+    print("Removed default timestamp values from parameters.")
+    return spec
+
 def main():
     file_path = Path("openapi.json")
 
@@ -151,6 +165,7 @@ def main():
     data = read_json(archive_file_path)
     data = extract_all_enums(data)
     data = patch_integer_properties(data)
+    data = remove_default_ts_values(data)
     write_json(archive_file_path, data)
     print(f"Patched: {archive_file_path}")  
 
