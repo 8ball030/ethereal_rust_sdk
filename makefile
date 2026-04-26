@@ -57,6 +57,8 @@ codegen:
 	bash build_scripts/pre_processing.sh
 	python build_scripts/patch_spec.py
 
+	rm -rf ./src/models/* ./src/archive_models/*
+
 	jq '.components.schemas |= (to_entries | sort_by(.key) | from_entries)' ws_messages.json > tmp.json && mv tmp.json ws_messages.json
 	redocly bundle ws_messages.json -o ws_spec_updated.json
 
@@ -81,7 +83,6 @@ codegen:
 
 	cp ./generated/src/models/* ./src/models/
 	cp -r ./generated/src/apis ./src/
-
 
 	# rebuild mod.rs
 	@echo "#![allow(clippy::all)]" > ./src/models/mod.rs
