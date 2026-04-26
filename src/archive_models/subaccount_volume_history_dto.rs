@@ -18,11 +18,11 @@ pub struct SubaccountVolumeHistoryDto {
     pub time: f64,
     /// Volume in USD during this time interval, expressed as a decimal (precision: 9)
     #[serde(rename = "volumeUsd")]
-    pub volume_usd: String,
+    pub volume_usd: rust_decimal::Decimal,
 }
 
 impl SubaccountVolumeHistoryDto {
-    pub fn new(time: f64, volume_usd: String) -> SubaccountVolumeHistoryDto {
+    pub fn new(time: f64, volume_usd: rust_decimal::Decimal) -> SubaccountVolumeHistoryDto {
         SubaccountVolumeHistoryDto { time, volume_usd }
     }
 }

@@ -28,8 +28,9 @@ pub struct InitiateWithdrawDtoData {
     /// Bytes32 encoded LayerZero destination address (with 0x prefix, left zero padded)
     #[serde(rename = "lzDestinationAddress")]
     pub lz_destination_address: String,
+    /// LayerZero destination endpoint ID for the transfer (zero if not bridging)
     #[serde(rename = "lzDestinationEid")]
-    pub lz_destination_eid: models::LzDestinationEidEnum,
+    pub lz_destination_eid: models::LayerZeroEndpointId,
     /// Message nonce timestamp (nanoseconds since Unix Epoch)
     #[serde(rename = "nonce")]
     pub nonce: String,
@@ -45,7 +46,7 @@ impl InitiateWithdrawDtoData {
         token: String,
         amount: rust_decimal::Decimal,
         lz_destination_address: String,
-        lz_destination_eid: models::LzDestinationEidEnum,
+        lz_destination_eid: models::LayerZeroEndpointId,
         nonce: String,
         signed_at: i64,
     ) -> InitiateWithdrawDtoData {

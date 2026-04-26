@@ -1,6 +1,7 @@
 mod common;
 use ethereal_rust_sdk::apis::order_api::OrderControllerListBySubaccountIdParams;
-use ethereal_rust_sdk::models::{OrderSide, OrderType, ResultEnum, TimeInForce};
+use ethereal_rust_sdk::models::{OrderSide, OrderType, SubmitOrderCreatedResultCode, TimeInForce};
+use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
 
 #[tokio::test]
@@ -40,8 +41,8 @@ async fn test_simple_order() {
         .unwrap();
     println!("Order created: {:?}", order);
 
-    assert!(order.result == ResultEnum::Ok);
-    assert!(order.filled == "0");
+    assert!(order.result == SubmitOrderCreatedResultCode::Ok);
+    assert!(order.filled == Decimal::ZERO);
 }
 
 #[tokio::test]

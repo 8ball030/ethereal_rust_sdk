@@ -11,24 +11,26 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// EEnum : Extracted enum for EEnum
-/// Extracted enum for EEnum
+///
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum EEnum {
-    #[serde(rename = "Ticker")]
-    Ticker,
+pub enum TransferType {
+    #[serde(rename = "DEPOSIT")]
+    Deposit,
+    #[serde(rename = "WITHDRAW")]
+    Withdraw,
 }
 
-impl std::fmt::Display for EEnum {
+impl std::fmt::Display for TransferType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            Self::Ticker => write!(f, "Ticker"),
+            Self::Deposit => write!(f, "DEPOSIT"),
+            Self::Withdraw => write!(f, "WITHDRAW"),
         }
     }
 }
 
-impl Default for EEnum {
-    fn default() -> EEnum {
-        Self::Ticker
+impl Default for TransferType {
+    fn default() -> TransferType {
+        Self::Deposit
     }
 }

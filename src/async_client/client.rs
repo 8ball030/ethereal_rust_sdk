@@ -44,7 +44,7 @@ use ethers::{
 };
 use log::debug;
 use rust_decimal::Decimal;
-use std::{collections::HashMap, str::FromStr};
+use std::collections::HashMap;
 use uuid::Uuid;
 
 fn get_server_url(environment: &Environment) -> &str {
@@ -251,8 +251,8 @@ impl HttpClient {
             return Err("Only limit orders are supported in this method".into());
         }
         let product_info = self.product_hashmap.get(ticker).unwrap();
-        let tick_size = Decimal::from_str(&product_info.tick_size)?;
-        let lot_size = Decimal::from_str(&product_info.lot_size)?;
+        let tick_size = product_info.tick_size;
+        let lot_size = product_info.lot_size;
 
         let price = round_to_tick(price, tick_size)?;
         let quantity = round_to_tick(quantity, lot_size)?;

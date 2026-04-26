@@ -19,12 +19,13 @@ pub struct CancelOrderResultDto {
     /// A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)
     #[serde(rename = "clientOrderId", skip_serializing_if = "Option::is_none")]
     pub client_order_id: Option<String>,
+    /// Code indicating the result of the submission
     #[serde(rename = "result")]
-    pub result: models::CancelOrderResultDtoResultEnum,
+    pub result: models::CancelOrderResultCode,
 }
 
 impl CancelOrderResultDto {
-    pub fn new(id: String, result: models::CancelOrderResultDtoResultEnum) -> CancelOrderResultDto {
+    pub fn new(id: String, result: models::CancelOrderResultCode) -> CancelOrderResultDto {
         CancelOrderResultDto {
             id,
             client_order_id: None,

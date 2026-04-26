@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 pub struct SubmitOrderDto {
     #[serde(rename = "data")]
     pub data: models::SubmitOrderDtoData,
-    /// The signature from signTypedData(...) signed by the sender
+    /// Hex-encoded EIP-712 signature authorizing this request
     #[serde(rename = "signature")]
     pub signature: String,
 }

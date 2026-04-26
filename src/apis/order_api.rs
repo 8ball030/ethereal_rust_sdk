@@ -51,14 +51,14 @@ pub struct OrderControllerListBySubaccountIdParams {
     /// Filter by orders created before timestamp inclusive (ms since Unix epoch)
     pub created_before: Option<i64>,
     /// Side of the order to filter for
-    pub side: Option<f64>,
+    pub side: Option<models::OrderSide>,
     /// Whether the order is a position close order
     pub close: Option<bool>,
     /// Array of StopTypes to filter by
-    pub stop_types: Option<Vec<f64>>,
+    pub stop_types: Option<Vec<models::StopType>>,
     /// Filter by orders that are working: NEW, FILLED_PARTIAL
     pub is_working: Option<bool>,
-    /// Filter by orders that are pending
+    /// Filter by orders that are PENDING
     pub is_pending: Option<bool>,
     /// Order by field
     pub order_by: Option<String>,
@@ -82,7 +82,7 @@ pub struct OrderControllerListFillsBySubaccountIdParams {
     /// Filter by order fills created before timestamp inclusive (ms since Unix epoch)
     pub created_before: Option<i64>,
     /// Side of the maker as either BUY (0) or SELL (1)
-    pub side: Option<f64>,
+    pub side: Option<models::OrderSide>,
     /// Order by field
     pub order_by: Option<String>,
     /// Explicitly include self trades (excluded by default)

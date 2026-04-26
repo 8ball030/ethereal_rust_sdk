@@ -15,8 +15,9 @@ use serde::{Deserialize, Serialize};
 pub struct DryRunOrderFailedUnprocessableEntityDto {
     #[serde(rename = "statusCode")]
     pub status_code: StatusCode,
+    /// Code indicating the reason for failure
     #[serde(rename = "message")]
-    pub message: models::MessageEnum,
+    pub message: models::SubmitOrderFailedResultCode,
     #[serde(rename = "error")]
     pub error: models::DryRunOrderFailedUnprocessableEntityDtoErrorEnum,
     /// Details of the failed dry run
@@ -27,7 +28,7 @@ pub struct DryRunOrderFailedUnprocessableEntityDto {
 impl DryRunOrderFailedUnprocessableEntityDto {
     pub fn new(
         status_code: StatusCode,
-        message: models::MessageEnum,
+        message: models::SubmitOrderFailedResultCode,
         error: models::DryRunOrderFailedUnprocessableEntityDtoErrorEnum,
         data: models::DryRunOrderFailedDto,
     ) -> DryRunOrderFailedUnprocessableEntityDto {

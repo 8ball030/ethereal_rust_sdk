@@ -18,11 +18,11 @@ pub struct TotalProductVolumeDto {
     pub product_id: String,
     /// Volume for this product up to now in USD, expressed as a decimal (precision: 9)
     #[serde(rename = "volumeUsd")]
-    pub volume_usd: String,
+    pub volume_usd: rust_decimal::Decimal,
 }
 
 impl TotalProductVolumeDto {
-    pub fn new(product_id: String, volume_usd: String) -> TotalProductVolumeDto {
+    pub fn new(product_id: String, volume_usd: rust_decimal::Decimal) -> TotalProductVolumeDto {
         TotalProductVolumeDto {
             product_id,
             volume_usd,

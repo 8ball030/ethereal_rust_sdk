@@ -11,10 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// WithdrawFailedDtoMessageEnum : Extracted enum for WithdrawFailedDtoMessageEnum
-/// Extracted enum for WithdrawFailedDtoMessageEnum
+/// WithdrawErrorCode : Error code indicating the reason for failure
+/// Error code indicating the reason for failure
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum WithdrawFailedDtoMessageEnum {
+pub enum WithdrawErrorCode {
     #[serde(rename = "AccountSuspended")]
     AccountSuspended,
     #[serde(rename = "EngineSuspended")]
@@ -25,7 +25,7 @@ pub enum WithdrawFailedDtoMessageEnum {
     InsuranceFundCannotWithdraw,
 }
 
-impl std::fmt::Display for WithdrawFailedDtoMessageEnum {
+impl std::fmt::Display for WithdrawErrorCode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::AccountSuspended => write!(f, "AccountSuspended"),
@@ -36,8 +36,8 @@ impl std::fmt::Display for WithdrawFailedDtoMessageEnum {
     }
 }
 
-impl Default for WithdrawFailedDtoMessageEnum {
-    fn default() -> WithdrawFailedDtoMessageEnum {
+impl Default for WithdrawErrorCode {
+    fn default() -> WithdrawErrorCode {
         Self::AccountSuspended
     }
 }

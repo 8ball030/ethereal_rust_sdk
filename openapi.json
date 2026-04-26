@@ -96,17 +96,8 @@
             "required": false,
             "in": "query",
             "description": "Side of the order to filter for",
-            "x-enum-varnames": [
-              "BUY",
-              "SELL"
-            ],
             "schema": {
-              "example": 0,
-              "type": "number",
-              "enum": [
-                0,
-                1
-              ]
+              "$ref": "#/components/schemas/OrderSide"
             }
           },
           {
@@ -124,20 +115,10 @@
             "in": "query",
             "description": "Array of StopTypes to filter by",
             "deprecated": true,
-            "x-enum-varnames": [
-              "GAIN",
-              "LOSS"
-            ],
             "schema": {
-              "uniqueItems": true,
-              "example": 0,
               "type": "array",
               "items": {
-                "type": "number",
-                "enum": [
-                  0,
-                  1
-                ]
+                "$ref": "#/components/schemas/StopType"
               }
             }
           },
@@ -158,7 +139,7 @@
             "name": "isPending",
             "required": false,
             "in": "query",
-            "description": "Filter by orders that are pending",
+            "description": "Filter by orders that are PENDING",
             "schema": {
               "example": true,
               "type": "boolean",
@@ -233,7 +214,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -326,7 +307,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -421,7 +402,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -466,7 +447,7 @@
         },
         "responses": {
           "202": {
-            "description": "Orders cancelation accepted",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
@@ -516,7 +497,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -631,17 +612,8 @@
             "required": false,
             "in": "query",
             "description": "Side of the maker as either BUY (0) or SELL (1)",
-            "x-enum-varnames": [
-              "BUY",
-              "SELL"
-            ],
             "schema": {
-              "example": 0,
-              "type": "number",
-              "enum": [
-                0,
-                1
-              ]
+              "$ref": "#/components/schemas/OrderSide"
             }
           },
           {
@@ -733,7 +705,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -875,7 +847,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -1014,7 +986,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -1108,7 +1080,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -1249,17 +1221,8 @@
             "required": false,
             "in": "query",
             "description": "Side as either BUY (0) or SELL (1)",
-            "x-enum-varnames": [
-              "BUY",
-              "SELL"
-            ],
             "schema": {
-              "example": 0,
-              "type": "number",
-              "enum": [
-                0,
-                1
-              ]
+              "$ref": "#/components/schemas/OrderSide"
             }
           },
           {
@@ -1325,7 +1288,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -1431,7 +1394,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -1525,7 +1488,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -1669,7 +1632,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -1799,7 +1762,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -1944,7 +1907,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -2041,7 +2004,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -2143,7 +2106,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -2237,7 +2200,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -2393,7 +2356,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -2495,7 +2458,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -2580,7 +2543,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -2665,7 +2628,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -2795,7 +2758,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -2874,7 +2837,7 @@
             "name": "sender",
             "required": true,
             "in": "query",
-            "description": "Address of the sender",
+            "description": "Address of the subaccount wallet",
             "schema": {
               "format": "hex",
               "type": "string"
@@ -2947,7 +2910,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -3090,7 +3053,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -3184,7 +3147,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -3279,7 +3242,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -3374,7 +3337,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -3469,7 +3432,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -3564,7 +3527,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -3660,7 +3623,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -3757,7 +3720,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -3851,7 +3814,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -3932,20 +3895,9 @@
             "in": "query",
             "description": "Filters signers by statuses",
             "schema": {
-              "uniqueItems": true,
-              "example": [
-                "ACTIVE"
-              ],
               "type": "array",
               "items": {
-                "type": "string",
-                "enum": [
-                  "PENDING",
-                  "ACTIVE",
-                  "PENDING_REVOKE",
-                  "REVOKED",
-                  "REJECTED"
-                ]
+                "$ref": "#/components/schemas/LinkedSignerStatus"
               }
             }
           },
@@ -4016,7 +3968,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -4167,7 +4119,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -4268,15 +4220,9 @@
             "in": "query",
             "description": "Array of transfer types to filter by",
             "schema": {
-              "uniqueItems": true,
-              "example": "WITHDRAW",
               "type": "array",
               "items": {
-                "type": "string",
-                "enum": [
-                  "DEPOSIT",
-                  "WITHDRAW"
-                ]
+                "$ref": "#/components/schemas/TransferType"
               }
             }
           },
@@ -4366,7 +4312,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -4470,7 +4416,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -4564,7 +4510,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -4715,7 +4661,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -4854,7 +4800,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -4977,7 +4923,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -5074,7 +5020,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -5186,7 +5132,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -5285,7 +5231,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -5341,19 +5287,21 @@
           {
             "name": "X-Ethereal-Sender",
             "in": "header",
-            "description": "Address that signed this message (hex)",
+            "description": "Address that signed this message",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "hex"
             }
           },
           {
             "name": "X-Ethereal-Signature",
             "in": "header",
-            "description": "The signature from signTypedData(...) signed by the sender",
+            "description": "Hex-encoded EIP-712 signature authorizing this request",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "hex"
             }
           },
           {
@@ -5362,7 +5310,13 @@
             "description": "Intent of the message (action to be taken)",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "number",
+              "enum": [
+                0,
+                1,
+                2,
+                3
+              ]
             }
           },
           {
@@ -5427,7 +5381,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -5527,19 +5481,21 @@
           {
             "name": "X-Ethereal-Sender",
             "in": "header",
-            "description": "Address that signed this message (hex)",
+            "description": "Address that signed this message",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "hex"
             }
           },
           {
             "name": "X-Ethereal-Signature",
             "in": "header",
-            "description": "The signature from signTypedData(...) signed by the sender",
+            "description": "Hex-encoded EIP-712 signature authorizing this request",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "hex"
             }
           },
           {
@@ -5548,7 +5504,13 @@
             "description": "Intent of the message (action to be taken)",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "number",
+              "enum": [
+                0,
+                1,
+                2,
+                3
+              ]
             }
           },
           {
@@ -5613,7 +5575,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -5708,7 +5670,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -5803,7 +5765,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -5848,6 +5810,7 @@
             }
           }
         },
+        "summary": "Returns the current maintenance mode status",
         "tags": [
           "Maintenance"
         ]
@@ -5860,7 +5823,64 @@
     "version": "0.1.0",
     "contact": {}
   },
-  "tags": [],
+  "tags": [
+    {
+      "name": "Order",
+      "description": "Order submission, cancelation, and management"
+    },
+    {
+      "name": "Position",
+      "description": "Position queries, fill history, and liquidation data"
+    },
+    {
+      "name": "Product",
+      "description": "Product listing and configuration"
+    },
+    {
+      "name": "Funding",
+      "description": "Funding rate and payment history"
+    },
+    {
+      "name": "Subaccount",
+      "description": "Subaccount management, balances, and deposits"
+    },
+    {
+      "name": "LinkedSigner",
+      "description": "Linked signer (delegate) management"
+    },
+    {
+      "name": "Token",
+      "description": "Authentication token management"
+    },
+    {
+      "name": "Whitelist",
+      "description": "Whitelist status queries"
+    },
+    {
+      "name": "Referral",
+      "description": "Referral program and referral code management"
+    },
+    {
+      "name": "Points",
+      "description": "Points, rewards, and season information"
+    },
+    {
+      "name": "RateLimit",
+      "description": "Rate limit status and quota information"
+    },
+    {
+      "name": "Rpc",
+      "description": "RPC configuration and EIP-712 signing data"
+    },
+    {
+      "name": "Time",
+      "description": "Server time synchronization"
+    },
+    {
+      "name": "Maintenance",
+      "description": "Maintenance mode status"
+    }
+  ],
   "servers": [
     {
       "url": "https://api.ethereal.trade/",
@@ -5869,6 +5889,56 @@
   ],
   "components": {
     "schemas": {
+      "OrderSide": {
+        "type": "integer",
+        "enum": [
+          0,
+          1
+        ],
+        "format": "int32",
+        "x-enum-varnames": [
+          "BUY",
+          "SELL"
+        ]
+      },
+      "StopType": {
+        "type": "integer",
+        "enum": [
+          0,
+          1
+        ],
+        "format": "int32",
+        "x-enum-varnames": [
+          "GAIN",
+          "LOSS"
+        ]
+      },
+      "StopPriceType": {
+        "type": "integer",
+        "enum": [
+          0,
+          1
+        ],
+        "description": "Type of stop price (stop orders only)",
+        "format": "int32",
+        "x-enum-varnames": [
+          "LAST_PRICE",
+          "MARK_PRICE"
+        ]
+      },
+      "GroupContingencyType": {
+        "type": "integer",
+        "enum": [
+          0,
+          1
+        ],
+        "description": "Type of OTOCO relationship (OTO or OCO)",
+        "format": "int32",
+        "x-enum-varnames": [
+          "OTO",
+          "OCO"
+        ]
+      },
       "OrderDto": {
         "type": "object",
         "properties": {
@@ -5889,15 +5959,23 @@
           "availableQuantity": {
             "type": "string",
             "example": "10.5",
-            "description": "Remaining quantity (if modified or reduced) in native units expressed as a decimal (precision: 9)"
+            "description": "Remaining quantity (if modified or reduced) in native units expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "quantity": {
             "type": "string",
             "example": "10.5",
-            "description": "Original quantity (as per order submission) in native units expressed as a decimal (precision: 9)"
+            "description": "Original quantity (as per order submission) in native units expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "side": {
-            "$ref": "#/components/schemas/OrderSide"
+            "example": 1,
+            "description": "Side as either BUY (0) or SELL (1)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderSide"
+              }
+            ]
           },
           "productId": {
             "type": "string",
@@ -5944,23 +6022,38 @@
           "price": {
             "type": "string",
             "example": "4200.5",
-            "description": "Limit price in native units expressed as a decimal, zero if market order (precision: 9)"
+            "description": "Limit price in native units expressed as a decimal, zero if market order (precision: 9)",
+            "format": "decimal"
           },
           "filled": {
             "type": "string",
             "example": "0.5",
-            "description": "Filled amount in native units expressed as a decimal (precision: 9)"
+            "description": "Filled amount in native units expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "stopPrice": {
             "type": "string",
             "example": "4200.5",
-            "description": "Stop price expressed as a decimal (zero if not a stop order, precision: 9)"
+            "description": "Stop price expressed as a decimal (zero if not a stop order, precision: 9)",
+            "format": "decimal"
           },
           "stopType": {
-            "$ref": "#/components/schemas/StopTypeEnum"
+            "example": 1,
+            "description": "Stop type, either GAIN (0) for take-profit or LOSS (1) for stop-loss",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StopType"
+              }
+            ]
           },
           "stopPriceType": {
-            "$ref": "#/components/schemas/StopPriceTypeEnum"
+            "example": 1,
+            "description": "Type of stop price (stop orders only)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StopPriceType"
+              }
+            ]
           },
           "timeInForce": {
             "$ref": "#/components/schemas/TimeInForce"
@@ -5977,7 +6070,13 @@
             "description": "Only add order if it does not immediately fill (limit only)"
           },
           "groupContingencyType": {
-            "$ref": "#/components/schemas/GroupContingencyTypeEnum"
+            "description": "Type of OTOCO relationship (OTO or OCO)",
+            "example": 0,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GroupContingencyType"
+              }
+            ]
           },
           "groupId": {
             "type": "string",
@@ -5987,6 +6086,9 @@
           },
           "triggered": {
             "$ref": "#/components/schemas/TriggeredEnum"
+          },
+          "rejectedReason": {
+            "$ref": "#/components/schemas/RejectedReasonEnum"
           }
         },
         "required": [
@@ -6193,6 +6295,19 @@
           "type"
         ]
       },
+      "EngineType": {
+        "type": "integer",
+        "enum": [
+          0,
+          1
+        ],
+        "description": "Product engine type e.g. PERP (0)",
+        "format": "int32",
+        "x-enum-varnames": [
+          "PERP",
+          "SPOT"
+        ]
+      },
       "SubmitOrderMarketDtoData": {
         "type": "object",
         "properties": {
@@ -6205,7 +6320,7 @@
           "sender": {
             "type": "string",
             "example": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-            "description": "Address of account",
+            "description": "Account address that produced the authorizing signature",
             "format": "hex"
           },
           "nonce": {
@@ -6223,7 +6338,13 @@
             "format": "decimal"
           },
           "side": {
-            "$ref": "#/components/schemas/OrderSide"
+            "example": 1,
+            "description": "Side as either BUY (0) or SELL (1)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderSide"
+              }
+            ]
           },
           "onchainId": {
             "type": "integer",
@@ -6233,7 +6354,13 @@
             "format": "int64"
           },
           "engineType": {
-            "$ref": "#/components/schemas/EngineTypeEnum"
+            "example": 0,
+            "description": "Product engine type e.g. PERP (0)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EngineType"
+              }
+            ]
           },
           "clientOrderId": {
             "type": "string",
@@ -6258,7 +6385,13 @@
             "format": "decimal"
           },
           "stopType": {
-            "$ref": "#/components/schemas/StopTypeEnum"
+            "example": 1,
+            "description": "Stop type, either 0 (take-profit) or 1 (stop-loss), requires non-zero stopPrice",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StopType"
+              }
+            ]
           },
           "signedAt": {
             "type": "integer",
@@ -6277,7 +6410,12 @@
             "description": "Group Id (UUID) for linking orders together in OCO/OTO relationships"
           },
           "groupContingencyType": {
-            "$ref": "#/components/schemas/GroupContingencyTypeEnum"
+            "description": "Contingency type for order groups: OTO (Order-Triggers-Order) or OCO (One-Cancels-Other)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GroupContingencyType"
+              }
+            ]
           }
         },
         "required": [
@@ -6304,7 +6442,7 @@
           "sender": {
             "type": "string",
             "example": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-            "description": "Address of account",
+            "description": "Account address that produced the authorizing signature",
             "format": "hex"
           },
           "nonce": {
@@ -6322,7 +6460,13 @@
             "format": "decimal"
           },
           "side": {
-            "$ref": "#/components/schemas/OrderSide"
+            "example": 1,
+            "description": "Side as either BUY (0) or SELL (1)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderSide"
+              }
+            ]
           },
           "onchainId": {
             "type": "integer",
@@ -6332,7 +6476,13 @@
             "format": "int64"
           },
           "engineType": {
-            "$ref": "#/components/schemas/EngineTypeEnum"
+            "example": 0,
+            "description": "Product engine type e.g. PERP (0)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EngineType"
+              }
+            ]
           },
           "clientOrderId": {
             "type": "string",
@@ -6357,7 +6507,13 @@
             "format": "decimal"
           },
           "stopType": {
-            "$ref": "#/components/schemas/StopTypeEnum"
+            "example": 1,
+            "description": "Stop type, either 0 (take-profit) or 1 (stop-loss), requires non-zero stopPrice",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StopType"
+              }
+            ]
           },
           "signedAt": {
             "type": "integer",
@@ -6376,7 +6532,12 @@
             "description": "Group Id (UUID) for linking orders together in OCO/OTO relationships"
           },
           "groupContingencyType": {
-            "$ref": "#/components/schemas/GroupContingencyTypeEnum"
+            "description": "Contingency type for order groups: OTO (Order-Triggers-Order) or OCO (One-Cancels-Other)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GroupContingencyType"
+              }
+            ]
           },
           "price": {
             "type": "string",
@@ -6424,7 +6585,7 @@
           },
           "signature": {
             "type": "string",
-            "description": "The signature from signTypedData(...) signed by the sender",
+            "description": "Hex-encoded EIP-712 signature authorizing this request",
             "format": "hex"
           }
         },
@@ -6432,6 +6593,33 @@
           "data",
           "signature"
         ]
+      },
+      "SubmitOrderCreatedResultCode": {
+        "type": "string",
+        "enum": [
+          "AccountSuspended",
+          "CausesImmediateLiquidation",
+          "DuplicateSameSideOco",
+          "ExchangeSuspended",
+          "ImmediateMatchPostOnly",
+          "InsufficientBalance",
+          "LiquidationError",
+          "MarketOrderReachedMaxSlippage",
+          "MaxQuantityExceeded",
+          "OcoFilled",
+          "Ok",
+          "OpenValueCapExceeded",
+          "OrderIncreasesPosition",
+          "RiskLimitExceeded",
+          "SignerRevoked",
+          "TriggerCanceledError",
+          "UnfilledFillOrKill",
+          "UnfilledImmediateOrCancel",
+          "UnfilledMarketOrder",
+          "MakerCanceledByTaker",
+          "CloseOrder"
+        ],
+        "description": "Code indicating the result of the submission"
       },
       "SubmitOrderCreatedDto": {
         "type": "object",
@@ -6448,11 +6636,19 @@
           },
           "filled": {
             "type": "string",
-            "example": "0.5",
-            "description": "Filled amount in native units expressed as a decimal (precision: 9)"
+            "example": "0",
+            "description": "Filled amount in native units expressed as a decimal (precision: 9). Always zero when block execution is enabled.",
+            "format": "decimal",
+            "deprecated": true
           },
           "result": {
-            "$ref": "#/components/schemas/ResultEnum"
+            "example": "Ok",
+            "description": "Code indicating the result of the submission",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SubmitOrderCreatedResultCode"
+              }
+            ]
           }
         },
         "required": [
@@ -6460,6 +6656,38 @@
           "filled",
           "result"
         ]
+      },
+      "SubmitOrderFailedResultCode": {
+        "type": "string",
+        "enum": [
+          "AccountSuspended",
+          "DuplicateClientOrderId",
+          "ExchangeSuspended",
+          "InsufficientBalance",
+          "InvalidBinaryData",
+          "InvalidExpireTime",
+          "InvalidGroupContingencyType",
+          "InvalidNonceForSigner",
+          "InvalidSigner",
+          "InvalidSignerAddress",
+          "InvalidTimeInForce",
+          "LiquidationError",
+          "MarginAccountBalanceZero",
+          "NonceAlreadyUsed",
+          "PriceAboveMaximum",
+          "PriceBelowMinimum",
+          "RiskLimitExceeded",
+          "TooManyOpenOrders",
+          "TooManyPositions",
+          "TooManyStopOrders",
+          "InsuranceFundCannotOpenPositions",
+          "InstrumentOpenValueCapExceeded",
+          "QuantityAboveMaximum",
+          "QuantityNotMultipleOfLotSize",
+          "OrderWithZeroQuantity",
+          "OcoLatencyFloorMismatch"
+        ],
+        "description": "Code indicating the reason for failure"
       },
       "SubmitOrderFailedDto": {
         "type": "object",
@@ -6472,7 +6700,13 @@
             ]
           },
           "message": {
-            "$ref": "#/components/schemas/MessageEnum"
+            "example": "TooManyOpenOrders",
+            "description": "Code indicating the reason for failure",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SubmitOrderFailedResultCode"
+              }
+            ]
           },
           "error": {
             "$ref": "#/components/schemas/SubmitOrderFailedDtoErrorEnum"
@@ -6508,30 +6742,41 @@
           "marginRequired": {
             "type": "string",
             "example": "1000.5",
-            "description": "Margin required for order in USD expressed as a decimal (precision: 9)"
+            "description": "Margin required for order in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "marginAvailable": {
             "type": "string",
             "example": "5000.75",
-            "description": "Margin available excluding this order in USD expressed as a decimal (precision: 9)"
+            "description": "Margin available excluding this order in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "totalUsedMargin": {
             "type": "string",
             "example": "3000.25",
-            "description": "Total used margin including this order in USD expressed as a decimal (precision: 9)"
+            "description": "Total used margin including this order in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "riskUsed": {
             "type": "string",
             "example": "3000.25",
-            "description": "Risk used including position and open orders in USD expressed as a decimal (precision: 9)"
+            "description": "Risk used including position and open orders in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "riskAvailable": {
             "type": "string",
             "example": "100000000",
-            "description": "Risk available for the product in USD expressed as a decimal (precision: 9)"
+            "description": "Risk available for the product in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "code": {
-            "$ref": "#/components/schemas/CodeEnum"
+            "example": "Ok",
+            "description": "Code indicating a result of the dry run",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SubmitOrderCreatedResultCode"
+              }
+            ]
           }
         },
         "required": [
@@ -6549,30 +6794,41 @@
           "marginRequired": {
             "type": "string",
             "example": "1000.5",
-            "description": "Margin required for order in USD expressed as a decimal (precision: 9)"
+            "description": "Margin required for order in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "marginAvailable": {
             "type": "string",
             "example": "5000.75",
-            "description": "Margin available excluding this order in USD expressed as a decimal (precision: 9)"
+            "description": "Margin available excluding this order in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "totalUsedMargin": {
             "type": "string",
             "example": "3000.25",
-            "description": "Total used margin including this order in USD expressed as a decimal (precision: 9)"
+            "description": "Total used margin including this order in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "riskUsed": {
             "type": "string",
             "example": "3000.25",
-            "description": "Risk used including position and open orders in USD expressed as a decimal (precision: 9)"
+            "description": "Risk used including position and open orders in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "riskAvailable": {
             "type": "string",
             "example": "100000000",
-            "description": "Risk available for the product in USD expressed as a decimal (precision: 9)"
+            "description": "Risk available for the product in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "code": {
-            "$ref": "#/components/schemas/DryRunOrderFailedDtoCodeEnum"
+            "example": "TooManyOpenOrders",
+            "description": "Code indicating the reason for failure",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SubmitOrderFailedResultCode"
+              }
+            ]
           }
         },
         "required": [
@@ -6595,7 +6851,13 @@
             ]
           },
           "message": {
-            "$ref": "#/components/schemas/MessageEnum"
+            "example": "TooManyOpenOrders",
+            "description": "Code indicating the reason for failure",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SubmitOrderFailedResultCode"
+              }
+            ]
           },
           "error": {
             "$ref": "#/components/schemas/DryRunOrderFailedUnprocessableEntityDtoErrorEnum"
@@ -6628,7 +6890,7 @@
           "sender": {
             "type": "string",
             "example": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-            "description": "Account or linked signer address that canceled this order",
+            "description": "Account address that produced the authorizing signature",
             "format": "hex"
           },
           "nonce": {
@@ -6673,7 +6935,7 @@
         "properties": {
           "signature": {
             "type": "string",
-            "description": "The signature from signTypedData(...) signed by the sender",
+            "description": "Hex-encoded EIP-712 signature authorizing this request",
             "format": "hex"
           },
           "data": {
@@ -6684,6 +6946,19 @@
           "signature",
           "data"
         ]
+      },
+      "CancelOrderResultCode": {
+        "type": "string",
+        "enum": [
+          "AlreadyCanceled",
+          "AlreadyExpired",
+          "AlreadyFilled",
+          "NotFound",
+          "Ok",
+          "NonceAlreadyUsed",
+          "Unknown"
+        ],
+        "description": "Code indicating the result of the submission"
       },
       "CancelOrderResultDto": {
         "type": "object",
@@ -6699,7 +6974,13 @@
             "description": "A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)"
           },
           "result": {
-            "$ref": "#/components/schemas/CancelOrderResultDtoResultEnum"
+            "example": "Ok",
+            "description": "Code indicating the result of the submission",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CancelOrderResultCode"
+              }
+            ]
           }
         },
         "required": [
@@ -6721,6 +7002,14 @@
         "required": [
           "data"
         ]
+      },
+      "OrderType": {
+        "type": "string",
+        "enum": [
+          "LIMIT",
+          "MARKET"
+        ],
+        "description": "Extracted enum for OrderType"
       },
       "OrderFillDto": {
         "type": "object",
@@ -6745,18 +7034,32 @@
           "price": {
             "type": "string",
             "example": "4200.5",
-            "description": "Fill price in expressed as a decimal (precision: 9)"
+            "description": "Fill price in expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "filled": {
             "type": "string",
             "example": "2.420",
-            "description": "Quantity filled in native units expressed as a decimal (precision: 9)"
+            "description": "Quantity filled in native units expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "type": {
-            "$ref": "#/components/schemas/OrderFillDtoOrderType"
+            "example": "LIMIT",
+            "description": "The provided order's type e.g. MARKET or LIMIT",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderType"
+              }
+            ]
           },
           "side": {
-            "$ref": "#/components/schemas/OrderSide"
+            "example": 1,
+            "description": "Side as either BUY (0) or SELL (1)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderSide"
+              }
+            ]
           },
           "reduceOnly": {
             "type": "boolean",
@@ -6766,7 +7069,8 @@
           "feeUsd": {
             "type": "string",
             "example": "3.049563",
-            "description": "The provided subaccount's charged fee in USD expressed as a decimal (precision: 9)"
+            "description": "The provided subaccount's charged fee in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "isMaker": {
             "type": "boolean",
@@ -6865,28 +7169,44 @@
           "makerFeeUsd": {
             "type": "string",
             "example": "3.049563",
-            "description": "Maker fee in USD expressed as a decimal (precision: 9)"
+            "description": "Maker fee in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "takerFeeUsd": {
             "type": "string",
             "example": "4.5743445",
-            "description": "Taker fee in USD expressed as a decimal (precision: 9)"
+            "description": "Taker fee in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "price": {
             "type": "string",
             "example": "4200.5",
-            "description": "Price expressed as a decimal (precision: 9)"
+            "description": "Price expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "filled": {
             "type": "string",
             "example": "2.420",
-            "description": "Quantity filled in native units expressed as a decimal (precision: 9)"
+            "description": "Quantity filled in native units expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "makerSide": {
-            "$ref": "#/components/schemas/MakerSideEnum"
+            "example": 1,
+            "description": "Maker side as either BUY (0) or SELL (1)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderSide"
+              }
+            ]
           },
           "takerSide": {
-            "$ref": "#/components/schemas/TakerSideEnum"
+            "example": 0,
+            "description": "Taker side as either BUY (0) or SELL (1)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderSide"
+              }
+            ]
           },
           "productId": {
             "type": "string",
@@ -6952,60 +7272,77 @@
           "cost": {
             "type": "string",
             "example": "9.3",
-            "description": "Current cost of the position in USD expressed as a decimal (precision: 9)"
+            "description": "Current cost of the position in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "size": {
             "type": "string",
             "example": "1.5",
-            "description": "Position size in native units expressed as a decimal (precision: 9)"
+            "description": "Position size in native units expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "fundingUsd": {
             "type": "string",
             "example": "1.35",
-            "description": "Charged but unapplied funding on position, negative if paid, expressed as a decimal (precision: 9)"
+            "description": "Charged but unapplied funding on position, negative if paid, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "fundingAccruedUsd": {
             "type": "string",
             "example": "10.5",
-            "description": "Charged and applied funding on position, negative if paid, expressed as a decimal (precision: 9)"
+            "description": "Charged and applied funding on position, negative if paid, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "feesAccruedUsd": {
             "type": "string",
             "example": "0.5",
-            "description": "Fees accrued in USD expressed as a decimal (precision: 9)"
+            "description": "Fees accrued in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "realizedPnl": {
             "type": "string",
             "example": "-12.5",
-            "description": "Realized PnL in USD expressed as a decimal (precision: 9)"
+            "description": "Realized PnL in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "unrealizedPnl": {
             "type": "string",
             "example": "4.2",
-            "description": "Unrealized PnL in USD (negative if loss, positive if profit) approximated against the latest mark price, expressed as a decimal (precision: 9)"
+            "description": "Unrealized PnL in USD (negative if loss, positive if profit) approximated against the latest mark price, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "totalIncreaseNotional": {
             "type": "string",
             "example": "1000.0",
-            "description": "Cumulative USD value of all position increases expressed as a decimal (precision: 9)"
+            "description": "Cumulative USD value of all position increases expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "totalIncreaseQuantity": {
             "type": "string",
             "example": "2.5",
-            "description": "Cumulative quantity of all position increases expressed as a decimal (precision: 9)"
+            "description": "Cumulative quantity of all position increases expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "totalDecreaseNotional": {
             "type": "string",
             "example": "1050.0",
-            "description": "Cumulative USD value of all position decreases expressed as a decimal (precision: 9)"
+            "description": "Cumulative USD value of all position decreases expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "totalDecreaseQuantity": {
             "type": "string",
             "example": "2.5",
-            "description": "Cumulative quantity of all position decreases expressed as a decimal (precision: 9)"
+            "description": "Cumulative quantity of all position decreases expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "side": {
-            "$ref": "#/components/schemas/OrderSide"
+            "example": 0,
+            "description": "Side as either BUY (0) or SELL (1)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderSide"
+              }
+            ]
           },
           "productId": {
             "type": "string",
@@ -7033,7 +7370,13 @@
           "liquidationPrice": {
             "type": "string",
             "example": "1200.5",
-            "description": "Product price at the time of liquidation (undefined if not liquidated, precision: 9)"
+            "description": "Product price at the time of liquidation (undefined if not liquidated, precision: 9)",
+            "format": "decimal"
+          },
+          "wasDeleveraged": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether the position has any associated deleverage records"
           }
         },
         "required": [
@@ -7052,7 +7395,8 @@
           "productId",
           "updatedAt",
           "createdAt",
-          "isLiquidated"
+          "isLiquidated",
+          "wasDeleveraged"
         ]
       },
       "PageOfPositionDtos": {
@@ -7085,23 +7429,32 @@
           "price": {
             "type": "string",
             "example": "4200.5",
-            "description": "Fill price expressed as a decimal (precision: 9)"
+            "description": "Fill price expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "filled": {
             "type": "string",
             "example": "2.420",
-            "description": "Quantity filled in native units expressed as a decimal (precision: 9)"
+            "description": "Quantity filled in native units expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "realizedPnl": {
             "type": "string",
             "example": "3.049563",
-            "description": "Realized PnL from the fill in USD expressed as a decimal (precision: 9)"
+            "description": "Realized PnL from the fill in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "type": {
             "$ref": "#/components/schemas/PositionFillDtoOrderType"
           },
           "side": {
-            "$ref": "#/components/schemas/OrderSide"
+            "example": 1,
+            "description": "Direction of the fill as either BUY (0) or SELL (1)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderSide"
+              }
+            ]
           },
           "reduceOnly": {
             "type": "boolean",
@@ -7111,7 +7464,8 @@
           "feeUsd": {
             "type": "string",
             "example": "3.049563",
-            "description": "The charged fee in USD expressed as a decimal (precision: 9)"
+            "description": "The charged fee in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "createdAt": {
             "type": "integer",
@@ -7186,7 +7540,8 @@
           "liquidationPrice": {
             "type": "string",
             "example": "1200.5",
-            "description": "Liquidation mark price in USD expressed as a decimal (precision: 9)"
+            "description": "Liquidation mark price in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "cause": {
             "$ref": "#/components/schemas/CauseEnum"
@@ -7194,15 +7549,23 @@
           "cost": {
             "type": "string",
             "example": "1000.5",
-            "description": "Position cost at the time of liquidation in USD expressed as a decimal (precision: 9)"
+            "description": "Position cost at the time of liquidation in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "fundingChargeUsd": {
             "type": "string",
             "example": "1200.5",
-            "description": "Funding charged in USD expressed as a decimal (precision: 9), undefined if not liquidated due to funding"
+            "description": "Funding charged in USD expressed as a decimal (precision: 9), undefined if not liquidated due to funding",
+            "format": "decimal"
           },
           "positionSide": {
-            "$ref": "#/components/schemas/PositionSideEnum"
+            "example": 0,
+            "description": "Position side as either BUY (0) or SELL (1)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderSide"
+              }
+            ]
           },
           "createdAt": {
             "type": "integer",
@@ -7290,7 +7653,13 @@
             "description": "Name of the quote token (e.g. USD in BTCUSD)"
           },
           "engineType": {
-            "$ref": "#/components/schemas/EngineTypeEnum"
+            "example": 0,
+            "description": "The corresponding engine type this product was registered with",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EngineType"
+              }
+            ]
           },
           "onchainId": {
             "type": "integer",
@@ -7309,7 +7678,8 @@
           "cumulativeFundingUsd": {
             "type": "string",
             "example": "1.001",
-            "description": "Cumulative funding in USD of the product (precision: 9)"
+            "description": "Cumulative funding in USD of the product (precision: 9)",
+            "format": "decimal"
           },
           "createdAt": {
             "type": "integer",
@@ -7326,47 +7696,56 @@
           "minQuantity": {
             "type": "string",
             "example": "0.05",
-            "description": "The minimum order quantity in native units expressed as a decimal (precision: 9)"
+            "description": "The minimum order quantity in native units expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "lotSize": {
             "type": "string",
             "example": "0.01",
-            "description": "Quantity must be divisible by the lotSize in expressed as a decimal (precision: 9)"
+            "description": "Quantity must be divisible by the lotSize in expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "tickSize": {
             "type": "string",
             "example": "0.0001",
-            "description": "Minimum price increment (tickSize) expressed as a decimal (precision: 9)"
+            "description": "Minimum price increment (tickSize) expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "makerFee": {
             "type": "string",
             "example": "0.001",
-            "description": "Fee charged to the maker on order trades expressed as a decimal (precision: 9)"
+            "description": "Fee charged to the maker on order trades expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "takerFee": {
             "type": "string",
             "example": "0.004",
-            "description": "Fee charged to the taker on order trades expressed as a decimal (precision: 9)"
+            "description": "Fee charged to the taker on order trades expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "maxQuantity": {
             "type": "string",
             "example": "100000",
-            "description": "Max quantity per order in native units expressed as a decimal (precision: 9)"
+            "description": "Max quantity per order in native units expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "minPrice": {
             "type": "string",
             "example": "0",
-            "description": "Min price in USD expressed as a decimal (precision: 9)"
+            "description": "Min price in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "maxPrice": {
             "type": "string",
             "example": "100000",
-            "description": "Max price in USD expressed as a decimal (precision: 9)"
+            "description": "Max price in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "volume24h": {
             "type": "string",
             "example": "500000000.42",
-            "description": "24h volume in base token native units expressed as a decimal (precision: 9)"
+            "description": "24h volume in base token native units expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "maxLeverage": {
             "type": "number",
@@ -7382,37 +7761,44 @@
           "fundingRate1h": {
             "type": "string",
             "example": "0.01",
-            "description": "Last computed hourly funding rate expressed as a decimal (precision: 9)"
+            "description": "Last computed hourly funding rate expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "openInterest": {
             "type": "string",
             "example": "3300.17",
-            "description": "OI of both sides in native units expressed as a decimal (precision: 9)"
+            "description": "OI of both sides in native units expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "maxOpenInterestUsd": {
             "type": "string",
             "example": "200000000.0",
-            "description": "Max OI of one side in USD expressed as a decimal (precision: 9)"
+            "description": "Max OI of one side in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "maxPositionNotionalUsd": {
             "type": "string",
             "example": "50000000.0",
-            "description": "Max position notional value, in USD expressed as a decimal (precision: 9)"
+            "description": "Max position notional value, in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "fundingClampApr": {
             "type": "string",
             "example": "0.01",
-            "description": "Funding clamp APR expressed as a decimal (precision: 9)"
+            "description": "Funding clamp APR expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "fundingBaselineApr": {
             "type": "string",
             "example": "0.15",
-            "description": "Funding baseline APR expressed as a decimal (precision: 9)"
+            "description": "Funding baseline APR expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "fundingMaxApr": {
             "type": "string",
             "example": "2.0",
-            "description": "Maximum funding APR expressed as a decimal, e.g. 2.0 = 200% (precision: 9)"
+            "description": "Maximum funding APR expressed as a decimal, e.g. 2.0 = 200% (precision: 9)",
+            "format": "decimal"
           }
         },
         "required": [
@@ -7553,22 +7939,26 @@
           "bestBidPrice": {
             "type": "string",
             "example": "104399.65",
-            "description": "Best bid price in USD expressed as a decimal (precision: 9)"
+            "description": "Best bid price in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "bestAskPrice": {
             "type": "string",
             "example": "104400.1",
-            "description": "Best ask price in USD expressed as a decimal (precision: 9)"
+            "description": "Best ask price in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "oraclePrice": {
             "type": "string",
             "example": "104399.7",
-            "description": "Oracle price in USD expressed as a decimal (precision: 9)"
+            "description": "Oracle price in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "price24hAgo": {
             "type": "string",
             "example": "101228.38",
-            "description": "Price of product 24hrs ago in USD expressed as a decimal (precision: 9)"
+            "description": "Price of product 24hrs ago in USD expressed as a decimal (precision: 9)",
+            "format": "decimal"
           }
         },
         "required": [
@@ -7646,11 +8036,13 @@
           "fundingRateProjected1h": {
             "type": "string",
             "description": "Projected funding rate expressed as a decimal (precision: 9)",
+            "format": "decimal",
             "example": "0.000078771"
           },
           "fundingRate1h": {
             "type": "string",
             "description": "Funding rate expressed as a decimal (precision: 9)",
+            "format": "decimal",
             "example": "0.013876480"
           }
         },
@@ -7780,6 +8172,33 @@
           "fixedPoints"
         ]
       },
+      "Ws2FixedRateLimitEndpointDto": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "example": "/v1/stream",
+            "description": "WebSocket path"
+          },
+          "protocol": {
+            "$ref": "#/components/schemas/Ws2FixedRateLimitEndpointDtoProtocolEnum"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Ws2FixedRateLimitEndpointDtoOrderType"
+          },
+          "fixedPoints": {
+            "type": "number",
+            "description": "Fixed points consumed per request",
+            "example": 5
+          }
+        },
+        "required": [
+          "path",
+          "protocol",
+          "type",
+          "fixedPoints"
+        ]
+      },
       "RateLimitConfigResponseDto": {
         "type": "object",
         "properties": {
@@ -7796,6 +8215,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/WsFixedRateLimitEndpointDto"
+                },
+                {
+                  "$ref": "#/components/schemas/Ws2FixedRateLimitEndpointDto"
                 }
               ]
             }
@@ -8076,7 +8498,7 @@
           "sender": {
             "type": "string",
             "example": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-            "description": "Account address that created the signature in this message",
+            "description": "Account address that produced the authorizing signature",
             "format": "hex"
           },
           "subaccount": {
@@ -8127,12 +8549,12 @@
         "properties": {
           "signature": {
             "type": "string",
-            "description": "The signature from signTypedData(...) signed by the sender",
+            "description": "Hex-encoded EIP-712 signature authorizing this request",
             "format": "hex"
           },
           "signerSignature": {
             "type": "string",
-            "description": "The signature from signTypedData(...) signed by the signer",
+            "description": "Hex-encoded EIP-712 signature authorizing this request",
             "format": "hex"
           },
           "data": {
@@ -8225,7 +8647,7 @@
           "sender": {
             "type": "string",
             "example": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-            "description": "Address of account that created the signature in this message",
+            "description": "Account address that produced the authorizing signature",
             "format": "hex"
           },
           "subaccount": {
@@ -8266,7 +8688,7 @@
         "properties": {
           "signature": {
             "type": "string",
-            "description": "The signature from signTypedData(...) signed by the sender",
+            "description": "Hex-encoded EIP-712 signature authorizing this request",
             "format": "hex"
           },
           "data": {
@@ -8290,7 +8712,7 @@
           "sender": {
             "type": "string",
             "example": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-            "description": "Address of account that created the signature in this message",
+            "description": "Account address that produced the authorizing signature",
             "format": "hex"
           },
           "subaccount": {
@@ -8331,7 +8753,7 @@
         "properties": {
           "signature": {
             "type": "string",
-            "description": "The signature from signTypedData(...) signed by the sender",
+            "description": "Hex-encoded EIP-712 signature authorizing this request",
             "format": "hex"
           },
           "data": {
@@ -8375,7 +8797,7 @@
         "properties": {
           "signature": {
             "type": "string",
-            "description": "The signature from signTypedData(...) signed by the signer",
+            "description": "Hex-encoded EIP-712 signature authorizing this request",
             "format": "hex"
           },
           "data": {
@@ -8399,7 +8821,7 @@
           "maxLinkedSignersInPeriod": {
             "type": "integer",
             "example": 10,
-            "description": "Max number of signer that can be linked within ratelimit period",
+            "description": "Max number of signers that can be linked within ratelimit period",
             "format": "int64"
           },
           "linkedSignersUsedInPeriod": {
@@ -8420,6 +8842,16 @@
           "maxLinkedSignersInPeriod",
           "linkedSignersUsedInPeriod",
           "linkedSignerRefreshHoursBeforeExpiry"
+        ]
+      },
+      "LinkedSignerStatus": {
+        "type": "string",
+        "enum": [
+          "PENDING",
+          "ACTIVE",
+          "PENDING_REVOKE",
+          "REVOKED",
+          "REJECTED"
         ]
       },
       "PageOfSignersDto": {
@@ -8447,6 +8879,16 @@
           "data"
         ]
       },
+      "TransferStatus": {
+        "type": "string",
+        "enum": [
+          "SUBMITTED",
+          "PENDING",
+          "COMPLETED",
+          "REJECTED"
+        ],
+        "description": "Current status of the withdraw"
+      },
       "WithdrawDto": {
         "type": "object",
         "properties": {
@@ -8467,7 +8909,13 @@
             "description": "Block number the withdraw was completed on"
           },
           "status": {
-            "$ref": "#/components/schemas/WithdrawDtoOrderStatus"
+            "example": "PENDING",
+            "description": "Current status of the withdraw",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TransferStatus"
+              }
+            ]
           },
           "subaccount": {
             "type": "string",
@@ -8544,6 +8992,13 @@
           "data"
         ]
       },
+      "TransferType": {
+        "type": "string",
+        "enum": [
+          "DEPOSIT",
+          "WITHDRAW"
+        ]
+      },
       "TransferDto": {
         "type": "object",
         "properties": {
@@ -8589,7 +9044,8 @@
           "amount": {
             "type": "string",
             "example": "0.42",
-            "description": "Amount of tokens transferred in native units expressed as a decimal (precision: 9)"
+            "description": "Amount of tokens transferred in native units expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "lzDestinationAddress": {
             "type": "string",
@@ -8605,7 +9061,8 @@
           "fee": {
             "type": "string",
             "example": "0.42",
-            "description": "Fee paid for the transfer in native units expressed as a decimal (precision: 9)"
+            "description": "Fee paid for the transfer in native units expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "createdAt": {
             "type": "integer",
@@ -8663,6 +9120,29 @@
           "data"
         ]
       },
+      "LayerZeroEndpointId": {
+        "type": "integer",
+        "enum": [
+          0,
+          40422,
+          40231,
+          40161,
+          30391,
+          30110,
+          30101
+        ],
+        "description": "LayerZero destination endpoint ID for the transfer (zero if not bridging)",
+        "format": "int32",
+        "x-enum-varnames": [
+          "NONE",
+          "ETHEREAL_TESTNET",
+          "ARBITRUM_SEPOLIA",
+          "ETHEREUM_SEPOLIA",
+          "ETHEREAL_MAINNET",
+          "ARBITRUM_MAINNET",
+          "ETHEREUM_MAINNET"
+        ]
+      },
       "InitiateWithdrawDtoData": {
         "type": "object",
         "properties": {
@@ -8697,7 +9177,13 @@
             "format": "hex"
           },
           "lzDestinationEid": {
-            "$ref": "#/components/schemas/LzDestinationEidEnum"
+            "example": 40231,
+            "description": "LayerZero destination endpoint ID for the transfer (zero if not bridging)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LayerZeroEndpointId"
+              }
+            ]
           },
           "nonce": {
             "type": "string",
@@ -8727,7 +9213,7 @@
         "properties": {
           "signature": {
             "type": "string",
-            "description": "The signature from signTypedData(...) signed by the sender",
+            "description": "Hex-encoded EIP-712 signature authorizing this request",
             "format": "hex"
           },
           "data": {
@@ -8738,6 +9224,16 @@
           "signature",
           "data"
         ]
+      },
+      "WithdrawErrorCode": {
+        "type": "string",
+        "enum": [
+          "AccountSuspended",
+          "EngineSuspended",
+          "InsufficientBalance",
+          "InsuranceFundCannotWithdraw"
+        ],
+        "description": "Error code indicating the reason for failure"
       },
       "WithdrawFailedDto": {
         "type": "object",
@@ -8750,7 +9246,13 @@
             ]
           },
           "message": {
-            "$ref": "#/components/schemas/WithdrawFailedDtoMessageEnum"
+            "example": "InsufficientBalance",
+            "description": "Error code indicating the reason for failure",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WithdrawErrorCode"
+              }
+            ]
           },
           "error": {
             "$ref": "#/components/schemas/WithdrawFailedDtoErrorEnum"
@@ -8816,17 +9318,20 @@
           "depositFee": {
             "type": "string",
             "example": "0",
-            "description": "Amount of native units charged on deposit expressed as a decimal (precision: 9)"
+            "description": "Amount of native units charged on deposit expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "withdrawFee": {
             "type": "string",
             "example": "1",
-            "description": "Amount of native units charged on withdraw expressed as a decimal (precision: 9)"
+            "description": "Amount of native units charged on withdraw expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "minDeposit": {
             "type": "string",
             "example": "10.123456",
-            "description": "Min deposit amount as native units expressed as a decimal (precision: 9)"
+            "description": "Min deposit amount as native units expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "addedBlockNumber": {
             "type": "string",
@@ -8939,12 +9444,14 @@
           "points": {
             "type": "string",
             "example": "13.256",
-            "description": "Points earned in this period (excluding referral points) expressed as a decimal (precision: 9)"
+            "description": "Points earned in this period (excluding referral points) expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "referralPoints": {
             "type": "string",
             "example": "1.95",
-            "description": "Referral points earned in this period expressed as a decimal (precision: 9)"
+            "description": "Referral points earned in this period expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "startedAt": {
             "type": "integer",
@@ -9003,6 +9510,27 @@
           "data"
         ]
       },
+      "PointsTier": {
+        "type": "integer",
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "description": "Account tier derived based on activity this season",
+        "format": "int32",
+        "x-enum-varnames": [
+          "TIER_0",
+          "TIER_1",
+          "TIER_2",
+          "TIER_3",
+          "TIER_4",
+          "TIER_5"
+        ]
+      },
       "PointsSeasonSummaryDto": {
         "type": "object",
         "properties": {
@@ -9027,22 +9555,26 @@
           "totalPoints": {
             "type": "string",
             "example": "13.256",
-            "description": "Total points earned (excluding referral points) in this season expressed as a decimal (precision: 9)"
+            "description": "Total points earned (excluding referral points) in this season expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "previousTotalPoints": {
             "type": "string",
             "example": "13.256",
-            "description": "Total points earned (excluding referral points) before most recent distribution expressed as a decimal (precision: 9)"
+            "description": "Total points earned (excluding referral points) before most recent distribution expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "referralPoints": {
             "type": "string",
             "example": "1.95",
-            "description": "Referral points earned in this season expressed as a decimal (precision: 9)"
+            "description": "Referral points earned in this season expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "previousReferralPoints": {
             "type": "string",
             "example": "1.95",
-            "description": "Referral points earned in this season before most recent distribution expressed as a decimal (precision: 9)"
+            "description": "Referral points earned in this season before most recent distribution expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "rank": {
             "type": "integer",
@@ -9057,7 +9589,13 @@
             "format": "int64"
           },
           "tier": {
-            "$ref": "#/components/schemas/TierEnum"
+            "example": 0,
+            "description": "Account tier derived based on activity this season",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PointsTier"
+              }
+            ]
           },
           "createdAt": {
             "type": "integer",
@@ -9108,12 +9646,14 @@
           "totalPoints": {
             "type": "string",
             "example": "1234567.89",
-            "description": "Total points distributed (precision: 9)"
+            "description": "Total points distributed (precision: 9)",
+            "format": "decimal"
           },
           "referralPoints": {
             "type": "string",
             "example": "123456.78",
-            "description": "Total referral points distributed (precision: 9)"
+            "description": "Total referral points distributed (precision: 9)",
+            "format": "decimal"
           },
           "updatedAt": {
             "type": "integer",
@@ -9136,9 +9676,10 @@
             "description": "The referral code"
           },
           "remainingUsage": {
-            "type": "number",
+            "type": "integer",
             "example": 5,
-            "description": "Number of remaining times the code can be claimed"
+            "description": "Number of remaining times the code can be claimed",
+            "format": "int64"
           }
         },
         "required": [
@@ -9173,19 +9714,22 @@
             "description": "The referee's referral code to be shared and claimed by others (undefined if not activated)"
           },
           "codeUsageRemaining": {
-            "type": "number",
+            "type": "integer",
             "example": 5,
-            "description": "Number of remaining times the referral code can be claimed"
+            "description": "Number of remaining times the referral code can be claimed",
+            "format": "int64"
           },
           "refereeTotalPoints": {
             "type": "string",
             "example": "1234567.890000000",
-            "description": "Total points (excl. referral points) earned by the referee since referee claimed the code"
+            "description": "Total points (excl. referral points) earned by the referee since referee claimed the code (precision: 9)",
+            "format": "decimal"
           },
           "createdAt": {
-            "type": "number",
+            "type": "integer",
             "example": 1712019600000,
-            "description": "Timestamp of when this referral was activated (ms since Unix Epoch)"
+            "description": "Timestamp of when this referral was activated (ms since Unix Epoch)",
+            "format": "int64"
           }
         },
         "required": [
@@ -9221,17 +9765,40 @@
           "data"
         ]
       },
+      "EIP712AuthIntent": {
+        "type": "integer",
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "description": "Intent of the message (action to be taken)",
+        "format": "int32",
+        "x-enum-varnames": [
+          "REFERRAL_ACTIVATION",
+          "REFERRAL_CLAIM",
+          "REFERRAL_READ",
+          "POINTS_READ"
+        ]
+      },
       "ClaimReferralCodeDtoData": {
         "type": "object",
         "properties": {
           "sender": {
             "type": "string",
             "example": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-            "description": "Address that signed this message",
+            "description": "Account address that produced the authorizing signature",
             "format": "hex"
           },
           "intent": {
-            "$ref": "#/components/schemas/IntentEnum"
+            "example": 0,
+            "description": "Intent of the message (action to be taken)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EIP712AuthIntent"
+              }
+            ]
           },
           "signedAt": {
             "type": "integer",
@@ -9260,7 +9827,7 @@
         "properties": {
           "signature": {
             "type": "string",
-            "description": "The signature from signTypedData(...) signed by the sender",
+            "description": "Hex-encoded EIP-712 signature authorizing this request",
             "format": "hex"
           },
           "data": {
@@ -9278,11 +9845,17 @@
           "sender": {
             "type": "string",
             "example": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-            "description": "Address that signed this message",
+            "description": "Account address that produced the authorizing signature",
             "format": "hex"
           },
           "intent": {
-            "$ref": "#/components/schemas/IntentEnum"
+            "example": 0,
+            "description": "Intent of the message (action to be taken)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EIP712AuthIntent"
+              }
+            ]
           },
           "signedAt": {
             "type": "integer",
@@ -9309,7 +9882,7 @@
         "properties": {
           "signature": {
             "type": "string",
-            "description": "The signature from signTypedData(...) signed by the sender",
+            "description": "Hex-encoded EIP-712 signature authorizing this request",
             "format": "hex"
           },
           "data": {
@@ -9334,110 +9907,6 @@
           "isEnabled"
         ]
       },
-      "TickerWsDataDto": {
-        "type": "object",
-        "properties": {
-          "s": {
-            "type": "string",
-            "example": "BTCUSD",
-            "description": "Symbol for the market (e.g. BTCUSD, ETHUSD)"
-          },
-          "t": {
-            "type": "number",
-            "example": 1733200000000,
-            "description": "BBO timestamp (ms since Unix Epoch)"
-          },
-          "bidPx": {
-            "type": "string",
-            "example": "104399.65",
-            "description": "Best bid price in USD expressed as a decimal (precision: 9)"
-          },
-          "askPx": {
-            "type": "string",
-            "example": "104400.1",
-            "description": "Best ask price in USD expressed as a decimal (precision: 9)"
-          },
-          "bidAmt": {
-            "type": "string",
-            "example": "10.5",
-            "description": "Best bid quantity expressed as a decimal (precision: 9)"
-          },
-          "askAmt": {
-            "type": "string",
-            "example": "15.75",
-            "description": "Best ask quantity expressed as a decimal (precision: 9)"
-          },
-          "markPx": {
-            "type": "string",
-            "example": "104399.7",
-            "description": "Oracle price in USD expressed as a decimal (precision: 9)"
-          },
-          "markPx24h": {
-            "type": "string",
-            "example": "101228.38",
-            "description": "Price of product 24hrs ago in USD expressed as a decimal (precision: 9)"
-          },
-          "vol24h": {
-            "type": "string",
-            "example": "1234.567",
-            "description": "24-hour trading volume in base token native units (precision: 9)"
-          },
-          "oi": {
-            "type": "string",
-            "example": "5678.123",
-            "description": "Open interest of both sides in native units (precision: 9)"
-          },
-          "fr1h": {
-            "type": "string",
-            "example": "0.00125",
-            "description": "Projected funding rate for end of current hour (precision: 9)"
-          }
-        },
-        "required": [
-          "s"
-        ]
-      },
-      "TickerWsDto": {
-        "type": "object",
-        "properties": {
-          "e": {
-            "$ref": "#/components/schemas/EEnum"
-          },
-          "t": {
-            "type": "number",
-            "example": 1733200000123,
-            "description": "Server timestamp (ms since Unix Epoch)"
-          },
-          "data": {
-            "$ref": "#/components/schemas/TickerWsDataDto"
-          }
-        },
-        "required": [
-          "e",
-          "t",
-          "data"
-        ]
-      },
-      "OrderType": {
-        "type": "string",
-        "enum": [
-          "LIMIT",
-          "MARKET"
-        ],
-        "description": "Extracted enum for OrderType"
-      },
-      "OrderSide": {
-        "type": "integer",
-        "enum": [
-          0,
-          1
-        ],
-        "description": "Extracted enum for OrderSide",
-        "x-enum-varnames": [
-          "BUY",
-          "SELL"
-        ]
-      },
       "OrderStatus": {
         "type": "string",
         "enum": [
@@ -9451,30 +9920,6 @@
         ],
         "description": "Extracted enum for OrderStatus"
       },
-      "StopTypeEnum": {
-        "type": "integer",
-        "enum": [
-          0,
-          1
-        ],
-        "description": "Extracted enum for StopTypeEnum",
-        "x-enum-varnames": [
-          "GAIN",
-          "LOSS"
-        ]
-      },
-      "StopPriceTypeEnum": {
-        "type": "integer",
-        "enum": [
-          0,
-          1
-        ],
-        "description": "Extracted enum for StopPriceTypeEnum",
-        "x-enum-varnames": [
-          "LAST_PRICE",
-          "MARK_PRICE"
-        ]
-      },
       "TimeInForce": {
         "type": "string",
         "enum": [
@@ -9483,18 +9928,6 @@
           "FOK"
         ],
         "description": "Extracted enum for TimeInForce"
-      },
-      "GroupContingencyTypeEnum": {
-        "type": "integer",
-        "enum": [
-          0,
-          1
-        ],
-        "description": "Extracted enum for GroupContingencyTypeEnum",
-        "x-enum-varnames": [
-          "OTO",
-          "OCO"
-        ]
       },
       "TriggeredEnum": {
         "type": "string",
@@ -9506,6 +9939,32 @@
           "OTO_ORDER_TRIGGERED"
         ],
         "description": "Extracted enum for TriggeredEnum"
+      },
+      "RejectedReasonEnum": {
+        "type": "string",
+        "enum": [
+          "AccountSuspended",
+          "CausesImmediateLiquidation",
+          "DuplicateSameSideOco",
+          "ExchangeSuspended",
+          "ImmediateMatchPostOnly",
+          "InstrumentOpenValueCapExceeded",
+          "InsufficientBalance",
+          "Liquidation",
+          "MarketOrderReachedMaxSlippage",
+          "OcoFilled",
+          "OrderIncreasesPosition",
+          "RiskLimitExceeded",
+          "SignerRevoked",
+          "TriggerCanceled",
+          "QuantityAboveMaximum",
+          "UnfilledFillOrKill",
+          "UnfilledImmediateOrCancel",
+          "UnfilledMarketOrder",
+          "MakerCanceledByTaker",
+          "CloseOrder"
+        ],
+        "description": "Extracted enum for RejectedReasonEnum"
       },
       "ErrorEnum": {
         "type": "string",
@@ -9559,132 +10018,12 @@
         ],
         "description": "Extracted enum for TooManyRequestsDtoOrderType"
       },
-      "EngineTypeEnum": {
-        "type": "integer",
-        "enum": [
-          0,
-          1
-        ],
-        "description": "Extracted enum for EngineTypeEnum",
-        "x-enum-varnames": [
-          "PERP",
-          "SPOT"
-        ]
-      },
-      "ResultEnum": {
-        "type": "string",
-        "enum": [
-          "AccountSuspended",
-          "CausesImmediateLiquidation",
-          "DuplicateSameSideOco",
-          "ImmediateMatchPostOnly",
-          "InsufficientBalance",
-          "LiquidationError",
-          "MarketOrderReachedMaxSlippage",
-          "OcoFilled",
-          "Ok",
-          "OpenValueCapExceeded",
-          "OrderIncreasesPosition",
-          "RiskLimitExceeded",
-          "SignerRevoked",
-          "TriggerCanceledError",
-          "UnfilledFillOrKill",
-          "UnfilledImmediateOrCancel",
-          "UnfilledMarketOrder"
-        ],
-        "description": "Extracted enum for ResultEnum"
-      },
-      "MessageEnum": {
-        "type": "string",
-        "enum": [
-          "AccountSuspended",
-          "DuplicateClientOrderId",
-          "ExchangeSuspended",
-          "InsufficientBalance",
-          "InvalidBinaryData",
-          "InvalidExpireTime",
-          "InvalidGroupContingencyType",
-          "InvalidNonceForSigner",
-          "InvalidSigner",
-          "InvalidSignerAddress",
-          "InvalidTimeInForce",
-          "LiquidationError",
-          "MarginAccountBalanceZero",
-          "NonceAlreadyUsed",
-          "PriceAboveMaximum",
-          "PriceBelowMinimum",
-          "RiskLimitExceeded",
-          "TooManyOpenOrders",
-          "TooManyPositions",
-          "TooManyStopOrders",
-          "InsuranceFundCannotOpenPositions",
-          "InstrumentOpenValueCapExceeded",
-          "QuantityAboveMaximum",
-          "QuantityNotMultipleOfLotSize",
-          "OrderWithZeroQuantity"
-        ],
-        "description": "Extracted enum for MessageEnum"
-      },
       "SubmitOrderFailedDtoErrorEnum": {
         "type": "string",
         "enum": [
           "Unprocessable Entity"
         ],
         "description": "Extracted enum for SubmitOrderFailedDtoErrorEnum"
-      },
-      "CodeEnum": {
-        "type": "string",
-        "enum": [
-          "AccountSuspended",
-          "CausesImmediateLiquidation",
-          "DuplicateSameSideOco",
-          "ImmediateMatchPostOnly",
-          "InsufficientBalance",
-          "LiquidationError",
-          "MarketOrderReachedMaxSlippage",
-          "OcoFilled",
-          "Ok",
-          "OpenValueCapExceeded",
-          "OrderIncreasesPosition",
-          "RiskLimitExceeded",
-          "SignerRevoked",
-          "TriggerCanceledError",
-          "UnfilledFillOrKill",
-          "UnfilledImmediateOrCancel",
-          "UnfilledMarketOrder"
-        ],
-        "description": "Extracted enum for CodeEnum"
-      },
-      "DryRunOrderFailedDtoCodeEnum": {
-        "type": "string",
-        "enum": [
-          "AccountSuspended",
-          "DuplicateClientOrderId",
-          "ExchangeSuspended",
-          "InsufficientBalance",
-          "InvalidBinaryData",
-          "InvalidExpireTime",
-          "InvalidGroupContingencyType",
-          "InvalidNonceForSigner",
-          "InvalidSigner",
-          "InvalidSignerAddress",
-          "InvalidTimeInForce",
-          "LiquidationError",
-          "MarginAccountBalanceZero",
-          "NonceAlreadyUsed",
-          "PriceAboveMaximum",
-          "PriceBelowMinimum",
-          "RiskLimitExceeded",
-          "TooManyOpenOrders",
-          "TooManyPositions",
-          "TooManyStopOrders",
-          "InsuranceFundCannotOpenPositions",
-          "InstrumentOpenValueCapExceeded",
-          "QuantityAboveMaximum",
-          "QuantityNotMultipleOfLotSize",
-          "OrderWithZeroQuantity"
-        ],
-        "description": "Extracted enum for DryRunOrderFailedDtoCodeEnum"
       },
       "DryRunOrderFailedUnprocessableEntityDtoErrorEnum": {
         "type": "string",
@@ -9693,51 +10032,6 @@
         ],
         "description": "Extracted enum for DryRunOrderFailedUnprocessableEntityDtoErrorEnum"
       },
-      "CancelOrderResultDtoResultEnum": {
-        "type": "string",
-        "enum": [
-          "AlreadyCanceled",
-          "AlreadyExpired",
-          "AlreadyFilled",
-          "NotFound",
-          "Ok",
-          "NonceAlreadyUsed",
-          "Unknown"
-        ],
-        "description": "Extracted enum for CancelOrderResultDtoResultEnum"
-      },
-      "OrderFillDtoOrderType": {
-        "type": "string",
-        "enum": [
-          "MARKET",
-          "LIMIT"
-        ],
-        "description": "Extracted enum for OrderFillDtoOrderType"
-      },
-      "MakerSideEnum": {
-        "type": "integer",
-        "enum": [
-          0,
-          1
-        ],
-        "description": "Extracted enum for MakerSideEnum",
-        "x-enum-varnames": [
-          "BUY",
-          "SELL"
-        ]
-      },
-      "TakerSideEnum": {
-        "type": "integer",
-        "enum": [
-          0,
-          1
-        ],
-        "description": "Extracted enum for TakerSideEnum",
-        "x-enum-varnames": [
-          "BUY",
-          "SELL"
-        ]
-      },
       "PositionFillDtoOrderType": {
         "type": "string",
         "enum": [
@@ -9745,7 +10039,8 @@
           "LIMIT",
           "REALIZED_PNL",
           "LIQUIDATION",
-          "REALIZED_FUNDING"
+          "REALIZED_FUNDING",
+          "DELEVERAGE"
         ],
         "description": "Extracted enum for PositionFillDtoOrderType"
       },
@@ -9756,18 +10051,6 @@
           "Funding"
         ],
         "description": "Extracted enum for CauseEnum"
-      },
-      "PositionSideEnum": {
-        "type": "integer",
-        "enum": [
-          0,
-          1
-        ],
-        "description": "Extracted enum for PositionSideEnum",
-        "x-enum-varnames": [
-          "BUY",
-          "SELL"
-        ]
       },
       "ProductDtoOrderStatus": {
         "type": "string",
@@ -9825,6 +10108,20 @@
         ],
         "description": "Extracted enum for WsFixedRateLimitEndpointDtoOrderType"
       },
+      "Ws2FixedRateLimitEndpointDtoProtocolEnum": {
+        "type": "string",
+        "enum": [
+          "WS2"
+        ],
+        "description": "Extracted enum for Ws2FixedRateLimitEndpointDtoProtocolEnum"
+      },
+      "Ws2FixedRateLimitEndpointDtoOrderType": {
+        "type": "string",
+        "enum": [
+          "FIXED"
+        ],
+        "description": "Extracted enum for Ws2FixedRateLimitEndpointDtoOrderType"
+      },
       "CategoryEnum": {
         "type": "string",
         "enum": [
@@ -9844,16 +10141,6 @@
         ],
         "description": "Extracted enum for SignerDtoOrderStatus"
       },
-      "WithdrawDtoOrderStatus": {
-        "type": "string",
-        "enum": [
-          "SUBMITTED",
-          "PENDING",
-          "COMPLETED",
-          "REJECTED"
-        ],
-        "description": "Extracted enum for WithdrawDtoOrderStatus"
-      },
       "TransferDtoOrderStatus": {
         "type": "string",
         "enum": [
@@ -9872,87 +10159,12 @@
         ],
         "description": "Extracted enum for TransferDtoOrderType"
       },
-      "LzDestinationEidEnum": {
-        "type": "integer",
-        "enum": [
-          0,
-          40422,
-          40231,
-          40161,
-          30391,
-          30110,
-          30101
-        ],
-        "description": "Extracted enum for LzDestinationEidEnum",
-        "x-enum-varnames": [
-          "NONE",
-          "ETHEREAL_TESTNET",
-          "ARBITRUM_SEPOLIA",
-          "ETHEREUM_SEPOLIA",
-          "ETHEREAL_MAINNET",
-          "ARBITRUM_MAINNET",
-          "ETHEREUM_MAINNET"
-        ]
-      },
-      "WithdrawFailedDtoMessageEnum": {
-        "type": "string",
-        "enum": [
-          "AccountSuspended",
-          "EngineSuspended",
-          "InsufficientBalance",
-          "InsuranceFundCannotWithdraw"
-        ],
-        "description": "Extracted enum for WithdrawFailedDtoMessageEnum"
-      },
       "WithdrawFailedDtoErrorEnum": {
         "type": "string",
         "enum": [
           "Unprocessable Entity"
         ],
         "description": "Extracted enum for WithdrawFailedDtoErrorEnum"
-      },
-      "TierEnum": {
-        "type": "integer",
-        "enum": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5
-        ],
-        "description": "Extracted enum for TierEnum",
-        "x-enum-varnames": [
-          "TIER_0",
-          "TIER_1",
-          "TIER_2",
-          "TIER_3",
-          "TIER_4",
-          "TIER_5"
-        ]
-      },
-      "IntentEnum": {
-        "type": "integer",
-        "enum": [
-          0,
-          1,
-          2,
-          3
-        ],
-        "description": "Extracted enum for IntentEnum",
-        "x-enum-varnames": [
-          "REFERRAL_ACTIVATION",
-          "REFERRAL_CLAIM",
-          "REFERRAL_READ",
-          "POINTS_READ"
-        ]
-      },
-      "EEnum": {
-        "type": "string",
-        "enum": [
-          "Ticker"
-        ],
-        "description": "Extracted enum for EEnum"
       }
     }
   }

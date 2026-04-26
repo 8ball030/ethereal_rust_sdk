@@ -14,7 +14,7 @@ CUSTOM_ENUM_OVERRIDE = {
 ENUM_NAME_OVERRIDES = {
     "TypeEnum": "OrderType",
     "StatusEnum": "OrderStatus",
-    "SideEnum": "OrderSide",
+    "OrderSide": "SideEnum",
     "TimeInForceEnum": "TimeInForce",
 }
 
@@ -146,6 +146,20 @@ def remove_default_ts_values(spec: dict):
     print("Removed default timestamp values from parameters.")
     return spec
 
+
+def patch_int_enums_to_int64(spec: dict):
+    schemas = spec.get("components", {}).get("schemas", {})
+
+    for enum in schemas:
+        if "x-enumNames" not in schemas[enum]:
+            continue
+        print(f"Patching enum {enum} to have format int64")
+        schemas[enum]["format"] = "int32"
+        schemas[enum]["type"] = "integer"
+        schemas[enum]["x-enum-varnames"] = [name.upper() for name in schemas[enum].get("x-enumNames", [])]
+        del schemas[enum]["x-enumNames"]
+    return spec
+
 def main():
     file_path = Path("openapi.json")
 
@@ -157,6 +171,7 @@ def main():
     data = extract_all_enums(data)
     data = patch_schema_has_next_to_optional(data)
     data = patch_integer_properties(data)
+    data = patch_int_enums_to_int64(data)
     
     write_json(file_path, data)
     print(f"Patched: {file_path}")
@@ -165,6 +180,7 @@ def main():
     data = read_json(archive_file_path)
     data = extract_all_enums(data)
     data = patch_integer_properties(data)
+    data = patch_int_enums_to_int64(data)
     data = remove_default_ts_values(data)
     write_json(archive_file_path, data)
     print(f"Patched: {archive_file_path}")  

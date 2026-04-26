@@ -24,12 +24,14 @@ pub struct OrderFillDto {
     pub client_order_id: Option<String>,
     /// Fill price in expressed as a decimal (precision: 9)
     #[serde(rename = "price")]
-    pub price: String,
+    pub price: rust_decimal::Decimal,
     /// Quantity filled in native units expressed as a decimal (precision: 9)
     #[serde(rename = "filled")]
-    pub filled: String,
+    pub filled: rust_decimal::Decimal,
+    /// The provided order's type e.g. MARKET or LIMIT
     #[serde(rename = "type")]
-    pub r#type: models::OrderFillDtoOrderType,
+    pub r#type: models::OrderType,
+    /// Side as either BUY (0) or SELL (1)
     #[serde(rename = "side")]
     pub side: models::OrderSide,
     /// Indicates if the fill is reduce only
@@ -37,7 +39,7 @@ pub struct OrderFillDto {
     pub reduce_only: bool,
     /// The provided subaccount's charged fee in USD expressed as a decimal (precision: 9)
     #[serde(rename = "feeUsd")]
-    pub fee_usd: String,
+    pub fee_usd: rust_decimal::Decimal,
     /// Indicates if the fill was a maker or taker
     #[serde(rename = "isMaker")]
     pub is_maker: bool,
@@ -56,12 +58,12 @@ impl OrderFillDto {
     pub fn new(
         id: uuid::Uuid,
         order_id: uuid::Uuid,
-        price: String,
-        filled: String,
-        r#type: models::OrderFillDtoOrderType,
+        price: rust_decimal::Decimal,
+        filled: rust_decimal::Decimal,
+        r#type: models::OrderType,
         side: models::OrderSide,
         reduce_only: bool,
-        fee_usd: String,
+        fee_usd: rust_decimal::Decimal,
         is_maker: bool,
         product_id: uuid::Uuid,
         subaccount_id: uuid::Uuid,

@@ -25,6 +25,8 @@ pub enum PositionFillDtoOrderType {
     Liquidation,
     #[serde(rename = "REALIZED_FUNDING")]
     RealizedFunding,
+    #[serde(rename = "DELEVERAGE")]
+    Deleverage,
 }
 
 impl std::fmt::Display for PositionFillDtoOrderType {
@@ -35,6 +37,7 @@ impl std::fmt::Display for PositionFillDtoOrderType {
             Self::RealizedPnl => write!(f, "REALIZED_PNL"),
             Self::Liquidation => write!(f, "LIQUIDATION"),
             Self::RealizedFunding => write!(f, "REALIZED_FUNDING"),
+            Self::Deleverage => write!(f, "DELEVERAGE"),
         }
     }
 }

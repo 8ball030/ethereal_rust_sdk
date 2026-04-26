@@ -27,22 +27,22 @@ pub struct ReferralDto {
     pub code: Option<String>,
     /// Number of remaining times the referral code can be claimed
     #[serde(rename = "codeUsageRemaining")]
-    pub code_usage_remaining: f64,
-    /// Total points (excl. referral points) earned by the referee since referee claimed the code
+    pub code_usage_remaining: i64,
+    /// Total points (excl. referral points) earned by the referee since referee claimed the code (precision: 9)
     #[serde(rename = "refereeTotalPoints")]
-    pub referee_total_points: String,
+    pub referee_total_points: rust_decimal::Decimal,
     /// Timestamp of when this referral was activated (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
-    pub created_at: f64,
+    pub created_at: i64,
 }
 
 impl ReferralDto {
     pub fn new(
         id: uuid::Uuid,
         referee: String,
-        code_usage_remaining: f64,
-        referee_total_points: String,
-        created_at: f64,
+        code_usage_remaining: i64,
+        referee_total_points: rust_decimal::Decimal,
+        created_at: i64,
     ) -> ReferralDto {
         ReferralDto {
             id,

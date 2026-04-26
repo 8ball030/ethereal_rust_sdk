@@ -12,39 +12,31 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 use serde_repr::{Deserialize_repr, Serialize_repr};
-/// TierEnum : Extracted enum for TierEnum
-/// Extracted enum for TierEnum
+/// GroupContingencyType : Type of OTOCO relationship (OTO or OCO)
+/// Type of OTOCO relationship (OTO or OCO)
 #[repr(i64)]
 #[derive(
     Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize_repr, Deserialize_repr,
 )]
-pub enum TierEnum {
-    TIER_0 = 0,
-    TIER_1 = 1,
-    TIER_2 = 2,
-    TIER_3 = 3,
-    TIER_4 = 4,
-    TIER_5 = 5,
+pub enum GroupContingencyType {
+    OTO = 0,
+    OCO = 1,
 }
 
-impl std::fmt::Display for TierEnum {
+impl std::fmt::Display for GroupContingencyType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
             "{}",
             match self {
-                Self::TIER_0 => "0",
-                Self::TIER_1 => "1",
-                Self::TIER_2 => "2",
-                Self::TIER_3 => "3",
-                Self::TIER_4 => "4",
-                Self::TIER_5 => "5",
+                Self::OTO => "0",
+                Self::OCO => "1",
             }
         )
     }
 }
-impl Default for TierEnum {
-    fn default() -> TierEnum {
-        Self::TIER_0
+impl Default for GroupContingencyType {
+    fn default() -> GroupContingencyType {
+        Self::OTO
     }
 }

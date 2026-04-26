@@ -18,37 +18,38 @@ pub struct PositionDto {
     pub id: uuid::Uuid,
     /// Current cost of the position in USD expressed as a decimal (precision: 9)
     #[serde(rename = "cost")]
-    pub cost: String,
+    pub cost: rust_decimal::Decimal,
     /// Position size in native units expressed as a decimal (precision: 9)
     #[serde(rename = "size")]
-    pub size: String,
+    pub size: rust_decimal::Decimal,
     /// Charged but unapplied funding on position, negative if paid, expressed as a decimal (precision: 9)
     #[serde(rename = "fundingUsd")]
-    pub funding_usd: String,
+    pub funding_usd: rust_decimal::Decimal,
     /// Charged and applied funding on position, negative if paid, expressed as a decimal (precision: 9)
     #[serde(rename = "fundingAccruedUsd")]
-    pub funding_accrued_usd: String,
+    pub funding_accrued_usd: rust_decimal::Decimal,
     /// Fees accrued in USD expressed as a decimal (precision: 9)
     #[serde(rename = "feesAccruedUsd")]
-    pub fees_accrued_usd: String,
+    pub fees_accrued_usd: rust_decimal::Decimal,
     /// Realized PnL in USD expressed as a decimal (precision: 9)
     #[serde(rename = "realizedPnl")]
-    pub realized_pnl: String,
+    pub realized_pnl: rust_decimal::Decimal,
     /// Unrealized PnL in USD (negative if loss, positive if profit) approximated against the latest mark price, expressed as a decimal (precision: 9)
     #[serde(rename = "unrealizedPnl", skip_serializing_if = "Option::is_none")]
-    pub unrealized_pnl: Option<String>,
+    pub unrealized_pnl: Option<rust_decimal::Decimal>,
     /// Cumulative USD value of all position increases expressed as a decimal (precision: 9)
     #[serde(rename = "totalIncreaseNotional")]
-    pub total_increase_notional: String,
+    pub total_increase_notional: rust_decimal::Decimal,
     /// Cumulative quantity of all position increases expressed as a decimal (precision: 9)
     #[serde(rename = "totalIncreaseQuantity")]
-    pub total_increase_quantity: String,
+    pub total_increase_quantity: rust_decimal::Decimal,
     /// Cumulative USD value of all position decreases expressed as a decimal (precision: 9)
     #[serde(rename = "totalDecreaseNotional")]
-    pub total_decrease_notional: String,
+    pub total_decrease_notional: rust_decimal::Decimal,
     /// Cumulative quantity of all position decreases expressed as a decimal (precision: 9)
     #[serde(rename = "totalDecreaseQuantity")]
-    pub total_decrease_quantity: String,
+    pub total_decrease_quantity: rust_decimal::Decimal,
+    /// Side as either BUY (0) or SELL (1)
     #[serde(rename = "side")]
     pub side: models::OrderSide,
     /// Id of product to this position belongs to
@@ -65,27 +66,31 @@ pub struct PositionDto {
     pub is_liquidated: bool,
     /// Product price at the time of liquidation (undefined if not liquidated, precision: 9)
     #[serde(rename = "liquidationPrice", skip_serializing_if = "Option::is_none")]
-    pub liquidation_price: Option<String>,
+    pub liquidation_price: Option<rust_decimal::Decimal>,
+    /// Whether the position has any associated deleverage records
+    #[serde(rename = "wasDeleveraged")]
+    pub was_deleveraged: bool,
 }
 
 impl PositionDto {
     pub fn new(
         id: uuid::Uuid,
-        cost: String,
-        size: String,
-        funding_usd: String,
-        funding_accrued_usd: String,
-        fees_accrued_usd: String,
-        realized_pnl: String,
-        total_increase_notional: String,
-        total_increase_quantity: String,
-        total_decrease_notional: String,
-        total_decrease_quantity: String,
+        cost: rust_decimal::Decimal,
+        size: rust_decimal::Decimal,
+        funding_usd: rust_decimal::Decimal,
+        funding_accrued_usd: rust_decimal::Decimal,
+        fees_accrued_usd: rust_decimal::Decimal,
+        realized_pnl: rust_decimal::Decimal,
+        total_increase_notional: rust_decimal::Decimal,
+        total_increase_quantity: rust_decimal::Decimal,
+        total_decrease_notional: rust_decimal::Decimal,
+        total_decrease_quantity: rust_decimal::Decimal,
         side: models::OrderSide,
         product_id: uuid::Uuid,
         updated_at: i64,
         created_at: i64,
         is_liquidated: bool,
+        was_deleveraged: bool,
     ) -> PositionDto {
         PositionDto {
             id,
@@ -106,6 +111,7 @@ impl PositionDto {
             created_at,
             is_liquidated,
             liquidation_price: None,
+            was_deleveraged,
         }
     }
 }

@@ -50,7 +50,7 @@ pub struct PositionControllerListBySubaccountIdParams {
     /// Filter by order fills created before timestamp inclusive (ms since Unix epoch)
     pub created_before: Option<i64>,
     /// Side as either BUY (0) or SELL (1)
-    pub side: Option<f64>,
+    pub side: Option<models::OrderSide>,
     /// Filter by liquidated positions
     pub is_liquidated: Option<bool>,
 }

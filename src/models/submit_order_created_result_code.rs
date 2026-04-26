@@ -11,16 +11,18 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ResultEnum : Extracted enum for ResultEnum
-/// Extracted enum for ResultEnum
+/// SubmitOrderCreatedResultCode : Code indicating the result of the submission
+/// Code indicating the result of the submission
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum ResultEnum {
+pub enum SubmitOrderCreatedResultCode {
     #[serde(rename = "AccountSuspended")]
     AccountSuspended,
     #[serde(rename = "CausesImmediateLiquidation")]
     CausesImmediateLiquidation,
     #[serde(rename = "DuplicateSameSideOco")]
     DuplicateSameSideOco,
+    #[serde(rename = "ExchangeSuspended")]
+    ExchangeSuspended,
     #[serde(rename = "ImmediateMatchPostOnly")]
     ImmediateMatchPostOnly,
     #[serde(rename = "InsufficientBalance")]
@@ -29,6 +31,8 @@ pub enum ResultEnum {
     LiquidationError,
     #[serde(rename = "MarketOrderReachedMaxSlippage")]
     MarketOrderReachedMaxSlippage,
+    #[serde(rename = "MaxQuantityExceeded")]
+    MaxQuantityExceeded,
     #[serde(rename = "OcoFilled")]
     OcoFilled,
     #[serde(rename = "Ok")]
@@ -49,18 +53,24 @@ pub enum ResultEnum {
     UnfilledImmediateOrCancel,
     #[serde(rename = "UnfilledMarketOrder")]
     UnfilledMarketOrder,
+    #[serde(rename = "MakerCanceledByTaker")]
+    MakerCanceledByTaker,
+    #[serde(rename = "CloseOrder")]
+    CloseOrder,
 }
 
-impl std::fmt::Display for ResultEnum {
+impl std::fmt::Display for SubmitOrderCreatedResultCode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::AccountSuspended => write!(f, "AccountSuspended"),
             Self::CausesImmediateLiquidation => write!(f, "CausesImmediateLiquidation"),
             Self::DuplicateSameSideOco => write!(f, "DuplicateSameSideOco"),
+            Self::ExchangeSuspended => write!(f, "ExchangeSuspended"),
             Self::ImmediateMatchPostOnly => write!(f, "ImmediateMatchPostOnly"),
             Self::InsufficientBalance => write!(f, "InsufficientBalance"),
             Self::LiquidationError => write!(f, "LiquidationError"),
             Self::MarketOrderReachedMaxSlippage => write!(f, "MarketOrderReachedMaxSlippage"),
+            Self::MaxQuantityExceeded => write!(f, "MaxQuantityExceeded"),
             Self::OcoFilled => write!(f, "OcoFilled"),
             Self::Ok => write!(f, "Ok"),
             Self::OpenValueCapExceeded => write!(f, "OpenValueCapExceeded"),
@@ -71,12 +81,14 @@ impl std::fmt::Display for ResultEnum {
             Self::UnfilledFillOrKill => write!(f, "UnfilledFillOrKill"),
             Self::UnfilledImmediateOrCancel => write!(f, "UnfilledImmediateOrCancel"),
             Self::UnfilledMarketOrder => write!(f, "UnfilledMarketOrder"),
+            Self::MakerCanceledByTaker => write!(f, "MakerCanceledByTaker"),
+            Self::CloseOrder => write!(f, "CloseOrder"),
         }
     }
 }
 
-impl Default for ResultEnum {
-    fn default() -> ResultEnum {
+impl Default for SubmitOrderCreatedResultCode {
+    fn default() -> SubmitOrderCreatedResultCode {
         Self::AccountSuspended
     }
 }

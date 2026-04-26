@@ -11,10 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// CancelOrderResultDtoResultEnum : Extracted enum for CancelOrderResultDtoResultEnum
-/// Extracted enum for CancelOrderResultDtoResultEnum
+/// CancelOrderResultCode : Code indicating the result of the submission
+/// Code indicating the result of the submission
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum CancelOrderResultDtoResultEnum {
+pub enum CancelOrderResultCode {
     #[serde(rename = "AlreadyCanceled")]
     AlreadyCanceled,
     #[serde(rename = "AlreadyExpired")]
@@ -31,7 +31,7 @@ pub enum CancelOrderResultDtoResultEnum {
     Unknown,
 }
 
-impl std::fmt::Display for CancelOrderResultDtoResultEnum {
+impl std::fmt::Display for CancelOrderResultCode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::AlreadyCanceled => write!(f, "AlreadyCanceled"),
@@ -45,8 +45,8 @@ impl std::fmt::Display for CancelOrderResultDtoResultEnum {
     }
 }
 
-impl Default for CancelOrderResultDtoResultEnum {
-    fn default() -> CancelOrderResultDtoResultEnum {
+impl Default for CancelOrderResultCode {
+    fn default() -> CancelOrderResultCode {
         Self::AlreadyCanceled
     }
 }

@@ -11,20 +11,20 @@
 
 
 use serde_repr::{Deserialize_repr, Serialize_repr};
-/// PositionSideEnum : Extracted enum for PositionSideEnum
-/// Extracted enum for PositionSideEnum
+/// OrderSide : Position side as either BUY (0) or SELL (1)
+/// Position side as either BUY (0) or SELL (1)
 #[repr(i64)]
 #[derive(
     Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize_repr, Deserialize_repr,
 )]
 #[derive(Default)]
-pub enum PositionSideEnum {
+pub enum OrderSide {
     #[default]
     BUY = 0,
     SELL = 1,
 }
 
-impl std::fmt::Display for PositionSideEnum {
+impl std::fmt::Display for OrderSide {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,

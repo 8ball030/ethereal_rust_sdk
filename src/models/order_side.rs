@@ -12,8 +12,7 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 use serde_repr::{Deserialize_repr, Serialize_repr};
-/// OrderSide : Extracted enum for OrderSide
-/// Extracted enum for OrderSide
+///
 #[repr(i64)]
 #[derive(
     Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize_repr, Deserialize_repr,

@@ -12,35 +12,30 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 use serde_repr::{Deserialize_repr, Serialize_repr};
-/// IntentEnum : Extracted enum for IntentEnum
-/// Extracted enum for IntentEnum
+///
 #[repr(i64)]
 #[derive(
     Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize_repr, Deserialize_repr,
 )]
-pub enum IntentEnum {
-    REFERRAL_ACTIVATION = 0,
-    REFERRAL_CLAIM = 1,
-    REFERRAL_READ = 2,
-    POINTS_READ = 3,
+pub enum StopType {
+    GAIN = 0,
+    LOSS = 1,
 }
 
-impl std::fmt::Display for IntentEnum {
+impl std::fmt::Display for StopType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
             "{}",
             match self {
-                Self::REFERRAL_ACTIVATION => "0",
-                Self::REFERRAL_CLAIM => "1",
-                Self::REFERRAL_READ => "2",
-                Self::POINTS_READ => "3",
+                Self::GAIN => "0",
+                Self::LOSS => "1",
             }
         )
     }
 }
-impl Default for IntentEnum {
-    fn default() -> IntentEnum {
-        Self::REFERRAL_ACTIVATION
+impl Default for StopType {
+    fn default() -> StopType {
+        Self::GAIN
     }
 }

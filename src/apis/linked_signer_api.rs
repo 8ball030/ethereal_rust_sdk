@@ -57,7 +57,7 @@ pub struct LinkedSignerControllerListBySubaccountIdParams {
     /// Pointer to the current object in pagination dataset
     pub cursor: Option<String>,
     /// Filters signers by statuses
-    pub statuses: Option<Vec<String>>,
+    pub statuses: Option<Vec<models::LinkedSignerStatus>>,
     /// Order by field
     pub order_by: Option<String>,
 }

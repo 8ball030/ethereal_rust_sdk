@@ -12,31 +12,31 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 use serde_repr::{Deserialize_repr, Serialize_repr};
-/// StopPriceTypeEnum : Extracted enum for StopPriceTypeEnum
-/// Extracted enum for StopPriceTypeEnum
+/// EngineType : Product engine type e.g. PERP (0)
+/// Product engine type e.g. PERP (0)
 #[repr(i64)]
 #[derive(
     Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize_repr, Deserialize_repr,
 )]
-pub enum StopPriceTypeEnum {
-    LAST_PRICE = 0,
-    MARK_PRICE = 1,
+pub enum EngineType {
+    PERP = 0,
+    SPOT = 1,
 }
 
-impl std::fmt::Display for StopPriceTypeEnum {
+impl std::fmt::Display for EngineType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
             "{}",
             match self {
-                Self::LAST_PRICE => "0",
-                Self::MARK_PRICE => "1",
+                Self::PERP => "0",
+                Self::SPOT => "1",
             }
         )
     }
 }
-impl Default for StopPriceTypeEnum {
-    fn default() -> StopPriceTypeEnum {
-        Self::LAST_PRICE
+impl Default for EngineType {
+    fn default() -> EngineType {
+        Self::PERP
     }
 }

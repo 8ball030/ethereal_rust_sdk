@@ -19,18 +19,19 @@ pub struct SubmitOrderCreatedDto {
     /// A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)
     #[serde(rename = "clientOrderId", skip_serializing_if = "Option::is_none")]
     pub client_order_id: Option<String>,
-    /// Filled amount in native units expressed as a decimal (precision: 9)
+    /// Filled amount in native units expressed as a decimal (precision: 9). Always zero when block execution is enabled.
     #[serde(rename = "filled")]
-    pub filled: String,
+    pub filled: rust_decimal::Decimal,
+    /// Code indicating the result of the submission
     #[serde(rename = "result")]
-    pub result: models::ResultEnum,
+    pub result: models::SubmitOrderCreatedResultCode,
 }
 
 impl SubmitOrderCreatedDto {
     pub fn new(
         id: uuid::Uuid,
-        filled: String,
-        result: models::ResultEnum,
+        filled: rust_decimal::Decimal,
+        result: models::SubmitOrderCreatedResultCode,
     ) -> SubmitOrderCreatedDto {
         SubmitOrderCreatedDto {
             id,

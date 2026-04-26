@@ -11,72 +11,81 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// CodeEnum : Extracted enum for CodeEnum
-/// Extracted enum for CodeEnum
+/// RejectedReasonEnum : Extracted enum for RejectedReasonEnum
+/// Extracted enum for RejectedReasonEnum
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum CodeEnum {
+pub enum RejectedReasonEnum {
     #[serde(rename = "AccountSuspended")]
     AccountSuspended,
     #[serde(rename = "CausesImmediateLiquidation")]
     CausesImmediateLiquidation,
     #[serde(rename = "DuplicateSameSideOco")]
     DuplicateSameSideOco,
+    #[serde(rename = "ExchangeSuspended")]
+    ExchangeSuspended,
     #[serde(rename = "ImmediateMatchPostOnly")]
     ImmediateMatchPostOnly,
+    #[serde(rename = "InstrumentOpenValueCapExceeded")]
+    InstrumentOpenValueCapExceeded,
     #[serde(rename = "InsufficientBalance")]
     InsufficientBalance,
-    #[serde(rename = "LiquidationError")]
-    LiquidationError,
+    #[serde(rename = "Liquidation")]
+    Liquidation,
     #[serde(rename = "MarketOrderReachedMaxSlippage")]
     MarketOrderReachedMaxSlippage,
     #[serde(rename = "OcoFilled")]
     OcoFilled,
-    #[serde(rename = "Ok")]
-    Ok,
-    #[serde(rename = "OpenValueCapExceeded")]
-    OpenValueCapExceeded,
     #[serde(rename = "OrderIncreasesPosition")]
     OrderIncreasesPosition,
     #[serde(rename = "RiskLimitExceeded")]
     RiskLimitExceeded,
     #[serde(rename = "SignerRevoked")]
     SignerRevoked,
-    #[serde(rename = "TriggerCanceledError")]
-    TriggerCanceledError,
+    #[serde(rename = "TriggerCanceled")]
+    TriggerCanceled,
+    #[serde(rename = "QuantityAboveMaximum")]
+    QuantityAboveMaximum,
     #[serde(rename = "UnfilledFillOrKill")]
     UnfilledFillOrKill,
     #[serde(rename = "UnfilledImmediateOrCancel")]
     UnfilledImmediateOrCancel,
     #[serde(rename = "UnfilledMarketOrder")]
     UnfilledMarketOrder,
+    #[serde(rename = "MakerCanceledByTaker")]
+    MakerCanceledByTaker,
+    #[serde(rename = "CloseOrder")]
+    CloseOrder,
 }
 
-impl std::fmt::Display for CodeEnum {
+impl std::fmt::Display for RejectedReasonEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::AccountSuspended => write!(f, "AccountSuspended"),
             Self::CausesImmediateLiquidation => write!(f, "CausesImmediateLiquidation"),
             Self::DuplicateSameSideOco => write!(f, "DuplicateSameSideOco"),
+            Self::ExchangeSuspended => write!(f, "ExchangeSuspended"),
             Self::ImmediateMatchPostOnly => write!(f, "ImmediateMatchPostOnly"),
+            Self::InstrumentOpenValueCapExceeded => write!(f, "InstrumentOpenValueCapExceeded"),
             Self::InsufficientBalance => write!(f, "InsufficientBalance"),
-            Self::LiquidationError => write!(f, "LiquidationError"),
+            Self::Liquidation => write!(f, "Liquidation"),
             Self::MarketOrderReachedMaxSlippage => write!(f, "MarketOrderReachedMaxSlippage"),
             Self::OcoFilled => write!(f, "OcoFilled"),
-            Self::Ok => write!(f, "Ok"),
-            Self::OpenValueCapExceeded => write!(f, "OpenValueCapExceeded"),
             Self::OrderIncreasesPosition => write!(f, "OrderIncreasesPosition"),
             Self::RiskLimitExceeded => write!(f, "RiskLimitExceeded"),
             Self::SignerRevoked => write!(f, "SignerRevoked"),
-            Self::TriggerCanceledError => write!(f, "TriggerCanceledError"),
+            Self::TriggerCanceled => write!(f, "TriggerCanceled"),
+            Self::QuantityAboveMaximum => write!(f, "QuantityAboveMaximum"),
             Self::UnfilledFillOrKill => write!(f, "UnfilledFillOrKill"),
             Self::UnfilledImmediateOrCancel => write!(f, "UnfilledImmediateOrCancel"),
             Self::UnfilledMarketOrder => write!(f, "UnfilledMarketOrder"),
+            Self::MakerCanceledByTaker => write!(f, "MakerCanceledByTaker"),
+            Self::CloseOrder => write!(f, "CloseOrder"),
         }
     }
 }
 
-impl Default for CodeEnum {
-    fn default() -> CodeEnum {
+impl Default for RejectedReasonEnum {
+    fn default() -> RejectedReasonEnum {
         Self::AccountSuspended
     }
 }

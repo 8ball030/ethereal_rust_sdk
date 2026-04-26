@@ -12,31 +12,35 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 use serde_repr::{Deserialize_repr, Serialize_repr};
-/// MakerSideEnum : Extracted enum for MakerSideEnum
-/// Extracted enum for MakerSideEnum
+/// Eip712AuthIntent : Intent of the message (action to be taken)
+/// Intent of the message (action to be taken)
 #[repr(i64)]
 #[derive(
     Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize_repr, Deserialize_repr,
 )]
-pub enum MakerSideEnum {
-    BUY = 0,
-    SELL = 1,
+pub enum Eip712AuthIntent {
+    REFERRAL_ACTIVATION = 0,
+    REFERRAL_CLAIM = 1,
+    REFERRAL_READ = 2,
+    POINTS_READ = 3,
 }
 
-impl std::fmt::Display for MakerSideEnum {
+impl std::fmt::Display for Eip712AuthIntent {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
             "{}",
             match self {
-                Self::BUY => "0",
-                Self::SELL => "1",
+                Self::REFERRAL_ACTIVATION => "0",
+                Self::REFERRAL_CLAIM => "1",
+                Self::REFERRAL_READ => "2",
+                Self::POINTS_READ => "3",
             }
         )
     }
 }
-impl Default for MakerSideEnum {
-    fn default() -> MakerSideEnum {
-        Self::BUY
+impl Default for Eip712AuthIntent {
+    fn default() -> Eip712AuthIntent {
+        Self::REFERRAL_ACTIVATION
     }
 }

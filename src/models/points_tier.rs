@@ -12,31 +12,39 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 use serde_repr::{Deserialize_repr, Serialize_repr};
-/// EngineTypeEnum : Extracted enum for EngineTypeEnum
-/// Extracted enum for EngineTypeEnum
+/// PointsTier : Account tier derived based on activity this season
+/// Account tier derived based on activity this season
 #[repr(i64)]
 #[derive(
     Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize_repr, Deserialize_repr,
 )]
-pub enum EngineTypeEnum {
-    PERP = 0,
-    SPOT = 1,
+pub enum PointsTier {
+    TIER_0 = 0,
+    TIER_1 = 1,
+    TIER_2 = 2,
+    TIER_3 = 3,
+    TIER_4 = 4,
+    TIER_5 = 5,
 }
 
-impl std::fmt::Display for EngineTypeEnum {
+impl std::fmt::Display for PointsTier {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
             "{}",
             match self {
-                Self::PERP => "0",
-                Self::SPOT => "1",
+                Self::TIER_0 => "0",
+                Self::TIER_1 => "1",
+                Self::TIER_2 => "2",
+                Self::TIER_3 => "3",
+                Self::TIER_4 => "4",
+                Self::TIER_5 => "5",
             }
         )
     }
 }
-impl Default for EngineTypeEnum {
-    fn default() -> EngineTypeEnum {
-        Self::PERP
+impl Default for PointsTier {
+    fn default() -> PointsTier {
+        Self::TIER_0
     }
 }

@@ -12,31 +12,31 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 use serde_repr::{Deserialize_repr, Serialize_repr};
-/// TakerSideEnum : Extracted enum for TakerSideEnum
-/// Extracted enum for TakerSideEnum
+/// StopPriceType : Type of stop price (stop orders only)
+/// Type of stop price (stop orders only)
 #[repr(i64)]
 #[derive(
     Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize_repr, Deserialize_repr,
 )]
-pub enum TakerSideEnum {
-    BUY = 0,
-    SELL = 1,
+pub enum StopPriceType {
+    LAST_PRICE = 0,
+    MARK_PRICE = 1,
 }
 
-impl std::fmt::Display for TakerSideEnum {
+impl std::fmt::Display for StopPriceType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
             "{}",
             match self {
-                Self::BUY => "0",
-                Self::SELL => "1",
+                Self::LAST_PRICE => "0",
+                Self::MARK_PRICE => "1",
             }
         )
     }
 }
-impl Default for TakerSideEnum {
-    fn default() -> TakerSideEnum {
-        Self::BUY
+impl Default for StopPriceType {
+    fn default() -> StopPriceType {
+        Self::LAST_PRICE
     }
 }

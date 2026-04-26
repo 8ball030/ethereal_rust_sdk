@@ -18,11 +18,11 @@ pub struct ReferralCodeUsageDto {
     pub code: String,
     /// Number of remaining times the code can be claimed
     #[serde(rename = "remainingUsage")]
-    pub remaining_usage: f64,
+    pub remaining_usage: i64,
 }
 
 impl ReferralCodeUsageDto {
-    pub fn new(code: String, remaining_usage: f64) -> ReferralCodeUsageDto {
+    pub fn new(code: String, remaining_usage: i64) -> ReferralCodeUsageDto {
         ReferralCodeUsageDto {
             code,
             remaining_usage,

@@ -11,33 +11,35 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// WithdrawDtoOrderStatus : Extracted enum for WithdrawDtoOrderStatus
-/// Extracted enum for WithdrawDtoOrderStatus
+///
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum WithdrawDtoOrderStatus {
-    #[serde(rename = "SUBMITTED")]
-    Submitted,
+pub enum LinkedSignerStatus {
     #[serde(rename = "PENDING")]
     Pending,
-    #[serde(rename = "COMPLETED")]
-    Completed,
+    #[serde(rename = "ACTIVE")]
+    Active,
+    #[serde(rename = "PENDING_REVOKE")]
+    PendingRevoke,
+    #[serde(rename = "REVOKED")]
+    Revoked,
     #[serde(rename = "REJECTED")]
     Rejected,
 }
 
-impl std::fmt::Display for WithdrawDtoOrderStatus {
+impl std::fmt::Display for LinkedSignerStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            Self::Submitted => write!(f, "SUBMITTED"),
             Self::Pending => write!(f, "PENDING"),
-            Self::Completed => write!(f, "COMPLETED"),
+            Self::Active => write!(f, "ACTIVE"),
+            Self::PendingRevoke => write!(f, "PENDING_REVOKE"),
+            Self::Revoked => write!(f, "REVOKED"),
             Self::Rejected => write!(f, "REJECTED"),
         }
     }
 }
 
-impl Default for WithdrawDtoOrderStatus {
-    fn default() -> WithdrawDtoOrderStatus {
-        Self::Submitted
+impl Default for LinkedSignerStatus {
+    fn default() -> LinkedSignerStatus {
+        Self::Pending
     }
 }

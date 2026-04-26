@@ -24,24 +24,25 @@ pub struct PointsSeasonSummaryDto {
     pub season: i64,
     /// Total points earned (excluding referral points) in this season expressed as a decimal (precision: 9)
     #[serde(rename = "totalPoints")]
-    pub total_points: String,
+    pub total_points: rust_decimal::Decimal,
     /// Total points earned (excluding referral points) before most recent distribution expressed as a decimal (precision: 9)
     #[serde(rename = "previousTotalPoints")]
-    pub previous_total_points: String,
+    pub previous_total_points: rust_decimal::Decimal,
     /// Referral points earned in this season expressed as a decimal (precision: 9)
     #[serde(rename = "referralPoints")]
-    pub referral_points: String,
+    pub referral_points: rust_decimal::Decimal,
     /// Referral points earned in this season before most recent distribution expressed as a decimal (precision: 9)
     #[serde(rename = "previousReferralPoints")]
-    pub previous_referral_points: String,
+    pub previous_referral_points: rust_decimal::Decimal,
     /// Current rank in this season
     #[serde(rename = "rank")]
     pub rank: i64,
     /// Rank before most recent distribution
     #[serde(rename = "previousRank")]
     pub previous_rank: i64,
+    /// Account tier derived based on activity this season
     #[serde(rename = "tier")]
-    pub tier: models::TierEnum,
+    pub tier: models::PointsTier,
     /// Points season summary creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
     pub created_at: i64,
@@ -55,13 +56,13 @@ impl PointsSeasonSummaryDto {
         id: uuid::Uuid,
         address: String,
         season: i64,
-        total_points: String,
-        previous_total_points: String,
-        referral_points: String,
-        previous_referral_points: String,
+        total_points: rust_decimal::Decimal,
+        previous_total_points: rust_decimal::Decimal,
+        referral_points: rust_decimal::Decimal,
+        previous_referral_points: rust_decimal::Decimal,
         rank: i64,
         previous_rank: i64,
-        tier: models::TierEnum,
+        tier: models::PointsTier,
         created_at: i64,
         updated_at: i64,
     ) -> PointsSeasonSummaryDto {

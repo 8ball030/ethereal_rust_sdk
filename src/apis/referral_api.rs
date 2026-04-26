@@ -37,12 +37,12 @@ pub struct ReferralControllerGetCodeUsageParams {
 pub struct ReferralControllerGetSummaryParams {
     /// Must be: EIP712Auth
     pub x_ethereal_auth: String,
-    /// Address that signed this message (hex)
+    /// Address that signed this message
     pub x_ethereal_sender: String,
-    /// The signature from signTypedData(...) signed by the sender
+    /// Hex-encoded EIP-712 signature authorizing this request
     pub x_ethereal_signature: String,
     /// Intent of the message (action to be taken)
-    pub x_ethereal_intent: String,
+    pub x_ethereal_intent: f64,
     /// Message signedAt current timestamp (seconds since Unix Epoch)
     pub x_ethereal_signed_at: String,
     /// Bytes32 encoded subaccount name (0x prefix, zero padded, set when using linked signer)
@@ -54,12 +54,12 @@ pub struct ReferralControllerGetSummaryParams {
 pub struct ReferralControllerListReferralsParams {
     /// Must be: EIP712Auth
     pub x_ethereal_auth: String,
-    /// Address that signed this message (hex)
+    /// Address that signed this message
     pub x_ethereal_sender: String,
-    /// The signature from signTypedData(...) signed by the sender
+    /// Hex-encoded EIP-712 signature authorizing this request
     pub x_ethereal_signature: String,
     /// Intent of the message (action to be taken)
-    pub x_ethereal_intent: String,
+    pub x_ethereal_intent: f64,
     /// Message signedAt current timestamp (seconds since Unix Epoch)
     pub x_ethereal_signed_at: String,
     /// Direction to paginate through objects

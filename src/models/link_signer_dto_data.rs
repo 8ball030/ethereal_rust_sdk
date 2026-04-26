@@ -16,7 +16,7 @@ pub struct LinkSignerDtoData {
     /// Id representing the registered subaccount
     #[serde(rename = "subaccountId")]
     pub subaccount_id: uuid::Uuid,
-    /// Account address that created the signature in this message
+    /// Account address that produced the authorizing signature
     #[serde(rename = "sender")]
     pub sender: String,
     /// Bytes32 encoded subaccount name (0x prefix, zero padded)

@@ -380,7 +380,7 @@
                       "description": "Symbol."
                     },
                     "sd": {
-                      "$ref": "./openapi.json#/components/schemas/PositionSideEnum"
+                      "$ref": "./openapi.json#/components/schemas/OrderSide"
                     },
                     "sz": {
                       "type": "string",

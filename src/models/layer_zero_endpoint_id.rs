@@ -12,13 +12,13 @@ use crate::models;
 use serde::{Deserialize, Serialize};
 
 use serde_repr::{Deserialize_repr, Serialize_repr};
-/// LzDestinationEidEnum : Extracted enum for LzDestinationEidEnum
-/// Extracted enum for LzDestinationEidEnum
+/// LayerZeroEndpointId : LayerZero destination endpoint ID for the transfer (zero if not bridging)
+/// LayerZero destination endpoint ID for the transfer (zero if not bridging)
 #[repr(i64)]
 #[derive(
     Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize_repr, Deserialize_repr,
 )]
-pub enum LzDestinationEidEnum {
+pub enum LayerZeroEndpointId {
     NONE = 0,
     ETHEREAL_TESTNET = 40422,
     ARBITRUM_SEPOLIA = 40231,
@@ -28,7 +28,7 @@ pub enum LzDestinationEidEnum {
     ETHEREUM_MAINNET = 30101,
 }
 
-impl std::fmt::Display for LzDestinationEidEnum {
+impl std::fmt::Display for LayerZeroEndpointId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
@@ -45,8 +45,8 @@ impl std::fmt::Display for LzDestinationEidEnum {
         )
     }
 }
-impl Default for LzDestinationEidEnum {
-    fn default() -> LzDestinationEidEnum {
+impl Default for LayerZeroEndpointId {
+    fn default() -> LayerZeroEndpointId {
         Self::NONE
     }
 }

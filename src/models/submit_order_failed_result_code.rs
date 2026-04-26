@@ -11,10 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// MessageEnum : Extracted enum for MessageEnum
-/// Extracted enum for MessageEnum
+/// SubmitOrderFailedResultCode : Code indicating the reason for failure
+/// Code indicating the reason for failure
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum MessageEnum {
+pub enum SubmitOrderFailedResultCode {
     #[serde(rename = "AccountSuspended")]
     AccountSuspended,
     #[serde(rename = "DuplicateClientOrderId")]
@@ -65,9 +65,11 @@ pub enum MessageEnum {
     QuantityNotMultipleOfLotSize,
     #[serde(rename = "OrderWithZeroQuantity")]
     OrderWithZeroQuantity,
+    #[serde(rename = "OcoLatencyFloorMismatch")]
+    OcoLatencyFloorMismatch,
 }
 
-impl std::fmt::Display for MessageEnum {
+impl std::fmt::Display for SubmitOrderFailedResultCode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::AccountSuspended => write!(f, "AccountSuspended"),
@@ -95,12 +97,13 @@ impl std::fmt::Display for MessageEnum {
             Self::QuantityAboveMaximum => write!(f, "QuantityAboveMaximum"),
             Self::QuantityNotMultipleOfLotSize => write!(f, "QuantityNotMultipleOfLotSize"),
             Self::OrderWithZeroQuantity => write!(f, "OrderWithZeroQuantity"),
+            Self::OcoLatencyFloorMismatch => write!(f, "OcoLatencyFloorMismatch"),
         }
     }
 }
 
-impl Default for MessageEnum {
-    fn default() -> MessageEnum {
+impl Default for SubmitOrderFailedResultCode {
+    fn default() -> SubmitOrderFailedResultCode {
         Self::AccountSuspended
     }
 }

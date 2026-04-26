@@ -13,11 +13,12 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ClaimReferralCodeDtoData {
-    /// Address that signed this message
+    /// Account address that produced the authorizing signature
     #[serde(rename = "sender")]
     pub sender: String,
+    /// Intent of the message (action to be taken)
     #[serde(rename = "intent")]
-    pub intent: models::IntentEnum,
+    pub intent: models::Eip712AuthIntent,
     /// Message signedAt current timestamp (seconds since Unix Epoch)
     #[serde(rename = "signedAt")]
     pub signed_at: i64,
@@ -29,7 +30,7 @@ pub struct ClaimReferralCodeDtoData {
 impl ClaimReferralCodeDtoData {
     pub fn new(
         sender: String,
-        intent: models::IntentEnum,
+        intent: models::Eip712AuthIntent,
         signed_at: i64,
         code: String,
     ) -> ClaimReferralCodeDtoData {

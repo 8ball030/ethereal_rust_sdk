@@ -27,17 +27,18 @@ pub struct PositionLiquidationDto {
     pub position_id: uuid::Uuid,
     /// Liquidation mark price in USD expressed as a decimal (precision: 9)
     #[serde(rename = "liquidationPrice")]
-    pub liquidation_price: String,
+    pub liquidation_price: rust_decimal::Decimal,
     #[serde(rename = "cause")]
     pub cause: models::CauseEnum,
     /// Position cost at the time of liquidation in USD expressed as a decimal (precision: 9)
     #[serde(rename = "cost")]
-    pub cost: String,
+    pub cost: rust_decimal::Decimal,
     /// Funding charged in USD expressed as a decimal (precision: 9), undefined if not liquidated due to funding
     #[serde(rename = "fundingChargeUsd", skip_serializing_if = "Option::is_none")]
-    pub funding_charge_usd: Option<String>,
+    pub funding_charge_usd: Option<rust_decimal::Decimal>,
+    /// Position side as either BUY (0) or SELL (1)
     #[serde(rename = "positionSide")]
-    pub position_side: models::PositionSideEnum,
+    pub position_side: models::OrderSide,
     /// Position liquidation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
     pub created_at: i64,
@@ -49,10 +50,10 @@ impl PositionLiquidationDto {
         subaccount_id: uuid::Uuid,
         product_id: uuid::Uuid,
         position_id: uuid::Uuid,
-        liquidation_price: String,
+        liquidation_price: rust_decimal::Decimal,
         cause: models::CauseEnum,
-        cost: String,
-        position_side: models::PositionSideEnum,
+        cost: rust_decimal::Decimal,
+        position_side: models::OrderSide,
         created_at: i64,
     ) -> PositionLiquidationDto {
         PositionLiquidationDto {
