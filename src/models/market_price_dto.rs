@@ -18,16 +18,16 @@ pub struct MarketPriceDto {
     pub product_id: uuid::Uuid,
     /// Best bid price in USD expressed as a decimal (precision: 9)
     #[serde(rename = "bestBidPrice", skip_serializing_if = "Option::is_none")]
-    pub best_bid_price: Option<String>,
+    pub best_bid_price: Option<rust_decimal::Decimal>,
     /// Best ask price in USD expressed as a decimal (precision: 9)
     #[serde(rename = "bestAskPrice", skip_serializing_if = "Option::is_none")]
-    pub best_ask_price: Option<String>,
+    pub best_ask_price: Option<rust_decimal::Decimal>,
     /// Oracle price in USD expressed as a decimal (precision: 9)
     #[serde(rename = "oraclePrice", skip_serializing_if = "Option::is_none")]
-    pub oracle_price: Option<String>,
+    pub oracle_price: Option<rust_decimal::Decimal>,
     /// Price of product 24hrs ago in USD expressed as a decimal (precision: 9)
     #[serde(rename = "price24hAgo", skip_serializing_if = "Option::is_none")]
-    pub price24h_ago: Option<String>,
+    pub price24h_ago: Option<rust_decimal::Decimal>,
 }
 
 impl MarketPriceDto {

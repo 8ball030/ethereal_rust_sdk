@@ -23,10 +23,11 @@ pub struct OrderDto {
     pub r#type: models::OrderType,
     /// Remaining quantity (if modified or reduced) in native units expressed as a decimal (precision: 9)
     #[serde(rename = "availableQuantity")]
-    pub available_quantity: String,
+    pub available_quantity: rust_decimal::Decimal,
     /// Original quantity (as per order submission) in native units expressed as a decimal (precision: 9)
     #[serde(rename = "quantity")]
-    pub quantity: String,
+    pub quantity: rust_decimal::Decimal,
+    /// Side as either BUY (0) or SELL (1)
     #[serde(rename = "side")]
     pub side: models::OrderSide,
     /// Id of product this order was placed against
@@ -54,17 +55,19 @@ pub struct OrderDto {
     pub sender: String,
     /// Limit price in native units expressed as a decimal, zero if market order (precision: 9)
     #[serde(rename = "price")]
-    pub price: String,
+    pub price: rust_decimal::Decimal,
     /// Filled amount in native units expressed as a decimal (precision: 9)
     #[serde(rename = "filled")]
-    pub filled: String,
+    pub filled: rust_decimal::Decimal,
     /// Stop price expressed as a decimal (zero if not a stop order, precision: 9)
     #[serde(rename = "stopPrice")]
-    pub stop_price: String,
+    pub stop_price: rust_decimal::Decimal,
+    /// Stop type, either GAIN (0) for take-profit or LOSS (1) for stop-loss
     #[serde(rename = "stopType", skip_serializing_if = "Option::is_none")]
-    pub stop_type: Option<models::StopTypeEnum>,
+    pub stop_type: Option<models::StopType>,
+    /// Type of stop price (stop orders only)
     #[serde(rename = "stopPriceType", skip_serializing_if = "Option::is_none")]
-    pub stop_price_type: Option<models::StopPriceTypeEnum>,
+    pub stop_price_type: Option<models::StopPriceType>,
     #[serde(rename = "timeInForce", skip_serializing_if = "Option::is_none")]
     pub time_in_force: Option<models::TimeInForce>,
     /// Order expiry timestamp (seconds since Unix Epoch)
@@ -73,24 +76,27 @@ pub struct OrderDto {
     /// Only add order if it does not immediately fill (limit only)
     #[serde(rename = "postOnly", skip_serializing_if = "Option::is_none")]
     pub post_only: Option<bool>,
+    /// Type of OTOCO relationship (OTO or OCO)
     #[serde(
         rename = "groupContingencyType",
         skip_serializing_if = "Option::is_none"
     )]
-    pub group_contingency_type: Option<models::GroupContingencyTypeEnum>,
+    pub group_contingency_type: Option<models::GroupContingencyType>,
     /// Id of the group this order belongs to
     #[serde(rename = "groupId", skip_serializing_if = "Option::is_none")]
     pub group_id: Option<uuid::Uuid>,
     #[serde(rename = "triggered")]
     pub triggered: models::TriggeredEnum,
+    #[serde(rename = "rejectedReason", skip_serializing_if = "Option::is_none")]
+    pub rejected_reason: Option<models::RejectedReasonEnum>,
 }
 
 impl OrderDto {
     pub fn new(
         id: uuid::Uuid,
         r#type: models::OrderType,
-        available_quantity: String,
-        quantity: String,
+        available_quantity: rust_decimal::Decimal,
+        quantity: rust_decimal::Decimal,
         side: models::OrderSide,
         product_id: uuid::Uuid,
         subaccount_id: uuid::Uuid,
@@ -100,9 +106,9 @@ impl OrderDto {
         updated_at: i64,
         created_at: i64,
         sender: String,
-        price: String,
-        filled: String,
-        stop_price: String,
+        price: rust_decimal::Decimal,
+        filled: rust_decimal::Decimal,
+        stop_price: rust_decimal::Decimal,
         expires_at: i64,
         triggered: models::TriggeredEnum,
     ) -> OrderDto {
@@ -132,6 +138,7 @@ impl OrderDto {
             group_contingency_type: None,
             group_id: None,
             triggered,
+            rejected_reason: None,
         }
     }
 }

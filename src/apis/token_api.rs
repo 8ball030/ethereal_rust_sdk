@@ -57,7 +57,7 @@ pub struct TokenControllerListTransfersParams {
     /// Array of transfer statuses to filter by
     pub statuses: Option<Vec<String>>,
     /// Array of transfer types to filter by
-    pub types: Option<Vec<String>>,
+    pub types: Option<Vec<models::TransferType>>,
     /// Order by field
     pub order_by: Option<String>,
     /// Filter by transfers created after timestamp exclusive (ms since Unix epoch)

@@ -16,7 +16,7 @@ pub struct AccountSignerQuotaDto {
     /// Ratelimit period in days for linking signers per account
     #[serde(rename = "maxLinkedSignersPeriodDays")]
     pub max_linked_signers_period_days: i64,
-    /// Max number of signer that can be linked within ratelimit period
+    /// Max number of signers that can be linked within ratelimit period
     #[serde(rename = "maxLinkedSignersInPeriod")]
     pub max_linked_signers_in_period: i64,
     /// Number of signers linked within current ratelimit period

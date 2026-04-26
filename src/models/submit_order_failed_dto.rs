@@ -15,8 +15,9 @@ use serde::{Deserialize, Serialize};
 pub struct SubmitOrderFailedDto {
     #[serde(rename = "statusCode")]
     pub status_code: StatusCode,
+    /// Code indicating the reason for failure
     #[serde(rename = "message")]
-    pub message: models::MessageEnum,
+    pub message: models::SubmitOrderFailedResultCode,
     #[serde(rename = "error")]
     pub error: models::SubmitOrderFailedDtoErrorEnum,
 }
@@ -24,7 +25,7 @@ pub struct SubmitOrderFailedDto {
 impl SubmitOrderFailedDto {
     pub fn new(
         status_code: StatusCode,
-        message: models::MessageEnum,
+        message: models::SubmitOrderFailedResultCode,
         error: models::SubmitOrderFailedDtoErrorEnum,
     ) -> SubmitOrderFailedDto {
         SubmitOrderFailedDto {

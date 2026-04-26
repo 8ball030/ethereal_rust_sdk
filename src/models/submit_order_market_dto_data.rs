@@ -16,7 +16,7 @@ pub struct SubmitOrderMarketDtoData {
     /// Bytes32 encoded subaccount name (0x prefix, zero padded)
     #[serde(rename = "subaccount")]
     pub subaccount: String,
-    /// Address of account
+    /// Account address that produced the authorizing signature
     #[serde(rename = "sender")]
     pub sender: String,
     /// Message nonce timestamp (nanoseconds since Unix Epoch)
@@ -27,13 +27,15 @@ pub struct SubmitOrderMarketDtoData {
     /// Non-directional quantity of product in native units expressed as a decimal (precision: 9)
     #[serde(rename = "quantity")]
     pub quantity: rust_decimal::Decimal,
+    /// Side as either BUY (0) or SELL (1)
     #[serde(rename = "side")]
     pub side: models::OrderSide,
     /// Onchain generated productId from prior product registration
     #[serde(rename = "onchainId")]
     pub onchain_id: i64,
+    /// Product engine type e.g. PERP (0)
     #[serde(rename = "engineType")]
-    pub engine_type: models::EngineTypeEnum,
+    pub engine_type: models::EngineType,
     /// A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)
     #[serde(rename = "clientOrderId", skip_serializing_if = "Option::is_none")]
     pub client_order_id: Option<String>,
@@ -46,8 +48,9 @@ pub struct SubmitOrderMarketDtoData {
     /// Stop price expressed as a decimal (precision: 9), requires stopType
     #[serde(rename = "stopPrice", skip_serializing_if = "Option::is_none")]
     pub stop_price: Option<rust_decimal::Decimal>,
+    /// Stop type, either 0 (take-profit) or 1 (stop-loss), requires non-zero stopPrice
     #[serde(rename = "stopType", skip_serializing_if = "Option::is_none")]
-    pub stop_type: Option<models::StopTypeEnum>,
+    pub stop_type: Option<models::StopType>,
     /// Message signedAt current timestamp (seconds since Unix Epoch)
     #[serde(rename = "signedAt")]
     pub signed_at: i64,
@@ -57,11 +60,12 @@ pub struct SubmitOrderMarketDtoData {
     /// Group Id (UUID) for linking orders together in OCO/OTO relationships
     #[serde(rename = "groupId", skip_serializing_if = "Option::is_none")]
     pub group_id: Option<uuid::Uuid>,
+    /// Contingency type for order groups: OTO (Order-Triggers-Order) or OCO (One-Cancels-Other)
     #[serde(
         rename = "groupContingencyType",
         skip_serializing_if = "Option::is_none"
     )]
-    pub group_contingency_type: Option<models::GroupContingencyTypeEnum>,
+    pub group_contingency_type: Option<models::GroupContingencyType>,
 }
 
 impl SubmitOrderMarketDtoData {
@@ -73,7 +77,7 @@ impl SubmitOrderMarketDtoData {
         quantity: rust_decimal::Decimal,
         side: models::OrderSide,
         onchain_id: i64,
-        engine_type: models::EngineTypeEnum,
+        engine_type: models::EngineType,
         signed_at: i64,
     ) -> SubmitOrderMarketDtoData {
         SubmitOrderMarketDtoData {

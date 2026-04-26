@@ -15,8 +15,9 @@ use serde::{Deserialize, Serialize};
 pub struct WithdrawFailedDto {
     #[serde(rename = "statusCode")]
     pub status_code: StatusCode,
+    /// Error code indicating the reason for failure
     #[serde(rename = "message")]
-    pub message: models::WithdrawFailedDtoMessageEnum,
+    pub message: models::WithdrawErrorCode,
     #[serde(rename = "error")]
     pub error: models::WithdrawFailedDtoErrorEnum,
 }
@@ -24,7 +25,7 @@ pub struct WithdrawFailedDto {
 impl WithdrawFailedDto {
     pub fn new(
         status_code: StatusCode,
-        message: models::WithdrawFailedDtoMessageEnum,
+        message: models::WithdrawErrorCode,
         error: models::WithdrawFailedDtoErrorEnum,
     ) -> WithdrawFailedDto {
         WithdrawFailedDto {

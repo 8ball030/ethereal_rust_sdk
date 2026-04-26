@@ -16,7 +16,7 @@ pub struct CancelOrderDtoData {
     /// Bytes32 encoded subaccount name (0x prefix, zero padded)
     #[serde(rename = "subaccount")]
     pub subaccount: String,
-    /// Account or linked signer address that canceled this order
+    /// Account address that produced the authorizing signature
     #[serde(rename = "sender")]
     pub sender: String,
     /// Message nonce timestamp (nanoseconds since Unix Epoch)

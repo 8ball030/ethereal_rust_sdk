@@ -23,7 +23,7 @@ pub struct PositionUpdateMessageDataDInner {
     #[serde(rename = "s")]
     pub s: String,
     #[serde(rename = "sd")]
-    pub sd: models::PositionSideEnum,
+    pub sd: models::OrderSide,
     /// Position size.
     #[serde(rename = "sz")]
     pub sz: rust_decimal::Decimal,
@@ -49,7 +49,7 @@ impl PositionUpdateMessageDataDInner {
         id: uuid::Uuid,
         sid: uuid::Uuid,
         s: String,
-        sd: models::PositionSideEnum,
+        sd: models::OrderSide,
         sz: rust_decimal::Decimal,
         cost: rust_decimal::Decimal,
         rpnl: rust_decimal::Decimal,

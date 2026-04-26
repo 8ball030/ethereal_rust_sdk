@@ -15,11 +15,11 @@ use serde::{Deserialize, Serialize};
 pub struct TotalExchangeVolumeDto {
     /// Volume on the exchange up to now in USD, expressed as a decimal (precision: 9)
     #[serde(rename = "volumeUsd")]
-    pub volume_usd: String,
+    pub volume_usd: rust_decimal::Decimal,
 }
 
 impl TotalExchangeVolumeDto {
-    pub fn new(volume_usd: String) -> TotalExchangeVolumeDto {
+    pub fn new(volume_usd: rust_decimal::Decimal) -> TotalExchangeVolumeDto {
         TotalExchangeVolumeDto { volume_usd }
     }
 }

@@ -29,20 +29,21 @@ pub struct PositionFundingHistoryDto {
     /// Id representing the position
     #[serde(rename = "positionId")]
     pub position_id: String,
+    /// Position side as either BUY (0) or SELL (1)
     #[serde(rename = "positionSide")]
-    pub position_side: archive_models::PositionSideEnum,
+    pub position_side: archive_models::OrderSide,
     /// Position quantity at the time of funding, expressed as a decimal (precision: 9)
     #[serde(rename = "positionQuantity")]
-    pub position_quantity: String,
+    pub position_quantity: rust_decimal::Decimal,
     /// Funding rate for the period, expressed as a decimal (precision: 9)
     #[serde(rename = "fundingRate")]
-    pub funding_rate: String,
+    pub funding_rate: rust_decimal::Decimal,
     /// Funding charge per unit in USD, expressed as a decimal (precision: 9)
     #[serde(rename = "chargePerUnitUsd")]
-    pub charge_per_unit_usd: String,
+    pub charge_per_unit_usd: rust_decimal::Decimal,
     /// Total funding charge for the position (positive means pay, negative means receive), expressed as a decimal (precision: 9)
     #[serde(rename = "fundingCharge")]
-    pub funding_charge: String,
+    pub funding_charge: rust_decimal::Decimal,
 }
 
 impl PositionFundingHistoryDto {
@@ -52,11 +53,11 @@ impl PositionFundingHistoryDto {
         product_id: String,
         product_ticker: String,
         position_id: String,
-        position_side: archive_models::PositionSideEnum,
-        position_quantity: String,
-        funding_rate: String,
-        charge_per_unit_usd: String,
-        funding_charge: String,
+        position_side: archive_models::OrderSide,
+        position_quantity: rust_decimal::Decimal,
+        funding_rate: rust_decimal::Decimal,
+        charge_per_unit_usd: rust_decimal::Decimal,
+        funding_charge: rust_decimal::Decimal,
     ) -> PositionFundingHistoryDto {
         PositionFundingHistoryDto {
             time,

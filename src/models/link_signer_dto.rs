@@ -13,10 +13,10 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct LinkSignerDto {
-    /// The signature from signTypedData(...) signed by the sender
+    /// Hex-encoded EIP-712 signature authorizing this request
     #[serde(rename = "signature")]
     pub signature: String,
-    /// The signature from signTypedData(...) signed by the signer
+    /// Hex-encoded EIP-712 signature authorizing this request
     #[serde(rename = "signerSignature")]
     pub signer_signature: String,
     #[serde(rename = "data")]

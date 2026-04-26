@@ -34,8 +34,9 @@ pub struct ProductDto {
     /// Name of the quote token (e.g. USD in BTCUSD)
     #[serde(rename = "quoteTokenName")]
     pub quote_token_name: String,
+    /// The corresponding engine type this product was registered with
     #[serde(rename = "engineType")]
-    pub engine_type: models::EngineTypeEnum,
+    pub engine_type: models::EngineType,
     /// The productId generated onchain after registering for the first time
     #[serde(rename = "onchainId")]
     pub onchain_id: i64,
@@ -46,7 +47,7 @@ pub struct ProductDto {
     pub block_number: String,
     /// Cumulative funding in USD of the product (precision: 9)
     #[serde(rename = "cumulativeFundingUsd")]
-    pub cumulative_funding_usd: String,
+    pub cumulative_funding_usd: rust_decimal::Decimal,
     /// Product creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
     pub created_at: i64,
@@ -55,31 +56,31 @@ pub struct ProductDto {
     pub funding_updated_at: Option<i64>,
     /// The minimum order quantity in native units expressed as a decimal (precision: 9)
     #[serde(rename = "minQuantity")]
-    pub min_quantity: String,
+    pub min_quantity: rust_decimal::Decimal,
     /// Quantity must be divisible by the lotSize in expressed as a decimal (precision: 9)
     #[serde(rename = "lotSize")]
-    pub lot_size: String,
+    pub lot_size: rust_decimal::Decimal,
     /// Minimum price increment (tickSize) expressed as a decimal (precision: 9)
     #[serde(rename = "tickSize")]
-    pub tick_size: String,
+    pub tick_size: rust_decimal::Decimal,
     /// Fee charged to the maker on order trades expressed as a decimal (precision: 9)
     #[serde(rename = "makerFee")]
-    pub maker_fee: String,
+    pub maker_fee: rust_decimal::Decimal,
     /// Fee charged to the taker on order trades expressed as a decimal (precision: 9)
     #[serde(rename = "takerFee")]
-    pub taker_fee: String,
+    pub taker_fee: rust_decimal::Decimal,
     /// Max quantity per order in native units expressed as a decimal (precision: 9)
     #[serde(rename = "maxQuantity")]
-    pub max_quantity: String,
+    pub max_quantity: rust_decimal::Decimal,
     /// Min price in USD expressed as a decimal (precision: 9)
     #[serde(rename = "minPrice")]
-    pub min_price: String,
+    pub min_price: rust_decimal::Decimal,
     /// Max price in USD expressed as a decimal (precision: 9)
     #[serde(rename = "maxPrice")]
-    pub max_price: String,
+    pub max_price: rust_decimal::Decimal,
     /// 24h volume in base token native units expressed as a decimal (precision: 9)
     #[serde(rename = "volume24h")]
-    pub volume24h: String,
+    pub volume24h: rust_decimal::Decimal,
     /// Maximum leverage allowed for the product
     #[serde(rename = "maxLeverage")]
     pub max_leverage: f64,
@@ -88,25 +89,25 @@ pub struct ProductDto {
     pub pyth_feed_id: i64,
     /// Last computed hourly funding rate expressed as a decimal (precision: 9)
     #[serde(rename = "fundingRate1h")]
-    pub funding_rate1h: String,
+    pub funding_rate1h: rust_decimal::Decimal,
     /// OI of both sides in native units expressed as a decimal (precision: 9)
     #[serde(rename = "openInterest")]
-    pub open_interest: String,
+    pub open_interest: rust_decimal::Decimal,
     /// Max OI of one side in USD expressed as a decimal (precision: 9)
     #[serde(rename = "maxOpenInterestUsd")]
-    pub max_open_interest_usd: String,
+    pub max_open_interest_usd: rust_decimal::Decimal,
     /// Max position notional value, in USD expressed as a decimal (precision: 9)
     #[serde(rename = "maxPositionNotionalUsd")]
-    pub max_position_notional_usd: String,
+    pub max_position_notional_usd: rust_decimal::Decimal,
     /// Funding clamp APR expressed as a decimal (precision: 9)
     #[serde(rename = "fundingClampApr")]
-    pub funding_clamp_apr: String,
+    pub funding_clamp_apr: rust_decimal::Decimal,
     /// Funding baseline APR expressed as a decimal (precision: 9)
     #[serde(rename = "fundingBaselineApr")]
-    pub funding_baseline_apr: String,
+    pub funding_baseline_apr: rust_decimal::Decimal,
     /// Maximum funding APR expressed as a decimal, e.g. 2.0 = 200% (precision: 9)
     #[serde(rename = "fundingMaxApr")]
-    pub funding_max_apr: String,
+    pub funding_max_apr: rust_decimal::Decimal,
 }
 
 impl ProductDto {
@@ -118,30 +119,30 @@ impl ProductDto {
         quote_token_address: String,
         base_token_name: String,
         quote_token_name: String,
-        engine_type: models::EngineTypeEnum,
+        engine_type: models::EngineType,
         onchain_id: i64,
         status: models::ProductDtoOrderStatus,
         block_number: String,
-        cumulative_funding_usd: String,
+        cumulative_funding_usd: rust_decimal::Decimal,
         created_at: i64,
-        min_quantity: String,
-        lot_size: String,
-        tick_size: String,
-        maker_fee: String,
-        taker_fee: String,
-        max_quantity: String,
-        min_price: String,
-        max_price: String,
-        volume24h: String,
+        min_quantity: rust_decimal::Decimal,
+        lot_size: rust_decimal::Decimal,
+        tick_size: rust_decimal::Decimal,
+        maker_fee: rust_decimal::Decimal,
+        taker_fee: rust_decimal::Decimal,
+        max_quantity: rust_decimal::Decimal,
+        min_price: rust_decimal::Decimal,
+        max_price: rust_decimal::Decimal,
+        volume24h: rust_decimal::Decimal,
         max_leverage: f64,
         pyth_feed_id: i64,
-        funding_rate1h: String,
-        open_interest: String,
-        max_open_interest_usd: String,
-        max_position_notional_usd: String,
-        funding_clamp_apr: String,
-        funding_baseline_apr: String,
-        funding_max_apr: String,
+        funding_rate1h: rust_decimal::Decimal,
+        open_interest: rust_decimal::Decimal,
+        max_open_interest_usd: rust_decimal::Decimal,
+        max_position_notional_usd: rust_decimal::Decimal,
+        funding_clamp_apr: rust_decimal::Decimal,
+        funding_baseline_apr: rust_decimal::Decimal,
+        funding_max_apr: rust_decimal::Decimal,
     ) -> ProductDto {
         ProductDto {
             id,

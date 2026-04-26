@@ -15,31 +15,32 @@ use serde::{Deserialize, Serialize};
 pub struct DryRunOrderCreatedDto {
     /// Margin required for order in USD expressed as a decimal (precision: 9)
     #[serde(rename = "marginRequired")]
-    pub margin_required: String,
+    pub margin_required: rust_decimal::Decimal,
     /// Margin available excluding this order in USD expressed as a decimal (precision: 9)
     #[serde(rename = "marginAvailable")]
-    pub margin_available: String,
+    pub margin_available: rust_decimal::Decimal,
     /// Total used margin including this order in USD expressed as a decimal (precision: 9)
     #[serde(rename = "totalUsedMargin")]
-    pub total_used_margin: String,
+    pub total_used_margin: rust_decimal::Decimal,
     /// Risk used including position and open orders in USD expressed as a decimal (precision: 9)
     #[serde(rename = "riskUsed")]
-    pub risk_used: String,
+    pub risk_used: rust_decimal::Decimal,
     /// Risk available for the product in USD expressed as a decimal (precision: 9)
     #[serde(rename = "riskAvailable")]
-    pub risk_available: String,
+    pub risk_available: rust_decimal::Decimal,
+    /// Code indicating a result of the dry run
     #[serde(rename = "code")]
-    pub code: models::CodeEnum,
+    pub code: models::SubmitOrderCreatedResultCode,
 }
 
 impl DryRunOrderCreatedDto {
     pub fn new(
-        margin_required: String,
-        margin_available: String,
-        total_used_margin: String,
-        risk_used: String,
-        risk_available: String,
-        code: models::CodeEnum,
+        margin_required: rust_decimal::Decimal,
+        margin_available: rust_decimal::Decimal,
+        total_used_margin: rust_decimal::Decimal,
+        risk_used: rust_decimal::Decimal,
+        risk_available: rust_decimal::Decimal,
+        code: models::SubmitOrderCreatedResultCode,
     ) -> DryRunOrderCreatedDto {
         DryRunOrderCreatedDto {
             margin_required,

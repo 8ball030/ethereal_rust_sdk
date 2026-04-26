@@ -21,11 +21,15 @@ pub struct ProductVolumeHistoryDto {
     pub product_id: String,
     /// Volume in USD during this time interval, expressed as a decimal (precision: 9)
     #[serde(rename = "volumeUsd")]
-    pub volume_usd: String,
+    pub volume_usd: rust_decimal::Decimal,
 }
 
 impl ProductVolumeHistoryDto {
-    pub fn new(time: f64, product_id: String, volume_usd: String) -> ProductVolumeHistoryDto {
+    pub fn new(
+        time: f64,
+        product_id: String,
+        volume_usd: rust_decimal::Decimal,
+    ) -> ProductVolumeHistoryDto {
         ProductVolumeHistoryDto {
             time,
             product_id,

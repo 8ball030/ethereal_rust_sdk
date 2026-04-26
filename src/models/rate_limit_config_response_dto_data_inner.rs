@@ -17,6 +17,7 @@ pub enum RateLimitConfigResponseDtoDataInner {
     HttpPaginatedRateLimitEndpointDto(models::HttpPaginatedRateLimitEndpointDto),
     HttpFixedRateLimitEndpointDto(models::HttpFixedRateLimitEndpointDto),
     WsFixedRateLimitEndpointDto(models::WsFixedRateLimitEndpointDto),
+    Ws2FixedRateLimitEndpointDto(models::Ws2FixedRateLimitEndpointDto),
 }
 
 impl Default for RateLimitConfigResponseDtoDataInner {

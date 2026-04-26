@@ -18,41 +18,41 @@ pub struct BalanceHistoryDto {
     pub time: f64,
     /// Cumulative trading fees paid up to this point in time, expressed as a decimal (precision: 9)
     #[serde(rename = "tradingFee")]
-    pub trading_fee: String,
+    pub trading_fee: rust_decimal::Decimal,
     /// Cumulative funding realized up to this point in time, expressed as a decimal (precision: 9)
     #[serde(rename = "realizedFunding")]
-    pub realized_funding: String,
+    pub realized_funding: rust_decimal::Decimal,
     /// Cumulative realized PnL up to this point in time, expressed as a decimal (precision: 9)
     #[serde(rename = "realizedPnl")]
-    pub realized_pnl: String,
+    pub realized_pnl: rust_decimal::Decimal,
     /// Cumulative deposit fees paid up to this point in time, expressed as a decimal (precision: 9)
     #[serde(rename = "depositFee")]
-    pub deposit_fee: String,
+    pub deposit_fee: rust_decimal::Decimal,
     /// Cumulative deposits made up to this point in time, expressed as a decimal (precision: 9)
     #[serde(rename = "deposit")]
-    pub deposit: String,
+    pub deposit: rust_decimal::Decimal,
     /// Cumulative withdrawal fees paid up to this point in time, expressed as a decimal (precision: 9)
     #[serde(rename = "withdrawalFee")]
-    pub withdrawal_fee: String,
+    pub withdrawal_fee: rust_decimal::Decimal,
     /// Cumulative withdrawals made up to this point in time, expressed as a decimal (precision: 9)
     #[serde(rename = "withdrawal")]
-    pub withdrawal: String,
+    pub withdrawal: rust_decimal::Decimal,
     /// Total balance at this point in time, expressed as a decimal (precision: 9)
     #[serde(rename = "balance")]
-    pub balance: String,
+    pub balance: rust_decimal::Decimal,
 }
 
 impl BalanceHistoryDto {
     pub fn new(
         time: f64,
-        trading_fee: String,
-        realized_funding: String,
-        realized_pnl: String,
-        deposit_fee: String,
-        deposit: String,
-        withdrawal_fee: String,
-        withdrawal: String,
-        balance: String,
+        trading_fee: rust_decimal::Decimal,
+        realized_funding: rust_decimal::Decimal,
+        realized_pnl: rust_decimal::Decimal,
+        deposit_fee: rust_decimal::Decimal,
+        deposit: rust_decimal::Decimal,
+        withdrawal_fee: rust_decimal::Decimal,
+        withdrawal: rust_decimal::Decimal,
+        balance: rust_decimal::Decimal,
     ) -> BalanceHistoryDto {
         BalanceHistoryDto {
             time,

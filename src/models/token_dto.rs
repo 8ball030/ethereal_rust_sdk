@@ -42,13 +42,13 @@ pub struct TokenDto {
     pub withdraw_enabled: bool,
     /// Amount of native units charged on deposit expressed as a decimal (precision: 9)
     #[serde(rename = "depositFee")]
-    pub deposit_fee: String,
+    pub deposit_fee: rust_decimal::Decimal,
     /// Amount of native units charged on withdraw expressed as a decimal (precision: 9)
     #[serde(rename = "withdrawFee")]
-    pub withdraw_fee: String,
+    pub withdraw_fee: rust_decimal::Decimal,
     /// Min deposit amount as native units expressed as a decimal (precision: 9)
     #[serde(rename = "minDeposit")]
-    pub min_deposit: String,
+    pub min_deposit: rust_decimal::Decimal,
     /// Block number when the token was added
     #[serde(rename = "addedBlockNumber")]
     pub added_block_number: String,
@@ -68,9 +68,9 @@ impl TokenDto {
         name: String,
         deposit_enabled: bool,
         withdraw_enabled: bool,
-        deposit_fee: String,
-        withdraw_fee: String,
-        min_deposit: String,
+        deposit_fee: rust_decimal::Decimal,
+        withdraw_fee: rust_decimal::Decimal,
+        min_deposit: rust_decimal::Decimal,
         added_block_number: String,
         created_at: i64,
     ) -> TokenDto {

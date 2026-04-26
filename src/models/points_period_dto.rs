@@ -27,10 +27,10 @@ pub struct PointsPeriodDto {
     pub epoch: i64,
     /// Points earned in this period (excluding referral points) expressed as a decimal (precision: 9)
     #[serde(rename = "points")]
-    pub points: String,
+    pub points: rust_decimal::Decimal,
     /// Referral points earned in this period expressed as a decimal (precision: 9)
     #[serde(rename = "referralPoints")]
-    pub referral_points: String,
+    pub referral_points: rust_decimal::Decimal,
     /// Beginning of points period (ms since Unix Epoch)
     #[serde(rename = "startedAt")]
     pub started_at: i64,
@@ -54,8 +54,8 @@ impl PointsPeriodDto {
         address: String,
         season: i64,
         epoch: i64,
-        points: String,
-        referral_points: String,
+        points: rust_decimal::Decimal,
+        referral_points: rust_decimal::Decimal,
         started_at: i64,
         ended_at: i64,
         created_at: i64,

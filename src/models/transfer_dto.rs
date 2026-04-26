@@ -43,7 +43,7 @@ pub struct TransferDto {
     pub r#type: models::TransferDtoOrderType,
     /// Amount of tokens transferred in native units expressed as a decimal (precision: 9)
     #[serde(rename = "amount")]
-    pub amount: String,
+    pub amount: rust_decimal::Decimal,
     /// LayerZero destination address (leading 0x bytes32 encoded) for the transfer (if withdraw)
     #[serde(
         rename = "lzDestinationAddress",
@@ -55,7 +55,7 @@ pub struct TransferDto {
     pub lz_destination_eid: Option<i64>,
     /// Fee paid for the transfer in native units expressed as a decimal (precision: 9)
     #[serde(rename = "fee")]
-    pub fee: String,
+    pub fee: rust_decimal::Decimal,
     /// Transfer creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
     pub created_at: i64,
@@ -81,8 +81,8 @@ impl TransferDto {
         token_name: String,
         token_address: String,
         r#type: models::TransferDtoOrderType,
-        amount: String,
-        fee: String,
+        amount: rust_decimal::Decimal,
+        fee: rust_decimal::Decimal,
         created_at: i64,
     ) -> TransferDto {
         TransferDto {

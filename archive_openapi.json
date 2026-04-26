@@ -156,7 +156,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -347,7 +347,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -541,7 +541,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -725,7 +725,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -821,7 +821,7 @@
             }
           },
           "422": {
-            "description": "Too Many Requests",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -877,7 +877,8 @@
           "volumeUsd": {
             "type": "string",
             "example": "150.75",
-            "description": "Volume in USD during this time interval, expressed as a decimal (precision: 9)"
+            "description": "Volume in USD during this time interval, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           }
         },
         "required": [
@@ -1074,7 +1075,8 @@
           "volumeUsd": {
             "type": "string",
             "example": "150.75",
-            "description": "Volume on the exchange up to now in USD, expressed as a decimal (precision: 9)"
+            "description": "Volume on the exchange up to now in USD, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           }
         },
         "required": [
@@ -1097,7 +1099,8 @@
           "volumeUsd": {
             "type": "string",
             "example": "150.75",
-            "description": "Volume in USD during this time interval, expressed as a decimal (precision: 9)"
+            "description": "Volume in USD during this time interval, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           }
         },
         "required": [
@@ -1142,7 +1145,8 @@
           "volumeUsd": {
             "type": "string",
             "example": "150.75",
-            "description": "Volume for this product up to now in USD, expressed as a decimal (precision: 9)"
+            "description": "Volume for this product up to now in USD, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           }
         },
         "required": [
@@ -1176,17 +1180,20 @@
           "openInterest": {
             "type": "string",
             "example": "160311731.25",
-            "description": "Open interest in USD at the end of this time interval, expressed as a decimal (precision: 9)"
+            "description": "Open interest in USD at the end of this time interval, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "openInterestMin": {
             "type": "string",
             "example": "120521731.25",
-            "description": "Minimum open interest in USD during this time interval, expressed as a decimal (precision: 9)"
+            "description": "Minimum open interest in USD during this time interval, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "openInterestMax": {
             "type": "string",
             "example": "850311731.25",
-            "description": "Maximum open interest in USD during this time interval, expressed as a decimal (precision: 9)"
+            "description": "Maximum open interest in USD during this time interval, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           }
         },
         "required": [
@@ -1237,17 +1244,20 @@
           "openInterest": {
             "type": "string",
             "example": "160311731.25",
-            "description": "Open interest in USD at the end of this time interval, expressed as a decimal (precision: 9)"
+            "description": "Open interest in USD at the end of this time interval, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "openInterestMin": {
             "type": "string",
             "example": "120521731.25",
-            "description": "Minimum open interest in USD during this time interval, expressed as a decimal (precision: 9)"
+            "description": "Minimum open interest in USD during this time interval, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "openInterestMax": {
             "type": "string",
             "example": "850311731.25",
-            "description": "Maximum open interest in USD during this time interval, expressed as a decimal (precision: 9)"
+            "description": "Maximum open interest in USD during this time interval, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           }
         },
         "required": [
@@ -1294,42 +1304,50 @@
           "tradingFee": {
             "type": "string",
             "example": "10.5",
-            "description": "Cumulative trading fees paid up to this point in time, expressed as a decimal (precision: 9)"
+            "description": "Cumulative trading fees paid up to this point in time, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "realizedFunding": {
             "type": "string",
             "example": "5.25",
-            "description": "Cumulative funding realized up to this point in time, expressed as a decimal (precision: 9)"
+            "description": "Cumulative funding realized up to this point in time, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "realizedPnl": {
             "type": "string",
             "example": "150.75",
-            "description": "Cumulative realized PnL up to this point in time, expressed as a decimal (precision: 9)"
+            "description": "Cumulative realized PnL up to this point in time, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "depositFee": {
             "type": "string",
             "example": "2.0",
-            "description": "Cumulative deposit fees paid up to this point in time, expressed as a decimal (precision: 9)"
+            "description": "Cumulative deposit fees paid up to this point in time, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "deposit": {
             "type": "string",
             "example": "1000.0",
-            "description": "Cumulative deposits made up to this point in time, expressed as a decimal (precision: 9)"
+            "description": "Cumulative deposits made up to this point in time, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "withdrawalFee": {
             "type": "string",
             "example": "3.5",
-            "description": "Cumulative withdrawal fees paid up to this point in time, expressed as a decimal (precision: 9)"
+            "description": "Cumulative withdrawal fees paid up to this point in time, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "withdrawal": {
             "type": "string",
             "example": "500.0",
-            "description": "Cumulative withdrawals made up to this point in time, expressed as a decimal (precision: 9)"
+            "description": "Cumulative withdrawals made up to this point in time, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "balance": {
             "type": "string",
             "example": "680.0",
-            "description": "Total balance at this point in time, expressed as a decimal (precision: 9)"
+            "description": "Total balance at this point in time, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           }
         },
         "required": [
@@ -1369,6 +1387,19 @@
           "data"
         ]
       },
+      "OrderSide": {
+        "type": "integer",
+        "enum": [
+          0,
+          1
+        ],
+        "description": "Position side as either BUY (0) or SELL (1)",
+        "format": "int32",
+        "x-enum-varnames": [
+          "BUY",
+          "SELL"
+        ]
+      },
       "PositionFundingHistoryDto": {
         "type": "object",
         "properties": {
@@ -1398,27 +1429,37 @@
             "description": "Id representing the position"
           },
           "positionSide": {
-            "$ref": "#/components/schemas/PositionSideEnum"
+            "example": 0,
+            "description": "Position side as either BUY (0) or SELL (1)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderSide"
+              }
+            ]
           },
           "positionQuantity": {
             "type": "string",
             "example": "10.5",
-            "description": "Position quantity at the time of funding, expressed as a decimal (precision: 9)"
+            "description": "Position quantity at the time of funding, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "fundingRate": {
             "type": "string",
             "example": "0.0001",
-            "description": "Funding rate for the period, expressed as a decimal (precision: 9)"
+            "description": "Funding rate for the period, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "chargePerUnitUsd": {
             "type": "string",
             "example": "0.5",
-            "description": "Funding charge per unit in USD, expressed as a decimal (precision: 9)"
+            "description": "Funding charge per unit in USD, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           },
           "fundingCharge": {
             "type": "string",
             "example": "5.25",
-            "description": "Total funding charge for the position (positive means pay, negative means receive), expressed as a decimal (precision: 9)"
+            "description": "Total funding charge for the position (positive means pay, negative means receive), expressed as a decimal (precision: 9)",
+            "format": "decimal"
           }
         },
         "required": [
@@ -1470,7 +1511,8 @@
           "unrealizedPnl": {
             "type": "string",
             "example": "150.75",
-            "description": "Unrealized PnL at this point in time, expressed as a decimal (precision: 9)"
+            "description": "Unrealized PnL at this point in time, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           }
         },
         "required": [
@@ -1514,7 +1556,8 @@
           "volumeUsd": {
             "type": "string",
             "example": "150.75",
-            "description": "Volume in USD during this time interval, expressed as a decimal (precision: 9)"
+            "description": "Volume in USD during this time interval, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           }
         },
         "required": [
@@ -1553,7 +1596,8 @@
           "volumeUsd": {
             "type": "string",
             "example": "150.75",
-            "description": "Volume for the subaccount up to now in USD, expressed as a decimal (precision: 9)"
+            "description": "Volume for the subaccount up to now in USD, expressed as a decimal (precision: 9)",
+            "format": "decimal"
           }
         },
         "required": [
@@ -1612,18 +1656,6 @@
           "MARKET"
         ],
         "description": "Extracted enum for OrderType"
-      },
-      "PositionSideEnum": {
-        "type": "integer",
-        "enum": [
-          0,
-          1
-        ],
-        "description": "Extracted enum for PositionSideEnum",
-        "x-enum-varnames": [
-          "BUY",
-          "SELL"
-        ]
       }
     }
   }

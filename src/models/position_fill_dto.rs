@@ -15,15 +15,16 @@ use serde::{Deserialize, Serialize};
 pub struct PositionFillDto {
     /// Fill price expressed as a decimal (precision: 9)
     #[serde(rename = "price")]
-    pub price: String,
+    pub price: rust_decimal::Decimal,
     /// Quantity filled in native units expressed as a decimal (precision: 9)
     #[serde(rename = "filled")]
-    pub filled: String,
+    pub filled: rust_decimal::Decimal,
     /// Realized PnL from the fill in USD expressed as a decimal (precision: 9)
     #[serde(rename = "realizedPnl")]
-    pub realized_pnl: String,
+    pub realized_pnl: rust_decimal::Decimal,
     #[serde(rename = "type")]
     pub r#type: models::PositionFillDtoOrderType,
+    /// Direction of the fill as either BUY (0) or SELL (1)
     #[serde(rename = "side")]
     pub side: models::OrderSide,
     /// Indicates if the fill is reduce only
@@ -31,7 +32,7 @@ pub struct PositionFillDto {
     pub reduce_only: bool,
     /// The charged fee in USD expressed as a decimal (precision: 9)
     #[serde(rename = "feeUsd")]
-    pub fee_usd: String,
+    pub fee_usd: rust_decimal::Decimal,
     /// Fill creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
     pub created_at: i64,
@@ -39,13 +40,13 @@ pub struct PositionFillDto {
 
 impl PositionFillDto {
     pub fn new(
-        price: String,
-        filled: String,
-        realized_pnl: String,
+        price: rust_decimal::Decimal,
+        filled: rust_decimal::Decimal,
+        realized_pnl: rust_decimal::Decimal,
         r#type: models::PositionFillDtoOrderType,
         side: models::OrderSide,
         reduce_only: bool,
-        fee_usd: String,
+        fee_usd: rust_decimal::Decimal,
         created_at: i64,
     ) -> PositionFillDto {
         PositionFillDto {

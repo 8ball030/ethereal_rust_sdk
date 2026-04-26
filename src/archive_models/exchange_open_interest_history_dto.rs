@@ -18,21 +18,21 @@ pub struct ExchangeOpenInterestHistoryDto {
     pub time: f64,
     /// Open interest in USD at the end of this time interval, expressed as a decimal (precision: 9)
     #[serde(rename = "openInterest")]
-    pub open_interest: String,
+    pub open_interest: rust_decimal::Decimal,
     /// Minimum open interest in USD during this time interval, expressed as a decimal (precision: 9)
     #[serde(rename = "openInterestMin")]
-    pub open_interest_min: String,
+    pub open_interest_min: rust_decimal::Decimal,
     /// Maximum open interest in USD during this time interval, expressed as a decimal (precision: 9)
     #[serde(rename = "openInterestMax")]
-    pub open_interest_max: String,
+    pub open_interest_max: rust_decimal::Decimal,
 }
 
 impl ExchangeOpenInterestHistoryDto {
     pub fn new(
         time: f64,
-        open_interest: String,
-        open_interest_min: String,
-        open_interest_max: String,
+        open_interest: rust_decimal::Decimal,
+        open_interest_min: rust_decimal::Decimal,
+        open_interest_max: rust_decimal::Decimal,
     ) -> ExchangeOpenInterestHistoryDto {
         ExchangeOpenInterestHistoryDto {
             time,

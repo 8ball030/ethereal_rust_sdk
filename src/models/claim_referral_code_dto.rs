@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ClaimReferralCodeDto {
-    /// The signature from signTypedData(...) signed by the sender
+    /// Hex-encoded EIP-712 signature authorizing this request
     #[serde(rename = "signature")]
     pub signature: String,
     #[serde(rename = "data")]

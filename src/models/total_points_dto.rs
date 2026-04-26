@@ -15,17 +15,20 @@ use serde::{Deserialize, Serialize};
 pub struct TotalPointsDto {
     /// Total points distributed (precision: 9)
     #[serde(rename = "totalPoints")]
-    pub total_points: String,
+    pub total_points: rust_decimal::Decimal,
     /// Total referral points distributed (precision: 9)
     #[serde(rename = "referralPoints")]
-    pub referral_points: String,
+    pub referral_points: rust_decimal::Decimal,
     /// Last update timestamp of the aggregated points periods (ms since Unix Epoch)
     #[serde(rename = "updatedAt", skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<i64>,
 }
 
 impl TotalPointsDto {
-    pub fn new(total_points: String, referral_points: String) -> TotalPointsDto {
+    pub fn new(
+        total_points: rust_decimal::Decimal,
+        referral_points: rust_decimal::Decimal,
+    ) -> TotalPointsDto {
         TotalPointsDto {
             total_points,
             referral_points,

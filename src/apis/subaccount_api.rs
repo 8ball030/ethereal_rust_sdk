@@ -35,7 +35,7 @@ pub struct SubaccountControllerListParams {
 /// struct for passing parameters to the method [`subaccount_controller_list_by_account`]
 #[derive(Clone, Debug, Default)]
 pub struct SubaccountControllerListByAccountParams {
-    /// Address of the sender
+    /// Address of the subaccount wallet
     pub sender: String,
     /// Direction to paginate through objects
     pub order: Option<String>,

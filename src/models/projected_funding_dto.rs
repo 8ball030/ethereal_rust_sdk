@@ -18,17 +18,17 @@ pub struct ProjectedFundingDto {
     pub product_id: uuid::Uuid,
     /// Projected funding rate expressed as a decimal (precision: 9)
     #[serde(rename = "fundingRateProjected1h")]
-    pub funding_rate_projected1h: String,
+    pub funding_rate_projected1h: rust_decimal::Decimal,
     /// Funding rate expressed as a decimal (precision: 9)
     #[serde(rename = "fundingRate1h")]
-    pub funding_rate1h: String,
+    pub funding_rate1h: rust_decimal::Decimal,
 }
 
 impl ProjectedFundingDto {
     pub fn new(
         product_id: uuid::Uuid,
-        funding_rate_projected1h: String,
-        funding_rate1h: String,
+        funding_rate_projected1h: rust_decimal::Decimal,
+        funding_rate1h: rust_decimal::Decimal,
     ) -> ProjectedFundingDto {
         ProjectedFundingDto {
             product_id,
