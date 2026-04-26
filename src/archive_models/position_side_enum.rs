@@ -8,6 +8,7 @@
 #![allow(clippy::empty_docs, clippy::too_many_arguments)]
 #![allow(clippy::empty_docs, clippy::too_many_arguments)]
 #![allow(clippy::empty_docs, clippy::too_many_arguments)]
+#![allow(clippy::empty_docs, clippy::too_many_arguments)]
 /*
  * Ethereal Archive API
  *
