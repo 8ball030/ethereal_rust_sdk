@@ -9,12 +9,13 @@ use ethereal_rust_sdk::{
     ws_client::{ConnectionState, WsClient},
 };
 use log::info;
+pub const TEST_PRIVATE_KEY: &str =
+    "0bb5d63b84421e1268dda020818ae30cf26e7f10e321fb820a8aa69216dea92a";
 
 #[allow(dead_code)]
 pub async fn create_test_clients() -> anyhow::Result<(HttpClient, WsClient)> {
     let env = Environment::Testnet;
-    let private_key = "0bb5d63b84421e1268dda020818ae30cf26e7f10e321fb820a8aa69216dea92a";
-    let (http_client, ws_client) = create_client(env, private_key, None).await?;
+    let (http_client, ws_client) = create_client(env, TEST_PRIVATE_KEY, None).await?;
     Ok((http_client, ws_client))
 }
 

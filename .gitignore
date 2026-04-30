@@ -1,6 +1,7 @@
 __pycache__
 /target
 .env
+*.csv
 
 audit/*_ru.md
 
