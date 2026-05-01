@@ -2,7 +2,9 @@ mod common;
 
 use ethereal_rust_sdk::{
     apis::order_api::OrderControllerListFillsBySubaccountIdParams,
-    async_client::client::HttpClient, enums::Environment, models::OrderFillDto,
+    async_client::client::HttpClient,
+    enums::Environment,
+    models::{OrderFillDto, OrderSide},
     utils::create_client,
 };
 use log::info;
@@ -51,8 +53,8 @@ fn write_trades_to_csv(trades: Vec<OrderFillDto>, http_client: &HttpClient) {
 
     let from_product_id_to_symbol = |product_id: &Uuid| -> String {
         http_client
-            .product_hashmap
-            .get(product_id.to_string().as_str())
+            .product_id_hashmap
+            .get(product_id)
             .map(|product| product.ticker.clone())
             .unwrap_or_else(|| product_id.to_string())
     };
@@ -74,7 +76,10 @@ fn write_trades_to_csv(trades: Vec<OrderFillDto>, http_client: &HttpClient) {
             from_product_id_to_symbol(&trade.product_id.clone()),
             trade.price.to_string(),
             trade.filled.to_string(),
-            trade.side.to_string(),
+            match trade.side {
+                OrderSide::BUY => "BUY".to_string(),
+                OrderSide::SELL => "SELL".to_string(),
+            },
             trade.created_at.to_string(),
         ])
         .expect("Failed to write CSV record");
