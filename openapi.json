@@ -7695,8 +7695,9 @@
           },
           "minQuantity": {
             "type": "string",
-            "example": "0.05",
-            "description": "The minimum order quantity in native units expressed as a decimal (precision: 9)",
+            "deprecated": true,
+            "example": "0.01",
+            "description": "Deprecated. Use lotSize instead. This value is always equal to lotSize.",
             "format": "decimal"
           },
           "lotSize": {

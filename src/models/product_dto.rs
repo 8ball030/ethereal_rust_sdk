@@ -54,7 +54,7 @@ pub struct ProductDto {
     /// Unix timestamp when funding was last updated
     #[serde(rename = "fundingUpdatedAt", skip_serializing_if = "Option::is_none")]
     pub funding_updated_at: Option<i64>,
-    /// The minimum order quantity in native units expressed as a decimal (precision: 9)
+    /// Deprecated. Use lotSize instead. This value is always equal to lotSize.
     #[serde(rename = "minQuantity")]
     pub min_quantity: rust_decimal::Decimal,
     /// Quantity must be divisible by the lotSize in expressed as a decimal (precision: 9)
