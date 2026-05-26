@@ -64,19 +64,19 @@
               "example": "hour2",
               "type": "string",
               "enum": [
-                "day1",
-                "month1",
-                "week1",
+                "minute1",
+                "minute3",
+                "minute5",
+                "minute15",
+                "minute30",
                 "hour1",
-                "hour12",
                 "hour2",
                 "hour4",
                 "hour8",
-                "minute1",
-                "minute15",
-                "minute3",
-                "minute30",
-                "minute5"
+                "hour12",
+                "day1",
+                "week1",
+                "month1"
               ]
             }
           },
@@ -633,19 +633,19 @@
               "example": "hour2",
               "type": "string",
               "enum": [
-                "day1",
-                "month1",
-                "week1",
+                "minute1",
+                "minute3",
+                "minute5",
+                "minute15",
+                "minute30",
                 "hour1",
-                "hour12",
                 "hour2",
                 "hour4",
                 "hour8",
-                "minute1",
-                "minute15",
-                "minute3",
-                "minute30",
-                "minute5"
+                "hour12",
+                "day1",
+                "week1",
+                "month1"
               ]
             }
           },
