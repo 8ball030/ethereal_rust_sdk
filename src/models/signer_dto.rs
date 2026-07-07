@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,59 +13,59 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SignerDto {
+    /// Block number the signer has been linked on. Undefined means it has not be processed
+    #[serde(rename = "blockNumber", skip_serializing_if = "Option::is_none")]
+    pub block_number: Option<String>,
+    #[serde(rename = "category", skip_serializing_if = "Option::is_none")]
+    pub category: Option<models::CategoryEnum>,
+    /// Link signer submission timestamp (ms since Unix Epoch)
+    #[serde(rename = "createdAt")]
+    pub created_at: i64,
+    /// Signer expiry timestamp (ms since Unix Epoch)
+    #[serde(rename = "expiresAt")]
+    pub expires_at: i64,
     /// Id representing the linked signer
     #[serde(rename = "id")]
     pub id: String,
+    /// Onchain linkage timestamp (ms since Unix Epoch)
+    #[serde(rename = "linkedAt", skip_serializing_if = "Option::is_none")]
+    pub linked_at: Option<i64>,
+    /// Optional name for the linked signer
+    #[serde(rename = "name", skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Onchain revocation timestamp (ms since Unix Epoch)
+    #[serde(rename = "revokedAt", skip_serializing_if = "Option::is_none")]
+    pub revoked_at: Option<i64>,
+    /// Block number the signer has been revoked on. Undefined means it has not be processed
+    #[serde(rename = "revokedBlockNumber", skip_serializing_if = "Option::is_none")]
+    pub revoked_block_number: Option<String>,
     /// Address of the signer linked with the subaccount (non-checksummed)
     #[serde(rename = "signer")]
     pub signer: String,
     #[serde(rename = "status")]
     pub status: models::SignerDtoOrderStatus,
-    /// Block number the signer has been linked on. Undefined means it has not be processed
-    #[serde(rename = "blockNumber", skip_serializing_if = "Option::is_none")]
-    pub block_number: Option<String>,
-    /// Onchain linkage timestamp (ms since Unix Epoch)
-    #[serde(rename = "linkedAt", skip_serializing_if = "Option::is_none")]
-    pub linked_at: Option<i64>,
-    /// Block number the signer has been revoked on. Undefined means it has not be processed
-    #[serde(rename = "revokedBlockNumber", skip_serializing_if = "Option::is_none")]
-    pub revoked_block_number: Option<String>,
-    /// Onchain revocation timestamp (ms since Unix Epoch)
-    #[serde(rename = "revokedAt", skip_serializing_if = "Option::is_none")]
-    pub revoked_at: Option<i64>,
-    /// Signer expiry timestamp (ms since Unix Epoch)
-    #[serde(rename = "expiresAt")]
-    pub expires_at: i64,
-    /// Link signer submission timestamp (ms since Unix Epoch)
-    #[serde(rename = "createdAt")]
-    pub created_at: i64,
-    /// Optional name for the linked signer
-    #[serde(rename = "name", skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(rename = "category", skip_serializing_if = "Option::is_none")]
-    pub category: Option<models::CategoryEnum>,
 }
 
 impl SignerDto {
     pub fn new(
+        created_at: i64,
+        expires_at: i64,
         id: String,
         signer: String,
         status: models::SignerDtoOrderStatus,
-        expires_at: i64,
-        created_at: i64,
     ) -> SignerDto {
         SignerDto {
+            block_number: None,
+            category: None,
+            created_at,
+            expires_at,
             id,
+            linked_at: None,
+            name: None,
+            revoked_at: None,
+            revoked_block_number: None,
             signer,
             status,
-            block_number: None,
-            linked_at: None,
-            revoked_block_number: None,
-            revoked_at: None,
-            expires_at,
-            created_at,
-            name: None,
-            category: None,
         }
     }
 }

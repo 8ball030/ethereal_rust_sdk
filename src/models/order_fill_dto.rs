@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,76 +13,76 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct OrderFillDto {
-    /// Id of the fill
-    #[serde(rename = "id")]
-    pub id: uuid::Uuid,
-    /// Id of the order (from the context of the specified subaccount)
-    #[serde(rename = "orderId")]
-    pub order_id: uuid::Uuid,
     /// A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)
     #[serde(rename = "clientOrderId", skip_serializing_if = "Option::is_none")]
     pub client_order_id: Option<String>,
-    /// Fill price in expressed as a decimal (precision: 9)
-    #[serde(rename = "price")]
-    pub price: rust_decimal::Decimal,
-    /// Quantity filled in native units expressed as a decimal (precision: 9)
-    #[serde(rename = "filled")]
-    pub filled: rust_decimal::Decimal,
-    /// The provided order's type e.g. MARKET or LIMIT
-    #[serde(rename = "type")]
-    pub r#type: models::OrderType,
-    /// Side as either BUY (0) or SELL (1)
-    #[serde(rename = "side")]
-    pub side: models::OrderSide,
-    /// Indicates if the fill is reduce only
-    #[serde(rename = "reduceOnly")]
-    pub reduce_only: bool,
-    /// The provided subaccount's charged fee in USD expressed as a decimal (precision: 9)
-    #[serde(rename = "feeUsd")]
-    pub fee_usd: rust_decimal::Decimal,
-    /// Indicates if the fill was a maker or taker
-    #[serde(rename = "isMaker")]
-    pub is_maker: bool,
-    /// Id of product the order fill was made against
-    #[serde(rename = "productId")]
-    pub product_id: uuid::Uuid,
-    /// Id of the subaccount associated to order fill
-    #[serde(rename = "subaccountId")]
-    pub subaccount_id: uuid::Uuid,
     /// Fill creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
     pub created_at: i64,
+    /// The provided subaccount's charged fee in USD expressed as a decimal (precision: 9)
+    #[serde(rename = "feeUsd")]
+    pub fee_usd: rust_decimal::Decimal,
+    /// Quantity filled in native units expressed as a decimal (precision: 9)
+    #[serde(rename = "filled")]
+    pub filled: rust_decimal::Decimal,
+    /// Id of the fill
+    #[serde(rename = "id")]
+    pub id: uuid::Uuid,
+    /// Indicates if the fill was a maker or taker
+    #[serde(rename = "isMaker")]
+    pub is_maker: bool,
+    /// Id of the order (from the context of the specified subaccount)
+    #[serde(rename = "orderId")]
+    pub order_id: uuid::Uuid,
+    /// Fill price in expressed as a decimal (precision: 9)
+    #[serde(rename = "price")]
+    pub price: rust_decimal::Decimal,
+    /// Id of product the order fill was made against
+    #[serde(rename = "productId")]
+    pub product_id: uuid::Uuid,
+    /// Indicates if the fill is reduce only
+    #[serde(rename = "reduceOnly")]
+    pub reduce_only: bool,
+    /// Side as either BUY (0) or SELL (1)
+    #[serde(rename = "side")]
+    pub side: models::OrderSide,
+    /// Id of the subaccount associated to order fill
+    #[serde(rename = "subaccountId")]
+    pub subaccount_id: uuid::Uuid,
+    /// The provided order's type e.g. MARKET or LIMIT
+    #[serde(rename = "type")]
+    pub r#type: models::OrderType,
 }
 
 impl OrderFillDto {
     pub fn new(
+        created_at: i64,
+        fee_usd: rust_decimal::Decimal,
+        filled: rust_decimal::Decimal,
         id: uuid::Uuid,
+        is_maker: bool,
         order_id: uuid::Uuid,
         price: rust_decimal::Decimal,
-        filled: rust_decimal::Decimal,
-        r#type: models::OrderType,
-        side: models::OrderSide,
-        reduce_only: bool,
-        fee_usd: rust_decimal::Decimal,
-        is_maker: bool,
         product_id: uuid::Uuid,
+        reduce_only: bool,
+        side: models::OrderSide,
         subaccount_id: uuid::Uuid,
-        created_at: i64,
+        r#type: models::OrderType,
     ) -> OrderFillDto {
         OrderFillDto {
-            id,
-            order_id,
             client_order_id: None,
-            price,
-            filled,
-            r#type,
-            side,
-            reduce_only,
-            fee_usd,
-            is_maker,
-            product_id,
-            subaccount_id,
             created_at,
+            fee_usd,
+            filled,
+            id,
+            is_maker,
+            order_id,
+            price,
+            product_id,
+            reduce_only,
+            side,
+            subaccount_id,
+            r#type,
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -11,32 +11,34 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
+/// SubmitOrderCreatedDto : Response returned when order is successfully submitted
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SubmitOrderCreatedDto {
-    /// Id representing the created order
-    #[serde(rename = "id")]
-    pub id: uuid::Uuid,
-    /// A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)
+    /// Client-provided order id (if supplied in request)
     #[serde(rename = "clientOrderId", skip_serializing_if = "Option::is_none")]
     pub client_order_id: Option<String>,
-    /// Filled amount in native units expressed as a decimal (precision: 9). Always zero when block execution is enabled.
+    /// Quantity filled expressed as a decimal string (precision: 9)  **Deprecated:** This value is always zero when block execution is enabled.
     #[serde(rename = "filled")]
     pub filled: rust_decimal::Decimal,
-    /// Code indicating the result of the submission
+    /// Id representing the order
+    #[serde(rename = "id")]
+    pub id: uuid::Uuid,
+    /// Result code indicating the outcome of the submission
     #[serde(rename = "result")]
-    pub result: models::SubmitOrderCreatedResultCode,
+    pub result: models::SubmitCreatedCode,
 }
 
 impl SubmitOrderCreatedDto {
+    /// Response returned when order is successfully submitted
     pub fn new(
-        id: uuid::Uuid,
         filled: rust_decimal::Decimal,
-        result: models::SubmitOrderCreatedResultCode,
+        id: uuid::Uuid,
+        result: models::SubmitCreatedCode,
     ) -> SubmitOrderCreatedDto {
         SubmitOrderCreatedDto {
-            id,
             client_order_id: None,
             filled,
+            id,
             result,
         }
     }

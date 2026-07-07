@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,15 +13,15 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct InitiateWithdrawDto {
+    #[serde(rename = "data")]
+    pub data: models::InitiateWithdrawDtoData,
     /// Hex-encoded EIP-712 signature authorizing this request
     #[serde(rename = "signature")]
     pub signature: String,
-    #[serde(rename = "data")]
-    pub data: models::InitiateWithdrawDtoData,
 }
 
 impl InitiateWithdrawDto {
-    pub fn new(signature: String, data: models::InitiateWithdrawDtoData) -> InitiateWithdrawDto {
-        InitiateWithdrawDto { signature, data }
+    pub fn new(data: models::InitiateWithdrawDtoData, signature: String) -> InitiateWithdrawDto {
+        InitiateWithdrawDto { data, signature }
     }
 }

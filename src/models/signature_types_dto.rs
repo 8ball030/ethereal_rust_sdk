@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,52 +13,52 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SignatureTypesDto {
-    /// LinkSigner signature type
-    #[serde(rename = "LinkSigner")]
-    pub link_signer: String,
-    /// TradeOrder signature type
-    #[serde(rename = "TradeOrder")]
-    pub trade_order: String,
-    /// InitiateWithdraw signature type
-    #[serde(rename = "InitiateWithdraw")]
-    pub initiate_withdraw: String,
-    /// RevokeLinkedSigner signature type
-    #[serde(rename = "RevokeLinkedSigner")]
-    pub revoke_linked_signer: String,
     /// CancelOrder signature type
     #[serde(rename = "CancelOrder")]
     pub cancel_order: String,
-    /// RefreshLinkedSigner signature type
-    #[serde(rename = "RefreshLinkedSigner")]
-    pub refresh_linked_signer: String,
-    /// ExtendLinkedSigner signature type
-    #[serde(rename = "ExtendLinkedSigner")]
-    pub extend_linked_signer: String,
     /// EIP712Auth signature type
     #[serde(rename = "EIP712Auth")]
     pub eip712_auth: String,
+    /// ExtendLinkedSigner signature type
+    #[serde(rename = "ExtendLinkedSigner")]
+    pub extend_linked_signer: String,
+    /// InitiateWithdraw signature type
+    #[serde(rename = "InitiateWithdraw")]
+    pub initiate_withdraw: String,
+    /// LinkSigner signature type
+    #[serde(rename = "LinkSigner")]
+    pub link_signer: String,
+    /// RefreshLinkedSigner signature type
+    #[serde(rename = "RefreshLinkedSigner")]
+    pub refresh_linked_signer: String,
+    /// RevokeLinkedSigner signature type
+    #[serde(rename = "RevokeLinkedSigner")]
+    pub revoke_linked_signer: String,
+    /// TradeOrder signature type
+    #[serde(rename = "TradeOrder")]
+    pub trade_order: String,
 }
 
 impl SignatureTypesDto {
     pub fn new(
-        link_signer: String,
-        trade_order: String,
-        initiate_withdraw: String,
-        revoke_linked_signer: String,
         cancel_order: String,
-        refresh_linked_signer: String,
-        extend_linked_signer: String,
         eip712_auth: String,
+        extend_linked_signer: String,
+        initiate_withdraw: String,
+        link_signer: String,
+        refresh_linked_signer: String,
+        revoke_linked_signer: String,
+        trade_order: String,
     ) -> SignatureTypesDto {
         SignatureTypesDto {
-            link_signer,
-            trade_order,
-            initiate_withdraw,
-            revoke_linked_signer,
             cancel_order,
-            refresh_linked_signer,
-            extend_linked_signer,
             eip712_auth,
+            extend_linked_signer,
+            initiate_withdraw,
+            link_signer,
+            refresh_linked_signer,
+            revoke_linked_signer,
+            trade_order,
         }
     }
 }

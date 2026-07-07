@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -11,20 +11,19 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// CancelOrderResultCode : Code indicating the result of the submission
-/// Code indicating the result of the submission
+///
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 pub enum CancelOrderResultCode {
-    #[serde(rename = "AlreadyCanceled")]
-    AlreadyCanceled,
-    #[serde(rename = "AlreadyExpired")]
-    AlreadyExpired,
-    #[serde(rename = "AlreadyFilled")]
-    AlreadyFilled,
-    #[serde(rename = "NotFound")]
-    NotFound,
     #[serde(rename = "Ok")]
     Ok,
+    #[serde(rename = "NotFound")]
+    NotFound,
+    #[serde(rename = "AlreadyCanceled")]
+    AlreadyCanceled,
+    #[serde(rename = "AlreadyFilled")]
+    AlreadyFilled,
+    #[serde(rename = "AlreadyExpired")]
+    AlreadyExpired,
     #[serde(rename = "NonceAlreadyUsed")]
     NonceAlreadyUsed,
     #[serde(rename = "Unknown")]
@@ -34,11 +33,11 @@ pub enum CancelOrderResultCode {
 impl std::fmt::Display for CancelOrderResultCode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            Self::AlreadyCanceled => write!(f, "AlreadyCanceled"),
-            Self::AlreadyExpired => write!(f, "AlreadyExpired"),
-            Self::AlreadyFilled => write!(f, "AlreadyFilled"),
-            Self::NotFound => write!(f, "NotFound"),
             Self::Ok => write!(f, "Ok"),
+            Self::NotFound => write!(f, "NotFound"),
+            Self::AlreadyCanceled => write!(f, "AlreadyCanceled"),
+            Self::AlreadyFilled => write!(f, "AlreadyFilled"),
+            Self::AlreadyExpired => write!(f, "AlreadyExpired"),
             Self::NonceAlreadyUsed => write!(f, "NonceAlreadyUsed"),
             Self::Unknown => write!(f, "Unknown"),
         }
@@ -47,6 +46,6 @@ impl std::fmt::Display for CancelOrderResultCode {
 
 impl Default for CancelOrderResultCode {
     fn default() -> CancelOrderResultCode {
-        Self::AlreadyCanceled
+        Self::Ok
     }
 }

@@ -29,8 +29,8 @@ use crate::{
     enums::Environment,
     models::{
         CancelOrderDto, CancelOrderDtoData, CancelOrderResultDto, OrderSide, OrderStatus,
-        OrderType, ProductDto, SubaccountDto, SubmitOrderCreatedDto, SubmitOrderDto,
-        SubmitOrderDtoData, SubmitOrderLimitDtoData, TimeInForce,
+        OrderTimeInForce, OrderType, ProductDto, SubaccountDto, SubmitOrderCreatedDto,
+        SubmitOrderData, SubmitOrderDto, SubmitOrderLimitDtoData,
     },
     signable_messages::{CancelOrder, TradeOrder},
     signing::{hex_to_bytes32, to_scaled_e9, SigningContext},
@@ -239,7 +239,7 @@ impl HttpClient {
         price: Decimal,
         side: OrderSide,
         r#type: OrderType,
-        time_in_force: TimeInForce,
+        time_in_force: OrderTimeInForce,
         post_only: bool,
         reduce_only: bool,
         expires_at: Option<i64>,
@@ -295,7 +295,7 @@ impl HttpClient {
             }
         );
         let dto = SubmitOrderDto {
-            data: SubmitOrderDtoData::SubmitOrderLimitDtoData(order_dto),
+            data: SubmitOrderData::SubmitOrderLimitDtoData(order_dto),
             signature: "0x".to_string() + &hex::encode(signature.to_vec()),
         };
 

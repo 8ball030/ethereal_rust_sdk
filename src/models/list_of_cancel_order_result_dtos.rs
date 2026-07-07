@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -11,14 +11,16 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
+/// ListOfCancelOrderResultDtos : Response returned when cancel request is processed
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ListOfCancelOrderResultDtos {
-    /// Array of order cancelation results
+    /// Results for each order cancelation attempt
     #[serde(rename = "data")]
     pub data: Vec<models::CancelOrderResultDto>,
 }
 
 impl ListOfCancelOrderResultDtos {
+    /// Response returned when cancel request is processed
     pub fn new(data: Vec<models::CancelOrderResultDto>) -> ListOfCancelOrderResultDtos {
         ListOfCancelOrderResultDtos { data }
     }

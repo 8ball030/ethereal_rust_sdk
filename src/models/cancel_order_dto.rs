@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -11,17 +11,19 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
+/// CancelOrderDto : Cancel order request containing signature and cancel data
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CancelOrderDto {
+    #[serde(rename = "data")]
+    pub data: models::CancelOrderDtoData,
     /// Hex-encoded EIP-712 signature authorizing this request
     #[serde(rename = "signature")]
     pub signature: String,
-    #[serde(rename = "data")]
-    pub data: models::CancelOrderDtoData,
 }
 
 impl CancelOrderDto {
-    pub fn new(signature: String, data: models::CancelOrderDtoData) -> CancelOrderDto {
-        CancelOrderDto { signature, data }
+    /// Cancel order request containing signature and cancel data
+    pub fn new(data: models::CancelOrderDtoData, signature: String) -> CancelOrderDto {
+        CancelOrderDto { data, signature }
     }
 }

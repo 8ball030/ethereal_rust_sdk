@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,69 +13,24 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct OrderDto {
-    /// Id representing the order
-    #[serde(rename = "id")]
-    pub id: uuid::Uuid,
-    /// A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)
-    #[serde(rename = "clientOrderId", skip_serializing_if = "Option::is_none")]
-    pub client_order_id: Option<String>,
-    #[serde(rename = "type")]
-    pub r#type: models::OrderType,
     /// Remaining quantity (if modified or reduced) in native units expressed as a decimal (precision: 9)
     #[serde(rename = "availableQuantity")]
     pub available_quantity: rust_decimal::Decimal,
-    /// Original quantity (as per order submission) in native units expressed as a decimal (precision: 9)
-    #[serde(rename = "quantity")]
-    pub quantity: rust_decimal::Decimal,
-    /// Side as either BUY (0) or SELL (1)
-    #[serde(rename = "side")]
-    pub side: models::OrderSide,
-    /// Id of product this order was placed against
-    #[serde(rename = "productId")]
-    pub product_id: uuid::Uuid,
-    /// Id of the subaccount associated to order
-    #[serde(rename = "subaccountId")]
-    pub subaccount_id: uuid::Uuid,
-    #[serde(rename = "status")]
-    pub status: models::OrderStatus,
-    /// Indicates if the order is reduce only
-    #[serde(rename = "reduceOnly")]
-    pub reduce_only: bool,
+    /// A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)
+    #[serde(rename = "clientOrderId", skip_serializing_if = "Option::is_none")]
+    pub client_order_id: Option<String>,
     /// Order closes the entire current position
     #[serde(rename = "close")]
     pub close: bool,
-    /// Order last updated timestamp (ms since Unix Epoch)
-    #[serde(rename = "updatedAt")]
-    pub updated_at: i64,
     /// Order creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
     pub created_at: i64,
-    /// Account or linked signer address that placed this order
-    #[serde(rename = "sender")]
-    pub sender: String,
-    /// Limit price in native units expressed as a decimal, zero if market order (precision: 9)
-    #[serde(rename = "price")]
-    pub price: rust_decimal::Decimal,
-    /// Filled amount in native units expressed as a decimal (precision: 9)
-    #[serde(rename = "filled")]
-    pub filled: rust_decimal::Decimal,
-    /// Stop price expressed as a decimal (zero if not a stop order, precision: 9)
-    #[serde(rename = "stopPrice")]
-    pub stop_price: rust_decimal::Decimal,
-    /// Stop type, either GAIN (0) for take-profit or LOSS (1) for stop-loss
-    #[serde(rename = "stopType", skip_serializing_if = "Option::is_none")]
-    pub stop_type: Option<models::StopType>,
-    /// Type of stop price (stop orders only)
-    #[serde(rename = "stopPriceType", skip_serializing_if = "Option::is_none")]
-    pub stop_price_type: Option<models::StopPriceType>,
-    #[serde(rename = "timeInForce", skip_serializing_if = "Option::is_none")]
-    pub time_in_force: Option<models::TimeInForce>,
     /// Order expiry timestamp (seconds since Unix Epoch)
     #[serde(rename = "expiresAt")]
     pub expires_at: i64,
-    /// Only add order if it does not immediately fill (limit only)
-    #[serde(rename = "postOnly", skip_serializing_if = "Option::is_none")]
-    pub post_only: Option<bool>,
+    /// Filled amount in native units expressed as a decimal (precision: 9)
+    #[serde(rename = "filled")]
+    pub filled: rust_decimal::Decimal,
     /// Type of OTOCO relationship (OTO or OCO)
     #[serde(
         rename = "groupContingencyType",
@@ -85,60 +40,105 @@ pub struct OrderDto {
     /// Id of the group this order belongs to
     #[serde(rename = "groupId", skip_serializing_if = "Option::is_none")]
     pub group_id: Option<uuid::Uuid>,
-    #[serde(rename = "triggered")]
-    pub triggered: models::TriggeredEnum,
+    /// Id representing the order
+    #[serde(rename = "id")]
+    pub id: uuid::Uuid,
+    /// Only add order if it does not immediately fill (limit only)
+    #[serde(rename = "postOnly", skip_serializing_if = "Option::is_none")]
+    pub post_only: Option<bool>,
+    /// Limit price in native units expressed as a decimal, zero if market order (precision: 9)
+    #[serde(rename = "price")]
+    pub price: rust_decimal::Decimal,
+    /// Id of product this order was placed against
+    #[serde(rename = "productId")]
+    pub product_id: uuid::Uuid,
+    /// Original quantity (as per order submission) in native units expressed as a decimal (precision: 9)
+    #[serde(rename = "quantity")]
+    pub quantity: rust_decimal::Decimal,
+    /// Indicates if the order is reduce only
+    #[serde(rename = "reduceOnly")]
+    pub reduce_only: bool,
     #[serde(rename = "rejectedReason", skip_serializing_if = "Option::is_none")]
     pub rejected_reason: Option<models::RejectedReasonEnum>,
+    /// Account or linked signer address that placed this order
+    #[serde(rename = "sender")]
+    pub sender: String,
+    /// Side as either BUY (0) or SELL (1)
+    #[serde(rename = "side")]
+    pub side: models::OrderSide,
+    #[serde(rename = "status")]
+    pub status: models::OrderStatus,
+    /// Stop price expressed as a decimal (zero if not a stop order, precision: 9)
+    #[serde(rename = "stopPrice")]
+    pub stop_price: rust_decimal::Decimal,
+    /// Type of stop price (stop orders only)
+    #[serde(rename = "stopPriceType", skip_serializing_if = "Option::is_none")]
+    pub stop_price_type: Option<models::StopPriceType>,
+    /// Stop type, either GAIN (0) for take-profit or LOSS (1) for stop-loss
+    #[serde(rename = "stopType", skip_serializing_if = "Option::is_none")]
+    pub stop_type: Option<models::StopType>,
+    /// Id of the subaccount associated to order
+    #[serde(rename = "subaccountId")]
+    pub subaccount_id: uuid::Uuid,
+    #[serde(rename = "timeInForce", skip_serializing_if = "Option::is_none")]
+    pub time_in_force: Option<models::OrderTimeInForce>,
+    #[serde(rename = "triggered")]
+    pub triggered: models::TriggeredEnum,
+    #[serde(rename = "type")]
+    pub r#type: models::OrderDtoOrderType,
+    /// Order last updated timestamp (ms since Unix Epoch)
+    #[serde(rename = "updatedAt")]
+    pub updated_at: i64,
 }
 
 impl OrderDto {
     pub fn new(
-        id: uuid::Uuid,
-        r#type: models::OrderType,
         available_quantity: rust_decimal::Decimal,
-        quantity: rust_decimal::Decimal,
-        side: models::OrderSide,
-        product_id: uuid::Uuid,
-        subaccount_id: uuid::Uuid,
-        status: models::OrderStatus,
-        reduce_only: bool,
         close: bool,
-        updated_at: i64,
         created_at: i64,
-        sender: String,
-        price: rust_decimal::Decimal,
-        filled: rust_decimal::Decimal,
-        stop_price: rust_decimal::Decimal,
         expires_at: i64,
+        filled: rust_decimal::Decimal,
+        id: uuid::Uuid,
+        price: rust_decimal::Decimal,
+        product_id: uuid::Uuid,
+        quantity: rust_decimal::Decimal,
+        reduce_only: bool,
+        sender: String,
+        side: models::OrderSide,
+        status: models::OrderStatus,
+        stop_price: rust_decimal::Decimal,
+        subaccount_id: uuid::Uuid,
         triggered: models::TriggeredEnum,
+        r#type: models::OrderDtoOrderType,
+        updated_at: i64,
     ) -> OrderDto {
         OrderDto {
-            id,
-            client_order_id: None,
-            r#type,
             available_quantity,
-            quantity,
-            side,
-            product_id,
-            subaccount_id,
-            status,
-            reduce_only,
+            client_order_id: None,
             close,
-            updated_at,
             created_at,
-            sender,
-            price,
-            filled,
-            stop_price,
-            stop_type: None,
-            stop_price_type: None,
-            time_in_force: None,
             expires_at,
-            post_only: None,
+            filled,
             group_contingency_type: None,
             group_id: None,
-            triggered,
+            id,
+            post_only: None,
+            price,
+            product_id,
+            quantity,
+            reduce_only,
             rejected_reason: None,
+            sender,
+            side,
+            status,
+            stop_price,
+            stop_price_type: None,
+            stop_type: None,
+            subaccount_id,
+            time_in_force: None,
+            triggered,
+            r#type,
+            updated_at,
         }
     }
 }

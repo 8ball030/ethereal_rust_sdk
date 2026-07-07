@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -15,23 +15,23 @@ use serde::{Deserialize, Serialize};
 /// Extracted enum for OrderType
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 pub enum OrderType {
-    #[serde(rename = "LIMIT")]
-    Limit,
     #[serde(rename = "MARKET")]
     Market,
+    #[serde(rename = "LIMIT")]
+    Limit,
 }
 
 impl std::fmt::Display for OrderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            Self::Limit => write!(f, "LIMIT"),
             Self::Market => write!(f, "MARKET"),
+            Self::Limit => write!(f, "LIMIT"),
         }
     }
 }
 
 impl Default for OrderType {
     fn default() -> OrderType {
-        Self::Limit
+        Self::Market
     }
 }

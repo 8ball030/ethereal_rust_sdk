@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -11,10 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// TimeInForce : Extracted enum for TimeInForce
-/// Extracted enum for TimeInForce
+/// OrderTimeInForce : Extracted enum for OrderTimeInForce
+/// Extracted enum for OrderTimeInForce
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum TimeInForce {
+pub enum OrderTimeInForce {
     #[serde(rename = "GTD")]
     Gtd,
     #[serde(rename = "IOC")]
@@ -23,7 +23,7 @@ pub enum TimeInForce {
     Fok,
 }
 
-impl std::fmt::Display for TimeInForce {
+impl std::fmt::Display for OrderTimeInForce {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::Gtd => write!(f, "GTD"),
@@ -33,8 +33,8 @@ impl std::fmt::Display for TimeInForce {
     }
 }
 
-impl Default for TimeInForce {
-    fn default() -> TimeInForce {
+impl Default for OrderTimeInForce {
+    fn default() -> OrderTimeInForce {
         Self::Gtd
     }
 }

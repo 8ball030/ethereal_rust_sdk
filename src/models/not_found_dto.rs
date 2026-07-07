@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,24 +13,24 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NotFoundDto {
-    #[serde(rename = "statusCode")]
-    pub status_code: StatusCode,
-    #[serde(rename = "message")]
-    pub message: String,
     #[serde(rename = "error")]
     pub error: models::NotFoundDtoErrorEnum,
+    #[serde(rename = "message")]
+    pub message: String,
+    #[serde(rename = "statusCode")]
+    pub status_code: StatusCode,
 }
 
 impl NotFoundDto {
     pub fn new(
-        status_code: StatusCode,
-        message: String,
         error: models::NotFoundDtoErrorEnum,
+        message: String,
+        status_code: StatusCode,
     ) -> NotFoundDto {
         NotFoundDto {
-            status_code,
-            message,
             error,
+            message,
+            status_code,
         }
     }
 }

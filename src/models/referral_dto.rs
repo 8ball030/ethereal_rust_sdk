@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,45 +13,45 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ReferralDto {
-    /// Id representing the referral
-    #[serde(rename = "id")]
-    pub id: uuid::Uuid,
-    /// Address of the referee (non-checksummed)
-    #[serde(rename = "referee")]
-    pub referee: String,
-    /// Address of the referrer (non-checksummed; undefined if not set)
-    #[serde(rename = "referrer", skip_serializing_if = "Option::is_none")]
-    pub referrer: Option<String>,
     /// The referee's referral code to be shared and claimed by others (undefined if not activated)
     #[serde(rename = "code", skip_serializing_if = "Option::is_none")]
     pub code: Option<String>,
     /// Number of remaining times the referral code can be claimed
     #[serde(rename = "codeUsageRemaining")]
     pub code_usage_remaining: i64,
-    /// Total points (excl. referral points) earned by the referee since referee claimed the code (precision: 9)
-    #[serde(rename = "refereeTotalPoints")]
-    pub referee_total_points: rust_decimal::Decimal,
     /// Timestamp of when this referral was activated (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
     pub created_at: i64,
+    /// Id representing the referral
+    #[serde(rename = "id")]
+    pub id: uuid::Uuid,
+    /// Address of the referee (non-checksummed)
+    #[serde(rename = "referee")]
+    pub referee: String,
+    /// Total points (excl. referral points) earned by the referee since referee claimed the code (precision: 9)
+    #[serde(rename = "refereeTotalPoints")]
+    pub referee_total_points: rust_decimal::Decimal,
+    /// Address of the referrer (non-checksummed; undefined if not set)
+    #[serde(rename = "referrer", skip_serializing_if = "Option::is_none")]
+    pub referrer: Option<String>,
 }
 
 impl ReferralDto {
     pub fn new(
+        code_usage_remaining: i64,
+        created_at: i64,
         id: uuid::Uuid,
         referee: String,
-        code_usage_remaining: i64,
         referee_total_points: rust_decimal::Decimal,
-        created_at: i64,
     ) -> ReferralDto {
         ReferralDto {
-            id,
-            referee,
-            referrer: None,
             code: None,
             code_usage_remaining,
-            referee_total_points,
             created_at,
+            id,
+            referee,
+            referee_total_points,
+            referrer: None,
         }
     }
 }

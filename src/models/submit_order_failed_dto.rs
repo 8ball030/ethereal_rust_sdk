@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,25 +13,24 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SubmitOrderFailedDto {
-    #[serde(rename = "statusCode")]
-    pub status_code: StatusCode,
-    /// Code indicating the reason for failure
-    #[serde(rename = "message")]
-    pub message: models::SubmitOrderFailedResultCode,
     #[serde(rename = "error")]
     pub error: models::SubmitOrderFailedDtoErrorEnum,
+    #[serde(rename = "message")]
+    pub message: models::SubmitFailedCode,
+    #[serde(rename = "statusCode")]
+    pub status_code: StatusCode,
 }
 
 impl SubmitOrderFailedDto {
     pub fn new(
-        status_code: StatusCode,
-        message: models::SubmitOrderFailedResultCode,
         error: models::SubmitOrderFailedDtoErrorEnum,
+        message: models::SubmitFailedCode,
+        status_code: StatusCode,
     ) -> SubmitOrderFailedDto {
         SubmitOrderFailedDto {
-            status_code,
-            message,
             error,
+            message,
+            status_code,
         }
     }
 }

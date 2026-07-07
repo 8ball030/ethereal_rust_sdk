@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,44 +13,44 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SubaccountDto {
+    /// Address of the account which registered the subaccount (non-checksummed)
+    #[serde(rename = "account")]
+    pub account: String,
+    /// Subaccount creation timestamp (ms since Unix Epoch)
+    #[serde(rename = "createdAt")]
+    pub created_at: i64,
+    /// Block number this subaccount was created on
+    #[serde(rename = "createdBlockNumber")]
+    pub created_block_number: String,
     /// Id representing the registered subaccount
     #[serde(rename = "id")]
     pub id: uuid::Uuid,
     /// Bytes32 encoded subaccount name (0x prefix, zero padded)
     #[serde(rename = "name")]
     pub name: String,
-    /// Address of the account which registered the subaccount (non-checksummed)
-    #[serde(rename = "account")]
-    pub account: String,
-    /// Block number this subaccount was created on
-    #[serde(rename = "createdBlockNumber")]
-    pub created_block_number: String,
     /// Block number this subaccount was registered on
     #[serde(
         rename = "registeredBlockNumber",
         skip_serializing_if = "Option::is_none"
     )]
     pub registered_block_number: Option<String>,
-    /// Subaccount creation timestamp (ms since Unix Epoch)
-    #[serde(rename = "createdAt")]
-    pub created_at: i64,
 }
 
 impl SubaccountDto {
     pub fn new(
+        account: String,
+        created_at: i64,
+        created_block_number: String,
         id: uuid::Uuid,
         name: String,
-        account: String,
-        created_block_number: String,
-        created_at: i64,
     ) -> SubaccountDto {
         SubaccountDto {
+            account,
+            created_at,
+            created_block_number,
             id,
             name,
-            account,
-            created_block_number,
             registered_block_number: None,
-            created_at,
         }
     }
 }

@@ -15,7 +15,7 @@ ENUM_NAME_OVERRIDES = {
     "TypeEnum": "OrderType",
     "StatusEnum": "OrderStatus",
     "OrderSide": "SideEnum",
-    "TimeInForceEnum": "TimeInForce",
+    "TimeInForceEnum": "OrderTimeInForce",
 }
 
 def read_json(file_path: Path) -> dict:
@@ -23,6 +23,13 @@ def read_json(file_path: Path) -> dict:
 
 def write_json(file_path: Path, data: dict):
     file_path.write_text(json.dumps(data, indent=2))
+
+def enum_signature(prop_schema: dict) -> tuple:
+    return (
+        prop_schema.get("type"),
+        tuple(prop_schema.get("enum", [])),
+        tuple(prop_schema.get("x-enum-varnames", [])),
+    )
 
 def extract_all_enums(spec: dict):
     old_models = spec.get("components", {}).get("schemas", {})
@@ -39,6 +46,7 @@ def extract_all_enums(spec: dict):
 
                 if enum_name in CUSTOM_ENUM_OVERRIDE:
                     enum_name = CUSTOM_ENUM_OVERRIDE[enum_name]
+
 
                 elif enum_name not in new_enums:
                     new_enums[enum_name] = prop_schema["enum"]
@@ -61,7 +69,8 @@ def extract_all_enums(spec: dict):
     print(f"Extracted {len(new_enums)} enums.")
     for enum_name, enum_values in new_enums.items():
         if enum_name == "OrderType":
-            enum_values.append("MARKET")
+            enum_values.append("LIMIT")
+
         old_models[enum_name] = {
             "type": name_to_types.get(enum_name, "string"),
             "enum": enum_values,
@@ -160,6 +169,20 @@ def patch_int_enums_to_int64(spec: dict):
         del schemas[enum]["x-enumNames"]
     return spec
 
+def remove_duplicate_extra_tag(spec: dict):
+    tags = spec.get("tags", [])
+    seen = set()
+    unique_tags = []
+    for tag in tags:
+        tag_name = tag.get("name")
+        if tag_name not in seen:
+            seen.add(tag_name)
+            unique_tags.append(tag)
+        else:
+            print(f"Removing duplicate tag: {tag_name}")
+    spec["tags"] = unique_tags
+    return spec
+
 def main():
     file_path = Path("openapi.json")
 
@@ -172,6 +195,7 @@ def main():
     data = patch_schema_has_next_to_optional(data)
     data = patch_integer_properties(data)
     data = patch_int_enums_to_int64(data)
+    data = remove_duplicate_extra_tag(data)
     
     write_json(file_path, data)
     print(f"Patched: {file_path}")
@@ -181,6 +205,7 @@ def main():
     data = extract_all_enums(data)
     data = patch_integer_properties(data)
     data = patch_int_enums_to_int64(data)
+    data = remove_duplicate_extra_tag(data)
     data = remove_default_ts_values(data)
     write_json(archive_file_path, data)
     print(f"Patched: {archive_file_path}")  

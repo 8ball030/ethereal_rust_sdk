@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,12 +13,12 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TotalPointsDto {
-    /// Total points distributed (precision: 9)
-    #[serde(rename = "totalPoints")]
-    pub total_points: rust_decimal::Decimal,
     /// Total referral points distributed (precision: 9)
     #[serde(rename = "referralPoints")]
     pub referral_points: rust_decimal::Decimal,
+    /// Total points distributed (precision: 9)
+    #[serde(rename = "totalPoints")]
+    pub total_points: rust_decimal::Decimal,
     /// Last update timestamp of the aggregated points periods (ms since Unix Epoch)
     #[serde(rename = "updatedAt", skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<i64>,
@@ -26,12 +26,12 @@ pub struct TotalPointsDto {
 
 impl TotalPointsDto {
     pub fn new(
-        total_points: rust_decimal::Decimal,
         referral_points: rust_decimal::Decimal,
+        total_points: rust_decimal::Decimal,
     ) -> TotalPointsDto {
         TotalPointsDto {
-            total_points,
             referral_points,
+            total_points,
             updated_at: None,
         }
     }

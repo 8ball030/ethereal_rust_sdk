@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,60 +13,60 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PositionDto {
-    /// Id representing the position
-    #[serde(rename = "id")]
-    pub id: uuid::Uuid,
     /// Current cost of the position in USD expressed as a decimal (precision: 9)
     #[serde(rename = "cost")]
     pub cost: rust_decimal::Decimal,
-    /// Position size in native units expressed as a decimal (precision: 9)
-    #[serde(rename = "size")]
-    pub size: rust_decimal::Decimal,
-    /// Charged but unapplied funding on position, negative if paid, expressed as a decimal (precision: 9)
-    #[serde(rename = "fundingUsd")]
-    pub funding_usd: rust_decimal::Decimal,
-    /// Charged and applied funding on position, negative if paid, expressed as a decimal (precision: 9)
-    #[serde(rename = "fundingAccruedUsd")]
-    pub funding_accrued_usd: rust_decimal::Decimal,
-    /// Fees accrued in USD expressed as a decimal (precision: 9)
-    #[serde(rename = "feesAccruedUsd")]
-    pub fees_accrued_usd: rust_decimal::Decimal,
-    /// Realized PnL in USD expressed as a decimal (precision: 9)
-    #[serde(rename = "realizedPnl")]
-    pub realized_pnl: rust_decimal::Decimal,
-    /// Unrealized PnL in USD (negative if loss, positive if profit) approximated against the latest mark price, expressed as a decimal (precision: 9)
-    #[serde(rename = "unrealizedPnl", skip_serializing_if = "Option::is_none")]
-    pub unrealized_pnl: Option<rust_decimal::Decimal>,
-    /// Cumulative USD value of all position increases expressed as a decimal (precision: 9)
-    #[serde(rename = "totalIncreaseNotional")]
-    pub total_increase_notional: rust_decimal::Decimal,
-    /// Cumulative quantity of all position increases expressed as a decimal (precision: 9)
-    #[serde(rename = "totalIncreaseQuantity")]
-    pub total_increase_quantity: rust_decimal::Decimal,
-    /// Cumulative USD value of all position decreases expressed as a decimal (precision: 9)
-    #[serde(rename = "totalDecreaseNotional")]
-    pub total_decrease_notional: rust_decimal::Decimal,
-    /// Cumulative quantity of all position decreases expressed as a decimal (precision: 9)
-    #[serde(rename = "totalDecreaseQuantity")]
-    pub total_decrease_quantity: rust_decimal::Decimal,
-    /// Side as either BUY (0) or SELL (1)
-    #[serde(rename = "side")]
-    pub side: models::OrderSide,
-    /// Id of product to this position belongs to
-    #[serde(rename = "productId")]
-    pub product_id: uuid::Uuid,
-    /// Position last updated timestamp (ms since Unix Epoch)
-    #[serde(rename = "updatedAt")]
-    pub updated_at: i64,
     /// Position creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
     pub created_at: i64,
+    /// Fees accrued in USD expressed as a decimal (precision: 9)
+    #[serde(rename = "feesAccruedUsd")]
+    pub fees_accrued_usd: rust_decimal::Decimal,
+    /// Charged and applied funding on position, negative if paid, expressed as a decimal (precision: 9)
+    #[serde(rename = "fundingAccruedUsd")]
+    pub funding_accrued_usd: rust_decimal::Decimal,
+    /// Charged but unapplied funding on position, negative if paid, expressed as a decimal (precision: 9)
+    #[serde(rename = "fundingUsd")]
+    pub funding_usd: rust_decimal::Decimal,
+    /// Id representing the position
+    #[serde(rename = "id")]
+    pub id: uuid::Uuid,
     /// Whether the position was liquidated
     #[serde(rename = "isLiquidated")]
     pub is_liquidated: bool,
     /// Product price at the time of liquidation (undefined if not liquidated, precision: 9)
     #[serde(rename = "liquidationPrice", skip_serializing_if = "Option::is_none")]
     pub liquidation_price: Option<rust_decimal::Decimal>,
+    /// Id of product to this position belongs to
+    #[serde(rename = "productId")]
+    pub product_id: uuid::Uuid,
+    /// Realized PnL in USD expressed as a decimal (precision: 9)
+    #[serde(rename = "realizedPnl")]
+    pub realized_pnl: rust_decimal::Decimal,
+    /// Side as either BUY (0) or SELL (1)
+    #[serde(rename = "side")]
+    pub side: models::OrderSide,
+    /// Position size in native units expressed as a decimal (precision: 9)
+    #[serde(rename = "size")]
+    pub size: rust_decimal::Decimal,
+    /// Cumulative USD value of all position decreases expressed as a decimal (precision: 9)
+    #[serde(rename = "totalDecreaseNotional")]
+    pub total_decrease_notional: rust_decimal::Decimal,
+    /// Cumulative quantity of all position decreases expressed as a decimal (precision: 9)
+    #[serde(rename = "totalDecreaseQuantity")]
+    pub total_decrease_quantity: rust_decimal::Decimal,
+    /// Cumulative USD value of all position increases expressed as a decimal (precision: 9)
+    #[serde(rename = "totalIncreaseNotional")]
+    pub total_increase_notional: rust_decimal::Decimal,
+    /// Cumulative quantity of all position increases expressed as a decimal (precision: 9)
+    #[serde(rename = "totalIncreaseQuantity")]
+    pub total_increase_quantity: rust_decimal::Decimal,
+    /// Unrealized PnL in USD (negative if loss, positive if profit) approximated against the latest mark price, expressed as a decimal (precision: 9)
+    #[serde(rename = "unrealizedPnl", skip_serializing_if = "Option::is_none")]
+    pub unrealized_pnl: Option<rust_decimal::Decimal>,
+    /// Position last updated timestamp (ms since Unix Epoch)
+    #[serde(rename = "updatedAt")]
+    pub updated_at: i64,
     /// Whether the position has any associated deleverage records
     #[serde(rename = "wasDeleveraged")]
     pub was_deleveraged: bool,
@@ -74,43 +74,43 @@ pub struct PositionDto {
 
 impl PositionDto {
     pub fn new(
-        id: uuid::Uuid,
         cost: rust_decimal::Decimal,
-        size: rust_decimal::Decimal,
-        funding_usd: rust_decimal::Decimal,
-        funding_accrued_usd: rust_decimal::Decimal,
+        created_at: i64,
         fees_accrued_usd: rust_decimal::Decimal,
+        funding_accrued_usd: rust_decimal::Decimal,
+        funding_usd: rust_decimal::Decimal,
+        id: uuid::Uuid,
+        is_liquidated: bool,
+        product_id: uuid::Uuid,
         realized_pnl: rust_decimal::Decimal,
-        total_increase_notional: rust_decimal::Decimal,
-        total_increase_quantity: rust_decimal::Decimal,
+        side: models::OrderSide,
+        size: rust_decimal::Decimal,
         total_decrease_notional: rust_decimal::Decimal,
         total_decrease_quantity: rust_decimal::Decimal,
-        side: models::OrderSide,
-        product_id: uuid::Uuid,
+        total_increase_notional: rust_decimal::Decimal,
+        total_increase_quantity: rust_decimal::Decimal,
         updated_at: i64,
-        created_at: i64,
-        is_liquidated: bool,
         was_deleveraged: bool,
     ) -> PositionDto {
         PositionDto {
-            id,
             cost,
-            size,
-            funding_usd,
-            funding_accrued_usd,
-            fees_accrued_usd,
-            realized_pnl,
-            unrealized_pnl: None,
-            total_increase_notional,
-            total_increase_quantity,
-            total_decrease_notional,
-            total_decrease_quantity,
-            side,
-            product_id,
-            updated_at,
             created_at,
+            fees_accrued_usd,
+            funding_accrued_usd,
+            funding_usd,
+            id,
             is_liquidated,
             liquidation_price: None,
+            product_id,
+            realized_pnl,
+            side,
+            size,
+            total_decrease_notional,
+            total_decrease_quantity,
+            total_increase_notional,
+            total_increase_quantity,
+            unrealized_pnl: None,
+            updated_at,
             was_deleveraged,
         }
     }

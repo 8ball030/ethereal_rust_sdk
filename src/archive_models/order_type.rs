@@ -25,8 +25,8 @@ pub enum OrderType {
     RateLimitWithdraw,
     #[serde(rename = "RATE_LIMIT_LINKED_SIGNER")]
     RateLimitLinkedSigner,
-    #[serde(rename = "MARKET")]
-    Market,
+    #[serde(rename = "LIMIT")]
+    Limit,
 }
 
 impl std::fmt::Display for OrderType {
@@ -36,7 +36,7 @@ impl std::fmt::Display for OrderType {
             Self::RateLimitAccount => write!(f, "RATE_LIMIT_ACCOUNT"),
             Self::RateLimitWithdraw => write!(f, "RATE_LIMIT_WITHDRAW"),
             Self::RateLimitLinkedSigner => write!(f, "RATE_LIMIT_LINKED_SIGNER"),
-            Self::Market => write!(f, "MARKET"),
+            Self::Limit => write!(f, "LIMIT"),
         }
     }
 }

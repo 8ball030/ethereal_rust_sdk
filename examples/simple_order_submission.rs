@@ -1,5 +1,5 @@
 mod common;
-use ethereal_rust_sdk::models::{OrderSide, OrderType, TimeInForce};
+use ethereal_rust_sdk::models::{OrderSide, OrderTimeInForce, OrderType};
 use rust_decimal_macros::dec;
 
 #[tokio::main]
@@ -15,7 +15,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let r#type = OrderType::Limit;
 
     let expires_at = None;
-    let time_in_force = TimeInForce::Gtd;
+    let time_in_force = OrderTimeInForce::Gtd;
 
     // We have a few more options when creating an order now.
     let mut post_only = false;

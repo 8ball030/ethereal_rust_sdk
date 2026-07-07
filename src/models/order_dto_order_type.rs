@@ -11,27 +11,27 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ProductDtoOrderStatus : Extracted enum for ProductDtoOrderStatus
-/// Extracted enum for ProductDtoOrderStatus
+/// OrderDtoOrderType : Extracted enum for OrderDtoOrderType
+/// Extracted enum for OrderDtoOrderType
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum ProductDtoOrderStatus {
-    #[serde(rename = "PENDING")]
-    Pending,
-    #[serde(rename = "ACTIVE")]
-    Active,
+pub enum OrderDtoOrderType {
+    #[serde(rename = "MARKET")]
+    Market,
+    #[serde(rename = "LIMIT")]
+    Limit,
 }
 
-impl std::fmt::Display for ProductDtoOrderStatus {
+impl std::fmt::Display for OrderDtoOrderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            Self::Pending => write!(f, "PENDING"),
-            Self::Active => write!(f, "ACTIVE"),
+            Self::Market => write!(f, "MARKET"),
+            Self::Limit => write!(f, "LIMIT"),
         }
     }
 }
 
-impl Default for ProductDtoOrderStatus {
-    fn default() -> ProductDtoOrderStatus {
-        Self::Pending
+impl Default for OrderDtoOrderType {
+    fn default() -> OrderDtoOrderType {
+        Self::Market
     }
 }

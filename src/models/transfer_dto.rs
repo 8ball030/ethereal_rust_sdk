@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,6 +13,27 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TransferDto {
+    /// Amount of tokens transferred in native units expressed as a decimal (precision: 9)
+    #[serde(rename = "amount")]
+    pub amount: rust_decimal::Decimal,
+    /// Transfer creation timestamp (ms since Unix Epoch)
+    #[serde(rename = "createdAt")]
+    pub created_at: i64,
+    /// Fee paid for the transfer in native units expressed as a decimal (precision: 9)
+    #[serde(rename = "fee")]
+    pub fee: rust_decimal::Decimal,
+    /// Block number the transfer was completed on
+    #[serde(
+        rename = "finalizedBlockNumber",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub finalized_block_number: Option<String>,
+    /// Transaction hash for the finalization of the transfer
+    #[serde(
+        rename = "finalizedTransactionHash",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub finalized_transaction_hash: Option<String>,
     /// Id representing the transfer
     #[serde(rename = "id")]
     pub id: uuid::Uuid,
@@ -22,28 +43,12 @@ pub struct TransferDto {
         skip_serializing_if = "Option::is_none"
     )]
     pub initiated_block_number: Option<String>,
-    /// Block number the transfer was completed on
+    /// Transaction hash for the initiation of the transfer
     #[serde(
-        rename = "finalizedBlockNumber",
+        rename = "initiatedTransactionHash",
         skip_serializing_if = "Option::is_none"
     )]
-    pub finalized_block_number: Option<String>,
-    #[serde(rename = "status")]
-    pub status: models::TransferDtoOrderStatus,
-    /// Id representing the registered subaccount
-    #[serde(rename = "subaccountId")]
-    pub subaccount_id: uuid::Uuid,
-    /// The unique exchange defined token name driven by addToken onchain
-    #[serde(rename = "tokenName")]
-    pub token_name: String,
-    /// Address of token transferred (non-checksummed)
-    #[serde(rename = "tokenAddress")]
-    pub token_address: String,
-    #[serde(rename = "type")]
-    pub r#type: models::TransferDtoOrderType,
-    /// Amount of tokens transferred in native units expressed as a decimal (precision: 9)
-    #[serde(rename = "amount")]
-    pub amount: rust_decimal::Decimal,
+    pub initiated_transaction_hash: Option<String>,
     /// LayerZero destination address (leading 0x bytes32 encoded) for the transfer (if withdraw)
     #[serde(
         rename = "lzDestinationAddress",
@@ -53,54 +58,49 @@ pub struct TransferDto {
     /// LayerZero destination endpoint ID for the transfer (if withdraw)
     #[serde(rename = "lzDestinationEid", skip_serializing_if = "Option::is_none")]
     pub lz_destination_eid: Option<i64>,
-    /// Fee paid for the transfer in native units expressed as a decimal (precision: 9)
-    #[serde(rename = "fee")]
-    pub fee: rust_decimal::Decimal,
-    /// Transfer creation timestamp (ms since Unix Epoch)
-    #[serde(rename = "createdAt")]
-    pub created_at: i64,
-    /// Transaction hash for the initiation of the transfer
-    #[serde(
-        rename = "initiatedTransactionHash",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub initiated_transaction_hash: Option<String>,
-    /// Transaction hash for the finalization of the transfer
-    #[serde(
-        rename = "finalizedTransactionHash",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub finalized_transaction_hash: Option<String>,
+    #[serde(rename = "status")]
+    pub status: models::TransferDtoOrderStatus,
+    /// Id representing the registered subaccount
+    #[serde(rename = "subaccountId")]
+    pub subaccount_id: uuid::Uuid,
+    /// Address of token transferred (non-checksummed)
+    #[serde(rename = "tokenAddress")]
+    pub token_address: String,
+    /// The unique exchange defined token name driven by addToken onchain
+    #[serde(rename = "tokenName")]
+    pub token_name: String,
+    #[serde(rename = "type")]
+    pub r#type: models::TransferDtoOrderType,
 }
 
 impl TransferDto {
     pub fn new(
+        amount: rust_decimal::Decimal,
+        created_at: i64,
+        fee: rust_decimal::Decimal,
         id: uuid::Uuid,
         status: models::TransferDtoOrderStatus,
         subaccount_id: uuid::Uuid,
-        token_name: String,
         token_address: String,
+        token_name: String,
         r#type: models::TransferDtoOrderType,
-        amount: rust_decimal::Decimal,
-        fee: rust_decimal::Decimal,
-        created_at: i64,
     ) -> TransferDto {
         TransferDto {
+            amount,
+            created_at,
+            fee,
+            finalized_block_number: None,
+            finalized_transaction_hash: None,
             id,
             initiated_block_number: None,
-            finalized_block_number: None,
-            status,
-            subaccount_id,
-            token_name,
-            token_address,
-            r#type,
-            amount,
+            initiated_transaction_hash: None,
             lz_destination_address: None,
             lz_destination_eid: None,
-            fee,
-            created_at,
-            initiated_transaction_hash: None,
-            finalized_transaction_hash: None,
+            status,
+            subaccount_id,
+            token_address,
+            token_name,
+            r#type,
         }
     }
 }

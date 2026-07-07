@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,30 +13,30 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct DryRunOrderFailedUnprocessableEntityDto {
-    #[serde(rename = "statusCode")]
-    pub status_code: StatusCode,
-    /// Code indicating the reason for failure
-    #[serde(rename = "message")]
-    pub message: models::SubmitOrderFailedResultCode,
-    #[serde(rename = "error")]
-    pub error: models::DryRunOrderFailedUnprocessableEntityDtoErrorEnum,
     /// Details of the failed dry run
     #[serde(rename = "data")]
     pub data: models::DryRunOrderFailedDto,
+    #[serde(rename = "error")]
+    pub error: models::DryRunOrderFailedUnprocessableEntityDtoErrorEnum,
+    /// Code indicating the reason for failure
+    #[serde(rename = "message")]
+    pub message: models::SubmitOrderFailedResultCode,
+    #[serde(rename = "statusCode")]
+    pub status_code: StatusCode,
 }
 
 impl DryRunOrderFailedUnprocessableEntityDto {
     pub fn new(
-        status_code: StatusCode,
-        message: models::SubmitOrderFailedResultCode,
-        error: models::DryRunOrderFailedUnprocessableEntityDtoErrorEnum,
         data: models::DryRunOrderFailedDto,
+        error: models::DryRunOrderFailedUnprocessableEntityDtoErrorEnum,
+        message: models::SubmitOrderFailedResultCode,
+        status_code: StatusCode,
     ) -> DryRunOrderFailedUnprocessableEntityDto {
         DryRunOrderFailedUnprocessableEntityDto {
-            status_code,
-            message,
-            error,
             data,
+            error,
+            message,
+            status_code,
         }
     }
 }

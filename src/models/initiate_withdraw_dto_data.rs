@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -16,12 +16,6 @@ pub struct InitiateWithdrawDtoData {
     /// Account address to withdraw from
     #[serde(rename = "account")]
     pub account: String,
-    /// Bytes32 encoded subaccount name (0x prefix, zero padded)
-    #[serde(rename = "subaccount")]
-    pub subaccount: String,
-    /// Address of token to be withdrawn
-    #[serde(rename = "token")]
-    pub token: String,
     /// Amount to withdraw in native units expressed as a decimal (precision: 9)
     #[serde(rename = "amount")]
     pub amount: rust_decimal::Decimal,
@@ -37,28 +31,34 @@ pub struct InitiateWithdrawDtoData {
     /// Message signedAt current timestamp (seconds since Unix Epoch)
     #[serde(rename = "signedAt")]
     pub signed_at: i64,
+    /// Bytes32 encoded subaccount name (0x prefix, zero padded)
+    #[serde(rename = "subaccount")]
+    pub subaccount: String,
+    /// Address of token to be withdrawn
+    #[serde(rename = "token")]
+    pub token: String,
 }
 
 impl InitiateWithdrawDtoData {
     pub fn new(
         account: String,
-        subaccount: String,
-        token: String,
         amount: rust_decimal::Decimal,
         lz_destination_address: String,
         lz_destination_eid: models::LayerZeroEndpointId,
         nonce: String,
         signed_at: i64,
+        subaccount: String,
+        token: String,
     ) -> InitiateWithdrawDtoData {
         InitiateWithdrawDtoData {
             account,
-            subaccount,
-            token,
             amount,
             lz_destination_address,
             lz_destination_eid,
             nonce,
             signed_at,
+            subaccount,
+            token,
         }
     }
 }

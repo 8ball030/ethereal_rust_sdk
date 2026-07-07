@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,32 +13,32 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ClaimReferralCodeDtoData {
-    /// Account address that produced the authorizing signature
-    #[serde(rename = "sender")]
-    pub sender: String,
-    /// Intent of the message (action to be taken)
-    #[serde(rename = "intent")]
-    pub intent: models::Eip712AuthIntent,
-    /// Message signedAt current timestamp (seconds since Unix Epoch)
-    #[serde(rename = "signedAt")]
-    pub signed_at: i64,
     /// The referral code to claim
     #[serde(rename = "code")]
     pub code: String,
+    /// Intent of the message (action to be taken)
+    #[serde(rename = "intent")]
+    pub intent: models::Eip712AuthIntent,
+    /// Account address that produced the authorizing signature
+    #[serde(rename = "sender")]
+    pub sender: String,
+    /// Message signedAt current timestamp (seconds since Unix Epoch)
+    #[serde(rename = "signedAt")]
+    pub signed_at: i64,
 }
 
 impl ClaimReferralCodeDtoData {
     pub fn new(
-        sender: String,
-        intent: models::Eip712AuthIntent,
-        signed_at: i64,
         code: String,
+        intent: models::Eip712AuthIntent,
+        sender: String,
+        signed_at: i64,
     ) -> ClaimReferralCodeDtoData {
         ClaimReferralCodeDtoData {
-            sender,
-            intent,
-            signed_at,
             code,
+            intent,
+            sender,
+            signed_at,
         }
     }
 }

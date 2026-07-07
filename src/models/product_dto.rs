@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,170 +13,170 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ProductDto {
-    /// Id representing the registered product
-    #[serde(rename = "id")]
-    pub id: uuid::Uuid,
-    /// Product ticker based on the base quote token
-    #[serde(rename = "ticker")]
-    pub ticker: String,
-    /// Product display ticker based on the base quote token
-    #[serde(rename = "displayTicker")]
-    pub display_ticker: String,
     /// Address of the base token (non-checksummed; zero address if virtual)
     #[serde(rename = "baseTokenAddress")]
     pub base_token_address: String,
-    /// Address of quote token (non-checksummed)
-    #[serde(rename = "quoteTokenAddress")]
-    pub quote_token_address: String,
     /// Name of the base token (e.g. BTC in BTCUSD)
     #[serde(rename = "baseTokenName")]
     pub base_token_name: String,
-    /// Name of the quote token (e.g. USD in BTCUSD)
-    #[serde(rename = "quoteTokenName")]
-    pub quote_token_name: String,
-    /// The corresponding engine type this product was registered with
-    #[serde(rename = "engineType")]
-    pub engine_type: models::EngineType,
-    /// The productId generated onchain after registering for the first time
-    #[serde(rename = "onchainId")]
-    pub onchain_id: i64,
-    #[serde(rename = "status")]
-    pub status: models::ProductDtoOrderStatus,
     /// Block number this product was registered on
     #[serde(rename = "blockNumber")]
     pub block_number: String,
-    /// Cumulative funding in USD of the product (precision: 9)
-    #[serde(rename = "cumulativeFundingUsd")]
-    pub cumulative_funding_usd: rust_decimal::Decimal,
     /// Product creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
     pub created_at: i64,
-    /// Unix timestamp when funding was last updated
-    #[serde(rename = "fundingUpdatedAt", skip_serializing_if = "Option::is_none")]
-    pub funding_updated_at: Option<i64>,
-    /// Deprecated. Use lotSize instead. This value is always equal to lotSize.
-    #[serde(rename = "minQuantity")]
-    pub min_quantity: rust_decimal::Decimal,
-    /// Quantity must be divisible by the lotSize in expressed as a decimal (precision: 9)
-    #[serde(rename = "lotSize")]
-    pub lot_size: rust_decimal::Decimal,
-    /// Minimum price increment (tickSize) expressed as a decimal (precision: 9)
-    #[serde(rename = "tickSize")]
-    pub tick_size: rust_decimal::Decimal,
-    /// Fee charged to the maker on order trades expressed as a decimal (precision: 9)
-    #[serde(rename = "makerFee")]
-    pub maker_fee: rust_decimal::Decimal,
-    /// Fee charged to the taker on order trades expressed as a decimal (precision: 9)
-    #[serde(rename = "takerFee")]
-    pub taker_fee: rust_decimal::Decimal,
-    /// Max quantity per order in native units expressed as a decimal (precision: 9)
-    #[serde(rename = "maxQuantity")]
-    pub max_quantity: rust_decimal::Decimal,
-    /// Min price in USD expressed as a decimal (precision: 9)
-    #[serde(rename = "minPrice")]
-    pub min_price: rust_decimal::Decimal,
-    /// Max price in USD expressed as a decimal (precision: 9)
-    #[serde(rename = "maxPrice")]
-    pub max_price: rust_decimal::Decimal,
-    /// 24h volume in base token native units expressed as a decimal (precision: 9)
-    #[serde(rename = "volume24h")]
-    pub volume24h: rust_decimal::Decimal,
-    /// Maximum leverage allowed for the product
-    #[serde(rename = "maxLeverage")]
-    pub max_leverage: f64,
-    /// Pyth price feed id
-    #[serde(rename = "pythFeedId")]
-    pub pyth_feed_id: i64,
+    /// Cumulative funding in USD of the product (precision: 9)
+    #[serde(rename = "cumulativeFundingUsd")]
+    pub cumulative_funding_usd: rust_decimal::Decimal,
+    /// Product display ticker based on the base quote token
+    #[serde(rename = "displayTicker")]
+    pub display_ticker: String,
+    /// The corresponding engine type this product was registered with
+    #[serde(rename = "engineType")]
+    pub engine_type: models::EngineType,
+    /// Funding baseline APR expressed as a decimal (precision: 9)
+    #[serde(rename = "fundingBaselineApr")]
+    pub funding_baseline_apr: rust_decimal::Decimal,
+    /// Funding clamp APR expressed as a decimal (precision: 9)
+    #[serde(rename = "fundingClampApr")]
+    pub funding_clamp_apr: rust_decimal::Decimal,
+    /// Maximum funding APR expressed as a decimal, e.g. 2.0 = 200% (precision: 9)
+    #[serde(rename = "fundingMaxApr")]
+    pub funding_max_apr: rust_decimal::Decimal,
     /// Last computed hourly funding rate expressed as a decimal (precision: 9)
     #[serde(rename = "fundingRate1h")]
     pub funding_rate1h: rust_decimal::Decimal,
-    /// OI of both sides in native units expressed as a decimal (precision: 9)
-    #[serde(rename = "openInterest")]
-    pub open_interest: rust_decimal::Decimal,
+    /// Unix timestamp when funding was last updated
+    #[serde(rename = "fundingUpdatedAt", skip_serializing_if = "Option::is_none")]
+    pub funding_updated_at: Option<i64>,
+    /// Id representing the registered product
+    #[serde(rename = "id")]
+    pub id: uuid::Uuid,
+    /// Quantity must be divisible by the lotSize in expressed as a decimal (precision: 9)
+    #[serde(rename = "lotSize")]
+    pub lot_size: rust_decimal::Decimal,
+    /// Fee charged to the maker on order trades expressed as a decimal (precision: 9)
+    #[serde(rename = "makerFee")]
+    pub maker_fee: rust_decimal::Decimal,
+    /// Maximum leverage allowed for the product
+    #[serde(rename = "maxLeverage")]
+    pub max_leverage: f64,
     /// Max OI of one side in USD expressed as a decimal (precision: 9)
     #[serde(rename = "maxOpenInterestUsd")]
     pub max_open_interest_usd: rust_decimal::Decimal,
     /// Max position notional value, in USD expressed as a decimal (precision: 9)
     #[serde(rename = "maxPositionNotionalUsd")]
     pub max_position_notional_usd: rust_decimal::Decimal,
-    /// Funding clamp APR expressed as a decimal (precision: 9)
-    #[serde(rename = "fundingClampApr")]
-    pub funding_clamp_apr: rust_decimal::Decimal,
-    /// Funding baseline APR expressed as a decimal (precision: 9)
-    #[serde(rename = "fundingBaselineApr")]
-    pub funding_baseline_apr: rust_decimal::Decimal,
-    /// Maximum funding APR expressed as a decimal, e.g. 2.0 = 200% (precision: 9)
-    #[serde(rename = "fundingMaxApr")]
-    pub funding_max_apr: rust_decimal::Decimal,
+    /// Max price in USD expressed as a decimal (precision: 9)
+    #[serde(rename = "maxPrice")]
+    pub max_price: rust_decimal::Decimal,
+    /// Max quantity per order in native units expressed as a decimal (precision: 9)
+    #[serde(rename = "maxQuantity")]
+    pub max_quantity: rust_decimal::Decimal,
+    /// Min price in USD expressed as a decimal (precision: 9)
+    #[serde(rename = "minPrice")]
+    pub min_price: rust_decimal::Decimal,
+    /// Deprecated. Use lotSize instead. This value is always equal to lotSize.
+    #[serde(rename = "minQuantity")]
+    pub min_quantity: rust_decimal::Decimal,
+    /// The productId generated onchain after registering for the first time
+    #[serde(rename = "onchainId")]
+    pub onchain_id: i64,
+    /// OI of both sides in native units expressed as a decimal (precision: 9)
+    #[serde(rename = "openInterest")]
+    pub open_interest: rust_decimal::Decimal,
+    /// Pyth price feed id
+    #[serde(rename = "pythFeedId")]
+    pub pyth_feed_id: i64,
+    /// Address of quote token (non-checksummed)
+    #[serde(rename = "quoteTokenAddress")]
+    pub quote_token_address: String,
+    /// Name of the quote token (e.g. USD in BTCUSD)
+    #[serde(rename = "quoteTokenName")]
+    pub quote_token_name: String,
+    #[serde(rename = "status")]
+    pub status: models::ProductDtoOrderStatus,
+    /// Fee charged to the taker on order trades expressed as a decimal (precision: 9)
+    #[serde(rename = "takerFee")]
+    pub taker_fee: rust_decimal::Decimal,
+    /// Minimum price increment (tickSize) expressed as a decimal (precision: 9)
+    #[serde(rename = "tickSize")]
+    pub tick_size: rust_decimal::Decimal,
+    /// Product ticker based on the base quote token
+    #[serde(rename = "ticker")]
+    pub ticker: String,
+    /// 24h volume in base token native units expressed as a decimal (precision: 9)
+    #[serde(rename = "volume24h")]
+    pub volume24h: rust_decimal::Decimal,
 }
 
 impl ProductDto {
     pub fn new(
-        id: uuid::Uuid,
-        ticker: String,
-        display_ticker: String,
         base_token_address: String,
-        quote_token_address: String,
         base_token_name: String,
-        quote_token_name: String,
-        engine_type: models::EngineType,
-        onchain_id: i64,
-        status: models::ProductDtoOrderStatus,
         block_number: String,
-        cumulative_funding_usd: rust_decimal::Decimal,
         created_at: i64,
-        min_quantity: rust_decimal::Decimal,
-        lot_size: rust_decimal::Decimal,
-        tick_size: rust_decimal::Decimal,
-        maker_fee: rust_decimal::Decimal,
-        taker_fee: rust_decimal::Decimal,
-        max_quantity: rust_decimal::Decimal,
-        min_price: rust_decimal::Decimal,
-        max_price: rust_decimal::Decimal,
-        volume24h: rust_decimal::Decimal,
-        max_leverage: f64,
-        pyth_feed_id: i64,
+        cumulative_funding_usd: rust_decimal::Decimal,
+        display_ticker: String,
+        engine_type: models::EngineType,
+        funding_baseline_apr: rust_decimal::Decimal,
+        funding_clamp_apr: rust_decimal::Decimal,
+        funding_max_apr: rust_decimal::Decimal,
         funding_rate1h: rust_decimal::Decimal,
-        open_interest: rust_decimal::Decimal,
+        id: uuid::Uuid,
+        lot_size: rust_decimal::Decimal,
+        maker_fee: rust_decimal::Decimal,
+        max_leverage: f64,
         max_open_interest_usd: rust_decimal::Decimal,
         max_position_notional_usd: rust_decimal::Decimal,
-        funding_clamp_apr: rust_decimal::Decimal,
-        funding_baseline_apr: rust_decimal::Decimal,
-        funding_max_apr: rust_decimal::Decimal,
+        max_price: rust_decimal::Decimal,
+        max_quantity: rust_decimal::Decimal,
+        min_price: rust_decimal::Decimal,
+        min_quantity: rust_decimal::Decimal,
+        onchain_id: i64,
+        open_interest: rust_decimal::Decimal,
+        pyth_feed_id: i64,
+        quote_token_address: String,
+        quote_token_name: String,
+        status: models::ProductDtoOrderStatus,
+        taker_fee: rust_decimal::Decimal,
+        tick_size: rust_decimal::Decimal,
+        ticker: String,
+        volume24h: rust_decimal::Decimal,
     ) -> ProductDto {
         ProductDto {
-            id,
-            ticker,
-            display_ticker,
             base_token_address,
-            quote_token_address,
             base_token_name,
-            quote_token_name,
-            engine_type,
-            onchain_id,
-            status,
             block_number,
-            cumulative_funding_usd,
             created_at,
-            funding_updated_at: None,
-            min_quantity,
-            lot_size,
-            tick_size,
-            maker_fee,
-            taker_fee,
-            max_quantity,
-            min_price,
-            max_price,
-            volume24h,
-            max_leverage,
-            pyth_feed_id,
+            cumulative_funding_usd,
+            display_ticker,
+            engine_type,
+            funding_baseline_apr,
+            funding_clamp_apr,
+            funding_max_apr,
             funding_rate1h,
-            open_interest,
+            funding_updated_at: None,
+            id,
+            lot_size,
+            maker_fee,
+            max_leverage,
             max_open_interest_usd,
             max_position_notional_usd,
-            funding_clamp_apr,
-            funding_baseline_apr,
-            funding_max_apr,
+            max_price,
+            max_quantity,
+            min_price,
+            min_quantity,
+            onchain_id,
+            open_interest,
+            pyth_feed_id,
+            quote_token_address,
+            quote_token_name,
+            status,
+            taker_fee,
+            tick_size,
+            ticker,
+            volume24h,
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,22 +13,22 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ExtendLinkedSignerDtoData {
-    /// Address of the linked signer extending itself
-    #[serde(rename = "sender")]
-    pub sender: String,
     /// Message nonce timestamp (nanoseconds since Unix Epoch)
     #[serde(rename = "nonce")]
     pub nonce: String,
+    /// Address of the linked signer extending itself
+    #[serde(rename = "sender")]
+    pub sender: String,
     /// Message signedAt current timestamp (seconds since Unix Epoch)
     #[serde(rename = "signedAt")]
     pub signed_at: i64,
 }
 
 impl ExtendLinkedSignerDtoData {
-    pub fn new(sender: String, nonce: String, signed_at: i64) -> ExtendLinkedSignerDtoData {
+    pub fn new(nonce: String, sender: String, signed_at: i64) -> ExtendLinkedSignerDtoData {
         ExtendLinkedSignerDtoData {
-            sender,
             nonce,
+            sender,
             signed_at,
         }
     }

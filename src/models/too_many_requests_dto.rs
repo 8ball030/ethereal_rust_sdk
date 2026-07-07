@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,27 +13,27 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TooManyRequestsDto {
-    #[serde(rename = "statusCode")]
-    pub status_code: StatusCode,
-    #[serde(rename = "message")]
-    pub message: String,
     #[serde(rename = "error")]
     pub error: models::TooManyRequestsDtoErrorEnum,
+    #[serde(rename = "message")]
+    pub message: String,
+    #[serde(rename = "statusCode")]
+    pub status_code: StatusCode,
     #[serde(rename = "type")]
-    pub r#type: models::TooManyRequestsDtoOrderType,
+    pub r#type: models::RateLimitErrorType,
 }
 
 impl TooManyRequestsDto {
     pub fn new(
-        status_code: StatusCode,
-        message: String,
         error: models::TooManyRequestsDtoErrorEnum,
-        r#type: models::TooManyRequestsDtoOrderType,
+        message: String,
+        status_code: StatusCode,
+        r#type: models::RateLimitErrorType,
     ) -> TooManyRequestsDto {
         TooManyRequestsDto {
-            status_code,
-            message,
             error,
+            message,
+            status_code,
             r#type,
         }
     }

@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,36 +13,36 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PointsPeriodDto {
-    /// Id representing the points period entry
-    #[serde(rename = "id")]
-    pub id: uuid::Uuid,
     /// Address of the account (non-checksummed)
     #[serde(rename = "address")]
     pub address: String,
-    /// Season number
-    #[serde(rename = "season")]
-    pub season: i64,
+    /// Points period creation timestamp (ms since Unix Epoch)
+    #[serde(rename = "createdAt")]
+    pub created_at: i64,
+    /// End of points period (ms since Unix Epoch)
+    #[serde(rename = "endedAt")]
+    pub ended_at: i64,
     /// Epoch number within the season
     #[serde(rename = "epoch")]
     pub epoch: i64,
+    /// Id representing the points period entry
+    #[serde(rename = "id")]
+    pub id: uuid::Uuid,
+    /// Optional name for the points period
+    #[serde(rename = "name", skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Points earned in this period (excluding referral points) expressed as a decimal (precision: 9)
     #[serde(rename = "points")]
     pub points: rust_decimal::Decimal,
     /// Referral points earned in this period expressed as a decimal (precision: 9)
     #[serde(rename = "referralPoints")]
     pub referral_points: rust_decimal::Decimal,
+    /// Season number
+    #[serde(rename = "season")]
+    pub season: i64,
     /// Beginning of points period (ms since Unix Epoch)
     #[serde(rename = "startedAt")]
     pub started_at: i64,
-    /// End of points period (ms since Unix Epoch)
-    #[serde(rename = "endedAt")]
-    pub ended_at: i64,
-    /// Optional name for the points period
-    #[serde(rename = "name", skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Points period creation timestamp (ms since Unix Epoch)
-    #[serde(rename = "createdAt")]
-    pub created_at: i64,
     /// Points period last update timestamp (ms since Unix Epoch)
     #[serde(rename = "updatedAt")]
     pub updated_at: i64,
@@ -50,28 +50,28 @@ pub struct PointsPeriodDto {
 
 impl PointsPeriodDto {
     pub fn new(
-        id: uuid::Uuid,
         address: String,
-        season: i64,
+        created_at: i64,
+        ended_at: i64,
         epoch: i64,
+        id: uuid::Uuid,
         points: rust_decimal::Decimal,
         referral_points: rust_decimal::Decimal,
+        season: i64,
         started_at: i64,
-        ended_at: i64,
-        created_at: i64,
         updated_at: i64,
     ) -> PointsPeriodDto {
         PointsPeriodDto {
-            id,
             address,
-            season,
+            created_at,
+            ended_at,
             epoch,
+            id,
+            name: None,
             points,
             referral_points,
+            season,
             started_at,
-            ended_at,
-            name: None,
-            created_at,
             updated_at,
         }
     }

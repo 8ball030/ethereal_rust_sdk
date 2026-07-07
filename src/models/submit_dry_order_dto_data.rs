@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,12 +13,12 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
-pub enum SubmitOrderDtoData {
+pub enum SubmitDryOrderDtoData {
     SubmitOrderMarketDtoData(models::SubmitOrderMarketDtoData),
     SubmitOrderLimitDtoData(models::SubmitOrderLimitDtoData),
 }
 
-impl Default for SubmitOrderDtoData {
+impl Default for SubmitDryOrderDtoData {
     fn default() -> Self {
         Self::SubmitOrderMarketDtoData(Default::default())
     }
