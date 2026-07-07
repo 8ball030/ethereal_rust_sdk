@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,51 +13,51 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PositionFillDto {
-    /// Fill price expressed as a decimal (precision: 9)
-    #[serde(rename = "price")]
-    pub price: rust_decimal::Decimal,
-    /// Quantity filled in native units expressed as a decimal (precision: 9)
-    #[serde(rename = "filled")]
-    pub filled: rust_decimal::Decimal,
-    /// Realized PnL from the fill in USD expressed as a decimal (precision: 9)
-    #[serde(rename = "realizedPnl")]
-    pub realized_pnl: rust_decimal::Decimal,
-    #[serde(rename = "type")]
-    pub r#type: models::PositionFillDtoOrderType,
-    /// Direction of the fill as either BUY (0) or SELL (1)
-    #[serde(rename = "side")]
-    pub side: models::OrderSide,
-    /// Indicates if the fill is reduce only
-    #[serde(rename = "reduceOnly")]
-    pub reduce_only: bool,
-    /// The charged fee in USD expressed as a decimal (precision: 9)
-    #[serde(rename = "feeUsd")]
-    pub fee_usd: rust_decimal::Decimal,
     /// Fill creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
     pub created_at: i64,
+    /// The charged fee in USD expressed as a decimal (precision: 9)
+    #[serde(rename = "feeUsd")]
+    pub fee_usd: rust_decimal::Decimal,
+    /// Quantity filled in native units expressed as a decimal (precision: 9)
+    #[serde(rename = "filled")]
+    pub filled: rust_decimal::Decimal,
+    /// Fill price expressed as a decimal (precision: 9)
+    #[serde(rename = "price")]
+    pub price: rust_decimal::Decimal,
+    /// Realized PnL from the fill in USD expressed as a decimal (precision: 9)
+    #[serde(rename = "realizedPnl")]
+    pub realized_pnl: rust_decimal::Decimal,
+    /// Indicates if the fill is reduce only
+    #[serde(rename = "reduceOnly")]
+    pub reduce_only: bool,
+    /// Direction of the fill as either BUY (0) or SELL (1)
+    #[serde(rename = "side")]
+    pub side: models::OrderSide,
+    #[serde(rename = "type")]
+    pub r#type: models::PositionFillDtoOrderType,
 }
 
 impl PositionFillDto {
     pub fn new(
-        price: rust_decimal::Decimal,
-        filled: rust_decimal::Decimal,
-        realized_pnl: rust_decimal::Decimal,
-        r#type: models::PositionFillDtoOrderType,
-        side: models::OrderSide,
-        reduce_only: bool,
-        fee_usd: rust_decimal::Decimal,
         created_at: i64,
+        fee_usd: rust_decimal::Decimal,
+        filled: rust_decimal::Decimal,
+        price: rust_decimal::Decimal,
+        realized_pnl: rust_decimal::Decimal,
+        reduce_only: bool,
+        side: models::OrderSide,
+        r#type: models::PositionFillDtoOrderType,
     ) -> PositionFillDto {
         PositionFillDto {
-            price,
-            filled,
-            realized_pnl,
-            r#type,
-            side,
-            reduce_only,
-            fee_usd,
             created_at,
+            fee_usd,
+            filled,
+            price,
+            realized_pnl,
+            reduce_only,
+            side,
+            r#type,
         }
     }
 }

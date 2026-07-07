@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,49 +13,49 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct LinkSignerDtoData {
-    /// Id representing the registered subaccount
-    #[serde(rename = "subaccountId")]
-    pub subaccount_id: uuid::Uuid,
-    /// Account address that produced the authorizing signature
-    #[serde(rename = "sender")]
-    pub sender: String,
-    /// Bytes32 encoded subaccount name (0x prefix, zero padded)
-    #[serde(rename = "subaccount")]
-    pub subaccount: String,
-    /// Address of signer to allowed for delegated signing
-    #[serde(rename = "signer")]
-    pub signer: String,
-    /// Message nonce timestamp (nanoseconds since Unix Epoch)
-    #[serde(rename = "nonce")]
-    pub nonce: String,
-    /// Message signedAt current timestamp (seconds since Unix Epoch)
-    #[serde(rename = "signedAt")]
-    pub signed_at: i64,
+    #[serde(rename = "category", skip_serializing_if = "Option::is_none")]
+    pub category: Option<models::CategoryEnum>,
     /// Optional name for the linked signer
     #[serde(rename = "name", skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(rename = "category", skip_serializing_if = "Option::is_none")]
-    pub category: Option<models::CategoryEnum>,
+    /// Message nonce timestamp (nanoseconds since Unix Epoch)
+    #[serde(rename = "nonce")]
+    pub nonce: String,
+    /// Account address that produced the authorizing signature
+    #[serde(rename = "sender")]
+    pub sender: String,
+    /// Message signedAt current timestamp (seconds since Unix Epoch)
+    #[serde(rename = "signedAt")]
+    pub signed_at: i64,
+    /// Address of signer to allowed for delegated signing
+    #[serde(rename = "signer")]
+    pub signer: String,
+    /// Bytes32 encoded subaccount name (0x prefix, zero padded)
+    #[serde(rename = "subaccount")]
+    pub subaccount: String,
+    /// Id representing the registered subaccount
+    #[serde(rename = "subaccountId")]
+    pub subaccount_id: uuid::Uuid,
 }
 
 impl LinkSignerDtoData {
     pub fn new(
-        subaccount_id: uuid::Uuid,
-        sender: String,
-        subaccount: String,
-        signer: String,
         nonce: String,
+        sender: String,
         signed_at: i64,
+        signer: String,
+        subaccount: String,
+        subaccount_id: uuid::Uuid,
     ) -> LinkSignerDtoData {
         LinkSignerDtoData {
-            subaccount_id,
-            sender,
-            subaccount,
-            signer,
-            nonce,
-            signed_at,
-            name: None,
             category: None,
+            name: None,
+            nonce,
+            sender,
+            signed_at,
+            signer,
+            subaccount,
+            subaccount_id,
         }
     }
 }

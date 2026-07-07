@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,6 +13,18 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct WithdrawDto {
+    /// Amount of asset transferred expressed as a decimal
+    #[serde(rename = "amount")]
+    pub amount: String,
+    /// Withdraw creation timestamp (ms since Unix Epoch)
+    #[serde(rename = "createdAt")]
+    pub created_at: i64,
+    /// Block number the withdraw was completed on
+    #[serde(
+        rename = "finalizedBlockNumber",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub finalized_block_number: Option<String>,
     /// Id representing the withdraw
     #[serde(rename = "id")]
     pub id: uuid::Uuid,
@@ -22,21 +34,6 @@ pub struct WithdrawDto {
         skip_serializing_if = "Option::is_none"
     )]
     pub initiated_block_number: Option<String>,
-    /// Block number the withdraw was completed on
-    #[serde(
-        rename = "finalizedBlockNumber",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub finalized_block_number: Option<String>,
-    /// Current status of the withdraw
-    #[serde(rename = "status")]
-    pub status: models::TransferStatus,
-    /// Bytes32 encoded subaccount name (0x prefix, zero padded)
-    #[serde(rename = "subaccount")]
-    pub subaccount: String,
-    /// Address of asset to withdraw (non-checksummed)
-    #[serde(rename = "token")]
-    pub token: String,
     /// LayerZero destination address (leading 0x bytes32 encoded) for the transfer (if withdraw)
     #[serde(
         rename = "lzDestinationAddress",
@@ -46,12 +43,15 @@ pub struct WithdrawDto {
     /// LayerZero destination endpoint ID for the transfer (if withdraw)
     #[serde(rename = "lzDestinationEid", skip_serializing_if = "Option::is_none")]
     pub lz_destination_eid: Option<i64>,
-    /// Amount of asset transferred expressed as a decimal
-    #[serde(rename = "amount")]
-    pub amount: String,
-    /// Withdraw creation timestamp (ms since Unix Epoch)
-    #[serde(rename = "createdAt")]
-    pub created_at: i64,
+    /// Current status of the withdraw
+    #[serde(rename = "status")]
+    pub status: models::TransferStatus,
+    /// Bytes32 encoded subaccount name (0x prefix, zero padded)
+    #[serde(rename = "subaccount")]
+    pub subaccount: String,
+    /// Address of asset to withdraw (non-checksummed)
+    #[serde(rename = "token")]
+    pub token: String,
     /// Bytes32 hash of the withdraw data (with 0x prefix)
     #[serde(rename = "withdrawDigest")]
     pub withdraw_digest: String,
@@ -59,25 +59,25 @@ pub struct WithdrawDto {
 
 impl WithdrawDto {
     pub fn new(
+        amount: String,
+        created_at: i64,
         id: uuid::Uuid,
         status: models::TransferStatus,
         subaccount: String,
         token: String,
-        amount: String,
-        created_at: i64,
         withdraw_digest: String,
     ) -> WithdrawDto {
         WithdrawDto {
+            amount,
+            created_at,
+            finalized_block_number: None,
             id,
             initiated_block_number: None,
-            finalized_block_number: None,
+            lz_destination_address: None,
+            lz_destination_eid: None,
             status,
             subaccount,
             token,
-            lz_destination_address: None,
-            lz_destination_eid: None,
-            amount,
-            created_at,
             withdraw_digest,
         }
     }

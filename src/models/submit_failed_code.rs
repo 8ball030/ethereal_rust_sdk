@@ -11,10 +11,10 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// SubmitOrderFailedResultCode : Code indicating the reason for failure
-/// Code indicating the reason for failure
+/// SubmitFailedCode : Result codes for orders that failed to be created (outright failure)
+/// Result codes for orders that failed to be created (outright failure)
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum SubmitOrderFailedResultCode {
+pub enum SubmitFailedCode {
     #[serde(rename = "AccountSuspended")]
     AccountSuspended,
     #[serde(rename = "DuplicateClientOrderId")]
@@ -23,30 +23,20 @@ pub enum SubmitOrderFailedResultCode {
     ExchangeSuspended,
     #[serde(rename = "InsufficientBalance")]
     InsufficientBalance,
-    #[serde(rename = "InvalidBinaryData")]
-    InvalidBinaryData,
     #[serde(rename = "InvalidExpireTime")]
     InvalidExpireTime,
     #[serde(rename = "InvalidGroupContingencyType")]
     InvalidGroupContingencyType,
-    #[serde(rename = "InvalidNonceForSigner")]
-    InvalidNonceForSigner,
+    #[serde(rename = "InvalidQuantity")]
+    InvalidQuantity,
     #[serde(rename = "InvalidSigner")]
     InvalidSigner,
-    #[serde(rename = "InvalidSignerAddress")]
-    InvalidSignerAddress,
-    #[serde(rename = "InvalidTimeInForce")]
-    InvalidTimeInForce,
     #[serde(rename = "LiquidationError")]
     LiquidationError,
     #[serde(rename = "MarginAccountBalanceZero")]
     MarginAccountBalanceZero,
     #[serde(rename = "NonceAlreadyUsed")]
     NonceAlreadyUsed,
-    #[serde(rename = "PriceAboveMaximum")]
-    PriceAboveMaximum,
-    #[serde(rename = "PriceBelowMinimum")]
-    PriceBelowMinimum,
     #[serde(rename = "RiskLimitExceeded")]
     RiskLimitExceeded,
     #[serde(rename = "TooManyOpenOrders")]
@@ -59,51 +49,43 @@ pub enum SubmitOrderFailedResultCode {
     InsuranceFundCannotOpenPositions,
     #[serde(rename = "InstrumentOpenValueCapExceeded")]
     InstrumentOpenValueCapExceeded,
-    #[serde(rename = "QuantityAboveMaximum")]
-    QuantityAboveMaximum,
-    #[serde(rename = "QuantityNotMultipleOfLotSize")]
-    QuantityNotMultipleOfLotSize,
-    #[serde(rename = "OrderWithZeroQuantity")]
-    OrderWithZeroQuantity,
     #[serde(rename = "OcoLatencyFloorMismatch")]
     OcoLatencyFloorMismatch,
+    #[serde(rename = "OrderWithZeroQuantity")]
+    OrderWithZeroQuantity,
+    #[serde(rename = "Unknown")]
+    Unknown,
 }
 
-impl std::fmt::Display for SubmitOrderFailedResultCode {
+impl std::fmt::Display for SubmitFailedCode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::AccountSuspended => write!(f, "AccountSuspended"),
             Self::DuplicateClientOrderId => write!(f, "DuplicateClientOrderId"),
             Self::ExchangeSuspended => write!(f, "ExchangeSuspended"),
             Self::InsufficientBalance => write!(f, "InsufficientBalance"),
-            Self::InvalidBinaryData => write!(f, "InvalidBinaryData"),
             Self::InvalidExpireTime => write!(f, "InvalidExpireTime"),
             Self::InvalidGroupContingencyType => write!(f, "InvalidGroupContingencyType"),
-            Self::InvalidNonceForSigner => write!(f, "InvalidNonceForSigner"),
+            Self::InvalidQuantity => write!(f, "InvalidQuantity"),
             Self::InvalidSigner => write!(f, "InvalidSigner"),
-            Self::InvalidSignerAddress => write!(f, "InvalidSignerAddress"),
-            Self::InvalidTimeInForce => write!(f, "InvalidTimeInForce"),
             Self::LiquidationError => write!(f, "LiquidationError"),
             Self::MarginAccountBalanceZero => write!(f, "MarginAccountBalanceZero"),
             Self::NonceAlreadyUsed => write!(f, "NonceAlreadyUsed"),
-            Self::PriceAboveMaximum => write!(f, "PriceAboveMaximum"),
-            Self::PriceBelowMinimum => write!(f, "PriceBelowMinimum"),
             Self::RiskLimitExceeded => write!(f, "RiskLimitExceeded"),
             Self::TooManyOpenOrders => write!(f, "TooManyOpenOrders"),
             Self::TooManyPositions => write!(f, "TooManyPositions"),
             Self::TooManyStopOrders => write!(f, "TooManyStopOrders"),
             Self::InsuranceFundCannotOpenPositions => write!(f, "InsuranceFundCannotOpenPositions"),
             Self::InstrumentOpenValueCapExceeded => write!(f, "InstrumentOpenValueCapExceeded"),
-            Self::QuantityAboveMaximum => write!(f, "QuantityAboveMaximum"),
-            Self::QuantityNotMultipleOfLotSize => write!(f, "QuantityNotMultipleOfLotSize"),
-            Self::OrderWithZeroQuantity => write!(f, "OrderWithZeroQuantity"),
             Self::OcoLatencyFloorMismatch => write!(f, "OcoLatencyFloorMismatch"),
+            Self::OrderWithZeroQuantity => write!(f, "OrderWithZeroQuantity"),
+            Self::Unknown => write!(f, "Unknown"),
         }
     }
 }
 
-impl Default for SubmitOrderFailedResultCode {
-    fn default() -> SubmitOrderFailedResultCode {
+impl Default for SubmitFailedCode {
+    fn default() -> SubmitFailedCode {
         Self::AccountSuspended
     }
 }

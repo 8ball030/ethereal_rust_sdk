@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,31 +13,31 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CancelOrderDtoData {
+    /// Client order IDs to cancel (UUIDs or alphanumeric up to 32 chars)
+    #[serde(rename = "clientOrderIds", skip_serializing_if = "Option::is_none")]
+    pub client_order_ids: Option<Vec<String>>,
+    /// Unique nonce for this request (nanoseconds since Unix epoch)
+    #[serde(rename = "nonce")]
+    pub nonce: String,
+    /// Order IDs to cancel (UUIDs)
+    #[serde(rename = "orderIds", skip_serializing_if = "Option::is_none")]
+    pub order_ids: Option<Vec<uuid::Uuid>>,
+    /// Address that signed this message
+    #[serde(rename = "sender")]
+    pub sender: String,
     /// Bytes32 encoded subaccount name (0x prefix, zero padded)
     #[serde(rename = "subaccount")]
     pub subaccount: String,
-    /// Account address that produced the authorizing signature
-    #[serde(rename = "sender")]
-    pub sender: String,
-    /// Message nonce timestamp (nanoseconds since Unix Epoch)
-    #[serde(rename = "nonce")]
-    pub nonce: String,
-    /// Ids of the orders to be canceled (clientOrderIds combined length cannot exceed maximum)
-    #[serde(rename = "orderIds", skip_serializing_if = "Option::is_none")]
-    pub order_ids: Option<Vec<uuid::Uuid>>,
-    /// Client-generated order ids to be canceled (orderIds combined length cannot exceed maximum)
-    #[serde(rename = "clientOrderIds", skip_serializing_if = "Option::is_none")]
-    pub client_order_ids: Option<Vec<String>>,
 }
 
 impl CancelOrderDtoData {
-    pub fn new(subaccount: String, sender: String, nonce: String) -> CancelOrderDtoData {
+    pub fn new(nonce: String, sender: String, subaccount: String) -> CancelOrderDtoData {
         CancelOrderDtoData {
-            subaccount,
-            sender,
+            client_order_ids: None,
             nonce,
             order_ids: None,
-            client_order_ids: None,
+            sender,
+            subaccount,
         }
     }
 }

@@ -17,7 +17,7 @@ use serde::{Deserialize, Serialize};
 #[serde(untagged)]
 pub enum BadRequestDtoMessage {
     String(String),
-    Array(Vec<String>),
+    ArrayVecString(Vec<String>),
 }
 
 impl Default for BadRequestDtoMessage {

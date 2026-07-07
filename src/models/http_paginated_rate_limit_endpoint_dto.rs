@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,39 +13,39 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct HttpPaginatedRateLimitEndpointDto {
+    /// Base points consumed per request
+    #[serde(rename = "basePoints")]
+    pub base_points: f64,
     #[serde(rename = "method")]
     pub method: models::MethodEnum,
     /// API endpoint path
     #[serde(rename = "path")]
     pub path: String,
+    /// Points consumed per row in paginated response
+    #[serde(rename = "pointsPerRow")]
+    pub points_per_row: f64,
     #[serde(rename = "protocol")]
     pub protocol: models::ProtocolEnum,
     #[serde(rename = "type")]
     pub r#type: models::HttpPaginatedRateLimitEndpointDtoOrderType,
-    /// Base points consumed per request
-    #[serde(rename = "basePoints")]
-    pub base_points: f64,
-    /// Points consumed per row in paginated response
-    #[serde(rename = "pointsPerRow")]
-    pub points_per_row: f64,
 }
 
 impl HttpPaginatedRateLimitEndpointDto {
     pub fn new(
+        base_points: f64,
         method: models::MethodEnum,
         path: String,
+        points_per_row: f64,
         protocol: models::ProtocolEnum,
         r#type: models::HttpPaginatedRateLimitEndpointDtoOrderType,
-        base_points: f64,
-        points_per_row: f64,
     ) -> HttpPaginatedRateLimitEndpointDto {
         HttpPaginatedRateLimitEndpointDto {
+            base_points,
             method,
             path,
+            points_per_row,
             protocol,
             r#type,
-            base_points,
-            points_per_row,
         }
     }
 }

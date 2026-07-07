@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,6 +13,9 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct WsFixedRateLimitEndpointDto {
+    /// Fixed points consumed per request
+    #[serde(rename = "fixedPoints")]
+    pub fixed_points: f64,
     /// WebSocket namespace
     #[serde(rename = "namespace")]
     pub namespace: String,
@@ -20,23 +23,20 @@ pub struct WsFixedRateLimitEndpointDto {
     pub protocol: models::WsFixedRateLimitEndpointDtoProtocolEnum,
     #[serde(rename = "type")]
     pub r#type: models::WsFixedRateLimitEndpointDtoOrderType,
-    /// Fixed points consumed per request
-    #[serde(rename = "fixedPoints")]
-    pub fixed_points: f64,
 }
 
 impl WsFixedRateLimitEndpointDto {
     pub fn new(
+        fixed_points: f64,
         namespace: String,
         protocol: models::WsFixedRateLimitEndpointDtoProtocolEnum,
         r#type: models::WsFixedRateLimitEndpointDtoOrderType,
-        fixed_points: f64,
     ) -> WsFixedRateLimitEndpointDto {
         WsFixedRateLimitEndpointDto {
+            fixed_points,
             namespace,
             protocol,
             r#type,
-            fixed_points,
         }
     }
 }

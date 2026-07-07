@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -11,24 +11,26 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
+/// CancelOrderResultDto : Individual cancel result for each order
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CancelOrderResultDto {
-    /// Id representing the order
-    #[serde(rename = "id")]
-    pub id: String,
-    /// A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)
+    /// Client order ID (if order was found by clientOrderIds)
     #[serde(rename = "clientOrderId", skip_serializing_if = "Option::is_none")]
     pub client_order_id: Option<String>,
-    /// Code indicating the result of the submission
+    /// Order ID (if order was found by orderIds)
+    #[serde(rename = "id")]
+    pub id: uuid::Uuid,
+    /// Result code for this cancelation
     #[serde(rename = "result")]
     pub result: models::CancelOrderResultCode,
 }
 
 impl CancelOrderResultDto {
-    pub fn new(id: String, result: models::CancelOrderResultCode) -> CancelOrderResultDto {
+    /// Individual cancel result for each order
+    pub fn new(id: uuid::Uuid, result: models::CancelOrderResultCode) -> CancelOrderResultDto {
         CancelOrderResultDto {
-            id,
             client_order_id: None,
+            id,
             result,
         }
     }

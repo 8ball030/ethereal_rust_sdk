@@ -16,8 +16,8 @@ use ethereal_rust_sdk::{
     async_client::client::HttpClient,
     enums::Environment,
     models::{
-        OrderSide, OrderType, SubmitOrderDto, SubmitOrderDtoData, SubmitOrderLimitDtoData,
-        TimeInForce,
+        OrderSide, OrderTimeInForce, OrderType, SubmitOrderData, SubmitOrderDto,
+        SubmitOrderLimitDtoData,
     },
     signable_messages::TradeOrder,
     signing::{to_scaled_e9, Eip712, SigningContext},
@@ -43,7 +43,7 @@ pub fn build_submit_order_dto_for_bench(
     price: Decimal,
     side: OrderSide,
     _type: OrderType,
-    time_in_force: TimeInForce,
+    time_in_force: OrderTimeInForce,
     post_only: bool,
     reduce_only: bool,
     expires_at: Option<i64>,
@@ -84,7 +84,7 @@ pub fn build_submit_order_dto_for_bench(
         }
     );
     let dto = SubmitOrderDto {
-        data: SubmitOrderDtoData::SubmitOrderLimitDtoData(order_dto),
+        data: SubmitOrderData::SubmitOrderLimitDtoData(order_dto),
         signature: "0x".to_string() + &hex::encode(signature.to_vec()),
     };
     Ok(dto)
@@ -114,7 +114,7 @@ fn bench_submit_order_build_and_sign(c: &mut Criterion) {
     let price = dec!(50_000.0);
     let side = OrderSide::BUY;
     let r#type = OrderType::Limit;
-    let time_in_force = TimeInForce::Ioc;
+    let time_in_force = OrderTimeInForce::Ioc;
     let post_only = true;
     let reduce_only = false;
     let expires_at = None;

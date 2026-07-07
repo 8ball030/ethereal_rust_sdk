@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,26 +13,26 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct LinkSignerDto {
+    #[serde(rename = "data")]
+    pub data: models::LinkSignerDtoData,
     /// Hex-encoded EIP-712 signature authorizing this request
     #[serde(rename = "signature")]
     pub signature: String,
     /// Hex-encoded EIP-712 signature authorizing this request
     #[serde(rename = "signerSignature")]
     pub signer_signature: String,
-    #[serde(rename = "data")]
-    pub data: models::LinkSignerDtoData,
 }
 
 impl LinkSignerDto {
     pub fn new(
+        data: models::LinkSignerDtoData,
         signature: String,
         signer_signature: String,
-        data: models::LinkSignerDtoData,
     ) -> LinkSignerDto {
         LinkSignerDto {
+            data,
             signature,
             signer_signature,
-            data,
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,27 +13,27 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ProjectedFundingDto {
-    /// Id representing the registered product
-    #[serde(rename = "productId")]
-    pub product_id: uuid::Uuid,
-    /// Projected funding rate expressed as a decimal (precision: 9)
-    #[serde(rename = "fundingRateProjected1h")]
-    pub funding_rate_projected1h: rust_decimal::Decimal,
     /// Funding rate expressed as a decimal (precision: 9)
     #[serde(rename = "fundingRate1h")]
     pub funding_rate1h: rust_decimal::Decimal,
+    /// Projected funding rate expressed as a decimal (precision: 9)
+    #[serde(rename = "fundingRateProjected1h")]
+    pub funding_rate_projected1h: rust_decimal::Decimal,
+    /// Id representing the registered product
+    #[serde(rename = "productId")]
+    pub product_id: uuid::Uuid,
 }
 
 impl ProjectedFundingDto {
     pub fn new(
-        product_id: uuid::Uuid,
-        funding_rate_projected1h: rust_decimal::Decimal,
         funding_rate1h: rust_decimal::Decimal,
+        funding_rate_projected1h: rust_decimal::Decimal,
+        product_id: uuid::Uuid,
     ) -> ProjectedFundingDto {
         ProjectedFundingDto {
-            product_id,
-            funding_rate_projected1h,
             funding_rate1h,
+            funding_rate_projected1h,
+            product_id,
         }
     }
 }

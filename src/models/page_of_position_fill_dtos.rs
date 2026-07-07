@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,23 +13,23 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PageOfPositionFillDtos {
+    /// Array of position fill objects
+    #[serde(rename = "data")]
+    pub data: Vec<models::PositionFillDto>,
     /// Whether there are more objects to paginate through
     #[serde(rename = "hasNext")]
     pub has_next: bool,
     /// Pointer to the next page in pagination dataset
     #[serde(rename = "nextCursor", skip_serializing_if = "Option::is_none")]
     pub next_cursor: Option<String>,
-    /// Array of position fill objects
-    #[serde(rename = "data")]
-    pub data: Vec<models::PositionFillDto>,
 }
 
 impl PageOfPositionFillDtos {
-    pub fn new(has_next: bool, data: Vec<models::PositionFillDto>) -> PageOfPositionFillDtos {
+    pub fn new(data: Vec<models::PositionFillDto>, has_next: bool) -> PageOfPositionFillDtos {
         PageOfPositionFillDtos {
+            data,
             has_next,
             next_cursor: None,
-            data,
         }
     }
 }

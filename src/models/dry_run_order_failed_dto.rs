@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,42 +13,42 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct DryRunOrderFailedDto {
-    /// Margin required for order in USD expressed as a decimal (precision: 9)
-    #[serde(rename = "marginRequired")]
-    pub margin_required: rust_decimal::Decimal,
-    /// Margin available excluding this order in USD expressed as a decimal (precision: 9)
-    #[serde(rename = "marginAvailable")]
-    pub margin_available: rust_decimal::Decimal,
-    /// Total used margin including this order in USD expressed as a decimal (precision: 9)
-    #[serde(rename = "totalUsedMargin")]
-    pub total_used_margin: rust_decimal::Decimal,
-    /// Risk used including position and open orders in USD expressed as a decimal (precision: 9)
-    #[serde(rename = "riskUsed")]
-    pub risk_used: rust_decimal::Decimal,
-    /// Risk available for the product in USD expressed as a decimal (precision: 9)
-    #[serde(rename = "riskAvailable")]
-    pub risk_available: rust_decimal::Decimal,
     /// Code indicating the reason for failure
     #[serde(rename = "code")]
     pub code: models::SubmitOrderFailedResultCode,
+    /// Margin available excluding this order in USD expressed as a decimal (precision: 9)
+    #[serde(rename = "marginAvailable")]
+    pub margin_available: rust_decimal::Decimal,
+    /// Margin required for order in USD expressed as a decimal (precision: 9)
+    #[serde(rename = "marginRequired")]
+    pub margin_required: rust_decimal::Decimal,
+    /// Risk available for the product in USD expressed as a decimal (precision: 9)
+    #[serde(rename = "riskAvailable")]
+    pub risk_available: rust_decimal::Decimal,
+    /// Risk used including position and open orders in USD expressed as a decimal (precision: 9)
+    #[serde(rename = "riskUsed")]
+    pub risk_used: rust_decimal::Decimal,
+    /// Total used margin including this order in USD expressed as a decimal (precision: 9)
+    #[serde(rename = "totalUsedMargin")]
+    pub total_used_margin: rust_decimal::Decimal,
 }
 
 impl DryRunOrderFailedDto {
     pub fn new(
-        margin_required: rust_decimal::Decimal,
-        margin_available: rust_decimal::Decimal,
-        total_used_margin: rust_decimal::Decimal,
-        risk_used: rust_decimal::Decimal,
-        risk_available: rust_decimal::Decimal,
         code: models::SubmitOrderFailedResultCode,
+        margin_available: rust_decimal::Decimal,
+        margin_required: rust_decimal::Decimal,
+        risk_available: rust_decimal::Decimal,
+        risk_used: rust_decimal::Decimal,
+        total_used_margin: rust_decimal::Decimal,
     ) -> DryRunOrderFailedDto {
         DryRunOrderFailedDto {
-            margin_required,
-            margin_available,
-            total_used_margin,
-            risk_used,
-            risk_available,
             code,
+            margin_available,
+            margin_required,
+            risk_available,
+            risk_used,
+            total_used_margin,
         }
     }
 }

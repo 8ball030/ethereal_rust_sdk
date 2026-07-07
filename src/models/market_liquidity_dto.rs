@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,36 +13,36 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct MarketLiquidityDto {
-    /// Most recent book update, created timestamp if never updated (ms since Unix Epoch)
-    #[serde(rename = "timestamp")]
-    pub timestamp: i64,
+    /// An array of ask tuple pairs (price, quantity) ordered in asc
+    #[serde(rename = "asks")]
+    pub asks: Vec<Vec<String>>,
+    /// An array of bid tuple pairs (price, quantity) ordered in desc
+    #[serde(rename = "bids")]
+    pub bids: Vec<Vec<String>>,
     /// Previous book update, undefined if never updated (ms since Unix Epoch)
     #[serde(rename = "previousTimestamp", skip_serializing_if = "Option::is_none")]
     pub previous_timestamp: Option<i64>,
     /// Id representing the product
     #[serde(rename = "productId")]
     pub product_id: uuid::Uuid,
-    /// An array of ask tuple pairs (price, quantity) ordered in asc
-    #[serde(rename = "asks")]
-    pub asks: Vec<Vec<serde_json::Value>>,
-    /// An array of bid tuple pairs (price, quantity) ordered in desc
-    #[serde(rename = "bids")]
-    pub bids: Vec<Vec<serde_json::Value>>,
+    /// Most recent book update, created timestamp if never updated (ms since Unix Epoch)
+    #[serde(rename = "timestamp")]
+    pub timestamp: i64,
 }
 
 impl MarketLiquidityDto {
     pub fn new(
-        timestamp: i64,
+        asks: Vec<Vec<String>>,
+        bids: Vec<Vec<String>>,
         product_id: uuid::Uuid,
-        asks: Vec<Vec<serde_json::Value>>,
-        bids: Vec<Vec<serde_json::Value>>,
+        timestamp: i64,
     ) -> MarketLiquidityDto {
         MarketLiquidityDto {
-            timestamp,
-            previous_timestamp: None,
-            product_id,
             asks,
             bids,
+            previous_timestamp: None,
+            product_id,
+            timestamp,
         }
     }
 }

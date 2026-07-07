@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,39 +13,39 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PointsSeasonSummaryDto {
-    /// Id representing the summary of points in this season
-    #[serde(rename = "id")]
-    pub id: uuid::Uuid,
     /// Address of the account (non-checksummed)
     #[serde(rename = "address")]
     pub address: String,
-    /// Season number
-    #[serde(rename = "season")]
-    pub season: i64,
-    /// Total points earned (excluding referral points) in this season expressed as a decimal (precision: 9)
-    #[serde(rename = "totalPoints")]
-    pub total_points: rust_decimal::Decimal,
-    /// Total points earned (excluding referral points) before most recent distribution expressed as a decimal (precision: 9)
-    #[serde(rename = "previousTotalPoints")]
-    pub previous_total_points: rust_decimal::Decimal,
-    /// Referral points earned in this season expressed as a decimal (precision: 9)
-    #[serde(rename = "referralPoints")]
-    pub referral_points: rust_decimal::Decimal,
-    /// Referral points earned in this season before most recent distribution expressed as a decimal (precision: 9)
-    #[serde(rename = "previousReferralPoints")]
-    pub previous_referral_points: rust_decimal::Decimal,
-    /// Current rank in this season
-    #[serde(rename = "rank")]
-    pub rank: i64,
-    /// Rank before most recent distribution
-    #[serde(rename = "previousRank")]
-    pub previous_rank: i64,
-    /// Account tier derived based on activity this season
-    #[serde(rename = "tier")]
-    pub tier: models::PointsTier,
     /// Points season summary creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
     pub created_at: i64,
+    /// Id representing the summary of points in this season
+    #[serde(rename = "id")]
+    pub id: uuid::Uuid,
+    /// Rank before most recent distribution
+    #[serde(rename = "previousRank")]
+    pub previous_rank: i64,
+    /// Referral points earned in this season before most recent distribution expressed as a decimal (precision: 9)
+    #[serde(rename = "previousReferralPoints")]
+    pub previous_referral_points: rust_decimal::Decimal,
+    /// Total points earned (excluding referral points) before most recent distribution expressed as a decimal (precision: 9)
+    #[serde(rename = "previousTotalPoints")]
+    pub previous_total_points: rust_decimal::Decimal,
+    /// Current rank in this season
+    #[serde(rename = "rank")]
+    pub rank: i64,
+    /// Referral points earned in this season expressed as a decimal (precision: 9)
+    #[serde(rename = "referralPoints")]
+    pub referral_points: rust_decimal::Decimal,
+    /// Season number
+    #[serde(rename = "season")]
+    pub season: i64,
+    /// Account tier derived based on activity this season
+    #[serde(rename = "tier")]
+    pub tier: models::PointsTier,
+    /// Total points earned (excluding referral points) in this season expressed as a decimal (precision: 9)
+    #[serde(rename = "totalPoints")]
+    pub total_points: rust_decimal::Decimal,
     /// Points season summary last update timestamp (ms since Unix Epoch)
     #[serde(rename = "updatedAt")]
     pub updated_at: i64,
@@ -53,31 +53,31 @@ pub struct PointsSeasonSummaryDto {
 
 impl PointsSeasonSummaryDto {
     pub fn new(
-        id: uuid::Uuid,
         address: String,
-        season: i64,
-        total_points: rust_decimal::Decimal,
-        previous_total_points: rust_decimal::Decimal,
-        referral_points: rust_decimal::Decimal,
-        previous_referral_points: rust_decimal::Decimal,
-        rank: i64,
-        previous_rank: i64,
-        tier: models::PointsTier,
         created_at: i64,
+        id: uuid::Uuid,
+        previous_rank: i64,
+        previous_referral_points: rust_decimal::Decimal,
+        previous_total_points: rust_decimal::Decimal,
+        rank: i64,
+        referral_points: rust_decimal::Decimal,
+        season: i64,
+        tier: models::PointsTier,
+        total_points: rust_decimal::Decimal,
         updated_at: i64,
     ) -> PointsSeasonSummaryDto {
         PointsSeasonSummaryDto {
-            id,
             address,
-            season,
-            total_points,
-            previous_total_points,
-            referral_points,
-            previous_referral_points,
-            rank,
-            previous_rank,
-            tier,
             created_at,
+            id,
+            previous_rank,
+            previous_referral_points,
+            previous_total_points,
+            rank,
+            referral_points,
+            season,
+            tier,
+            total_points,
             updated_at,
         }
     }

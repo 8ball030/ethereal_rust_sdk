@@ -1653,7 +1653,7 @@
           "RATE_LIMIT_ACCOUNT",
           "RATE_LIMIT_WITHDRAW",
           "RATE_LIMIT_LINKED_SIGNER",
-          "MARKET"
+          "LIMIT"
         ],
         "description": "Extracted enum for OrderType"
       }

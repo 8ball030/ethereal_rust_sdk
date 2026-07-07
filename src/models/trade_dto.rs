@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,75 +13,75 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TradeDto {
+    /// Trade creation timestamp (ms since Unix Epoch)
+    #[serde(rename = "createdAt")]
+    pub created_at: i64,
+    /// Quantity filled in native units expressed as a decimal (precision: 9)
+    #[serde(rename = "filled")]
+    pub filled: rust_decimal::Decimal,
     /// Id representing the trade
     #[serde(rename = "id")]
     pub id: uuid::Uuid,
-    /// Id of the taker order
-    #[serde(rename = "takerOrderId")]
-    pub taker_order_id: uuid::Uuid,
-    /// Id of the maker order
-    #[serde(rename = "makerOrderId")]
-    pub maker_order_id: uuid::Uuid,
-    /// Client-generated order id of the taker order
-    #[serde(rename = "takerClientOrderId", skip_serializing_if = "Option::is_none")]
-    pub taker_client_order_id: Option<String>,
     /// Client-generated order id of the maker order
     #[serde(rename = "makerClientOrderId", skip_serializing_if = "Option::is_none")]
     pub maker_client_order_id: Option<String>,
     /// Maker fee in USD expressed as a decimal (precision: 9)
     #[serde(rename = "makerFeeUsd")]
     pub maker_fee_usd: rust_decimal::Decimal,
-    /// Taker fee in USD expressed as a decimal (precision: 9)
-    #[serde(rename = "takerFeeUsd")]
-    pub taker_fee_usd: rust_decimal::Decimal,
-    /// Price expressed as a decimal (precision: 9)
-    #[serde(rename = "price")]
-    pub price: rust_decimal::Decimal,
-    /// Quantity filled in native units expressed as a decimal (precision: 9)
-    #[serde(rename = "filled")]
-    pub filled: rust_decimal::Decimal,
+    /// Id of the maker order
+    #[serde(rename = "makerOrderId")]
+    pub maker_order_id: uuid::Uuid,
     /// Maker side as either BUY (0) or SELL (1)
     #[serde(rename = "makerSide")]
     pub maker_side: models::OrderSide,
-    /// Taker side as either BUY (0) or SELL (1)
-    #[serde(rename = "takerSide")]
-    pub taker_side: models::OrderSide,
+    /// Price expressed as a decimal (precision: 9)
+    #[serde(rename = "price")]
+    pub price: rust_decimal::Decimal,
     /// Id of product the trade was made against
     #[serde(rename = "productId")]
     pub product_id: uuid::Uuid,
-    /// Trade creation timestamp (ms since Unix Epoch)
-    #[serde(rename = "createdAt")]
-    pub created_at: i64,
+    /// Client-generated order id of the taker order
+    #[serde(rename = "takerClientOrderId", skip_serializing_if = "Option::is_none")]
+    pub taker_client_order_id: Option<String>,
+    /// Taker fee in USD expressed as a decimal (precision: 9)
+    #[serde(rename = "takerFeeUsd")]
+    pub taker_fee_usd: rust_decimal::Decimal,
+    /// Id of the taker order
+    #[serde(rename = "takerOrderId")]
+    pub taker_order_id: uuid::Uuid,
+    /// Taker side as either BUY (0) or SELL (1)
+    #[serde(rename = "takerSide")]
+    pub taker_side: models::OrderSide,
 }
 
 impl TradeDto {
     pub fn new(
-        id: uuid::Uuid,
-        taker_order_id: uuid::Uuid,
-        maker_order_id: uuid::Uuid,
-        maker_fee_usd: rust_decimal::Decimal,
-        taker_fee_usd: rust_decimal::Decimal,
-        price: rust_decimal::Decimal,
-        filled: rust_decimal::Decimal,
-        maker_side: models::OrderSide,
-        taker_side: models::OrderSide,
-        product_id: uuid::Uuid,
         created_at: i64,
+        filled: rust_decimal::Decimal,
+        id: uuid::Uuid,
+        maker_fee_usd: rust_decimal::Decimal,
+        maker_order_id: uuid::Uuid,
+        maker_side: models::OrderSide,
+        price: rust_decimal::Decimal,
+        product_id: uuid::Uuid,
+        taker_fee_usd: rust_decimal::Decimal,
+        taker_order_id: uuid::Uuid,
+        taker_side: models::OrderSide,
     ) -> TradeDto {
         TradeDto {
+            created_at,
+            filled,
             id,
-            taker_order_id,
-            maker_order_id,
-            taker_client_order_id: None,
             maker_client_order_id: None,
             maker_fee_usd,
-            taker_fee_usd,
-            price,
-            filled,
+            maker_order_id,
             maker_side,
-            taker_side,
+            price,
             product_id,
-            created_at,
+            taker_client_order_id: None,
+            taker_fee_usd,
+            taker_order_id,
+            taker_side,
         }
     }
 }

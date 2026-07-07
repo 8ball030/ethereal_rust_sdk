@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,31 +13,31 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct MarketPriceDto {
-    /// Id representing the registered product
-    #[serde(rename = "productId")]
-    pub product_id: uuid::Uuid,
-    /// Best bid price in USD expressed as a decimal (precision: 9)
-    #[serde(rename = "bestBidPrice", skip_serializing_if = "Option::is_none")]
-    pub best_bid_price: Option<rust_decimal::Decimal>,
     /// Best ask price in USD expressed as a decimal (precision: 9)
     #[serde(rename = "bestAskPrice", skip_serializing_if = "Option::is_none")]
     pub best_ask_price: Option<rust_decimal::Decimal>,
+    /// Best bid price in USD expressed as a decimal (precision: 9)
+    #[serde(rename = "bestBidPrice", skip_serializing_if = "Option::is_none")]
+    pub best_bid_price: Option<rust_decimal::Decimal>,
     /// Oracle price in USD expressed as a decimal (precision: 9)
     #[serde(rename = "oraclePrice", skip_serializing_if = "Option::is_none")]
     pub oracle_price: Option<rust_decimal::Decimal>,
     /// Price of product 24hrs ago in USD expressed as a decimal (precision: 9)
     #[serde(rename = "price24hAgo", skip_serializing_if = "Option::is_none")]
     pub price24h_ago: Option<rust_decimal::Decimal>,
+    /// Id representing the registered product
+    #[serde(rename = "productId")]
+    pub product_id: uuid::Uuid,
 }
 
 impl MarketPriceDto {
     pub fn new(product_id: uuid::Uuid) -> MarketPriceDto {
         MarketPriceDto {
-            product_id,
-            best_bid_price: None,
             best_ask_price: None,
+            best_bid_price: None,
             oracle_price: None,
             price24h_ago: None,
+            product_id,
         }
     }
 }

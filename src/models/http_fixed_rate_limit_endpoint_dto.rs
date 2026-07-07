@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,6 +13,9 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct HttpFixedRateLimitEndpointDto {
+    /// Fixed points consumed per request
+    #[serde(rename = "fixedPoints")]
+    pub fixed_points: f64,
     #[serde(rename = "method")]
     pub method: models::MethodEnum,
     /// API endpoint path
@@ -21,26 +24,23 @@ pub struct HttpFixedRateLimitEndpointDto {
     #[serde(rename = "protocol")]
     pub protocol: models::ProtocolEnum,
     #[serde(rename = "type")]
-    pub r#type: models::HttpFixedRateLimitEndpointDtoOrderType,
-    /// Fixed points consumed per request
-    #[serde(rename = "fixedPoints")]
-    pub fixed_points: f64,
+    pub r#type: models::OrderType,
 }
 
 impl HttpFixedRateLimitEndpointDto {
     pub fn new(
+        fixed_points: f64,
         method: models::MethodEnum,
         path: String,
         protocol: models::ProtocolEnum,
-        r#type: models::HttpFixedRateLimitEndpointDtoOrderType,
-        fixed_points: f64,
+        r#type: models::OrderType,
     ) -> HttpFixedRateLimitEndpointDto {
         HttpFixedRateLimitEndpointDto {
+            fixed_points,
             method,
             path,
             protocol,
             r#type,
-            fixed_points,
         }
     }
 }

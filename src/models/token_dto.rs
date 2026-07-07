@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,83 +13,83 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TokenDto {
-    /// Id representing the token
-    #[serde(rename = "id")]
-    pub id: uuid::Uuid,
+    /// Block number when the token was added
+    #[serde(rename = "addedBlockNumber")]
+    pub added_block_number: String,
     /// Address of the token (non-checksummed; zero address if virtual)
     #[serde(rename = "address")]
     pub address: String,
-    /// LayerZero OFT address of the token (non-checksummed; if has LZ OFT or adapter, zero address if not)
-    #[serde(rename = "lzOftAddress")]
-    pub lz_oft_address: String,
-    /// The unique exchange defined token name driven by addToken onchain
-    #[serde(rename = "name")]
-    pub name: String,
+    /// Token creation timestamp (ms since Unix Epoch)
+    #[serde(rename = "createdAt")]
+    pub created_at: i64,
+    /// Whether the token is enabled for deposit
+    #[serde(rename = "depositEnabled")]
+    pub deposit_enabled: bool,
+    /// Amount of native units charged on deposit expressed as a decimal (precision: 9)
+    #[serde(rename = "depositFee")]
+    pub deposit_fee: rust_decimal::Decimal,
+    /// ERC20 token decimals (available if not virtual)
+    #[serde(rename = "erc20Decimals", skip_serializing_if = "Option::is_none")]
+    pub erc20_decimals: Option<f64>,
     /// ERC20 token name (available if not virtual)
     #[serde(rename = "erc20Name", skip_serializing_if = "Option::is_none")]
     pub erc20_name: Option<String>,
     /// ERC20 token symbol (available if not virtual)
     #[serde(rename = "erc20Symbol", skip_serializing_if = "Option::is_none")]
     pub erc20_symbol: Option<String>,
-    /// ERC20 token decimals (available if not virtual)
-    #[serde(rename = "erc20Decimals", skip_serializing_if = "Option::is_none")]
-    pub erc20_decimals: Option<f64>,
-    /// Whether the token is enabled for deposit
-    #[serde(rename = "depositEnabled")]
-    pub deposit_enabled: bool,
-    /// Whether the token is enabled for withdraw
-    #[serde(rename = "withdrawEnabled")]
-    pub withdraw_enabled: bool,
-    /// Amount of native units charged on deposit expressed as a decimal (precision: 9)
-    #[serde(rename = "depositFee")]
-    pub deposit_fee: rust_decimal::Decimal,
-    /// Amount of native units charged on withdraw expressed as a decimal (precision: 9)
-    #[serde(rename = "withdrawFee")]
-    pub withdraw_fee: rust_decimal::Decimal,
+    /// Id representing the token
+    #[serde(rename = "id")]
+    pub id: uuid::Uuid,
+    /// LayerZero OFT address of the token (non-checksummed; if has LZ OFT or adapter, zero address if not)
+    #[serde(rename = "lzOftAddress")]
+    pub lz_oft_address: String,
     /// Min deposit amount as native units expressed as a decimal (precision: 9)
     #[serde(rename = "minDeposit")]
     pub min_deposit: rust_decimal::Decimal,
-    /// Block number when the token was added
-    #[serde(rename = "addedBlockNumber")]
-    pub added_block_number: String,
+    /// The unique exchange defined token name driven by addToken onchain
+    #[serde(rename = "name")]
+    pub name: String,
     /// Block number when the token was removed (undefined if not removed)
     #[serde(rename = "removedBlockNumber", skip_serializing_if = "Option::is_none")]
     pub removed_block_number: Option<String>,
-    /// Token creation timestamp (ms since Unix Epoch)
-    #[serde(rename = "createdAt")]
-    pub created_at: i64,
+    /// Whether the token is enabled for withdraw
+    #[serde(rename = "withdrawEnabled")]
+    pub withdraw_enabled: bool,
+    /// Amount of native units charged on withdraw expressed as a decimal (precision: 9)
+    #[serde(rename = "withdrawFee")]
+    pub withdraw_fee: rust_decimal::Decimal,
 }
 
 impl TokenDto {
     pub fn new(
-        id: uuid::Uuid,
-        address: String,
-        lz_oft_address: String,
-        name: String,
-        deposit_enabled: bool,
-        withdraw_enabled: bool,
-        deposit_fee: rust_decimal::Decimal,
-        withdraw_fee: rust_decimal::Decimal,
-        min_deposit: rust_decimal::Decimal,
         added_block_number: String,
+        address: String,
         created_at: i64,
+        deposit_enabled: bool,
+        deposit_fee: rust_decimal::Decimal,
+        id: uuid::Uuid,
+        lz_oft_address: String,
+        min_deposit: rust_decimal::Decimal,
+        name: String,
+        withdraw_enabled: bool,
+        withdraw_fee: rust_decimal::Decimal,
     ) -> TokenDto {
         TokenDto {
-            id,
+            added_block_number,
             address,
-            lz_oft_address,
-            name,
+            created_at,
+            deposit_enabled,
+            deposit_fee,
+            erc20_decimals: None,
             erc20_name: None,
             erc20_symbol: None,
-            erc20_decimals: None,
-            deposit_enabled,
-            withdraw_enabled,
-            deposit_fee,
-            withdraw_fee,
+            id,
+            lz_oft_address,
             min_deposit,
-            added_block_number,
+            name,
             removed_block_number: None,
-            created_at,
+            withdraw_enabled,
+            withdraw_fee,
         }
     }
 }

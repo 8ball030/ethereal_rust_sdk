@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,60 +13,60 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PositionLiquidationDto {
-    /// Id representing the position liquidation
-    #[serde(rename = "id")]
-    pub id: uuid::Uuid,
-    /// Id representing the subaccount that was liquidated
-    #[serde(rename = "subaccountId")]
-    pub subaccount_id: uuid::Uuid,
-    /// Id representing the product that was liquidated
-    #[serde(rename = "productId")]
-    pub product_id: uuid::Uuid,
-    /// Id representing the position that was liquidated
-    #[serde(rename = "positionId")]
-    pub position_id: uuid::Uuid,
-    /// Liquidation mark price in USD expressed as a decimal (precision: 9)
-    #[serde(rename = "liquidationPrice")]
-    pub liquidation_price: rust_decimal::Decimal,
     #[serde(rename = "cause")]
     pub cause: models::CauseEnum,
     /// Position cost at the time of liquidation in USD expressed as a decimal (precision: 9)
     #[serde(rename = "cost")]
     pub cost: rust_decimal::Decimal,
-    /// Funding charged in USD expressed as a decimal (precision: 9), undefined if not liquidated due to funding
-    #[serde(rename = "fundingChargeUsd", skip_serializing_if = "Option::is_none")]
-    pub funding_charge_usd: Option<rust_decimal::Decimal>,
-    /// Position side as either BUY (0) or SELL (1)
-    #[serde(rename = "positionSide")]
-    pub position_side: models::OrderSide,
     /// Position liquidation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
     pub created_at: i64,
+    /// Funding charged in USD expressed as a decimal (precision: 9), undefined if not liquidated due to funding
+    #[serde(rename = "fundingChargeUsd", skip_serializing_if = "Option::is_none")]
+    pub funding_charge_usd: Option<rust_decimal::Decimal>,
+    /// Id representing the position liquidation
+    #[serde(rename = "id")]
+    pub id: uuid::Uuid,
+    /// Liquidation mark price in USD expressed as a decimal (precision: 9)
+    #[serde(rename = "liquidationPrice")]
+    pub liquidation_price: rust_decimal::Decimal,
+    /// Id representing the position that was liquidated
+    #[serde(rename = "positionId")]
+    pub position_id: uuid::Uuid,
+    /// Position side as either BUY (0) or SELL (1)
+    #[serde(rename = "positionSide")]
+    pub position_side: models::OrderSide,
+    /// Id representing the product that was liquidated
+    #[serde(rename = "productId")]
+    pub product_id: uuid::Uuid,
+    /// Id representing the subaccount that was liquidated
+    #[serde(rename = "subaccountId")]
+    pub subaccount_id: uuid::Uuid,
 }
 
 impl PositionLiquidationDto {
     pub fn new(
-        id: uuid::Uuid,
-        subaccount_id: uuid::Uuid,
-        product_id: uuid::Uuid,
-        position_id: uuid::Uuid,
-        liquidation_price: rust_decimal::Decimal,
         cause: models::CauseEnum,
         cost: rust_decimal::Decimal,
-        position_side: models::OrderSide,
         created_at: i64,
+        id: uuid::Uuid,
+        liquidation_price: rust_decimal::Decimal,
+        position_id: uuid::Uuid,
+        position_side: models::OrderSide,
+        product_id: uuid::Uuid,
+        subaccount_id: uuid::Uuid,
     ) -> PositionLiquidationDto {
         PositionLiquidationDto {
-            id,
-            subaccount_id,
-            product_id,
-            position_id,
-            liquidation_price,
             cause,
             cost,
-            funding_charge_usd: None,
-            position_side,
             created_at,
+            funding_charge_usd: None,
+            id,
+            liquidation_price,
+            position_id,
+            position_side,
+            product_id,
+            subaccount_id,
         }
     }
 }

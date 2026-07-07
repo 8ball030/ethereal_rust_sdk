@@ -11,15 +11,15 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct ListOfMarketPriceDtos {
-    /// Array of market price objects
-    #[serde(rename = "data")]
-    pub data: Vec<models::MarketPriceDto>,
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum SubmitOrderData {
+    SubmitOrderMarketDtoData(models::SubmitOrderMarketDtoData),
+    SubmitOrderLimitDtoData(models::SubmitOrderLimitDtoData),
 }
 
-impl ListOfMarketPriceDtos {
-    pub fn new(data: Vec<models::MarketPriceDto>) -> ListOfMarketPriceDtos {
-        ListOfMarketPriceDtos { data }
+impl Default for SubmitOrderData {
+    fn default() -> Self {
+        Self::SubmitOrderMarketDtoData(Default::default())
     }
 }

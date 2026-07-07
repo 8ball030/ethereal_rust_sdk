@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,105 +13,106 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SubmitOrderLimitDtoData {
-    /// Bytes32 encoded subaccount name (0x prefix, zero padded)
-    #[serde(rename = "subaccount")]
-    pub subaccount: String,
-    /// Account address that produced the authorizing signature
-    #[serde(rename = "sender")]
-    pub sender: String,
-    /// Message nonce timestamp (nanoseconds since Unix Epoch)
-    #[serde(rename = "nonce")]
-    pub nonce: String,
-    #[serde(rename = "type")]
-    pub r#type: models::OrderType,
-    /// Non-directional quantity of product in native units expressed as a decimal (precision: 9)
-    #[serde(rename = "quantity")]
-    pub quantity: rust_decimal::Decimal,
-    /// Side as either BUY (0) or SELL (1)
-    #[serde(rename = "side")]
-    pub side: models::OrderSide,
-    /// Onchain generated productId from prior product registration
-    #[serde(rename = "onchainId")]
-    pub onchain_id: i64,
-    /// Product engine type e.g. PERP (0)
-    #[serde(rename = "engineType")]
-    pub engine_type: models::EngineType,
     /// A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)
     #[serde(rename = "clientOrderId", skip_serializing_if = "Option::is_none")]
     pub client_order_id: Option<String>,
-    /// Whether this should be a reduce-only order, required for close
-    #[serde(rename = "reduceOnly", skip_serializing_if = "Option::is_none")]
-    pub reduce_only: Option<bool>,
     /// Order closes the entire current position, requires zero quantity and reduceOnly
     #[serde(rename = "close", skip_serializing_if = "Option::is_none")]
     pub close: Option<bool>,
-    /// Stop price expressed as a decimal (precision: 9), requires stopType
-    #[serde(rename = "stopPrice", skip_serializing_if = "Option::is_none")]
-    pub stop_price: Option<rust_decimal::Decimal>,
-    /// Stop type, either 0 (take-profit) or 1 (stop-loss), requires non-zero stopPrice
-    #[serde(rename = "stopType", skip_serializing_if = "Option::is_none")]
-    pub stop_type: Option<models::StopType>,
-    /// Message signedAt current timestamp (seconds since Unix Epoch)
-    #[serde(rename = "signedAt")]
-    pub signed_at: i64,
+    /// Product engine type e.g. PERP (0)
+    #[serde(rename = "engineType")]
+    pub engine_type: models::EngineType,
     /// Order expiry timestamp (seconds since Unix Epoch), defaults to the maximum allowed value: signedAt + 6652800
     #[serde(rename = "expiresAt", skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<i64>,
-    /// Group Id (UUID) for linking orders together in OCO/OTO relationships
-    #[serde(rename = "groupId", skip_serializing_if = "Option::is_none")]
-    pub group_id: Option<uuid::Uuid>,
     /// Contingency type for order groups: OTO (Order-Triggers-Order) or OCO (One-Cancels-Other)
     #[serde(
         rename = "groupContingencyType",
         skip_serializing_if = "Option::is_none"
     )]
     pub group_contingency_type: Option<models::GroupContingencyType>,
-    /// Limit price expressed as a decimal (precision: 9)
-    #[serde(rename = "price")]
-    pub price: rust_decimal::Decimal,
-    #[serde(rename = "timeInForce")]
-    pub time_in_force: models::TimeInForce,
+    /// Group Id (UUID) for linking orders together in OCO/OTO relationships
+    #[serde(rename = "groupId", skip_serializing_if = "Option::is_none")]
+    pub group_id: Option<uuid::Uuid>,
+    /// Message nonce timestamp (nanoseconds since Unix Epoch)
+    #[serde(rename = "nonce")]
+    pub nonce: String,
+    /// Onchain product ID, available from the products endpoint
+    #[serde(rename = "onchainId")]
+    pub onchain_id: i64,
     /// Only add order if it does not immediately fill
     #[serde(rename = "postOnly")]
     pub post_only: bool,
+    /// Limit price expressed as a decimal (precision: 9)
+    #[serde(rename = "price")]
+    pub price: rust_decimal::Decimal,
+    /// Non-directional quantity of product in native units expressed as a decimal (precision: 9)
+    #[serde(rename = "quantity")]
+    pub quantity: rust_decimal::Decimal,
+    /// Whether this should be a reduce-only order. Must be true when close is true
+    #[serde(rename = "reduceOnly", skip_serializing_if = "Option::is_none")]
+    pub reduce_only: Option<bool>,
+    /// Account address that produced the authorizing signature
+    #[serde(rename = "sender")]
+    pub sender: String,
+    /// Side as either BUY (0) or SELL (1)
+    #[serde(rename = "side")]
+    pub side: models::OrderSide,
+    /// Message signedAt current timestamp (seconds since Unix Epoch)
+    #[serde(rename = "signedAt")]
+    pub signed_at: i32,
+    /// Stop price expressed as a decimal (precision: 9), requires stopType
+    #[serde(rename = "stopPrice", skip_serializing_if = "Option::is_none")]
+    pub stop_price: Option<rust_decimal::Decimal>,
+    /// Stop type, either 0 (take-profit) or 1 (stop-loss), requires non-zero stopPrice
+    #[serde(rename = "stopType", skip_serializing_if = "Option::is_none")]
+    pub stop_type: Option<models::StopType>,
+    /// Bytes32 encoded subaccount name (0x prefix, zero padded)
+    #[serde(rename = "subaccount")]
+    pub subaccount: String,
+    /// How long an order will remain until executed/expired
+    #[serde(rename = "timeInForce")]
+    pub time_in_force: models::OrderTimeInForce,
+    #[serde(rename = "type")]
+    pub r#type: models::OrderType,
 }
 
 impl SubmitOrderLimitDtoData {
     pub fn new(
-        subaccount: String,
-        sender: String,
-        nonce: String,
-        r#type: models::OrderType,
-        quantity: rust_decimal::Decimal,
-        side: models::OrderSide,
-        onchain_id: i64,
         engine_type: models::EngineType,
-        signed_at: i64,
-        price: rust_decimal::Decimal,
-        time_in_force: models::TimeInForce,
+        nonce: String,
+        onchain_id: i64,
         post_only: bool,
+        price: rust_decimal::Decimal,
+        quantity: rust_decimal::Decimal,
+        sender: String,
+        side: models::OrderSide,
+        signed_at: i32,
+        subaccount: String,
+        time_in_force: models::OrderTimeInForce,
+        r#type: models::OrderType,
     ) -> SubmitOrderLimitDtoData {
         SubmitOrderLimitDtoData {
-            subaccount,
-            sender,
-            nonce,
-            r#type,
-            quantity,
-            side,
-            onchain_id,
-            engine_type,
             client_order_id: None,
-            reduce_only: None,
             close: None,
+            engine_type,
+            expires_at: None,
+            group_contingency_type: None,
+            group_id: None,
+            nonce,
+            onchain_id,
+            post_only,
+            price,
+            quantity,
+            reduce_only: None,
+            sender,
+            side,
+            signed_at,
             stop_price: None,
             stop_type: None,
-            signed_at,
-            expires_at: None,
-            group_id: None,
-            group_contingency_type: None,
-            price,
+            subaccount,
             time_in_force,
-            post_only,
+            r#type,
         }
     }
 }

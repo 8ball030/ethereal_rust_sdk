@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,32 +13,32 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AccountSignerQuotaDto {
-    /// Ratelimit period in days for linking signers per account
-    #[serde(rename = "maxLinkedSignersPeriodDays")]
-    pub max_linked_signers_period_days: i64,
-    /// Max number of signers that can be linked within ratelimit period
-    #[serde(rename = "maxLinkedSignersInPeriod")]
-    pub max_linked_signers_in_period: i64,
-    /// Number of signers linked within current ratelimit period
-    #[serde(rename = "linkedSignersUsedInPeriod")]
-    pub linked_signers_used_in_period: i64,
     /// Hours before expiry when a signer can be refreshed
     #[serde(rename = "linkedSignerRefreshHoursBeforeExpiry")]
     pub linked_signer_refresh_hours_before_expiry: i64,
+    /// Number of signers linked within current ratelimit period
+    #[serde(rename = "linkedSignersUsedInPeriod")]
+    pub linked_signers_used_in_period: i64,
+    /// Max number of signers that can be linked within ratelimit period
+    #[serde(rename = "maxLinkedSignersInPeriod")]
+    pub max_linked_signers_in_period: i64,
+    /// Ratelimit period in days for linking signers per account
+    #[serde(rename = "maxLinkedSignersPeriodDays")]
+    pub max_linked_signers_period_days: i64,
 }
 
 impl AccountSignerQuotaDto {
     pub fn new(
-        max_linked_signers_period_days: i64,
-        max_linked_signers_in_period: i64,
-        linked_signers_used_in_period: i64,
         linked_signer_refresh_hours_before_expiry: i64,
+        linked_signers_used_in_period: i64,
+        max_linked_signers_in_period: i64,
+        max_linked_signers_period_days: i64,
     ) -> AccountSignerQuotaDto {
         AccountSignerQuotaDto {
-            max_linked_signers_period_days,
-            max_linked_signers_in_period,
-            linked_signers_used_in_period,
             linked_signer_refresh_hours_before_expiry,
+            linked_signers_used_in_period,
+            max_linked_signers_in_period,
+            max_linked_signers_period_days,
         }
     }
 }

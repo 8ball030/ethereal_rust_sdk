@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -11,17 +11,20 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
+/// SubmitOrderDto : Submit order request containing signature and order data
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SubmitOrderDto {
+    /// Order data, either a market order or a limit order distinguished by the `type` field
     #[serde(rename = "data")]
-    pub data: models::SubmitOrderDtoData,
+    pub data: models::SubmitOrderData,
     /// Hex-encoded EIP-712 signature authorizing this request
     #[serde(rename = "signature")]
     pub signature: String,
 }
 
 impl SubmitOrderDto {
-    pub fn new(data: models::SubmitOrderDtoData, signature: String) -> SubmitOrderDto {
+    /// Submit order request containing signature and order data
+    pub fn new(data: models::SubmitOrderData, signature: String) -> SubmitOrderDto {
         SubmitOrderDto { data, signature }
     }
 }

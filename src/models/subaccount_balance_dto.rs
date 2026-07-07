@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,24 +13,24 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SubaccountBalanceDto {
-    /// Id representing the subaccount
-    #[serde(rename = "subaccountId")]
-    pub subaccount_id: uuid::Uuid,
-    /// Id representing the token
-    #[serde(rename = "tokenId")]
-    pub token_id: uuid::Uuid,
-    /// ERC20 deposited token address (non-checksummed, zero address if virtual)
-    #[serde(rename = "tokenAddress")]
-    pub token_address: String,
-    /// The unique exchange defined token name driven by addToken onchain
-    #[serde(rename = "tokenName")]
-    pub token_name: String,
     /// Token balance in native units expressed as a decimal (precision: 9)
     #[serde(rename = "amount")]
     pub amount: rust_decimal::Decimal,
     /// Portion of balance transferrable in native units expressed as a decimal (precision: 9)
     #[serde(rename = "available")]
     pub available: rust_decimal::Decimal,
+    /// Id representing the subaccount
+    #[serde(rename = "subaccountId")]
+    pub subaccount_id: uuid::Uuid,
+    /// ERC20 deposited token address (non-checksummed, zero address if virtual)
+    #[serde(rename = "tokenAddress")]
+    pub token_address: String,
+    /// Id representing the token
+    #[serde(rename = "tokenId")]
+    pub token_id: uuid::Uuid,
+    /// The unique exchange defined token name driven by addToken onchain
+    #[serde(rename = "tokenName")]
+    pub token_name: String,
     /// Portion of balance non-transferrable in native units expressed as a decimal (precision: 9)
     #[serde(rename = "totalUsed")]
     pub total_used: rust_decimal::Decimal,
@@ -41,22 +41,22 @@ pub struct SubaccountBalanceDto {
 
 impl SubaccountBalanceDto {
     pub fn new(
-        subaccount_id: uuid::Uuid,
-        token_id: uuid::Uuid,
-        token_address: String,
-        token_name: String,
         amount: rust_decimal::Decimal,
         available: rust_decimal::Decimal,
+        subaccount_id: uuid::Uuid,
+        token_address: String,
+        token_id: uuid::Uuid,
+        token_name: String,
         total_used: rust_decimal::Decimal,
         updated_at: i64,
     ) -> SubaccountBalanceDto {
         SubaccountBalanceDto {
-            subaccount_id,
-            token_id,
-            token_address,
-            token_name,
             amount,
             available,
+            subaccount_id,
+            token_address,
+            token_id,
+            token_name,
             total_used,
             updated_at,
         }

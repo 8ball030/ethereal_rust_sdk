@@ -1,7 +1,7 @@
 /*
  * Ethereal Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -11,10 +11,9 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// TooManyRequestsDtoOrderType : Extracted enum for TooManyRequestsDtoOrderType
-/// Extracted enum for TooManyRequestsDtoOrderType
+///
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum TooManyRequestsDtoOrderType {
+pub enum RateLimitErrorType {
     #[serde(rename = "RATE_LIMIT_IP")]
     RateLimitIp,
     #[serde(rename = "RATE_LIMIT_ACCOUNT")]
@@ -25,7 +24,7 @@ pub enum TooManyRequestsDtoOrderType {
     RateLimitLinkedSigner,
 }
 
-impl std::fmt::Display for TooManyRequestsDtoOrderType {
+impl std::fmt::Display for RateLimitErrorType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::RateLimitIp => write!(f, "RATE_LIMIT_IP"),
@@ -36,8 +35,8 @@ impl std::fmt::Display for TooManyRequestsDtoOrderType {
     }
 }
 
-impl Default for TooManyRequestsDtoOrderType {
-    fn default() -> TooManyRequestsDtoOrderType {
+impl Default for RateLimitErrorType {
+    fn default() -> RateLimitErrorType {
         Self::RateLimitIp
     }
 }

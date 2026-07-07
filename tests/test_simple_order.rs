@@ -1,6 +1,6 @@
 mod common;
 use ethereal_rust_sdk::apis::order_api::OrderControllerListBySubaccountIdParams;
-use ethereal_rust_sdk::models::{OrderSide, OrderType, SubmitOrderCreatedResultCode, TimeInForce};
+use ethereal_rust_sdk::models::{OrderSide, OrderTimeInForce, OrderType, SubmitCreatedCode};
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
 
@@ -19,7 +19,7 @@ async fn test_simple_order() {
     let r#type = OrderType::Limit;
 
     let expires_at = None;
-    let time_in_force = TimeInForce::Gtd;
+    let time_in_force = OrderTimeInForce::Gtd;
 
     // We have a few more options when creating an order now.
     let post_only = false;
@@ -41,7 +41,7 @@ async fn test_simple_order() {
         .unwrap();
     println!("Order created: {:?}", order);
 
-    assert!(order.result == SubmitOrderCreatedResultCode::Ok);
+    assert!(order.result == SubmitCreatedCode::Ok);
     assert!(order.filled == Decimal::ZERO);
 }
 
