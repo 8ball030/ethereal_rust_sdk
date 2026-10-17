@@ -7,6 +7,7 @@ use ethers::{
 use rust_decimal::prelude::ToPrimitive;
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
+use std::convert::TryFrom;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use ethers::{types::U256, utils::keccak256};
@@ -14,11 +15,23 @@ use ethers::{types::U256, utils::keccak256};
 use crate::models::SubaccountDto;
 use crate::{domain_config::DOMAINS, enums::Environment};
 
-use anyhow::Result;
+use anyhow::{Result, anyhow};
+
+/// Scales a decimal onto the wire's unsigned e9 fixed point. A negative value, or one whose
+/// scaled form does not fit, is an error: the only two ways `to_u128` can fail, and this
+/// function used to panic on both inside a `Result`.
 pub fn to_scaled_e9(value: Decimal) -> Result<u128> {
-    Ok((value * dec!(1_000_000_000))
+    if value.is_sign_negative() && !value.is_zero() {
+        return Err(anyhow!(
+            "cannot scale {value} to e9: the wire format is unsigned"
+        ));
+    }
+    let scaled = value
+        .checked_mul(dec!(1_000_000_000))
+        .ok_or_else(|| anyhow!("{value} * 1e9 does not fit in a Decimal"))?;
+    scaled
         .to_u128()
-        .expect("Value too large to fit in u128"))
+        .ok_or_else(|| anyhow!("{scaled} does not fit in u128"))
 }
 
 pub fn get_nonce() -> u64 {
@@ -55,14 +68,18 @@ pub fn get_domain_separator(env: Environment) -> [u8; 32] {
     ]))
 }
 
+/// Decodes a 32-byte hex string (with or without `0x`). Anything other than exactly 32 bytes is
+/// an error: this value is a field the signature commits to, and silently padding a short value
+/// or truncating a long one produced a valid-looking signature over the wrong bytes.
 pub fn hex_to_bytes32(s: &str) -> Result<[u8; 32], Box<dyn std::error::Error>> {
     let raw = s.trim_start_matches("0x");
     let decoded = hex::decode(raw)?;
-
-    let mut out = [0u8; 32];
-    let n = decoded.len().min(32);
-    out[..n].copy_from_slice(&decoded[..n]);
-
+    let out = <[u8; 32]>::try_from(decoded.as_slice()).map_err(|_| {
+        format!(
+            "expected 32 bytes of hex, got {} byte(s): {s:?}",
+            decoded.len()
+        )
+    })?;
     Ok(out)
 }
 pub fn make_full_hash(domain_hash: &[u8; 32], message_hash: &[u8; 32]) -> [u8; 32] {
