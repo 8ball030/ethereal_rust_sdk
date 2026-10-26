@@ -4,6 +4,7 @@ in
 pkgs.mkShell {
   packages = with pkgs; [
     rustup
+    cargo-audit
     cargo
     redocly
     openapi-generator-cli
