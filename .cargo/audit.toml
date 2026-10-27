@@ -1,0 +1,20 @@
+[advisories]
+ignore = [
+    # h2 0.3.27 and ring 0.16.20, through ethers 2.0.14 -> ethers-providers (reqwest 0.11 and
+    # jsonwebtoken 8). ethers is used here for EIP-712 signing only and no provider is ever built,
+    # so h2 carries no traffic and jsonwebtoken 8 signs nothing; ring's affected paths are QUIC
+    # header protection and >64 GiB AES-GCM chunks. Remove once signing is on alloy and
+    # `cargo tree -i ethers` is empty.
+    "RUSTSEC-2026-0258",
+    "RUSTSEC-2025-0009",
+
+    # crypto-bigint 0.5.5, through k256 0.13 in ethers-core, which alloy also still requires, so
+    # moving to alloy does not clear it. Remove once `cargo tree -i crypto-bigint@0.5.5` is empty.
+    "RUSTSEC-2026-0387",
+
+    # rkyv 0.7.46 is in Cargo.lock only: rust_decimal 1.x's default `std` feature names
+    # `rkyv?/std`, which keeps the optional dependency in the lockfile, but nothing enables it and
+    # `cargo tree --all-features --target all -i rkyv@0.7.46` prints nothing. Remove once rkyv 0.7
+    # leaves Cargo.lock.
+    "RUSTSEC-2026-0235",
+]

@@ -26,6 +26,8 @@ pkgs.mkShell {
     # make codegen
     python3
     jq
+    cargo-audit
+    cargo
     redocly
     openapi-generator-cli-7_13_0 # CI pins 7.13.0; nixpkgs' version drifts the generated code
   ];

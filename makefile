@@ -11,7 +11,7 @@ PATCH_VERSION := $(shell \
 # Allow override
 NEW_VERSION ?= $(PATCH_VERSION)
 
-.PHONY: version tag release fmt lint codegen
+.PHONY: audit version tag release fmt lint codegen
 
 
 version:
@@ -40,6 +40,9 @@ release: version package tag
 		--notes "Release v$(NEW_VERSION)"
 	@echo "Creating crate release v$(NEW_VERSION)"
 	@cargo publish
+
+audit:
+	cargo audit
 
 lint: 
 	cargo clippy --all-features --all-targets --examples --tests -- -D warnings 
