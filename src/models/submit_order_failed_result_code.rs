@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -61,6 +61,8 @@ pub enum SubmitOrderFailedResultCode {
     InstrumentOpenValueCapExceeded,
     #[serde(rename = "QuantityAboveMaximum")]
     QuantityAboveMaximum,
+    #[serde(rename = "QuantityBelowMinimum")]
+    QuantityBelowMinimum,
     #[serde(rename = "QuantityNotMultipleOfLotSize")]
     QuantityNotMultipleOfLotSize,
     #[serde(rename = "OrderWithZeroQuantity")]
@@ -95,6 +97,7 @@ impl std::fmt::Display for SubmitOrderFailedResultCode {
             Self::InsuranceFundCannotOpenPositions => write!(f, "InsuranceFundCannotOpenPositions"),
             Self::InstrumentOpenValueCapExceeded => write!(f, "InstrumentOpenValueCapExceeded"),
             Self::QuantityAboveMaximum => write!(f, "QuantityAboveMaximum"),
+            Self::QuantityBelowMinimum => write!(f, "QuantityBelowMinimum"),
             Self::QuantityNotMultipleOfLotSize => write!(f, "QuantityNotMultipleOfLotSize"),
             Self::OrderWithZeroQuantity => write!(f, "OrderWithZeroQuantity"),
             Self::OcoLatencyFloorMismatch => write!(f, "OcoLatencyFloorMismatch"),

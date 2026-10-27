@@ -2,9 +2,11 @@ use crate::{
     apis::{
         configuration::Configuration,
         token_api::{
-            token_controller_get_by_id, token_controller_initiate_withdraw, token_controller_list,
+            token_controller_get_by_id, token_controller_initiate_conversion,
+            token_controller_initiate_withdraw, token_controller_list,
             token_controller_list_transfers, token_controller_list_withdraws,
             TokenControllerGetByIdError, TokenControllerGetByIdParams,
+            TokenControllerInitiateConversionError, TokenControllerInitiateConversionParams,
             TokenControllerInitiateWithdrawError, TokenControllerInitiateWithdrawParams,
             TokenControllerListError, TokenControllerListParams, TokenControllerListTransfersError,
             TokenControllerListTransfersParams, TokenControllerListWithdrawsError,
@@ -12,7 +14,10 @@ use crate::{
         },
         Error,
     },
-    models::{PageOfTokensDtos, PageOfTransfersDtos, PageOfWithdrawDtos, TokenDto, WithdrawDto},
+    models::{
+        ConversionDto, PageOfTokensDtos, PageOfTransfersDtos, PageOfWithdrawDtos, TokenDto,
+        WithdrawDto,
+    },
 };
 pub struct TokenClient<'a> {
     pub config: &'a Configuration,
@@ -24,6 +29,13 @@ impl<'a> TokenClient<'a> {
         params: TokenControllerGetByIdParams,
     ) -> Result<TokenDto, Error<TokenControllerGetByIdError>> {
         token_controller_get_by_id(self.config, params).await
+    }
+
+    pub async fn initiate_conversion(
+        &self,
+        params: TokenControllerInitiateConversionParams,
+    ) -> Result<ConversionDto, Error<TokenControllerInitiateConversionError>> {
+        token_controller_initiate_conversion(self.config, params).await
     }
 
     pub async fn initiate_withdraw(

@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,18 +13,26 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct FundingDto {
-    /// Funding charge timestamp (ms since Unix Epoch)
-    #[serde(rename = "createdAt")]
-    pub created_at: i64,
+    /// Funding charge per unit in USD, expressed as a decimal (precision: 9)
+    #[serde(rename = "chargePerUnitUsd")]
+    pub charge_per_unit_usd: rust_decimal::Decimal,
+    /// Timestamp of the charged funding (ms since Unix Epoch)
+    #[serde(rename = "chargedAt")]
+    pub charged_at: i64,
     /// Hourly funding rate
     #[serde(rename = "fundingRate1h")]
     pub funding_rate1h: String,
 }
 
 impl FundingDto {
-    pub fn new(created_at: i64, funding_rate1h: String) -> FundingDto {
+    pub fn new(
+        charge_per_unit_usd: rust_decimal::Decimal,
+        charged_at: i64,
+        funding_rate1h: String,
+    ) -> FundingDto {
         FundingDto {
-            created_at,
+            charge_per_unit_usd,
+            charged_at,
             funding_rate1h,
         }
     }

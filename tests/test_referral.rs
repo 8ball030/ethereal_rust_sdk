@@ -1,8 +1,7 @@
 mod common;
 use ethereal_rust_sdk::apis::referral_api::{
     ReferralControllerActivateParams, ReferralControllerClaimCodeParams,
-    ReferralControllerGetCodeUsageParams, ReferralControllerGetSummaryParams,
-    ReferralControllerListReferralsParams,
+    ReferralControllerGetSummaryParams, ReferralControllerListReferralsParams,
 };
 
 #[tokio::test]
@@ -20,15 +19,6 @@ async fn test_claim_code() {
     let client = common::create_test_client().await.unwrap();
     let params = ReferralControllerClaimCodeParams::default();
     let result = client.referral().claim_code(params).await;
-    assert!(result.is_ok());
-}
-
-#[tokio::test]
-#[ignore]
-async fn test_get_code_usage() {
-    let client = common::create_test_client().await.unwrap();
-    let params = ReferralControllerGetCodeUsageParams::default();
-    let result = client.referral().get_code_usage(params).await;
     assert!(result.is_ok());
 }
 

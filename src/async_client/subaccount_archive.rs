@@ -4,6 +4,7 @@ use crate::{
         subaccount_archive_api::{
             subaccount_archive_controller_get_total_volume,
             subaccount_archive_controller_list_balance_history,
+            subaccount_archive_controller_list_position_fee_history,
             subaccount_archive_controller_list_position_funding_history,
             subaccount_archive_controller_list_unrealized_pnl_history,
             subaccount_archive_controller_list_volume_history,
@@ -11,6 +12,8 @@ use crate::{
             SubaccountArchiveControllerGetTotalVolumeParams,
             SubaccountArchiveControllerListBalanceHistoryError,
             SubaccountArchiveControllerListBalanceHistoryParams,
+            SubaccountArchiveControllerListPositionFeeHistoryError,
+            SubaccountArchiveControllerListPositionFeeHistoryParams,
             SubaccountArchiveControllerListPositionFundingHistoryError,
             SubaccountArchiveControllerListPositionFundingHistoryParams,
             SubaccountArchiveControllerListUnrealizedPnlHistoryError,
@@ -21,7 +24,7 @@ use crate::{
         Error,
     },
     archive_models::{
-        PageOfBalanceHistoryDtos, PageOfPositionFundingHistoryDtos,
+        PageOfBalanceHistoryDtos, PageOfPositionFeeHistoryDtos, PageOfPositionFundingHistoryDtos,
         PageOfSubaccountVolumeHistoryDtos, PageOfUnrealizedPnlHistoryDtos,
         TotalSubaccountVolumeDto,
     },
@@ -45,6 +48,16 @@ impl<'a> SubaccountArchiveClient<'a> {
     ) -> Result<PageOfBalanceHistoryDtos, Error<SubaccountArchiveControllerListBalanceHistoryError>>
     {
         subaccount_archive_controller_list_balance_history(self.config, params).await
+    }
+
+    pub async fn list_position_fee_history(
+        &self,
+        params: SubaccountArchiveControllerListPositionFeeHistoryParams,
+    ) -> Result<
+        PageOfPositionFeeHistoryDtos,
+        Error<SubaccountArchiveControllerListPositionFeeHistoryError>,
+    > {
+        subaccount_archive_controller_list_position_fee_history(self.config, params).await
     }
 
     pub async fn list_position_funding_history(

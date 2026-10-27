@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -17,6 +17,12 @@ use serde::{de::Error as _, Deserialize, Serialize};
 #[derive(Clone, Debug, Default)]
 pub struct TokenControllerGetByIdParams {
     pub id: String,
+}
+
+/// struct for passing parameters to the method [`token_controller_initiate_conversion`]
+#[derive(Clone, Debug, Default)]
+pub struct TokenControllerInitiateConversionParams {
+    pub initiate_conversion_dto: models::InitiateConversionDto,
 }
 
 /// struct for passing parameters to the method [`token_controller_initiate_withdraw`]
@@ -91,7 +97,23 @@ pub enum TokenControllerGetByIdError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
+    Status429(models::TooManyRequestsDto),
+    Status500(),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`token_controller_initiate_conversion`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum TokenControllerInitiateConversionError {
+    Status400(models::BadRequestDto),
+    Status401(models::UnauthorizedDto),
+    Status403(models::ForbiddenDto),
+    Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
+    Status422(models::ConversionFailedDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
     UnknownValue(serde_json::Value),
@@ -105,6 +127,7 @@ pub enum TokenControllerInitiateWithdrawError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::WithdrawFailedDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -119,6 +142,7 @@ pub enum TokenControllerListError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -133,6 +157,7 @@ pub enum TokenControllerListTransfersError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -147,6 +172,7 @@ pub enum TokenControllerListWithdrawsError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -189,6 +215,50 @@ pub async fn token_controller_get_by_id(
     } else {
         let content = resp.text().await?;
         let entity: Option<TokenControllerGetByIdError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+pub async fn token_controller_initiate_conversion(
+    configuration: &configuration::Configuration,
+    params: TokenControllerInitiateConversionParams,
+) -> Result<models::ConversionDto, Error<TokenControllerInitiateConversionError>> {
+    let uri_str = format!("{}/v1/token/convert", configuration.base_path);
+    let mut req_builder = configuration
+        .client
+        .request(reqwest::Method::POST, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.json(&params.initiate_conversion_dto);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ConversionDto`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ConversionDto`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<TokenControllerInitiateConversionError> =
+            serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

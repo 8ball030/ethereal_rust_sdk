@@ -43,7 +43,7 @@ fn test_get_domain_separator() {
         32,
         "Domain separator should be 32 bytes long"
     );
-    let expected_separator_hex = "baf501bc2614cf7092d082742580b04c176be1815f46e407eab1bc37ba543c05";
+    let expected_separator_hex = "f45e2c25657b6ad7b4835073c1c65bec7f6b973d6064b491dd248315296e7d6a";
     assert_eq!(
         hex::encode(separator.as_ref()),
         expected_separator_hex,
@@ -127,8 +127,8 @@ fn test_known_flow() -> Result<(), Box<dyn std::error::Error>> {
     println!("Order : {order:?}");
     println!("\n");
 
-    let known_signature = "0x82aed7486e9855459f58537e413760597e689d3ba7b859f56b6edc730e044fff2888ccf92cd282a8299d8d6a76f8bf0aa93d97f30340c4bb0d27b626aca62f211b";
-    let known_domain_separator = "baf501bc2614cf7092d082742580b04c176be1815f46e407eab1bc37ba543c05";
+    let known_signature = "0xbc76ecd2bcd2bab0c6dc989d238bcd0216c4b574b2de0d0141ae205aabdd53532206441c3593e34de96cbe2e1bff501095a73cb2f2dcb05d1e2b03f2db6b24461c";
+    let known_domain_separator = "f45e2c25657b6ad7b4835073c1c65bec7f6b973d6064b491dd248315296e7d6a";
     // Verify domain separator
     let domain_separator = get_domain_separator(Environment::Testnet);
     println!(
@@ -152,7 +152,7 @@ fn test_known_flow() -> Result<(), Box<dyn std::error::Error>> {
     let full_hash = make_full_hash(&domain_separator, &msg_hash);
     println!("Full Hash: 0x{}", hex::encode(full_hash));
 
-    let known_full_hash = "8400482e02069cefd72a3a86cf96221d75701739b48b3199ce34e7c0525246b7";
+    let known_full_hash = "f5183bf5a48ce9ace17747133ac563a4273981d32a72ef74d1b66a6447c34ddc";
     assert_eq!(
         hex::encode(full_hash),
         known_full_hash,

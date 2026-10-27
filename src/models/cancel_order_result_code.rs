@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -14,6 +14,8 @@ use serde::{Deserialize, Serialize};
 ///
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 pub enum CancelOrderResultCode {
+    #[serde(rename = "PreviousOrderInBatchRejected")]
+    PreviousOrderInBatchRejected,
     #[serde(rename = "Ok")]
     Ok,
     #[serde(rename = "NotFound")]
@@ -33,6 +35,7 @@ pub enum CancelOrderResultCode {
 impl std::fmt::Display for CancelOrderResultCode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
+            Self::PreviousOrderInBatchRejected => write!(f, "PreviousOrderInBatchRejected"),
             Self::Ok => write!(f, "Ok"),
             Self::NotFound => write!(f, "NotFound"),
             Self::AlreadyCanceled => write!(f, "AlreadyCanceled"),
@@ -46,6 +49,6 @@ impl std::fmt::Display for CancelOrderResultCode {
 
 impl Default for CancelOrderResultCode {
     fn default() -> CancelOrderResultCode {
-        Self::Ok
+        Self::PreviousOrderInBatchRejected
     }
 }

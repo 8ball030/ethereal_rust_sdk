@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -11,27 +11,30 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// CauseEnum : Extracted enum for CauseEnum
-/// Extracted enum for CauseEnum
+/// LiquidationCause : Cause of liquidation
+/// Cause of liquidation
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum CauseEnum {
+pub enum LiquidationCause {
     #[serde(rename = "MarkChanged")]
     MarkChanged,
     #[serde(rename = "Funding")]
     Funding,
+    #[serde(rename = "PositionFee")]
+    PositionFee,
 }
 
-impl std::fmt::Display for CauseEnum {
+impl std::fmt::Display for LiquidationCause {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::MarkChanged => write!(f, "MarkChanged"),
             Self::Funding => write!(f, "Funding"),
+            Self::PositionFee => write!(f, "PositionFee"),
         }
     }
 }
 
-impl Default for CauseEnum {
-    fn default() -> CauseEnum {
+impl Default for LiquidationCause {
+    fn default() -> LiquidationCause {
         Self::MarkChanged
     }
 }

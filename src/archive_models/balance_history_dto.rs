@@ -16,6 +16,9 @@ pub struct BalanceHistoryDto {
     /// Timestamp of the balance record (ms since Unix Epoch)
     #[serde(rename = "time")]
     pub time: f64,
+    /// Id representing the token this entry is for
+    #[serde(rename = "tokenId")]
+    pub token_id: uuid::Uuid,
     /// Cumulative trading fees paid up to this point in time, expressed as a decimal (precision: 9)
     #[serde(rename = "tradingFee")]
     pub trading_fee: rust_decimal::Decimal,
@@ -37,6 +40,12 @@ pub struct BalanceHistoryDto {
     /// Cumulative withdrawals made up to this point in time, expressed as a decimal (precision: 9)
     #[serde(rename = "withdrawal")]
     pub withdrawal: rust_decimal::Decimal,
+    /// Cumulative amount converted INTO this token up to this point in time, expressed as a decimal (precision: 9)
+    #[serde(rename = "conversionIn")]
+    pub conversion_in: rust_decimal::Decimal,
+    /// Cumulative amount converted OUT of this token up to this point in time, expressed as a decimal (precision: 9)
+    #[serde(rename = "conversionOut")]
+    pub conversion_out: rust_decimal::Decimal,
     /// Total balance at this point in time, expressed as a decimal (precision: 9)
     #[serde(rename = "balance")]
     pub balance: rust_decimal::Decimal,
@@ -45,6 +54,7 @@ pub struct BalanceHistoryDto {
 impl BalanceHistoryDto {
     pub fn new(
         time: f64,
+        token_id: uuid::Uuid,
         trading_fee: rust_decimal::Decimal,
         realized_funding: rust_decimal::Decimal,
         realized_pnl: rust_decimal::Decimal,
@@ -52,10 +62,13 @@ impl BalanceHistoryDto {
         deposit: rust_decimal::Decimal,
         withdrawal_fee: rust_decimal::Decimal,
         withdrawal: rust_decimal::Decimal,
+        conversion_in: rust_decimal::Decimal,
+        conversion_out: rust_decimal::Decimal,
         balance: rust_decimal::Decimal,
     ) -> BalanceHistoryDto {
         BalanceHistoryDto {
             time,
+            token_id,
             trading_fee,
             realized_funding,
             realized_pnl,
@@ -63,6 +76,8 @@ impl BalanceHistoryDto {
             deposit,
             withdrawal_fee,
             withdrawal,
+            conversion_in,
+            conversion_out,
             balance,
         }
     }

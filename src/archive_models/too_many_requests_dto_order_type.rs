@@ -11,11 +11,12 @@
 
 use serde::{Deserialize, Serialize};
 
-/// OrderType : Extracted enum for OrderType
-/// Extracted enum for OrderType
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-#[derive(Default)]
-pub enum OrderType {
+/// TooManyRequestsDtoOrderType : Extracted enum for TooManyRequestsDtoOrderType
+/// Extracted enum for TooManyRequestsDtoOrderType
+#[derive(
+    Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, Default,
+)]
+pub enum TooManyRequestsDtoOrderType {
     #[serde(rename = "RATE_LIMIT_IP")]
     #[default]
     RateLimitIp,
@@ -25,19 +26,18 @@ pub enum OrderType {
     RateLimitWithdraw,
     #[serde(rename = "RATE_LIMIT_LINKED_SIGNER")]
     RateLimitLinkedSigner,
-    #[serde(rename = "LIMIT")]
-    Limit,
+    #[serde(rename = "RATE_LIMIT_CONVERSION")]
+    RateLimitConversion,
 }
 
-impl std::fmt::Display for OrderType {
+impl std::fmt::Display for TooManyRequestsDtoOrderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::RateLimitIp => write!(f, "RATE_LIMIT_IP"),
             Self::RateLimitAccount => write!(f, "RATE_LIMIT_ACCOUNT"),
             Self::RateLimitWithdraw => write!(f, "RATE_LIMIT_WITHDRAW"),
             Self::RateLimitLinkedSigner => write!(f, "RATE_LIMIT_LINKED_SIGNER"),
-            Self::Limit => write!(f, "LIMIT"),
+            Self::RateLimitConversion => write!(f, "RATE_LIMIT_CONVERSION"),
         }
     }
 }
-

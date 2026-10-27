@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -18,8 +18,10 @@ use serde::{de::Error as _, Deserialize, Serialize};
 pub struct FundingControllerListByProductIdParams {
     /// Id representing the registered product
     pub product_id: String,
-    /// The range of time of funding rates to retrieve
-    pub range: String,
+    /// Start time of the query range (ms since Unix Epoch)
+    pub start_time: f64,
+    /// End time of the query range (ms since Unix Epoch)
+    pub end_time: f64,
     /// Direction to paginate through objects
     pub order: Option<String>,
     /// Limit the number of objects to return
@@ -45,6 +47,7 @@ pub enum FundingControllerListByProductIdError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -59,6 +62,7 @@ pub enum FundingControllerListProjectedRatesError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -82,7 +86,8 @@ pub async fn funding_controller_list_by_product_id(
         req_builder = req_builder.query(&[("cursor", &param_value.to_string())]);
     }
     req_builder = req_builder.query(&[("productId", &params.product_id.to_string())]);
-    req_builder = req_builder.query(&[("range", &params.range.to_string())]);
+    req_builder = req_builder.query(&[("startTime", &params.start_time.to_string())]);
+    req_builder = req_builder.query(&[("endTime", &params.end_time.to_string())]);
     if let Some(ref param_value) = params.order_by {
         req_builder = req_builder.query(&[("orderBy", &param_value.to_string())]);
     }

@@ -61,14 +61,9 @@
             "in": "query",
             "description": "Resolution of the data to be returned",
             "schema": {
-              "example": "hour2",
+              "example": "hour12",
               "type": "string",
               "enum": [
-                "minute1",
-                "minute3",
-                "minute5",
-                "minute15",
-                "minute30",
                 "hour1",
                 "hour2",
                 "hour4",
@@ -101,6 +96,21 @@
             "schema": {
               "format": "uuid",
               "type": "string"
+            }
+          },
+          {
+            "name": "tokenIds",
+            "required": false,
+            "in": "query",
+            "description": "Array of quote-token ids to filter by",
+            "schema": {
+              "minItems": 1,
+              "uniqueItems": true,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
             }
           }
         ],
@@ -151,6 +161,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -346,6 +366,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -371,6 +401,207 @@
           }
         },
         "summary": "Returns funding charge history for a given subaccount",
+        "tags": [
+          "SubaccountArchive"
+        ]
+      }
+    },
+    "/v1/subaccount/position-fee": {
+      "get": {
+        "operationId": "SubaccountArchiveController_listPositionFeeHistory",
+        "parameters": [
+          {
+            "name": "order",
+            "required": false,
+            "in": "query",
+            "description": "Direction to paginate through objects",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Limit the number of objects to return",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "Pointer to the current object in pagination dataset",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startTime",
+            "required": true,
+            "in": "query",
+            "description": "Start time of the query range (clamped to resolution, ms since Unix epoch)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "endTime",
+            "required": false,
+            "in": "query",
+            "description": "End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderBy",
+            "required": false,
+            "in": "query",
+            "description": "Order by field",
+            "schema": {
+              "example": "time",
+              "type": "string",
+              "enum": [
+                "time"
+              ]
+            }
+          },
+          {
+            "name": "subaccountId",
+            "required": true,
+            "in": "query",
+            "description": "Id of the subaccount to query for",
+            "schema": {
+              "format": "uuid",
+              "example": "d290f1ee-6c54-7b01-90e6-d701748f0851",
+              "type": "string"
+            }
+          },
+          {
+            "name": "positionIds",
+            "required": false,
+            "in": "query",
+            "description": "Array of position ids to filter for",
+            "schema": {
+              "minItems": 1,
+              "maxItems": 128,
+              "uniqueItems": true,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          {
+            "name": "productIds",
+            "required": false,
+            "in": "query",
+            "description": "Array of product ids to filter for",
+            "schema": {
+              "minItems": 1,
+              "uniqueItems": true,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOfPositionFeeHistoryDtos"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntityDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Returns position-fee charge history for a given subaccount",
         "tags": [
           "SubaccountArchive"
         ]
@@ -540,6 +771,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -628,16 +869,11 @@
             "name": "resolution",
             "required": true,
             "in": "query",
-            "description": "Resolution of the data to be returned",
+            "description": "Resolution of the data to be returned (hourly or coarser only)",
             "schema": {
-              "example": "hour2",
+              "example": "hour1",
               "type": "string",
               "enum": [
-                "minute1",
-                "minute3",
-                "minute5",
-                "minute15",
-                "minute30",
                 "hour1",
                 "hour2",
                 "hour4",
@@ -720,6 +956,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -820,6 +1066,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -860,8 +1116,8 @@
   "tags": [],
   "servers": [
     {
-      "url": "https://archive.ethereal.trade/",
-      "description": "Mainnet"
+      "url": "https://archive.meridian.xyz/",
+      "description": "Meridian Mainnet"
     }
   ],
   "components": {
@@ -1019,6 +1275,29 @@
           "error"
         ]
       },
+      "PayloadTooLargeDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "default": 413,
+            "enum": [
+              413
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "error": {
+            "$ref": "#/components/schemas/PayloadTooLargeDtoErrorEnum"
+          }
+        },
+        "required": [
+          "statusCode",
+          "message",
+          "error"
+        ]
+      },
       "UnprocessableEntityDto": {
         "type": "object",
         "properties": {
@@ -1059,7 +1338,7 @@
             "$ref": "#/components/schemas/TooManyRequestsDtoErrorEnum"
           },
           "type": {
-            "$ref": "#/components/schemas/OrderType"
+            "$ref": "#/components/schemas/TooManyRequestsDtoOrderType"
           }
         },
         "required": [
@@ -1301,6 +1580,12 @@
             "example": 1712019600000,
             "description": "Timestamp of the balance record (ms since Unix Epoch)"
           },
+          "tokenId": {
+            "type": "string",
+            "example": "9036443a-441a-4a66-87f2-bd5c44cdca7a",
+            "description": "Id representing the token this entry is for",
+            "format": "uuid"
+          },
           "tradingFee": {
             "type": "string",
             "example": "10.5",
@@ -1343,6 +1628,18 @@
             "description": "Cumulative withdrawals made up to this point in time, expressed as a decimal (precision: 9)",
             "format": "decimal"
           },
+          "conversionIn": {
+            "type": "string",
+            "example": "100.0",
+            "description": "Cumulative amount converted INTO this token up to this point in time, expressed as a decimal (precision: 9)",
+            "format": "decimal"
+          },
+          "conversionOut": {
+            "type": "string",
+            "example": "75.0",
+            "description": "Cumulative amount converted OUT of this token up to this point in time, expressed as a decimal (precision: 9)",
+            "format": "decimal"
+          },
           "balance": {
             "type": "string",
             "example": "680.0",
@@ -1352,6 +1649,7 @@
         },
         "required": [
           "time",
+          "tokenId",
           "tradingFee",
           "realizedFunding",
           "realizedPnl",
@@ -1359,6 +1657,8 @@
           "deposit",
           "withdrawalFee",
           "withdrawal",
+          "conversionIn",
+          "conversionOut",
           "balance"
         ]
       },
@@ -1500,6 +1800,113 @@
           "data"
         ]
       },
+      "PositionFeeHistoryDto": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "number",
+            "example": 1712019600000,
+            "description": "Timestamp of the position-fee charge (ms since Unix Epoch)"
+          },
+          "settledAt": {
+            "type": "number",
+            "example": 1712019600000,
+            "description": "Timestamp of the position-fee settlement (ms since Unix Epoch)"
+          },
+          "productId": {
+            "type": "string",
+            "example": "9036443a-441a-4a66-87f2-bd5c44cdca7a",
+            "description": "Id representing the product"
+          },
+          "productTicker": {
+            "type": "string",
+            "example": "ETHUSD",
+            "description": "Product ticker"
+          },
+          "positionId": {
+            "type": "string",
+            "example": "9036443a-441a-4a66-87f2-bd5c44cdca7a",
+            "description": "Id representing the position"
+          },
+          "positionSide": {
+            "example": 0,
+            "description": "Position side as either BUY (0) or SELL (1)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderSide"
+              }
+            ]
+          },
+          "positionQuantity": {
+            "type": "string",
+            "example": "10.5",
+            "description": "Position quantity at the time of the position-fee charge, expressed as a decimal (precision: 9)",
+            "format": "decimal"
+          },
+          "rate": {
+            "type": "string",
+            "example": "0.0001",
+            "description": "Position-fee rate for the period, expressed as a decimal (precision: 9)",
+            "format": "decimal"
+          },
+          "referencePrice": {
+            "type": "string",
+            "example": "50000",
+            "description": "Reference price used for the position-fee charge, expressed as a decimal (precision: 9)",
+            "format": "decimal"
+          },
+          "chargePerUnitUsd": {
+            "type": "string",
+            "example": "0.5",
+            "description": "Position-fee charge per unit in USD, expressed as a decimal (precision: 9)",
+            "format": "decimal"
+          },
+          "positionFeeCharge": {
+            "type": "string",
+            "example": "5.25",
+            "description": "Total position-fee charge for the position, expressed as a decimal (precision: 9)",
+            "format": "decimal"
+          }
+        },
+        "required": [
+          "time",
+          "settledAt",
+          "productId",
+          "productTicker",
+          "positionId",
+          "positionSide",
+          "positionQuantity",
+          "rate",
+          "referencePrice",
+          "chargePerUnitUsd",
+          "positionFeeCharge"
+        ]
+      },
+      "PageOfPositionFeeHistoryDtos": {
+        "type": "object",
+        "properties": {
+          "hasNext": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether there are more objects to paginate through"
+          },
+          "nextCursor": {
+            "type": "string",
+            "description": "Pointer to the next page in pagination dataset"
+          },
+          "data": {
+            "description": "Array of position-fee history records",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PositionFeeHistoryDto"
+            }
+          }
+        },
+        "required": [
+          "hasNext",
+          "data"
+        ]
+      },
       "UnrealizedPnlHistoryDto": {
         "type": "object",
         "properties": {
@@ -1513,11 +1920,17 @@
             "example": "150.75",
             "description": "Unrealized PnL at this point in time, expressed as a decimal (precision: 9)",
             "format": "decimal"
+          },
+          "tokenId": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "description": "Token ID of the unrealized PnL record"
           }
         },
         "required": [
           "time",
-          "unrealizedPnl"
+          "unrealizedPnl",
+          "tokenId"
         ]
       },
       "PageOfUnrealizedPnlHistoryDtos": {
@@ -1632,6 +2045,13 @@
         ],
         "description": "Extracted enum for NotFoundDtoErrorEnum"
       },
+      "PayloadTooLargeDtoErrorEnum": {
+        "type": "string",
+        "enum": [
+          "Payload Too Large"
+        ],
+        "description": "Extracted enum for PayloadTooLargeDtoErrorEnum"
+      },
       "UnprocessableEntityDtoErrorEnum": {
         "type": "string",
         "enum": [
@@ -1646,16 +2066,16 @@
         ],
         "description": "Extracted enum for TooManyRequestsDtoErrorEnum"
       },
-      "OrderType": {
+      "TooManyRequestsDtoOrderType": {
         "type": "string",
         "enum": [
           "RATE_LIMIT_IP",
           "RATE_LIMIT_ACCOUNT",
           "RATE_LIMIT_WITHDRAW",
           "RATE_LIMIT_LINKED_SIGNER",
-          "LIMIT"
+          "RATE_LIMIT_CONVERSION"
         ],
-        "description": "Extracted enum for OrderType"
+        "description": "Extracted enum for TooManyRequestsDtoOrderType"
       }
     }
   }

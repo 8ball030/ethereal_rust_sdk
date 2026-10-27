@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,8 +13,9 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PositionLiquidationDto {
+    /// Cause of liquidation
     #[serde(rename = "cause")]
-    pub cause: models::CauseEnum,
+    pub cause: models::LiquidationCause,
     /// Position cost at the time of liquidation in USD expressed as a decimal (precision: 9)
     #[serde(rename = "cost")]
     pub cost: rust_decimal::Decimal,
@@ -46,7 +47,7 @@ pub struct PositionLiquidationDto {
 
 impl PositionLiquidationDto {
     pub fn new(
-        cause: models::CauseEnum,
+        cause: models::LiquidationCause,
         cost: rust_decimal::Decimal,
         created_at: i64,
         id: uuid::Uuid,

@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -16,6 +16,9 @@ pub struct SignatureTypesDto {
     /// CancelOrder signature type
     #[serde(rename = "CancelOrder")]
     pub cancel_order: String,
+    /// ConvertToken signature type
+    #[serde(rename = "ConvertToken")]
+    pub convert_token: String,
     /// EIP712Auth signature type
     #[serde(rename = "EIP712Auth")]
     pub eip712_auth: String,
@@ -42,6 +45,7 @@ pub struct SignatureTypesDto {
 impl SignatureTypesDto {
     pub fn new(
         cancel_order: String,
+        convert_token: String,
         eip712_auth: String,
         extend_linked_signer: String,
         initiate_withdraw: String,
@@ -52,6 +56,7 @@ impl SignatureTypesDto {
     ) -> SignatureTypesDto {
         SignatureTypesDto {
             cancel_order,
+            convert_token,
             eip712_auth,
             extend_linked_signer,
             initiate_withdraw,

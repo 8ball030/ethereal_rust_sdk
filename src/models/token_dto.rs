@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -19,6 +19,9 @@ pub struct TokenDto {
     /// Address of the token (non-checksummed; zero address if virtual)
     #[serde(rename = "address")]
     pub address: String,
+    /// Id representing the backing token
+    #[serde(rename = "backingTokenId", skip_serializing_if = "Option::is_none")]
+    pub backing_token_id: Option<uuid::Uuid>,
     /// Token creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
     pub created_at: i64,
@@ -77,6 +80,7 @@ impl TokenDto {
         TokenDto {
             added_block_number,
             address,
+            backing_token_id: None,
             created_at,
             deposit_enabled,
             deposit_fee,

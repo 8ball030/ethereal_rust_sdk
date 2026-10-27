@@ -16,6 +16,7 @@ use crate::{
         order::OrderClient,
         points::PointsClient,
         position::PositionClient,
+        position_fee::PositionFeeClient,
         product::{self, ProductClient},
         rate_limit::RateLimitClient,
         referral::ReferralClient,
@@ -24,7 +25,7 @@ use crate::{
         subaccount_archive::SubaccountArchiveClient,
         time::TimeClient,
         token::TokenClient,
-        whitelist::WhitelistClient,
+        usde::UsdeClient,
     },
     enums::Environment,
     models::{
@@ -49,15 +50,15 @@ use uuid::Uuid;
 
 fn get_server_url(environment: &Environment) -> &str {
     match environment {
-        Environment::Mainnet => "https://api.ethereal.trade",
-        Environment::Testnet => "https://api.etherealtest.net",
+        Environment::Mainnet => "https://api.meridian.xyz",
+        Environment::Testnet => "https://api.meridiantest.net",
     }
 }
 
 fn get_archive_server_url(environment: &Environment) -> &str {
     match environment {
-        Environment::Mainnet => "https://archive.ethereal.trade",
-        Environment::Testnet => "https://archive.etherealtest.net",
+        Environment::Mainnet => "https://archive.meridian.xyz",
+        Environment::Testnet => "https://archive.meridiantest.net",
     }
 }
 
@@ -219,8 +220,13 @@ impl HttpClient {
             config: &self.config,
         }
     }
-    pub fn whitelist(&self) -> WhitelistClient<'_> {
-        WhitelistClient {
+    pub fn position_fee(&self) -> PositionFeeClient<'_> {
+        PositionFeeClient {
+            config: &self.config,
+        }
+    }
+    pub fn usde(&self) -> UsdeClient<'_> {
+        UsdeClient {
             config: &self.config,
         }
     }

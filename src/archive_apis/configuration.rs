@@ -36,7 +36,7 @@ impl Configuration {
 impl Default for Configuration {
     fn default() -> Self {
         Configuration {
-            base_path: "https://archive.ethereal.trade".to_owned(),
+            base_path: "https://archive.meridian.xyz".to_owned(),
             user_agent: Some("OpenAPI-Generator/0.1.0/rust".to_owned()),
             client: reqwest::Client::new(),
             basic_auth: None,

@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -25,26 +25,19 @@ pub struct ReferralControllerClaimCodeParams {
     pub claim_referral_code_dto: models::ClaimReferralCodeDto,
 }
 
-/// struct for passing parameters to the method [`referral_controller_get_code_usage`]
-#[derive(Clone, Debug, Default)]
-pub struct ReferralControllerGetCodeUsageParams {
-    /// Referral code (3-12 alphanumeric uppercase characters)
-    pub code: String,
-}
-
 /// struct for passing parameters to the method [`referral_controller_get_summary`]
 #[derive(Clone, Debug, Default)]
 pub struct ReferralControllerGetSummaryParams {
     /// Must be: EIP712Auth
-    pub x_ethereal_auth: String,
+    pub x_meridian_auth: String,
     /// Address that signed this message
-    pub x_ethereal_sender: String,
+    pub x_meridian_sender: String,
     /// Hex-encoded EIP-712 signature authorizing this request
-    pub x_ethereal_signature: String,
+    pub x_meridian_signature: String,
     /// Intent of the message (action to be taken)
-    pub x_ethereal_intent: f64,
+    pub x_meridian_intent: f64,
     /// Message signedAt current timestamp (seconds since Unix Epoch)
-    pub x_ethereal_signed_at: String,
+    pub x_meridian_signed_at: String,
     /// Bytes32 encoded subaccount name (0x prefix, zero padded, set when using linked signer)
     pub subaccount: Option<String>,
 }
@@ -53,15 +46,15 @@ pub struct ReferralControllerGetSummaryParams {
 #[derive(Clone, Debug, Default)]
 pub struct ReferralControllerListReferralsParams {
     /// Must be: EIP712Auth
-    pub x_ethereal_auth: String,
+    pub x_meridian_auth: String,
     /// Address that signed this message
-    pub x_ethereal_sender: String,
+    pub x_meridian_sender: String,
     /// Hex-encoded EIP-712 signature authorizing this request
-    pub x_ethereal_signature: String,
+    pub x_meridian_signature: String,
     /// Intent of the message (action to be taken)
-    pub x_ethereal_intent: f64,
+    pub x_meridian_intent: f64,
     /// Message signedAt current timestamp (seconds since Unix Epoch)
-    pub x_ethereal_signed_at: String,
+    pub x_meridian_signed_at: String,
     /// Direction to paginate through objects
     pub order: Option<String>,
     /// Limit the number of objects to return
@@ -82,6 +75,7 @@ pub enum ReferralControllerActivateError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -96,20 +90,7 @@ pub enum ReferralControllerClaimCodeError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
-    Status422(models::UnprocessableEntityDto),
-    Status429(models::TooManyRequestsDto),
-    Status500(),
-    UnknownValue(serde_json::Value),
-}
-
-/// struct for typed errors of method [`referral_controller_get_code_usage`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ReferralControllerGetCodeUsageError {
-    Status400(models::BadRequestDto),
-    Status401(models::UnauthorizedDto),
-    Status403(models::ForbiddenDto),
-    Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -124,6 +105,7 @@ pub enum ReferralControllerGetSummaryError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -138,6 +120,7 @@ pub enum ReferralControllerListReferralsError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -230,55 +213,10 @@ pub async fn referral_controller_claim_code(
     }
 }
 
-pub async fn referral_controller_get_code_usage(
-    configuration: &configuration::Configuration,
-    params: ReferralControllerGetCodeUsageParams,
-) -> Result<models::ReferralCodeUsageDto, Error<ReferralControllerGetCodeUsageError>> {
-    let uri_str = format!(
-        "{}/v1/referral/code/{code}",
-        configuration.base_path,
-        code = crate::apis::urlencode(params.code)
-    );
-    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
-
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
-
-    let status = resp.status();
-    let content_type = resp
-        .headers()
-        .get("content-type")
-        .and_then(|v| v.to_str().ok())
-        .unwrap_or("application/octet-stream");
-    let content_type = super::ContentType::from(content_type);
-
-    if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
-        match content_type {
-            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ReferralCodeUsageDto`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ReferralCodeUsageDto`")))),
-        }
-    } else {
-        let content = resp.text().await?;
-        let entity: Option<ReferralControllerGetCodeUsageError> =
-            serde_json::from_str(&content).ok();
-        Err(Error::ResponseError(ResponseContent {
-            status,
-            content,
-            entity,
-        }))
-    }
-}
-
 pub async fn referral_controller_get_summary(
     configuration: &configuration::Configuration,
     params: ReferralControllerGetSummaryParams,
-) -> Result<models::ReferralDto, Error<ReferralControllerGetSummaryError>> {
+) -> Result<models::ReferralSummaryDto, Error<ReferralControllerGetSummaryError>> {
     let uri_str = format!("{}/v1/referral/summary", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
@@ -288,16 +226,16 @@ pub async fn referral_controller_get_summary(
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
-    req_builder = req_builder.header("X-Ethereal-Auth", params.x_ethereal_auth.to_string());
-    req_builder = req_builder.header("X-Ethereal-Sender", params.x_ethereal_sender.to_string());
+    req_builder = req_builder.header("X-Meridian-Auth", params.x_meridian_auth.to_string());
+    req_builder = req_builder.header("X-Meridian-Sender", params.x_meridian_sender.to_string());
     req_builder = req_builder.header(
-        "X-Ethereal-Signature",
-        params.x_ethereal_signature.to_string(),
+        "X-Meridian-Signature",
+        params.x_meridian_signature.to_string(),
     );
-    req_builder = req_builder.header("X-Ethereal-Intent", params.x_ethereal_intent.to_string());
+    req_builder = req_builder.header("X-Meridian-Intent", params.x_meridian_intent.to_string());
     req_builder = req_builder.header(
-        "X-Ethereal-SignedAt",
-        params.x_ethereal_signed_at.to_string(),
+        "X-Meridian-SignedAt",
+        params.x_meridian_signed_at.to_string(),
     );
 
     let req = req_builder.build()?;
@@ -315,8 +253,8 @@ pub async fn referral_controller_get_summary(
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ReferralDto`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ReferralDto`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ReferralSummaryDto`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ReferralSummaryDto`")))),
         }
     } else {
         let content = resp.text().await?;
@@ -354,16 +292,16 @@ pub async fn referral_controller_list_referrals(
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
-    req_builder = req_builder.header("X-Ethereal-Auth", params.x_ethereal_auth.to_string());
-    req_builder = req_builder.header("X-Ethereal-Sender", params.x_ethereal_sender.to_string());
+    req_builder = req_builder.header("X-Meridian-Auth", params.x_meridian_auth.to_string());
+    req_builder = req_builder.header("X-Meridian-Sender", params.x_meridian_sender.to_string());
     req_builder = req_builder.header(
-        "X-Ethereal-Signature",
-        params.x_ethereal_signature.to_string(),
+        "X-Meridian-Signature",
+        params.x_meridian_signature.to_string(),
     );
-    req_builder = req_builder.header("X-Ethereal-Intent", params.x_ethereal_intent.to_string());
+    req_builder = req_builder.header("X-Meridian-Intent", params.x_meridian_intent.to_string());
     req_builder = req_builder.header(
-        "X-Ethereal-SignedAt",
-        params.x_ethereal_signed_at.to_string(),
+        "X-Meridian-SignedAt",
+        params.x_meridian_signed_at.to_string(),
     );
 
     let req = req_builder.build()?;

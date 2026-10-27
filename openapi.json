@@ -1,14 +1,14 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Ethereal Exchange API",
-    "description": "Ethereal HTTP API for real-time trading, order management, and market data access.\n\nFor more details, see [docs.ethereal.trade](https://docs.ethereal.trade).",
+    "title": "Meridian Exchange API",
+    "description": "Ethereal HTTP API for real-time trading, order management, and market data access.\n\nFor more details, see [docs.meridian.xyz](https://docs.meridian.xyz).",
     "contact": {},
     "version": "0.1.0"
   },
   "servers": [
     {
-      "url": "https://api.ethereal.trade"
+      "url": "https://api.meridian.xyz"
     }
   ],
   "paths": {
@@ -63,18 +63,21 @@
             }
           },
           {
-            "name": "range",
+            "name": "startTime",
             "in": "query",
-            "description": "The range of time of funding rates to retrieve",
+            "description": "Start time of the query range (ms since Unix Epoch)",
             "required": true,
             "schema": {
-              "type": "string",
-              "enum": [
-                "DAY",
-                "WEEK",
-                "MONTH"
-              ],
-              "example": "DAY"
+              "type": "number"
+            }
+          },
+          {
+            "name": "endTime",
+            "in": "query",
+            "description": "End time of the query range (ms since Unix Epoch)",
+            "required": true,
+            "schema": {
+              "type": "number"
             }
           },
           {
@@ -85,9 +88,9 @@
             "schema": {
               "type": "string",
               "enum": [
-                "createdAt"
+                "chargedAt"
               ],
-              "example": "createdAt"
+              "example": "chargedAt"
             }
           }
         ],
@@ -138,6 +141,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -240,6 +253,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -398,6 +421,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -491,6 +524,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -590,6 +633,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -681,6 +734,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -781,6 +844,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -872,6 +945,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -971,6 +1054,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -1061,6 +1154,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -1169,7 +1272,8 @@
             "description": "Client-generated order id to query for (either a valid UUID or alphanumeric string up to 32 characters)",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "019eed6c-9fdc-75b9-bd10-b0d6b8efd1b9"
             }
           },
           {
@@ -1329,6 +1433,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -1447,6 +1561,100 @@
         }
       }
     },
+    "/v1/order/batch": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Place and cancel many orders",
+        "operationId": "OrderController_batch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchOrderDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchOrderResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntityDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/v1/order/cancel": {
       "post": {
         "tags": [
@@ -1459,6 +1667,100 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CancelOrderDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListOfCancelOrderResultDtos"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntityDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/v1/order/cancel-all": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Cancels all open orders for a subaccount",
+        "operationId": "OrderController_cancelAll",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelAllOrderDto"
               }
             }
           },
@@ -1606,6 +1908,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -1818,6 +2130,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -1960,6 +2282,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -1991,7 +2323,7 @@
         "tags": [
           "Order"
         ],
-        "summary": "Returns an order by their id",
+        "summary": "Returns an order by its id",
         "operationId": "OrderController_getById",
         "parameters": [
           {
@@ -2054,6 +2386,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -2085,7 +2427,7 @@
         "tags": [
           "Order"
         ],
-        "summary": "Returns all orders in the same contingency group as the specified order",
+        "summary": "Returns active orders in the same contingency group as the specified active order",
         "operationId": "OrderController_listGroupByOrderId",
         "parameters": [
           {
@@ -2189,6 +2531,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -2316,6 +2668,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -2409,6 +2771,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -2521,6 +2893,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -2733,6 +3115,297 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntityDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/v1/position-fee": {
+      "get": {
+        "tags": [
+          "PositionFee"
+        ],
+        "summary": "Returns a list of position-fee charges for a product over a time range",
+        "operationId": "PositionFeeController_listByProductId",
+        "parameters": [
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Direction to paginate through objects",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Limit the number of objects to return",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Pointer to the current object in pagination dataset",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "query",
+            "description": "Id representing the registered product",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "startTime",
+            "in": "query",
+            "description": "Start time of the query range (ms since Unix Epoch)",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "endTime",
+            "in": "query",
+            "description": "End time of the query range (ms since Unix Epoch)",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "Order by field",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "chargedAt"
+              ],
+              "example": "chargedAt"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOfPositionFeeDtos"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntityDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/v1/position-fee/projected-rate": {
+      "get": {
+        "tags": [
+          "PositionFee"
+        ],
+        "summary": "Returns a list of projected position fees for the given products",
+        "operationId": "PositionFeeController_listProjectedFees",
+        "parameters": [
+          {
+            "name": "productIds",
+            "in": "query",
+            "description": "Array of product ids",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "maxItems": 50,
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOfProjectedPositionFeeDtos"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -2835,6 +3508,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -2983,6 +3666,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -3113,6 +3806,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -3207,6 +3910,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -3297,7 +4010,7 @@
             "schema": {
               "type": "string",
               "example": "ETHUSD",
-              "pattern": "^[a-zA-Z0-9]{1,16}$"
+              "pattern": "^[a-zA-Z0-9]{1,32}$"
             }
           }
         ],
@@ -3348,6 +4061,191 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntityDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/v1/product/mark-price-gap": {
+      "get": {
+        "tags": [
+          "Product"
+        ],
+        "summary": "Returns mark price gaps for the given products and time range",
+        "operationId": "ProductController_listMarkPriceGaps",
+        "parameters": [
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Direction to paginate through objects",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Limit the number of objects to return",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Pointer to the current object in pagination dataset",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "productIds",
+            "in": "query",
+            "description": "Array of product ids",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "maxItems": 50,
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          },
+          {
+            "name": "startTime",
+            "in": "query",
+            "description": "Start time of the query range (ms since Unix Epoch)",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "endTime",
+            "in": "query",
+            "description": "End time of the query range (ms since Unix Epoch)",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "Order by field",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "startTime"
+              ],
+              "example": "startTime"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOfMarkPriceGapDtos"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -3445,6 +4343,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -3551,6 +4459,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -3645,6 +4563,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -3726,6 +4654,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -3820,7 +4758,7 @@
             }
           },
           {
-            "name": "X-Ethereal-Auth",
+            "name": "X-Meridian-Auth",
             "in": "header",
             "description": "Must be: EIP712Auth",
             "required": true,
@@ -3829,7 +4767,7 @@
             }
           },
           {
-            "name": "X-Ethereal-Sender",
+            "name": "X-Meridian-Sender",
             "in": "header",
             "description": "Address that signed this message",
             "required": true,
@@ -3839,7 +4777,7 @@
             }
           },
           {
-            "name": "X-Ethereal-Signature",
+            "name": "X-Meridian-Signature",
             "in": "header",
             "description": "Hex-encoded EIP-712 signature authorizing this request",
             "required": true,
@@ -3849,7 +4787,7 @@
             }
           },
           {
-            "name": "X-Ethereal-Intent",
+            "name": "X-Meridian-Intent",
             "in": "header",
             "description": "Intent of the message (action to be taken)",
             "required": true,
@@ -3864,7 +4802,7 @@
             }
           },
           {
-            "name": "X-Ethereal-SignedAt",
+            "name": "X-Meridian-SignedAt",
             "in": "header",
             "description": "Message signedAt current timestamp (seconds since Unix Epoch)",
             "required": true,
@@ -3920,6 +4858,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -4019,6 +4967,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -4114,101 +5072,12 @@
               }
             }
           },
-          "422": {
-            "description": "Unprocessable Entity",
+          "413": {
+            "description": "Payload Too Large",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UnprocessableEntityDto"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Too Many Requests",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TooManyRequestsDto"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/v1/referral/code/{code}": {
-      "get": {
-        "tags": [
-          "Referral"
-        ],
-        "summary": "Returns referral code usage details",
-        "operationId": "ReferralController_getCodeUsage",
-        "parameters": [
-          {
-            "name": "code",
-            "in": "path",
-            "description": "Referral code (3-12 alphanumeric uppercase characters)",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "XYZ123456789",
-              "maxLength": 12,
-              "minLength": 12,
-              "pattern": "/^[A-Z0-9]+$/"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ReferralCodeUsageDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UnauthorizedDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ForbiddenDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/NotFoundDto"
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -4259,7 +5128,7 @@
             }
           },
           {
-            "name": "X-Ethereal-Auth",
+            "name": "X-Meridian-Auth",
             "in": "header",
             "description": "Must be: EIP712Auth",
             "required": true,
@@ -4268,7 +5137,7 @@
             }
           },
           {
-            "name": "X-Ethereal-Sender",
+            "name": "X-Meridian-Sender",
             "in": "header",
             "description": "Address that signed this message",
             "required": true,
@@ -4278,7 +5147,7 @@
             }
           },
           {
-            "name": "X-Ethereal-Signature",
+            "name": "X-Meridian-Signature",
             "in": "header",
             "description": "Hex-encoded EIP-712 signature authorizing this request",
             "required": true,
@@ -4288,7 +5157,7 @@
             }
           },
           {
-            "name": "X-Ethereal-Intent",
+            "name": "X-Meridian-Intent",
             "in": "header",
             "description": "Intent of the message (action to be taken)",
             "required": true,
@@ -4303,7 +5172,7 @@
             }
           },
           {
-            "name": "X-Ethereal-SignedAt",
+            "name": "X-Meridian-SignedAt",
             "in": "header",
             "description": "Message signedAt current timestamp (seconds since Unix Epoch)",
             "required": true,
@@ -4318,7 +5187,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ReferralDto"
+                  "$ref": "#/components/schemas/ReferralSummaryDto"
                 }
               }
             }
@@ -4359,6 +5228,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -4444,6 +5323,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -4600,6 +5489,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -4726,6 +5625,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -4873,6 +5782,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -4963,6 +5882,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -5160,12 +6089,127 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UnprocessableEntityDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/v1/token/convert": {
+      "post": {
+        "tags": [
+          "Token"
+        ],
+        "summary": "Converts a balance between two USD-equivalent tokens for the subaccount",
+        "operationId": "TokenController_initiateConversion",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitiateConversionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversionDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversionFailedDto"
                 }
               }
             }
@@ -5353,6 +6397,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -5504,6 +6558,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -5594,6 +6658,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -5702,6 +6776,16 @@
               }
             }
           },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Unprocessable Entity",
             "content": {
@@ -5728,23 +6812,143 @@
         }
       }
     },
-    "/v1/whitelist": {
+    "/v1/usde/transfer": {
       "get": {
         "tags": [
-          "Whitelist"
+          "Usde"
         ],
-        "summary": "Checks if an address is whitelisted",
-        "operationId": "WhitelistController_isWhitelisted",
+        "summary": "Returns USDe transfer and cross-chain bridge history for the given wallet address",
+        "operationId": "UsdeController_listTransfers",
         "parameters": [
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Direction to paginate through objects",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Limit the number of objects to return",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Pointer to the current object in pagination dataset",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "address",
             "in": "query",
-            "description": "Address of account",
+            "description": "Wallet address to list transfers for (matches sender, transaction origin, recipient, or cross-chain destination; pending transfers with an undecodable calldata destination match once the destination-side transfer arrives)",
             "required": true,
             "schema": {
               "type": "string",
               "format": "hex",
-              "example": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+              "example": "0xd695ecae5ef47ddfd928a7dc4a13cf9504f4e120"
+            }
+          },
+          {
+            "name": "excludeTransferAddresses",
+            "in": "query",
+            "description": "Hide same-chain transfers sent to or from any of these addresses. Cross-chain deposits and withdrawals are never hidden.",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "hex"
+              },
+              "example": [
+                "0xd695ecae5ef47ddfd928a7dc4a13cf9504f4e120"
+              ],
+              "maxItems": 10,
+              "uniqueItems": true
+            }
+          },
+          {
+            "name": "statuses",
+            "in": "query",
+            "description": "Array of transfer statuses to filter by",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "PENDING",
+                  "COMPLETED"
+                ]
+              },
+              "example": "COMPLETED",
+              "uniqueItems": true
+            }
+          },
+          {
+            "name": "types",
+            "in": "query",
+            "description": "Array of transfer types to filter by",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "DEPOSIT",
+                  "WITHDRAW",
+                  "TRANSFER"
+                ]
+              },
+              "example": "WITHDRAW",
+              "uniqueItems": true
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "Order by field",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "initiatedAt"
+              ],
+              "example": "initiatedAt"
+            }
+          },
+          {
+            "name": "initiatedAfter",
+            "in": "query",
+            "description": "Filter by transfers initiated after timestamp exclusive (ms since Unix epoch)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "initiatedBefore",
+            "in": "query",
+            "description": "Filter by transfers initiated before timestamp inclusive (ms since Unix epoch)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
             }
           }
         ],
@@ -5754,7 +6958,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WhitelistDto"
+                  "$ref": "#/components/schemas/PageOfUsdeTransfersDtos"
                 }
               }
             }
@@ -5795,6 +6999,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotFoundDto"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayloadTooLargeDto"
                 }
               }
             }
@@ -5885,8 +7099,7 @@
         "required": [
           "sender",
           "intent",
-          "signedAt",
-          "subaccount"
+          "signedAt"
         ],
         "properties": {
           "intent": {
@@ -5913,7 +7126,7 @@
           "subaccount": {
             "type": "string",
             "format": "hex",
-            "description": "Bytes32 encoded subaccount name (0x prefix, zero padded)",
+            "description": "Bytes32 encoded subaccount name (0x prefix, zero padded, required for linked signers)",
             "example": "0x7072696d61727900000000000000000000000000000000000000000000000000"
           }
         }
@@ -5940,6 +7153,365 @@
             ]
           }
         }
+      },
+      "BatchCancelOrderDto": {
+        "type": "object",
+        "description": "Cancel instruction within a batch, containing signature and cancel data",
+        "required": [
+          "signature",
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/BatchCancelOrderDtoData"
+          },
+          "signature": {
+            "type": "string",
+            "format": "hex",
+            "description": "Hex-encoded EIP-712 signature authorizing this cancellation"
+          }
+        },
+        "additionalProperties": false
+      },
+      "BatchCancelOrderDtoData": {
+        "type": "object",
+        "required": [
+          "sender",
+          "subaccount",
+          "nonce"
+        ],
+        "properties": {
+          "clientOrderId": {
+            "type": "string",
+            "description": "Client order ID to cancel, mutually exclusive with orderId"
+          },
+          "nonce": {
+            "type": "string",
+            "description": "Unique nonce for this request (nanoseconds since Unix epoch)",
+            "example": "1712019600000000000"
+          },
+          "orderId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Order ID to cancel (UUID), mutually exclusive with clientOrderId"
+          },
+          "sender": {
+            "type": "string",
+            "format": "hex",
+            "description": "Address that signed this message",
+            "example": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+          },
+          "subaccount": {
+            "type": "string",
+            "format": "hex",
+            "description": "Bytes32 encoded subaccount name (0x prefix, zero padded)",
+            "example": "0x7072696d61727900000000000000000000000000000000000000000000000000"
+          }
+        },
+        "additionalProperties": false
+      },
+      "BatchFailureBehavior": {
+        "type": "string",
+        "enum": [
+          "ContinueOnFailure",
+          "StopOnFailure"
+        ]
+      },
+      "BatchInstructionDto": {
+        "oneOf": [
+          {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SubmitOrderDto"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "type"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "NEW"
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BatchCancelOrderDto"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "type"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "CANCEL"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "BatchOrderDto": {
+        "type": "object",
+        "description": "Batch order request containing a list of new order and/or cancel instructions",
+        "required": [
+          "instructions"
+        ],
+        "properties": {
+          "failureBehavior": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/BatchFailureBehavior"
+              }
+            ],
+            "default": "ContinueOnFailure"
+          },
+          "instructions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BatchInstructionDto"
+            },
+            "maxItems": 20,
+            "minItems": 1
+          }
+        },
+        "additionalProperties": false
+      },
+      "BatchOrderResponseDto": {
+        "type": "object",
+        "description": "Response from the batch order endpoint",
+        "required": [
+          "results"
+        ],
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BatchOrderResultDto"
+            },
+            "description": "Ordered list of results corresponding to each instruction in the request"
+          }
+        }
+      },
+      "BatchOrderResultDto": {
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "BatchOrderResultNewDto",
+            "description": "Order was created successfully (may have been filled or placed on book)",
+            "required": [
+              "id",
+              "filled",
+              "result",
+              "type"
+            ],
+            "properties": {
+              "clientOrderId": {
+                "type": "string",
+                "description": "Client-provided order ID echoed back (if supplied in request)"
+              },
+              "filled": {
+                "type": "string",
+                "format": "decimal",
+                "description": "Quantity filled expressed as a decimal string (precision: 9)\n\n**Deprecated:** This value is always zero when block execution is enabled.",
+                "deprecated": true,
+                "example": "0.5"
+              },
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Order ID assigned to this instruction"
+              },
+              "result": {
+                "type": "string",
+                "enum": [
+                  "Ok"
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "NEW"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "title": "BatchOrderResultNewRejectedDto",
+            "description": "Order was created but rejected post-creation (e.g. post-only crossed, unfilled IOC)",
+            "required": [
+              "id",
+              "filled",
+              "result",
+              "type"
+            ],
+            "properties": {
+              "clientOrderId": {
+                "type": "string",
+                "description": "Client-provided order ID echoed back (if supplied in request)"
+              },
+              "filled": {
+                "type": "string",
+                "format": "decimal",
+                "description": "Quantity filled expressed as a decimal string (precision: 9)\n\n**Deprecated:** This value is always zero when block execution is enabled.",
+                "deprecated": true,
+                "example": "0.5"
+              },
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Order ID assigned to this instruction"
+              },
+              "result": {
+                "type": "string",
+                "enum": [
+                  "AccountSuspended",
+                  "CausesImmediateLiquidation",
+                  "DuplicateSameSideOco",
+                  "ExchangeSuspended",
+                  "ImmediateMatchPostOnly",
+                  "InsufficientBalance",
+                  "LiquidationError",
+                  "MarketOrderReachedMaxSlippage",
+                  "MaxQuantityExceeded",
+                  "OcoFilled",
+                  "OpenValueCapExceeded",
+                  "OrderIncreasesPosition",
+                  "RiskLimitExceeded",
+                  "SignerRevoked",
+                  "TriggerCanceledError",
+                  "UnfilledFillOrKill",
+                  "UnfilledImmediateOrCancel",
+                  "UnfilledMarketOrder",
+                  "MakerCanceledByTaker",
+                  "CloseOrder",
+                  "Unknown"
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "NEW_REJECTED"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "title": "BatchOrderResultNewFailedDto",
+            "description": "Order failed to be created (pre-creation validation failure)",
+            "required": [
+              "result",
+              "type"
+            ],
+            "properties": {
+              "clientOrderId": {
+                "type": "string",
+                "description": "Client-provided order ID echoed back (if supplied in request)"
+              },
+              "result": {
+                "$ref": "#/components/schemas/SubmitFailedCode",
+                "description": "Failure reason"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "NEW_FAILED"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "title": "BatchOrderResultCancelDto",
+            "description": "Result of a cancellation instruction",
+            "required": [
+              "result",
+              "type"
+            ],
+            "properties": {
+              "clientOrderId": {
+                "type": "string",
+                "description": "Client order ID echoed back (present if the cancel targeted a client order ID)"
+              },
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Order ID echoed back (present if the cancel targeted an order ID)"
+              },
+              "result": {
+                "$ref": "#/components/schemas/CancelOrderResultCode",
+                "description": "Result code for this cancellation"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "CANCEL"
+                ]
+              }
+            }
+          }
+        ],
+        "description": "Individual result for each instruction in the batch"
+      },
+      "CancelAllOrderDto": {
+        "type": "object",
+        "required": [
+          "signature",
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CancelAllOrderDtoData"
+          },
+          "signature": {
+            "type": "string",
+            "format": "hex",
+            "description": "Hex-encoded EIP-712 signature authorizing this request"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CancelAllOrderDtoData": {
+        "type": "object",
+        "required": [
+          "sender",
+          "subaccount",
+          "nonce"
+        ],
+        "properties": {
+          "nonce": {
+            "type": "string",
+            "description": "Unique nonce for this request (nanoseconds since Unix epoch)",
+            "example": "1712019600000000000"
+          },
+          "sender": {
+            "type": "string",
+            "format": "hex",
+            "description": "Address that signed this message",
+            "example": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+          },
+          "subaccount": {
+            "type": "string",
+            "format": "hex",
+            "description": "Bytes32 encoded subaccount name (0x prefix, zero padded)",
+            "example": "0x7072696d61727900000000000000000000000000000000000000000000000000"
+          }
+        },
+        "additionalProperties": false
       },
       "CancelOrderDto": {
         "type": "object",
@@ -5973,7 +7545,7 @@
             "items": {
               "type": "string"
             },
-            "description": "Client order IDs to cancel (UUIDs or alphanumeric up to 32 chars)",
+            "description": "Client-generated order ids to be canceled (orderIds combined length cannot exceed maximum)",
             "maxItems": 200,
             "uniqueItems": true
           },
@@ -6010,6 +7582,7 @@
       "CancelOrderResultCode": {
         "type": "string",
         "enum": [
+          "PreviousOrderInBatchRejected",
           "Ok",
           "NotFound",
           "AlreadyCanceled",
@@ -6101,6 +7674,115 @@
             "description": "Message signedAt current timestamp (seconds since Unix Epoch)",
             "example": 1712019600,
             "format": "int64"
+          }
+        }
+      },
+      "ConversionDto": {
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "subaccountId",
+          "fromToken",
+          "toToken",
+          "amount",
+          "fee",
+          "createdAt"
+        ],
+        "properties": {
+          "amount": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Amount converted in native units expressed as a decimal (precision: 9)",
+            "example": "1337.42"
+          },
+          "createdAt": {
+            "type": "integer",
+            "description": "Conversion creation timestamp (ms since Unix Epoch)",
+            "example": 1712019600000,
+            "format": "int64"
+          },
+          "fee": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Fee paid for the conversion in native units expressed as a decimal (precision: 9)",
+            "example": "0"
+          },
+          "fromToken": {
+            "type": "string",
+            "format": "hex",
+            "description": "Address of the from-token (non-checksummed; zero address if virtual)",
+            "example": "0x4c9EDD5852cd905f086C759E8383e09bff1E68B3"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id representing the conversion transfer",
+            "example": "9036443a-441a-4a66-87f2-bd5c44cdca7a"
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TransferStatus"
+              }
+            ],
+            "description": "Current status of the conversion",
+            "example": "SUBMITTED"
+          },
+          "subaccountId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id representing the registered subaccount",
+            "example": "9036443a-441a-4a66-87f2-bd5c44cdca7a"
+          },
+          "toToken": {
+            "type": "string",
+            "format": "hex",
+            "description": "Address of the to-token (non-checksummed; zero address if virtual)",
+            "example": "0x0000000000000000000000000000000000000000"
+          }
+        }
+      },
+      "ConversionErrorCode": {
+        "type": "string",
+        "description": "Error code indicating the reason for failure",
+        "enum": [
+          "AccountSuspended",
+          "EngineSuspended",
+          "InsufficientBalance",
+          "InvalidNonceForSigner",
+          "InvalidSigner",
+          "InvalidSignerAddress",
+          "MaximumBalanceExceeded",
+          "NonceAlreadyUsed"
+        ]
+      },
+      "ConversionFailedDto": {
+        "type": "object",
+        "required": [
+          "statusCode",
+          "message",
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ConversionFailedDtoErrorEnum"
+          },
+          "message": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ConversionErrorCode"
+              }
+            ],
+            "description": "Error code indicating the reason for failure",
+            "example": "InsufficientBalance"
+          },
+          "statusCode": {
+            "type": "number",
+            "default": 422,
+            "enum": [
+              422
+            ]
           }
         }
       },
@@ -6373,13 +8055,20 @@
       "FundingDto": {
         "type": "object",
         "required": [
-          "createdAt",
-          "fundingRate1h"
+          "chargedAt",
+          "fundingRate1h",
+          "chargePerUnitUsd"
         ],
         "properties": {
-          "createdAt": {
+          "chargePerUnitUsd": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Funding charge per unit in USD, expressed as a decimal (precision: 9)",
+            "example": "0.5"
+          },
+          "chargedAt": {
             "type": "integer",
-            "description": "Funding charge timestamp (ms since Unix Epoch)",
+            "description": "Timestamp of the charged funding (ms since Unix Epoch)",
             "example": 1712019600000,
             "format": "int64"
           },
@@ -6428,7 +8117,7 @@
             "$ref": "#/components/schemas/ProtocolEnum"
           },
           "type": {
-            "$ref": "#/components/schemas/OrderType"
+            "$ref": "#/components/schemas/HttpFixedRateLimitEndpointDtoOrderType"
           }
         }
       },
@@ -6466,6 +8155,78 @@
           },
           "type": {
             "$ref": "#/components/schemas/HttpPaginatedRateLimitEndpointDtoOrderType"
+          }
+        }
+      },
+      "InitiateConversionDto": {
+        "type": "object",
+        "required": [
+          "signature",
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/InitiateConversionDtoData"
+          },
+          "signature": {
+            "type": "string",
+            "format": "hex",
+            "description": "Hex-encoded EIP-712 signature authorizing this request"
+          }
+        }
+      },
+      "InitiateConversionDtoData": {
+        "type": "object",
+        "required": [
+          "sender",
+          "subaccount",
+          "fromToken",
+          "toToken",
+          "amount",
+          "nonce",
+          "signedAt"
+        ],
+        "properties": {
+          "amount": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Amount to convert in native units expressed as a decimal (precision: 9)",
+            "example": "1337.42"
+          },
+          "fromToken": {
+            "type": "string",
+            "format": "hex",
+            "description": "Address of the token to convert from (zero address for virtual tokens)",
+            "example": "0x4c9EDD5852cd905f086C759E8383e09bff1E68B3"
+          },
+          "nonce": {
+            "type": "string",
+            "description": "Message nonce timestamp (nanoseconds since Unix Epoch)",
+            "example": "2687929537462333"
+          },
+          "sender": {
+            "type": "string",
+            "format": "hex",
+            "description": "Account or linked signer address that placed the conversion request",
+            "example": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+          },
+          "signedAt": {
+            "type": "integer",
+            "description": "Message signedAt current timestamp (seconds since Unix Epoch)",
+            "example": 1712019600,
+            "format": "int64"
+          },
+          "subaccount": {
+            "type": "string",
+            "format": "hex",
+            "description": "Bytes32 encoded subaccount name (0x prefix, zero padded)",
+            "example": "0x7072696d61727900000000000000000000000000000000000000000000000000"
+          },
+          "toToken": {
+            "type": "string",
+            "format": "hex",
+            "description": "Address of the token to convert to (zero address for virtual tokens)",
+            "example": "0x0000000000000000000000000000000000000000"
           }
         }
       },
@@ -6665,6 +8426,15 @@
           "REJECTED"
         ]
       },
+      "LiquidationCause": {
+        "type": "string",
+        "description": "Cause of liquidation",
+        "enum": [
+          "MarkChanged",
+          "Funding",
+          "PositionFee"
+        ]
+      },
       "ListOfCancelOrderResultDtos": {
         "type": "object",
         "description": "Response returned when cancel request is processed",
@@ -6736,6 +8506,51 @@
             "type": "boolean",
             "description": "Whether the maintenance mode is enabled",
             "example": true
+          }
+        }
+      },
+      "MarkPriceGapDto": {
+        "type": "object",
+        "required": [
+          "productId",
+          "startTime",
+          "endTime",
+          "historicSigma",
+          "effectiveSigma"
+        ],
+        "properties": {
+          "effectiveSigma": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Sigma used to calculate the position fee: the greater of the historic and implied sigma",
+            "example": "0.0072"
+          },
+          "endTime": {
+            "type": "integer",
+            "description": "Timestamp when the mark price gap ends (ms since Unix Epoch)",
+            "format": "int64"
+          },
+          "historicSigma": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Standard deviation of the gap return over the whole gap, estimated from historic market closures",
+            "example": "0.0061"
+          },
+          "impliedSigma": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Standard deviation of the gap return over the whole gap, implied by options volatility; omitted if not available",
+            "example": "0.0072"
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id representing the registered product"
+          },
+          "startTime": {
+            "type": "integer",
+            "description": "Timestamp when the mark price gap starts (ms since Unix Epoch)",
+            "format": "int64"
           }
         }
       },
@@ -6899,7 +8714,7 @@
           "clientOrderId": {
             "type": "string",
             "description": "A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)",
-            "example": "28850555-0968-44ca-bdee-b51e286656d9"
+            "example": "019eed6c-9fdc-75b9-bd10-b0d6b8efd1b9"
           },
           "close": {
             "type": "boolean",
@@ -7060,7 +8875,7 @@
           "clientOrderId": {
             "type": "string",
             "description": "A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)",
-            "example": "b1234567-89ab-cdef-0123-456789abcdef"
+            "example": "019eed6c-9fdc-75b9-bd10-b0d6b8efd1b9"
           },
           "createdAt": {
             "type": "integer",
@@ -7193,6 +9008,31 @@
           }
         }
       },
+      "PageOfMarkPriceGapDtos": {
+        "type": "object",
+        "required": [
+          "hasNext",
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MarkPriceGapDto"
+            },
+            "description": "Array of mark price gap objects"
+          },
+          "hasNext": {
+            "type": "boolean",
+            "description": "Whether there are more objects to paginate through",
+            "example": true
+          },
+          "nextCursor": {
+            "type": "string",
+            "description": "Pointer to the next page in pagination dataset"
+          }
+        }
+      },
       "PageOfOrderDtos": {
         "type": "object",
         "required": [
@@ -7254,6 +9094,31 @@
               "$ref": "#/components/schemas/PositionDto"
             },
             "description": "Array of position objects"
+          },
+          "hasNext": {
+            "type": "boolean",
+            "description": "Whether there are more objects to paginate through",
+            "example": true
+          },
+          "nextCursor": {
+            "type": "string",
+            "description": "Pointer to the next page in pagination dataset"
+          }
+        }
+      },
+      "PageOfPositionFeeDtos": {
+        "type": "object",
+        "required": [
+          "hasNext",
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PositionFeeDto"
+            },
+            "description": "Array of position-fee charge objects"
           },
           "hasNext": {
             "type": "boolean",
@@ -7366,6 +9231,31 @@
           }
         }
       },
+      "PageOfProjectedPositionFeeDtos": {
+        "type": "object",
+        "required": [
+          "hasNext",
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectedPositionFeeDto"
+            },
+            "description": "Array of projected position-fee objects"
+          },
+          "hasNext": {
+            "type": "boolean",
+            "description": "Whether there are more objects to paginate through",
+            "example": true
+          },
+          "nextCursor": {
+            "type": "string",
+            "description": "Pointer to the next page in pagination dataset"
+          }
+        }
+      },
       "PageOfReferralDtos": {
         "type": "object",
         "required": [
@@ -7376,7 +9266,7 @@
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ReferralDto"
+              "$ref": "#/components/schemas/ReferralWithRewardsDto"
             },
             "description": "Array of referral objects"
           },
@@ -7541,6 +9431,31 @@
           }
         }
       },
+      "PageOfUsdeTransfersDtos": {
+        "type": "object",
+        "required": [
+          "hasNext",
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UsdeTransferDto"
+            },
+            "description": "Array of USDe transfer objects"
+          },
+          "hasNext": {
+            "type": "boolean",
+            "description": "Whether there are more objects to paginate through",
+            "example": true
+          },
+          "nextCursor": {
+            "type": "string",
+            "description": "Pointer to the next page in pagination dataset"
+          }
+        }
+      },
       "PageOfWithdrawDtos": {
         "type": "object",
         "required": [
@@ -7563,6 +9478,29 @@
           "nextCursor": {
             "type": "string",
             "description": "Pointer to the next page in pagination dataset"
+          }
+        }
+      },
+      "PayloadTooLargeDto": {
+        "type": "object",
+        "required": [
+          "statusCode",
+          "message",
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/PayloadTooLargeDtoErrorEnum"
+          },
+          "message": {
+            "type": "string"
+          },
+          "statusCode": {
+            "type": "number",
+            "default": 413,
+            "enum": [
+              413
+            ]
           }
         }
       },
@@ -7769,8 +9707,10 @@
           "cost",
           "size",
           "fundingUsd",
+          "positionFeeUsd",
           "fundingAccruedUsd",
           "feesAccruedUsd",
+          "positionFeeAccruedUsd",
           "realizedPnl",
           "totalIncreaseNotional",
           "totalIncreaseQuantity",
@@ -7830,6 +9770,18 @@
             "format": "decimal",
             "description": "Product price at the time of liquidation (undefined if not liquidated, precision: 9)",
             "example": "1200.5"
+          },
+          "positionFeeAccruedUsd": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Position fees accrued in USD expressed as a decimal (precision: 9)",
+            "example": "0.25"
+          },
+          "positionFeeUsd": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Outstanding position fee in USD expressed as a decimal (precision: 9)",
+            "example": "0.25"
           },
           "productId": {
             "type": "string",
@@ -7898,6 +9850,40 @@
             "type": "boolean",
             "description": "Whether the position has any associated deleverage records",
             "example": true
+          }
+        }
+      },
+      "PositionFeeDto": {
+        "type": "object",
+        "required": [
+          "chargedAt",
+          "cadenceMinutes",
+          "positionFeeRate",
+          "chargePerUnitUsd"
+        ],
+        "properties": {
+          "cadenceMinutes": {
+            "type": "integer",
+            "description": "Position-fee cadence in minutes",
+            "example": 15,
+            "format": "int64"
+          },
+          "chargePerUnitUsd": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Position-fee charge per unit in USD, expressed as a decimal (precision: 9)",
+            "example": "0.5"
+          },
+          "chargedAt": {
+            "type": "integer",
+            "description": "Timestamp of the charged position-fee (ms since Unix Epoch)",
+            "format": "int64"
+          },
+          "positionFeeRate": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Position-fee rate for the charge",
+            "example": "0.000064213"
           }
         }
       },
@@ -7978,7 +9964,13 @@
         ],
         "properties": {
           "cause": {
-            "$ref": "#/components/schemas/CauseEnum"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LiquidationCause"
+              }
+            ],
+            "description": "Cause of liquidation",
+            "example": "MarkChanged"
           },
           "cost": {
             "type": "string",
@@ -8052,8 +10044,10 @@
           "engineType",
           "onchainId",
           "status",
+          "marginMode",
           "blockNumber",
           "cumulativeFundingUsd",
+          "cumulativePositionFeeUsd",
           "createdAt",
           "minQuantity",
           "lotSize",
@@ -8065,6 +10059,9 @@
           "maxPrice",
           "volume24h",
           "maxLeverage",
+          "maintenanceMargin",
+          "openMarketInitialMargin",
+          "closedMarketInitialMargin",
           "pythFeedId",
           "fundingRate1h",
           "openInterest",
@@ -8072,7 +10069,9 @@
           "maxPositionNotionalUsd",
           "fundingClampApr",
           "fundingBaselineApr",
-          "fundingMaxApr"
+          "fundingMaxApr",
+          "fundingBidImpactSizeUsd",
+          "fundingAskImpactSizeUsd"
         ],
         "properties": {
           "baseTokenAddress": {
@@ -8091,6 +10090,12 @@
             "description": "Block number this product was registered on",
             "example": "123062737"
           },
+          "closedMarketInitialMargin": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Initial margin requirement while the market is closed (mark price gap) expressed as a decimal (precision: 9)",
+            "example": "0.1"
+          },
           "createdAt": {
             "type": "integer",
             "description": "Product creation timestamp (ms since Unix Epoch)",
@@ -8100,8 +10105,14 @@
           "cumulativeFundingUsd": {
             "type": "string",
             "format": "decimal",
-            "description": "Cumulative funding in USD of the product (precision: 9)",
+            "description": "Cumulative funding of the product in USD (precision: 9)",
             "example": "1.001"
+          },
+          "cumulativePositionFeeUsd": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Cumulative position fee of the product in USD (precision: 9)",
+            "example": "0.125"
           },
           "displayTicker": {
             "type": "string",
@@ -8117,11 +10128,23 @@
             "description": "The corresponding engine type this product was registered with",
             "example": 0
           },
+          "fundingAskImpactSizeUsd": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Funding ask impact size, in USD expressed as a decimal (precision: 9)",
+            "example": "10000.0"
+          },
           "fundingBaselineApr": {
             "type": "string",
             "format": "decimal",
             "description": "Funding baseline APR expressed as a decimal (precision: 9)",
             "example": "0.15"
+          },
+          "fundingBidImpactSizeUsd": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Funding bid impact size, in USD expressed as a decimal (precision: 9)",
+            "example": "10000.0"
           },
           "fundingClampApr": {
             "type": "string",
@@ -8143,8 +10166,8 @@
           },
           "fundingUpdatedAt": {
             "type": "integer",
-            "description": "Unix timestamp when funding was last updated",
-            "example": 1721724269,
+            "description": "Timestamp when funding was last updated (ms since Unix Epoch)",
+            "example": 1712019600000,
             "format": "int64"
           },
           "id": {
@@ -8159,11 +10182,26 @@
             "description": "Quantity must be divisible by the lotSize in expressed as a decimal (precision: 9)",
             "example": "0.01"
           },
+          "maintenanceMargin": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Maintenance margin requirement expressed as a decimal (precision: 9)",
+            "example": "0.025"
+          },
           "makerFee": {
             "type": "string",
             "format": "decimal",
             "description": "Fee charged to the maker on order trades expressed as a decimal (precision: 9)",
             "example": "0.001"
+          },
+          "marginMode": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProductMarginMode"
+              }
+            ],
+            "description": "Margin mode for the product",
+            "example": "CROSS"
           },
           "maxLeverage": {
             "type": "number",
@@ -8203,8 +10241,7 @@
           "minQuantity": {
             "type": "string",
             "format": "decimal",
-            "description": "Deprecated. Use lotSize instead. This value is always equal to lotSize.",
-            "deprecated": true,
+            "description": "Minimum order quantity in native units expressed as a decimal (precision: 9)",
             "example": "0.01"
           },
           "onchainId": {
@@ -8218,6 +10255,18 @@
             "format": "decimal",
             "description": "OI of both sides in native units expressed as a decimal (precision: 9)",
             "example": "3300.17"
+          },
+          "openMarketInitialMargin": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Initial margin requirement while the market is open expressed as a decimal (precision: 9)",
+            "example": "0.05"
+          },
+          "positionFeeUpdatedAt": {
+            "type": "integer",
+            "description": "Timestamp when position fee was last updated (ms since Unix Epoch)",
+            "example": 1712019600000,
+            "format": "int64"
           },
           "pythFeedId": {
             "type": "integer",
@@ -8237,7 +10286,13 @@
             "example": "USDe"
           },
           "status": {
-            "$ref": "#/components/schemas/ProductDtoOrderStatus"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProductStatus"
+              }
+            ],
+            "description": "Product status",
+            "example": 1
           },
           "takerFee": {
             "type": "string",
@@ -8263,6 +10318,23 @@
             "example": "500000000.42"
           }
         }
+      },
+      "ProductMarginMode": {
+        "type": "string",
+        "description": "Margin mode for the product",
+        "enum": [
+          "ISOLATED",
+          "CROSS"
+        ]
+      },
+      "ProductStatus": {
+        "type": "string",
+        "description": "Product status",
+        "enum": [
+          "PENDING",
+          "ACTIVE",
+          "DELISTED"
+        ]
       },
       "ProjectedFundingDto": {
         "type": "object",
@@ -8291,6 +10363,39 @@
           }
         }
       },
+      "ProjectedPositionFeeDto": {
+        "type": "object",
+        "required": [
+          "productId",
+          "scheduledAt",
+          "cadenceMinutes",
+          "positionFeeRate"
+        ],
+        "properties": {
+          "cadenceMinutes": {
+            "type": "integer",
+            "description": "Position-fee cadence in minutes",
+            "example": 15,
+            "format": "int64"
+          },
+          "positionFeeRate": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Projected position-fee rate for the scheduled charge",
+            "example": "0.000064213"
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id representing the registered product"
+          },
+          "scheduledAt": {
+            "type": "integer",
+            "description": "Timestamp of the projected position-fee charge (ms since Unix Epoch)",
+            "format": "int64"
+          }
+        }
+      },
       "RateLimitConfigResponseDto": {
         "type": "object",
         "required": [
@@ -8309,9 +10414,6 @@
                 },
                 {
                   "$ref": "#/components/schemas/WsFixedRateLimitEndpointDto"
-                },
-                {
-                  "$ref": "#/components/schemas/Ws2FixedRateLimitEndpointDto"
                 }
               ]
             },
@@ -8328,46 +10430,20 @@
           "RATE_LIMIT_LINKED_SIGNER"
         ]
       },
-      "ReferralCodeUsageDto": {
-        "type": "object",
-        "required": [
-          "code",
-          "remainingUsage"
-        ],
-        "properties": {
-          "code": {
-            "type": "string",
-            "description": "The referral code",
-            "example": "XYZ123456789"
-          },
-          "remainingUsage": {
-            "type": "integer",
-            "description": "Number of remaining times the code can be claimed",
-            "example": 5,
-            "format": "int64"
-          }
-        }
-      },
       "ReferralDto": {
         "type": "object",
         "required": [
           "id",
           "referee",
-          "codeUsageRemaining",
+          "code",
           "refereeTotalPoints",
           "createdAt"
         ],
         "properties": {
           "code": {
             "type": "string",
-            "description": "The referee's referral code to be shared and claimed by others (undefined if not activated)",
+            "description": "The referee's referral code to be shared and claimed by others",
             "example": "XYZ123456789"
-          },
-          "codeUsageRemaining": {
-            "type": "integer",
-            "description": "Number of remaining times the referral code can be claimed",
-            "example": 5,
-            "format": "int64"
           },
           "createdAt": {
             "type": "integer",
@@ -8398,6 +10474,128 @@
             "format": "hex",
             "description": "Address of the referrer (non-checksummed; undefined if not set)",
             "example": "0x41e038d9c9aF27369EcBCe72A69a96695A1fD0D3"
+          }
+        }
+      },
+      "ReferralSummaryDto": {
+        "type": "object",
+        "required": [
+          "id",
+          "referee",
+          "code",
+          "refereeTotalPoints",
+          "createdAt",
+          "totalDistributedAmount",
+          "totalUsdVolume"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The referee's referral code to be shared and claimed by others",
+            "example": "XYZ123456789"
+          },
+          "createdAt": {
+            "type": "integer",
+            "description": "Timestamp of when this referral was activated (ms since Unix Epoch)",
+            "example": 1712019600000,
+            "format": "int64"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id representing the referral",
+            "example": "9036443a-441a-4a66-87f2-bd5c44cdca7a"
+          },
+          "referee": {
+            "type": "string",
+            "format": "hex",
+            "description": "Address of the referee (non-checksummed)",
+            "example": "0x4c9EDD5852cd905f086C759E8383e09bff1E68B3"
+          },
+          "refereeTotalPoints": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Total points (excl. referral points) earned by the referee since referee claimed the code (precision: 9)",
+            "example": "1234567.890000000"
+          },
+          "referrer": {
+            "type": "string",
+            "format": "hex",
+            "description": "Address of the referrer (non-checksummed; undefined if not set)",
+            "example": "0x41e038d9c9aF27369EcBCe72A69a96695A1fD0D3"
+          },
+          "totalDistributedAmount": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Total amount distributed to the caller as a referrer across all referees (precision: 9)",
+            "example": "1234.56"
+          },
+          "totalUsdVolume": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Total trading volume in USD generated by all referees (precision: 9)",
+            "example": "12345678.9"
+          }
+        }
+      },
+      "ReferralWithRewardsDto": {
+        "type": "object",
+        "required": [
+          "id",
+          "referee",
+          "code",
+          "refereeTotalPoints",
+          "createdAt",
+          "volumeUsd",
+          "distributedAmount"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The referee's referral code to be shared and claimed by others",
+            "example": "XYZ123456789"
+          },
+          "createdAt": {
+            "type": "integer",
+            "description": "Timestamp of when this referral was activated (ms since Unix Epoch)",
+            "example": 1712019600000,
+            "format": "int64"
+          },
+          "distributedAmount": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Total amount distributed to the referrer for this referee (precision: 9)",
+            "example": "62.50025"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id representing the referral",
+            "example": "9036443a-441a-4a66-87f2-bd5c44cdca7a"
+          },
+          "referee": {
+            "type": "string",
+            "format": "hex",
+            "description": "Address of the referee (non-checksummed)",
+            "example": "0x4c9EDD5852cd905f086C759E8383e09bff1E68B3"
+          },
+          "refereeTotalPoints": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Total points (excl. referral points) earned by the referee since referee claimed the code (precision: 9)",
+            "example": "1234567.890000000"
+          },
+          "referrer": {
+            "type": "string",
+            "format": "hex",
+            "description": "Address of the referrer (non-checksummed; undefined if not set)",
+            "example": "0x41e038d9c9aF27369EcBCe72A69a96695A1fD0D3"
+          },
+          "volumeUsd": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Total trading volume in USD this referee generated for the referrer (precision: 9)",
+            "example": "125000.5"
           }
         }
       },
@@ -8563,6 +10761,7 @@
           "TradeOrder",
           "InitiateWithdraw",
           "RevokeLinkedSigner",
+          "ConvertToken",
           "CancelOrder",
           "RefreshLinkedSigner",
           "ExtendLinkedSigner",
@@ -8572,6 +10771,10 @@
           "CancelOrder": {
             "type": "string",
             "description": "CancelOrder signature type"
+          },
+          "ConvertToken": {
+            "type": "string",
+            "description": "ConvertToken signature type"
           },
           "EIP712Auth": {
             "type": "string",
@@ -8826,6 +11029,8 @@
           "UnfilledFillOrKill",
           "UnfilledImmediateOrCancel",
           "UnfilledMarketOrder",
+          "MakerCanceledByTaker",
+          "CloseOrder",
           "Unknown"
         ],
         "example": "Ok"
@@ -8852,6 +11057,7 @@
         "type": "string",
         "description": "Result codes for orders that failed to be created (outright failure)",
         "enum": [
+          "PreviousOrderInBatchRejected",
           "AccountSuspended",
           "DuplicateClientOrderId",
           "ExchangeSuspended",
@@ -9016,6 +11222,7 @@
           "InsuranceFundCannotOpenPositions",
           "InstrumentOpenValueCapExceeded",
           "QuantityAboveMaximum",
+          "QuantityBelowMinimum",
           "QuantityNotMultipleOfLotSize",
           "OrderWithZeroQuantity",
           "OcoLatencyFloorMismatch"
@@ -9041,7 +11248,7 @@
           "clientOrderId": {
             "type": "string",
             "description": "A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)",
-            "example": "16e2da4d-58ab-4453-bdb4-8e4a865c12c1",
+            "example": "019eed6c-9fdc-75b9-bd10-b0d6b8efd1b9",
             "maxLength": 36
           },
           "close": {
@@ -9171,7 +11378,7 @@
           "clientOrderId": {
             "type": "string",
             "description": "A subaccount scoped unique client-generated order id (either a UUID or alphanumeric string up to 32 characters)",
-            "example": "16e2da4d-58ab-4453-bdb4-8e4a865c12c1",
+            "example": "019eed6c-9fdc-75b9-bd10-b0d6b8efd1b9",
             "maxLength": 36
           },
           "close": {
@@ -9308,6 +11515,12 @@
             "format": "hex",
             "description": "Address of the token (non-checksummed; zero address if virtual)",
             "example": "0x4c9EDD5852cd905f086C759E8383e09bff1E68B3"
+          },
+          "backingTokenId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id representing the backing token",
+            "example": "9036443a-441a-4a66-87f2-bd5c44cdca7a"
           },
           "createdAt": {
             "type": "integer",
@@ -9603,7 +11816,7 @@
           "lzDestinationEid": {
             "type": "integer",
             "description": "LayerZero destination endpoint ID for the transfer (if withdraw)",
-            "example": 40422,
+            "example": 0,
             "format": "int64"
           },
           "status": {
@@ -9614,6 +11827,17 @@
             "format": "uuid",
             "description": "Id representing the registered subaccount",
             "example": "9036443a-441a-4a66-87f2-bd5c44cdca7a"
+          },
+          "toTokenAddress": {
+            "type": "string",
+            "format": "hex",
+            "description": "Address of the token being converted to (non-checksummed)",
+            "example": "0x0000000000000000000000000000000000000000"
+          },
+          "toTokenName": {
+            "type": "string",
+            "description": "The unique exchange defined token name driven by addToken onchain of the token being converted to",
+            "example": "USD"
           },
           "tokenAddress": {
             "type": "string",
@@ -9645,7 +11869,8 @@
         "type": "string",
         "enum": [
           "DEPOSIT",
-          "WITHDRAW"
+          "WITHDRAW",
+          "CONVERT"
         ]
       },
       "UnauthorizedDto": {
@@ -9694,16 +11919,132 @@
           }
         }
       },
-      "WhitelistDto": {
+      "UsdeTransferDto": {
         "type": "object",
         "required": [
-          "isWhitelisted"
+          "id",
+          "type",
+          "status",
+          "amount",
+          "tokenAddress",
+          "fromAddress",
+          "sourceChainId",
+          "initiatedTransactionHash",
+          "initiatedBlockNumber",
+          "initiatedAt",
+          "createdAt"
         ],
         "properties": {
-          "isWhitelisted": {
-            "type": "boolean",
-            "description": "Whether the address is whitelisted",
-            "example": true
+          "amount": {
+            "type": "string",
+            "format": "decimal",
+            "description": "Amount of USDe delivered (or to be delivered) in native units expressed as a decimal (precision: 9)",
+            "example": "0.42"
+          },
+          "createdAt": {
+            "type": "integer",
+            "description": "Record creation timestamp (ms since Unix Epoch)",
+            "example": 1712019600000,
+            "format": "int64"
+          },
+          "destinationAddress": {
+            "type": "string",
+            "format": "hex",
+            "description": "Destination wallet address for cross-chain transfers, when EVM (non-checksummed)",
+            "example": "0xd695ecae5ef47ddfd928a7dc4a13cf9504f4e120"
+          },
+          "destinationChainId": {
+            "type": "integer",
+            "description": "Chain id the transfer is destined for (cross-chain transfers only)",
+            "example": 1,
+            "format": "int64"
+          },
+          "finalizedAt": {
+            "type": "integer",
+            "description": "Timestamp of the block the transfer was finalized on (ms since Unix Epoch)",
+            "example": 1712019660000,
+            "format": "int64"
+          },
+          "finalizedBlockNumber": {
+            "type": "string",
+            "description": "Block number the transfer was finalized on (once finalized)",
+            "example": "123062992"
+          },
+          "finalizedTransactionHash": {
+            "type": "string",
+            "format": "hex",
+            "description": "Transaction hash of the destination-side transfer (once finalized)",
+            "example": "0x42aa378d58b92c639dda64d528a6123f14e59e071c4b56e058d3a54b819e2b79"
+          },
+          "fromAddress": {
+            "type": "string",
+            "format": "hex",
+            "description": "Wallet address the transfer was sent from (non-checksummed)",
+            "example": "0xd695ecae5ef47ddfd928a7dc4a13cf9504f4e120"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id representing the USDe transfer",
+            "example": "9036443a-441a-4a66-87f2-bd5c44cdca7a"
+          },
+          "initiatedAt": {
+            "type": "integer",
+            "description": "Timestamp of the block the transfer was initiated on (ms since Unix Epoch)",
+            "example": 1712019600000,
+            "format": "int64"
+          },
+          "initiatedBlockNumber": {
+            "type": "string",
+            "description": "Block number the transfer was initiated on",
+            "example": "123062000"
+          },
+          "initiatedTransactionHash": {
+            "type": "string",
+            "format": "hex",
+            "description": "Transaction hash for the initiation of the transfer",
+            "example": "0x8ffa427c4079a78a64811e80fe4dbefa8bd8e2f4cc572cda9717297d220d4f8e"
+          },
+          "lzDestinationAddress": {
+            "type": "string",
+            "format": "hex",
+            "description": "LayerZero destination address (leading 0x bytes32 encoded) for cross-chain transfers"
+          },
+          "lzDestinationEid": {
+            "type": "integer",
+            "description": "LayerZero destination endpoint ID for cross-chain transfers",
+            "example": 30101,
+            "format": "int64"
+          },
+          "senderAddress": {
+            "type": "string",
+            "format": "hex",
+            "description": "Origin wallet that submitted the initiating transaction, for cross-chain transfers; differs from fromAddress when the send went through a router contract (non-checksummed)",
+            "example": "0xc58e58f99d7b8e57d05ce36b8cfa9c5e533a9a35"
+          },
+          "sourceChainId": {
+            "type": "integer",
+            "description": "Chain id the transfer was initiated on",
+            "example": 4663,
+            "format": "int64"
+          },
+          "status": {
+            "$ref": "#/components/schemas/UsdeTransferDtoOrderStatus"
+          },
+          "toAddress": {
+            "type": "string",
+            "format": "hex",
+            "description": "Wallet address the transfer was sent to, for same-chain transfers (non-checksummed)",
+            "example": "0xe4cea507b19796362a5a28fa7cb705a3f1866213"
+          },
+          "tokenAddress": {
+            "type": "string",
+            "format": "hex",
+            "description": "Address of the USDe token on the source chain (non-checksummed)",
+            "example": "0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34"
+          },
+          "type": {
+            "$ref": "#/components/schemas/UsdeTransferDtoOrderType"
           }
         }
       },
@@ -9754,7 +12095,7 @@
           "lzDestinationEid": {
             "type": "integer",
             "description": "LayerZero destination endpoint ID for the transfer (if withdraw)",
-            "example": 30391,
+            "example": 0,
             "format": "int64"
           },
           "status": {
@@ -9824,7 +12165,7 @@
           }
         }
       },
-      "Ws2FixedRateLimitEndpointDto": {
+      "WsFixedRateLimitEndpointDto": {
         "type": "object",
         "required": [
           "path",
@@ -9844,33 +12185,6 @@
             "example": "/v1/stream"
           },
           "protocol": {
-            "$ref": "#/components/schemas/Ws2FixedRateLimitEndpointDtoProtocolEnum"
-          },
-          "type": {
-            "$ref": "#/components/schemas/Ws2FixedRateLimitEndpointDtoOrderType"
-          }
-        }
-      },
-      "WsFixedRateLimitEndpointDto": {
-        "type": "object",
-        "required": [
-          "namespace",
-          "protocol",
-          "type",
-          "fixedPoints"
-        ],
-        "properties": {
-          "fixedPoints": {
-            "type": "number",
-            "description": "Fixed points consumed per request",
-            "example": 5
-          },
-          "namespace": {
-            "type": "string",
-            "description": "WebSocket namespace",
-            "example": "orders"
-          },
-          "protocol": {
             "$ref": "#/components/schemas/WsFixedRateLimitEndpointDtoProtocolEnum"
           },
           "type": {
@@ -9884,6 +12198,13 @@
           "Bad Request"
         ],
         "description": "Extracted enum for ErrorEnum"
+      },
+      "ConversionFailedDtoErrorEnum": {
+        "type": "string",
+        "enum": [
+          "Unprocessable Entity"
+        ],
+        "description": "Extracted enum for ConversionFailedDtoErrorEnum"
       },
       "DryRunOrderFailedUnprocessableEntityDtoErrorEnum": {
         "type": "string",
@@ -9918,6 +12239,13 @@
           "HTTP"
         ],
         "description": "Extracted enum for ProtocolEnum"
+      },
+      "HttpFixedRateLimitEndpointDtoOrderType": {
+        "type": "string",
+        "enum": [
+          "FIXED"
+        ],
+        "description": "Extracted enum for HttpFixedRateLimitEndpointDtoOrderType"
       },
       "HttpPaginatedRateLimitEndpointDtoOrderType": {
         "type": "string",
@@ -9999,6 +12327,13 @@
         ],
         "description": "Extracted enum for OrderDtoOrderType"
       },
+      "PayloadTooLargeDtoErrorEnum": {
+        "type": "string",
+        "enum": [
+          "Payload Too Large"
+        ],
+        "description": "Extracted enum for PayloadTooLargeDtoErrorEnum"
+      },
       "PositionFillDtoOrderType": {
         "type": "string",
         "enum": [
@@ -10007,25 +12342,10 @@
           "REALIZED_PNL",
           "LIQUIDATION",
           "REALIZED_FUNDING",
-          "DELEVERAGE"
+          "DELEVERAGE",
+          "SETTLEMENT"
         ],
         "description": "Extracted enum for PositionFillDtoOrderType"
-      },
-      "CauseEnum": {
-        "type": "string",
-        "enum": [
-          "MarkChanged",
-          "Funding"
-        ],
-        "description": "Extracted enum for CauseEnum"
-      },
-      "ProductDtoOrderStatus": {
-        "type": "string",
-        "enum": [
-          "PENDING",
-          "ACTIVE"
-        ],
-        "description": "Extracted enum for ProductDtoOrderStatus"
       },
       "SignerDtoOrderStatus": {
         "type": "string",
@@ -10066,7 +12386,8 @@
         "type": "string",
         "enum": [
           "DEPOSIT",
-          "WITHDRAW"
+          "WITHDRAW",
+          "CONVERT"
         ],
         "description": "Extracted enum for TransferDtoOrderType"
       },
@@ -10084,26 +12405,29 @@
         ],
         "description": "Extracted enum for UnprocessableEntityDtoErrorEnum"
       },
+      "UsdeTransferDtoOrderStatus": {
+        "type": "string",
+        "enum": [
+          "PENDING",
+          "COMPLETED"
+        ],
+        "description": "Extracted enum for UsdeTransferDtoOrderStatus"
+      },
+      "UsdeTransferDtoOrderType": {
+        "type": "string",
+        "enum": [
+          "DEPOSIT",
+          "WITHDRAW",
+          "TRANSFER"
+        ],
+        "description": "Extracted enum for UsdeTransferDtoOrderType"
+      },
       "WithdrawFailedDtoErrorEnum": {
         "type": "string",
         "enum": [
           "Unprocessable Entity"
         ],
         "description": "Extracted enum for WithdrawFailedDtoErrorEnum"
-      },
-      "Ws2FixedRateLimitEndpointDtoProtocolEnum": {
-        "type": "string",
-        "enum": [
-          "WS2"
-        ],
-        "description": "Extracted enum for Ws2FixedRateLimitEndpointDtoProtocolEnum"
-      },
-      "Ws2FixedRateLimitEndpointDtoOrderType": {
-        "type": "string",
-        "enum": [
-          "FIXED"
-        ],
-        "description": "Extracted enum for Ws2FixedRateLimitEndpointDtoOrderType"
       },
       "WsFixedRateLimitEndpointDtoProtocolEnum": {
         "type": "string",
@@ -10151,10 +12475,6 @@
       "description": "Authentication token management"
     },
     {
-      "name": "Whitelist",
-      "description": "Whitelist status queries"
-    },
-    {
       "name": "Referral",
       "description": "Referral program and referral code management"
     },
@@ -10173,6 +12493,10 @@
     {
       "name": "Time",
       "description": "Server time synchronization"
+    },
+    {
+      "name": "Usde",
+      "description": "USDe transfer and cross-chain bridge history"
     },
     {
       "name": "Maintenance",

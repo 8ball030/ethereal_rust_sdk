@@ -44,6 +44,11 @@ def extract_all_enums(spec: dict):
                 if enum_name in ENUM_NAME_OVERRIDES:
                     enum_name = ENUM_NAME_OVERRIDES[enum_name]
 
+                # Only the submit-order schemas may own OrderType; otherwise whichever `type`
+                # enum comes first in the spec (e.g. rate-limit "FIXED") claims the name.
+                if enum_name == "OrderType" and f"{model_name}OrderType" not in CUSTOM_ENUM_OVERRIDE:
+                    enum_name = f"{model_name}OrderType"
+
                 if enum_name in CUSTOM_ENUM_OVERRIDE:
                     enum_name = CUSTOM_ENUM_OVERRIDE[enum_name]
 

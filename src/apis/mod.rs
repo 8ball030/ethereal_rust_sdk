@@ -120,6 +120,7 @@ pub mod maintenance_api;
 pub mod order_api;
 pub mod points_api;
 pub mod position_api;
+pub mod position_fee_api;
 pub mod product_api;
 pub mod rate_limit_api;
 pub mod referral_api;
@@ -127,6 +128,6 @@ pub mod rpc_api;
 pub mod subaccount_api;
 pub mod time_api;
 pub mod token_api;
-pub mod whitelist_api;
+pub mod usde_api;
 
 pub mod configuration;

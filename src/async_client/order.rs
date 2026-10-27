@@ -2,13 +2,16 @@ use crate::{
     apis::{
         configuration::Configuration,
         order_api::{
-            order_controller_cancel, order_controller_dry_run, order_controller_get_by_id,
+            order_controller_batch, order_controller_cancel, order_controller_cancel_all,
+            order_controller_dry_run, order_controller_get_by_id,
             order_controller_list_by_subaccount_id, order_controller_list_fills_by_subaccount_id,
             order_controller_list_group_by_order_id, order_controller_list_trades,
-            order_controller_submit, OrderControllerCancelError, OrderControllerCancelParams,
-            OrderControllerDryRunError, OrderControllerDryRunParams, OrderControllerGetByIdError,
-            OrderControllerGetByIdParams, OrderControllerListBySubaccountIdError,
-            OrderControllerListBySubaccountIdParams, OrderControllerListFillsBySubaccountIdError,
+            order_controller_submit, OrderControllerBatchError, OrderControllerBatchParams,
+            OrderControllerCancelAllError, OrderControllerCancelAllParams,
+            OrderControllerCancelError, OrderControllerCancelParams, OrderControllerDryRunError,
+            OrderControllerDryRunParams, OrderControllerGetByIdError, OrderControllerGetByIdParams,
+            OrderControllerListBySubaccountIdError, OrderControllerListBySubaccountIdParams,
+            OrderControllerListFillsBySubaccountIdError,
             OrderControllerListFillsBySubaccountIdParams, OrderControllerListGroupByOrderIdError,
             OrderControllerListGroupByOrderIdParams, OrderControllerListTradesError,
             OrderControllerListTradesParams, OrderControllerSubmitError,
@@ -17,8 +20,8 @@ use crate::{
         Error,
     },
     models::{
-        DryRunOrderCreatedDto, ListOfCancelOrderResultDtos, OrderDto, PageOfOrderDtos,
-        PageOfOrderFillDtos, PageOfTradeDtos, SubmitOrderCreatedDto,
+        BatchOrderResponseDto, DryRunOrderCreatedDto, ListOfCancelOrderResultDtos, OrderDto,
+        PageOfOrderDtos, PageOfOrderFillDtos, PageOfTradeDtos, SubmitOrderCreatedDto,
     },
 };
 pub struct OrderClient<'a> {
@@ -26,11 +29,25 @@ pub struct OrderClient<'a> {
 }
 
 impl<'a> OrderClient<'a> {
+    pub async fn batch(
+        &self,
+        params: OrderControllerBatchParams,
+    ) -> Result<BatchOrderResponseDto, Error<OrderControllerBatchError>> {
+        order_controller_batch(self.config, params).await
+    }
+
     pub async fn cancel(
         &self,
         params: OrderControllerCancelParams,
     ) -> Result<ListOfCancelOrderResultDtos, Error<OrderControllerCancelError>> {
         order_controller_cancel(self.config, params).await
+    }
+
+    pub async fn cancel_all(
+        &self,
+        params: OrderControllerCancelAllParams,
+    ) -> Result<ListOfCancelOrderResultDtos, Error<OrderControllerCancelAllError>> {
+        order_controller_cancel_all(self.config, params).await
     }
 
     pub async fn dry_run(

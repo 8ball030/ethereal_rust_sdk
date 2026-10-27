@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -72,6 +72,7 @@ pub enum SubaccountControllerGetBySubaccountIdError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -86,6 +87,7 @@ pub enum SubaccountControllerListError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -100,6 +102,7 @@ pub enum SubaccountControllerListByAccountError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -114,6 +117,7 @@ pub enum SubaccountControllerListSubaccountBalancesError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),

@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,12 +13,9 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ReferralDto {
-    /// The referee's referral code to be shared and claimed by others (undefined if not activated)
-    #[serde(rename = "code", skip_serializing_if = "Option::is_none")]
-    pub code: Option<String>,
-    /// Number of remaining times the referral code can be claimed
-    #[serde(rename = "codeUsageRemaining")]
-    pub code_usage_remaining: i64,
+    /// The referee's referral code to be shared and claimed by others
+    #[serde(rename = "code")]
+    pub code: String,
     /// Timestamp of when this referral was activated (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
     pub created_at: i64,
@@ -38,15 +35,14 @@ pub struct ReferralDto {
 
 impl ReferralDto {
     pub fn new(
-        code_usage_remaining: i64,
+        code: String,
         created_at: i64,
         id: uuid::Uuid,
         referee: String,
         referee_total_points: rust_decimal::Decimal,
     ) -> ReferralDto {
         ReferralDto {
-            code: None,
-            code_usage_remaining,
+            code,
             created_at,
             id,
             referee,
