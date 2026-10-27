@@ -1,11 +1,11 @@
+use alloy_primitives::{hex, B256};
+use alloy_signer_local::PrivateKeySigner;
 use ethereal_rust_sdk::enums::Environment;
 use ethereal_rust_sdk::signable_messages::TradeOrder;
 use ethereal_rust_sdk::signing::Eip712;
 use ethereal_rust_sdk::signing::{
     get_domain_separator, hex_to_bytes32, make_full_hash, to_scaled_e9,
 };
-use ethers::signers::{LocalWallet, Signer};
-use ethers::utils::hex;
 use rust_decimal_macros::dec;
 
 fn get_test_order() -> TradeOrder {
@@ -54,7 +54,7 @@ fn test_get_domain_separator() {
 #[test]
 fn test_eip712_signature_verification() -> Result<(), Box<dyn std::error::Error>> {
     // Create a wallet
-    let wallet: LocalWallet =
+    let wallet: PrivateKeySigner =
         "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80".parse()?;
 
     let expected_address = wallet.address();
@@ -65,11 +65,11 @@ fn test_eip712_signature_verification() -> Result<(), Box<dyn std::error::Error>
     let order = get_test_order();
     // Sign the typed data (synchronous)
     let signature = order.sign(env, &wallet)?;
-    println!("Signature: 0x{}", hex::encode(signature.to_vec()));
+    println!("Signature: 0x{}", hex::encode(signature.as_bytes()));
 
     // Recover the signer from the signature
     let digest = order.encode_eip712(env)?;
-    let recovered_address = signature.recover(digest)?;
+    let recovered_address = signature.recover_address_from_prehash(&B256::from(digest))?;
 
     println!("Recovered signer: {recovered_address:?}");
 
@@ -87,10 +87,10 @@ fn test_eip712_signature_verification() -> Result<(), Box<dyn std::error::Error>
 #[test]
 fn test_invalid_signature_fails() -> Result<(), Box<dyn std::error::Error>> {
     // Create two different wallets
-    let wallet1: LocalWallet =
+    let wallet1: PrivateKeySigner =
         "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80".parse()?;
 
-    let wallet2: LocalWallet =
+    let wallet2: PrivateKeySigner =
         "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d".parse()?;
 
     let env = Environment::Testnet;
@@ -98,7 +98,7 @@ fn test_invalid_signature_fails() -> Result<(), Box<dyn std::error::Error>> {
 
     let signature = order.sign(env, &wallet1)?;
     let digest = order.encode_eip712(env)?;
-    let recovered_address = signature.recover(digest)?;
+    let recovered_address = signature.recover_address_from_prehash(&B256::from(digest))?;
 
     // Verify it doesn't match wallet2
     assert_ne!(
@@ -117,7 +117,7 @@ fn test_known_flow() -> Result<(), Box<dyn std::error::Error>> {
     // Known wallet
     println!("Testing known trade order signing flow...");
     let env = Environment::Testnet;
-    let wallet: LocalWallet =
+    let wallet: PrivateKeySigner =
         "0bb5d63b84421e1268dda020818ae30cf26e7f10e321fb820a8aa69216dea92a".parse()?;
     let expected_address = wallet.address();
     println!("Expected signer: {expected_address:?}");
@@ -161,17 +161,20 @@ fn test_known_flow() -> Result<(), Box<dyn std::error::Error>> {
 
     // Sign the order
     let signature = order.sign(env, &wallet)?;
-    println!("Generated Signature: 0x{}", hex::encode(signature.to_vec()));
+    println!(
+        "Generated Signature: 0x{}",
+        hex::encode(signature.as_bytes())
+    );
     // Verify it matches the known signature
     assert_eq!(
-        format!("0x{}", hex::encode(signature.to_vec())),
+        format!("0x{}", hex::encode(signature.as_bytes())),
         known_signature,
         "Generated signature does not match known signature"
     );
 
     // Recover the signer
     let digest = order.encode_eip712(env)?;
-    let recovered_address = signature.recover(digest)?;
+    let recovered_address = signature.recover_address_from_prehash(&B256::from(digest))?;
     assert_eq!(
         expected_address, recovered_address,
         "Recovered address doesn't match expected signer"

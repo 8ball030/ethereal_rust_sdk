@@ -102,13 +102,11 @@ CONFIG_VALUES_TEMPLATE = Template("""
 """)
 
 SIGNABLE_MESSAGE_HEADER = """
-use ethers::types::transaction::eip712::Eip712Error;
-use ethers::types::{Address};
-
-use ethers::{types::U256};
+use alloy_dyn_abi::DynSolValue;
+use alloy_primitives::{keccak256, Address, B256, U256};
 use serde::{Deserialize, Serialize};
 
-use crate::signing::Eip712;
+use crate::signing::{Eip712, Eip712Error};
 
 """
 SIGNABLE_MESSAGE_TEMPLATE = Template("""
@@ -118,19 +116,19 @@ $fields
 }
 impl Eip712 for $message_name {
     fn type_hash() -> Result<[u8; 32], Eip712Error> {
-        Ok(ethers::utils::keccak256(
+        Ok(keccak256(
             "$message_name($struct)"
-        ))
+        ).0)
     }
 
     fn struct_hash(&self) -> Result<[u8; 32], Eip712Error> {
         let mut encoded = Vec::new();
         encoded.extend_from_slice(&Self::type_hash()?);
-        encoded.extend_from_slice(&ethers::abi::encode(&[
+        encoded.extend_from_slice(&DynSolValue::Tuple(vec![
 $fields_encoding
-        ]));
+        ]).abi_encode_params());
 
-        Ok(ethers::utils::keccak256(&encoded))
+        Ok(keccak256(&encoded).0)
     }
 }
 """)
