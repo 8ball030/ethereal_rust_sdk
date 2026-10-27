@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 pub struct PageOfReferralDtos {
     /// Array of referral objects
     #[serde(rename = "data")]
-    pub data: Vec<models::ReferralDto>,
+    pub data: Vec<models::ReferralWithRewardsDto>,
     /// Whether there are more objects to paginate through
     #[serde(rename = "hasNext")]
     pub has_next: bool,
@@ -25,7 +25,7 @@ pub struct PageOfReferralDtos {
 }
 
 impl PageOfReferralDtos {
-    pub fn new(data: Vec<models::ReferralDto>, has_next: bool) -> PageOfReferralDtos {
+    pub fn new(data: Vec<models::ReferralWithRewardsDto>, has_next: bool) -> PageOfReferralDtos {
         PageOfReferralDtos {
             data,
             has_next,

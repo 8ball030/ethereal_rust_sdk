@@ -19,13 +19,21 @@ pub struct UnrealizedPnlHistoryDto {
     /// Unrealized PnL at this point in time, expressed as a decimal (precision: 9)
     #[serde(rename = "unrealizedPnl")]
     pub unrealized_pnl: rust_decimal::Decimal,
+    /// Token ID of the unrealized PnL record
+    #[serde(rename = "tokenId")]
+    pub token_id: String,
 }
 
 impl UnrealizedPnlHistoryDto {
-    pub fn new(time: f64, unrealized_pnl: rust_decimal::Decimal) -> UnrealizedPnlHistoryDto {
+    pub fn new(
+        time: f64,
+        unrealized_pnl: rust_decimal::Decimal,
+        token_id: String,
+    ) -> UnrealizedPnlHistoryDto {
         UnrealizedPnlHistoryDto {
             time,
             unrealized_pnl,
+            token_id,
         }
     }
 }

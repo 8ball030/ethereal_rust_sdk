@@ -39,6 +39,31 @@ pub struct SubaccountArchiveControllerListBalanceHistoryParams {
     pub end_time: Option<f64>,
     /// Order by field
     pub order_by: Option<String>,
+    /// Array of quote-token ids to filter by
+    pub token_ids: Option<Vec<uuid::Uuid>>,
+}
+
+/// struct for passing parameters to the method [`subaccount_archive_controller_list_position_fee_history`]
+#[derive(Clone, Debug, Default)]
+pub struct SubaccountArchiveControllerListPositionFeeHistoryParams {
+    /// Start time of the query range (clamped to resolution, ms since Unix epoch)
+    pub start_time: f64,
+    /// Id of the subaccount to query for
+    pub subaccount_id: String,
+    /// Direction to paginate through objects
+    pub order: Option<String>,
+    /// Limit the number of objects to return
+    pub limit: Option<i64>,
+    /// Pointer to the current object in pagination dataset
+    pub cursor: Option<String>,
+    /// End time of the query range (clamped to resolution, ms since Unix epoch, defaults to now)
+    pub end_time: Option<f64>,
+    /// Order by field
+    pub order_by: Option<String>,
+    /// Array of position ids to filter for
+    pub position_ids: Option<Vec<uuid::Uuid>>,
+    /// Array of product ids to filter for
+    pub product_ids: Option<Vec<uuid::Uuid>>,
 }
 
 /// struct for passing parameters to the method [`subaccount_archive_controller_list_position_funding_history`]
@@ -92,7 +117,7 @@ pub struct SubaccountArchiveControllerListUnrealizedPnlHistoryParams {
 pub struct SubaccountArchiveControllerListVolumeHistoryParams {
     /// Start time of the query range (clamped to resolution, ms since Unix epoch)
     pub start_time: f64,
-    /// Resolution of the data to be returned
+    /// Resolution of the data to be returned (hourly or coarser only)
     pub resolution: String,
     /// Id of the subaccount to query for
     pub subaccount_id: String,
@@ -116,6 +141,7 @@ pub enum SubaccountArchiveControllerGetTotalVolumeError {
     Status401(archive_models::UnauthorizedDto),
     Status403(archive_models::ForbiddenDto),
     Status404(archive_models::NotFoundDto),
+    Status413(archive_models::PayloadTooLargeDto),
     Status422(archive_models::UnprocessableEntityDto),
     Status429(archive_models::TooManyRequestsDto),
     Status500(),
@@ -130,6 +156,22 @@ pub enum SubaccountArchiveControllerListBalanceHistoryError {
     Status401(archive_models::UnauthorizedDto),
     Status403(archive_models::ForbiddenDto),
     Status404(archive_models::NotFoundDto),
+    Status413(archive_models::PayloadTooLargeDto),
+    Status422(archive_models::UnprocessableEntityDto),
+    Status429(archive_models::TooManyRequestsDto),
+    Status500(),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`subaccount_archive_controller_list_position_fee_history`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum SubaccountArchiveControllerListPositionFeeHistoryError {
+    Status400(archive_models::BadRequestDto),
+    Status401(archive_models::UnauthorizedDto),
+    Status403(archive_models::ForbiddenDto),
+    Status404(archive_models::NotFoundDto),
+    Status413(archive_models::PayloadTooLargeDto),
     Status422(archive_models::UnprocessableEntityDto),
     Status429(archive_models::TooManyRequestsDto),
     Status500(),
@@ -144,6 +186,7 @@ pub enum SubaccountArchiveControllerListPositionFundingHistoryError {
     Status401(archive_models::UnauthorizedDto),
     Status403(archive_models::ForbiddenDto),
     Status404(archive_models::NotFoundDto),
+    Status413(archive_models::PayloadTooLargeDto),
     Status422(archive_models::UnprocessableEntityDto),
     Status429(archive_models::TooManyRequestsDto),
     Status500(),
@@ -158,6 +201,7 @@ pub enum SubaccountArchiveControllerListUnrealizedPnlHistoryError {
     Status401(archive_models::UnauthorizedDto),
     Status403(archive_models::ForbiddenDto),
     Status404(archive_models::NotFoundDto),
+    Status413(archive_models::PayloadTooLargeDto),
     Status422(archive_models::UnprocessableEntityDto),
     Status429(archive_models::TooManyRequestsDto),
     Status500(),
@@ -172,6 +216,7 @@ pub enum SubaccountArchiveControllerListVolumeHistoryError {
     Status401(archive_models::UnauthorizedDto),
     Status403(archive_models::ForbiddenDto),
     Status404(archive_models::NotFoundDto),
+    Status413(archive_models::PayloadTooLargeDto),
     Status422(archive_models::UnprocessableEntityDto),
     Status429(archive_models::TooManyRequestsDto),
     Status500(),
@@ -251,6 +296,25 @@ pub async fn subaccount_archive_controller_list_balance_history(
         req_builder = req_builder.query(&[("orderBy", &param_value.to_string())]);
     }
     req_builder = req_builder.query(&[("subaccountId", &params.subaccount_id.to_string())]);
+    if let Some(ref param_value) = params.token_ids {
+        req_builder = match "multi" {
+            "multi" => req_builder.query(
+                &param_value
+                    .iter()
+                    .map(|p| ("tokenIds".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            ),
+            _ => req_builder.query(&[(
+                "tokenIds",
+                &param_value
+                    .iter()
+                    .map(|p| p.to_string())
+                    .collect::<Vec<String>>()
+                    .join(",")
+                    .to_string(),
+            )]),
+        };
+    }
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
@@ -276,6 +340,105 @@ pub async fn subaccount_archive_controller_list_balance_history(
     } else {
         let content = resp.text().await?;
         let entity: Option<SubaccountArchiveControllerListBalanceHistoryError> =
+            serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+pub async fn subaccount_archive_controller_list_position_fee_history(
+    configuration: &configuration::Configuration,
+    params: SubaccountArchiveControllerListPositionFeeHistoryParams,
+) -> Result<
+    archive_models::PageOfPositionFeeHistoryDtos,
+    Error<SubaccountArchiveControllerListPositionFeeHistoryError>,
+> {
+    let uri_str = format!("{}/v1/subaccount/position-fee", configuration.base_path);
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = params.order {
+        req_builder = req_builder.query(&[("order", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = params.limit {
+        req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = params.cursor {
+        req_builder = req_builder.query(&[("cursor", &param_value.to_string())]);
+    }
+    req_builder = req_builder.query(&[("startTime", &params.start_time.to_string())]);
+    if let Some(ref param_value) = params.end_time {
+        req_builder = req_builder.query(&[("endTime", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = params.order_by {
+        req_builder = req_builder.query(&[("orderBy", &param_value.to_string())]);
+    }
+    req_builder = req_builder.query(&[("subaccountId", &params.subaccount_id.to_string())]);
+    if let Some(ref param_value) = params.position_ids {
+        req_builder = match "multi" {
+            "multi" => req_builder.query(
+                &param_value
+                    .iter()
+                    .map(|p| ("positionIds".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            ),
+            _ => req_builder.query(&[(
+                "positionIds",
+                &param_value
+                    .iter()
+                    .map(|p| p.to_string())
+                    .collect::<Vec<String>>()
+                    .join(",")
+                    .to_string(),
+            )]),
+        };
+    }
+    if let Some(ref param_value) = params.product_ids {
+        req_builder = match "multi" {
+            "multi" => req_builder.query(
+                &param_value
+                    .iter()
+                    .map(|p| ("productIds".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            ),
+            _ => req_builder.query(&[(
+                "productIds",
+                &param_value
+                    .iter()
+                    .map(|p| p.to_string())
+                    .collect::<Vec<String>>()
+                    .join(",")
+                    .to_string(),
+            )]),
+        };
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `archive_models::PageOfPositionFeeHistoryDtos`"))),
+            ContentType::Unsupported(unknown_type) => Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `archive_models::PageOfPositionFeeHistoryDtos`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<SubaccountArchiveControllerListPositionFeeHistoryError> =
             serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,

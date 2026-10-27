@@ -143,6 +143,40 @@ impl Eip712 for RevokeLinkedSigner {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ConvertToken {
+    pub sender: Address,
+    pub subaccount: [u8; 32],
+    pub from_token: Address,
+    pub to_token: Address,
+    pub amount: u128,
+    pub nonce: u64,
+    pub signed_at: u64,
+}
+impl Eip712 for ConvertToken {
+    fn type_hash() -> Result<[u8; 32], Eip712Error> {
+        Ok(ethers::utils::keccak256(
+            "ConvertToken(address sender,bytes32 subaccount,address fromToken,address toToken,uint128 amount,uint64 nonce,uint64 signedAt)"
+        ))
+    }
+
+    fn struct_hash(&self) -> Result<[u8; 32], Eip712Error> {
+        let mut encoded = Vec::new();
+        encoded.extend_from_slice(&Self::type_hash()?);
+        encoded.extend_from_slice(&ethers::abi::encode(&[
+            ethers::abi::Token::Address(self.sender),
+            ethers::abi::Token::FixedBytes(self.subaccount.to_vec()),
+            ethers::abi::Token::Address(self.from_token),
+            ethers::abi::Token::Address(self.to_token),
+            ethers::abi::Token::Uint(U256::from(self.amount)),
+            ethers::abi::Token::Uint(U256::from(self.nonce)),
+            ethers::abi::Token::Uint(U256::from(self.signed_at)),
+        ]));
+
+        Ok(ethers::utils::keccak256(&encoded))
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EIP712Auth {
     pub sender: Address,
     pub intent: u8,

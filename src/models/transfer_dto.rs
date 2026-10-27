@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -63,6 +63,12 @@ pub struct TransferDto {
     /// Id representing the registered subaccount
     #[serde(rename = "subaccountId")]
     pub subaccount_id: uuid::Uuid,
+    /// Address of the token being converted to (non-checksummed)
+    #[serde(rename = "toTokenAddress", skip_serializing_if = "Option::is_none")]
+    pub to_token_address: Option<String>,
+    /// The unique exchange defined token name driven by addToken onchain of the token being converted to
+    #[serde(rename = "toTokenName", skip_serializing_if = "Option::is_none")]
+    pub to_token_name: Option<String>,
     /// Address of token transferred (non-checksummed)
     #[serde(rename = "tokenAddress")]
     pub token_address: String,
@@ -98,6 +104,8 @@ impl TransferDto {
             lz_destination_eid: None,
             status,
             subaccount_id,
+            to_token_address: None,
+            to_token_name: None,
             token_address,
             token_name,
             r#type,

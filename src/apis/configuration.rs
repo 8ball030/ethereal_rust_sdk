@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -36,7 +36,7 @@ impl Configuration {
 impl Default for Configuration {
     fn default() -> Self {
         Configuration {
-            base_path: "https://api.ethereal.trade".to_owned(),
+            base_path: "https://api.meridian.xyz".to_owned(),
             user_agent: Some("OpenAPI-Generator/0.1.0/rust".to_owned()),
             client: reqwest::Client::new(),
             basic_auth: None,

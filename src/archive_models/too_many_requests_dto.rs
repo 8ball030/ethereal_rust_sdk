@@ -21,7 +21,7 @@ pub struct TooManyRequestsDto {
     #[serde(rename = "error")]
     pub error: archive_models::TooManyRequestsDtoErrorEnum,
     #[serde(rename = "type")]
-    pub r#type: archive_models::OrderType,
+    pub r#type: archive_models::TooManyRequestsDtoOrderType,
 }
 
 impl TooManyRequestsDto {
@@ -29,7 +29,7 @@ impl TooManyRequestsDto {
         status_code: StatusCode,
         message: String,
         error: archive_models::TooManyRequestsDtoErrorEnum,
-        r#type: archive_models::OrderType,
+        r#type: archive_models::TooManyRequestsDtoOrderType,
     ) -> TooManyRequestsDto {
         TooManyRequestsDto {
             status_code,
@@ -40,11 +40,11 @@ impl TooManyRequestsDto {
     }
 }
 ///
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-#[derive(Default)]
+#[derive(
+    Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, Default,
+)]
 pub enum StatusCode {
     #[serde(rename = "429")]
     #[default]
     Variant429,
 }
-

@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -48,6 +48,25 @@ pub struct ProductControllerListParams {
     pub ticker: Option<String>,
 }
 
+/// struct for passing parameters to the method [`product_controller_list_mark_price_gaps`]
+#[derive(Clone, Debug, Default)]
+pub struct ProductControllerListMarkPriceGapsParams {
+    /// Array of product ids
+    pub product_ids: Vec<uuid::Uuid>,
+    /// Start time of the query range (ms since Unix Epoch)
+    pub start_time: f64,
+    /// End time of the query range (ms since Unix Epoch)
+    pub end_time: f64,
+    /// Direction to paginate through objects
+    pub order: Option<String>,
+    /// Limit the number of objects to return
+    pub limit: Option<i64>,
+    /// Pointer to the current object in pagination dataset
+    pub cursor: Option<String>,
+    /// Order by field
+    pub order_by: Option<String>,
+}
+
 /// struct for typed errors of method [`product_controller_get_by_id`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -56,6 +75,7 @@ pub enum ProductControllerGetByIdError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -70,6 +90,7 @@ pub enum ProductControllerGetMarketLiquidityError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -84,6 +105,7 @@ pub enum ProductControllerGetMarketPriceError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -98,6 +120,22 @@ pub enum ProductControllerListError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
+    Status422(models::UnprocessableEntityDto),
+    Status429(models::TooManyRequestsDto),
+    Status500(),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`product_controller_list_mark_price_gaps`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ProductControllerListMarkPriceGapsError {
+    Status400(models::BadRequestDto),
+    Status401(models::UnauthorizedDto),
+    Status403(models::ForbiddenDto),
+    Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -297,6 +335,80 @@ pub async fn product_controller_list(
     } else {
         let content = resp.text().await?;
         let entity: Option<ProductControllerListError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+pub async fn product_controller_list_mark_price_gaps(
+    configuration: &configuration::Configuration,
+    params: ProductControllerListMarkPriceGapsParams,
+) -> Result<models::PageOfMarkPriceGapDtos, Error<ProductControllerListMarkPriceGapsError>> {
+    let uri_str = format!("{}/v1/product/mark-price-gap", configuration.base_path);
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = params.order {
+        req_builder = req_builder.query(&[("order", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = params.limit {
+        req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = params.cursor {
+        req_builder = req_builder.query(&[("cursor", &param_value.to_string())]);
+    }
+    req_builder = match "multi" {
+        "multi" => req_builder.query(
+            &params
+                .product_ids
+                .into_iter()
+                .map(|p| ("productIds".to_owned(), p.to_string()))
+                .collect::<Vec<(std::string::String, std::string::String)>>(),
+        ),
+        _ => req_builder.query(&[(
+            "productIds",
+            &params
+                .product_ids
+                .into_iter()
+                .map(|p| p.to_string())
+                .collect::<Vec<String>>()
+                .join(",")
+                .to_string(),
+        )]),
+    };
+    req_builder = req_builder.query(&[("startTime", &params.start_time.to_string())]);
+    req_builder = req_builder.query(&[("endTime", &params.end_time.to_string())]);
+    if let Some(ref param_value) = params.order_by {
+        req_builder = req_builder.query(&[("orderBy", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::PageOfMarkPriceGapDtos`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::PageOfMarkPriceGapDtos`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ProductControllerListMarkPriceGapsError> =
+            serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

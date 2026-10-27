@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -37,6 +37,12 @@ pub struct PositionDto {
     /// Product price at the time of liquidation (undefined if not liquidated, precision: 9)
     #[serde(rename = "liquidationPrice", skip_serializing_if = "Option::is_none")]
     pub liquidation_price: Option<rust_decimal::Decimal>,
+    /// Position fees accrued in USD expressed as a decimal (precision: 9)
+    #[serde(rename = "positionFeeAccruedUsd")]
+    pub position_fee_accrued_usd: rust_decimal::Decimal,
+    /// Outstanding position fee in USD expressed as a decimal (precision: 9)
+    #[serde(rename = "positionFeeUsd")]
+    pub position_fee_usd: rust_decimal::Decimal,
     /// Id of product to this position belongs to
     #[serde(rename = "productId")]
     pub product_id: uuid::Uuid,
@@ -81,6 +87,8 @@ impl PositionDto {
         funding_usd: rust_decimal::Decimal,
         id: uuid::Uuid,
         is_liquidated: bool,
+        position_fee_accrued_usd: rust_decimal::Decimal,
+        position_fee_usd: rust_decimal::Decimal,
         product_id: uuid::Uuid,
         realized_pnl: rust_decimal::Decimal,
         side: models::OrderSide,
@@ -101,6 +109,8 @@ impl PositionDto {
             id,
             is_liquidated,
             liquidation_price: None,
+            position_fee_accrued_usd,
+            position_fee_usd,
             product_id,
             realized_pnl,
             side,

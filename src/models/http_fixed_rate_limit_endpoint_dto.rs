@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -24,7 +24,7 @@ pub struct HttpFixedRateLimitEndpointDto {
     #[serde(rename = "protocol")]
     pub protocol: models::ProtocolEnum,
     #[serde(rename = "type")]
-    pub r#type: models::OrderType,
+    pub r#type: models::HttpFixedRateLimitEndpointDtoOrderType,
 }
 
 impl HttpFixedRateLimitEndpointDto {
@@ -33,7 +33,7 @@ impl HttpFixedRateLimitEndpointDto {
         method: models::MethodEnum,
         path: String,
         protocol: models::ProtocolEnum,
-        r#type: models::OrderType,
+        r#type: models::HttpFixedRateLimitEndpointDtoOrderType,
     ) -> HttpFixedRateLimitEndpointDto {
         HttpFixedRateLimitEndpointDto {
             fixed_points,

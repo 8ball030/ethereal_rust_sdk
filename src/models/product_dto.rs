@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -22,21 +22,33 @@ pub struct ProductDto {
     /// Block number this product was registered on
     #[serde(rename = "blockNumber")]
     pub block_number: String,
+    /// Initial margin requirement while the market is closed (mark price gap) expressed as a decimal (precision: 9)
+    #[serde(rename = "closedMarketInitialMargin")]
+    pub closed_market_initial_margin: rust_decimal::Decimal,
     /// Product creation timestamp (ms since Unix Epoch)
     #[serde(rename = "createdAt")]
     pub created_at: i64,
-    /// Cumulative funding in USD of the product (precision: 9)
+    /// Cumulative funding of the product in USD (precision: 9)
     #[serde(rename = "cumulativeFundingUsd")]
     pub cumulative_funding_usd: rust_decimal::Decimal,
+    /// Cumulative position fee of the product in USD (precision: 9)
+    #[serde(rename = "cumulativePositionFeeUsd")]
+    pub cumulative_position_fee_usd: rust_decimal::Decimal,
     /// Product display ticker based on the base quote token
     #[serde(rename = "displayTicker")]
     pub display_ticker: String,
     /// The corresponding engine type this product was registered with
     #[serde(rename = "engineType")]
     pub engine_type: models::EngineType,
+    /// Funding ask impact size, in USD expressed as a decimal (precision: 9)
+    #[serde(rename = "fundingAskImpactSizeUsd")]
+    pub funding_ask_impact_size_usd: rust_decimal::Decimal,
     /// Funding baseline APR expressed as a decimal (precision: 9)
     #[serde(rename = "fundingBaselineApr")]
     pub funding_baseline_apr: rust_decimal::Decimal,
+    /// Funding bid impact size, in USD expressed as a decimal (precision: 9)
+    #[serde(rename = "fundingBidImpactSizeUsd")]
+    pub funding_bid_impact_size_usd: rust_decimal::Decimal,
     /// Funding clamp APR expressed as a decimal (precision: 9)
     #[serde(rename = "fundingClampApr")]
     pub funding_clamp_apr: rust_decimal::Decimal,
@@ -46,7 +58,7 @@ pub struct ProductDto {
     /// Last computed hourly funding rate expressed as a decimal (precision: 9)
     #[serde(rename = "fundingRate1h")]
     pub funding_rate1h: rust_decimal::Decimal,
-    /// Unix timestamp when funding was last updated
+    /// Timestamp when funding was last updated (ms since Unix Epoch)
     #[serde(rename = "fundingUpdatedAt", skip_serializing_if = "Option::is_none")]
     pub funding_updated_at: Option<i64>,
     /// Id representing the registered product
@@ -55,9 +67,15 @@ pub struct ProductDto {
     /// Quantity must be divisible by the lotSize in expressed as a decimal (precision: 9)
     #[serde(rename = "lotSize")]
     pub lot_size: rust_decimal::Decimal,
+    /// Maintenance margin requirement expressed as a decimal (precision: 9)
+    #[serde(rename = "maintenanceMargin")]
+    pub maintenance_margin: rust_decimal::Decimal,
     /// Fee charged to the maker on order trades expressed as a decimal (precision: 9)
     #[serde(rename = "makerFee")]
     pub maker_fee: rust_decimal::Decimal,
+    /// Margin mode for the product
+    #[serde(rename = "marginMode")]
+    pub margin_mode: models::ProductMarginMode,
     /// Maximum leverage allowed for the product
     #[serde(rename = "maxLeverage")]
     pub max_leverage: f64,
@@ -76,7 +94,7 @@ pub struct ProductDto {
     /// Min price in USD expressed as a decimal (precision: 9)
     #[serde(rename = "minPrice")]
     pub min_price: rust_decimal::Decimal,
-    /// Deprecated. Use lotSize instead. This value is always equal to lotSize.
+    /// Minimum order quantity in native units expressed as a decimal (precision: 9)
     #[serde(rename = "minQuantity")]
     pub min_quantity: rust_decimal::Decimal,
     /// The productId generated onchain after registering for the first time
@@ -85,6 +103,15 @@ pub struct ProductDto {
     /// OI of both sides in native units expressed as a decimal (precision: 9)
     #[serde(rename = "openInterest")]
     pub open_interest: rust_decimal::Decimal,
+    /// Initial margin requirement while the market is open expressed as a decimal (precision: 9)
+    #[serde(rename = "openMarketInitialMargin")]
+    pub open_market_initial_margin: rust_decimal::Decimal,
+    /// Timestamp when position fee was last updated (ms since Unix Epoch)
+    #[serde(
+        rename = "positionFeeUpdatedAt",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub position_fee_updated_at: Option<i64>,
     /// Pyth price feed id
     #[serde(rename = "pythFeedId")]
     pub pyth_feed_id: i64,
@@ -94,8 +121,9 @@ pub struct ProductDto {
     /// Name of the quote token (e.g. USD in BTCUSD)
     #[serde(rename = "quoteTokenName")]
     pub quote_token_name: String,
+    /// Product status
     #[serde(rename = "status")]
-    pub status: models::ProductDtoOrderStatus,
+    pub status: models::ProductStatus,
     /// Fee charged to the taker on order trades expressed as a decimal (precision: 9)
     #[serde(rename = "takerFee")]
     pub taker_fee: rust_decimal::Decimal,
@@ -115,17 +143,23 @@ impl ProductDto {
         base_token_address: String,
         base_token_name: String,
         block_number: String,
+        closed_market_initial_margin: rust_decimal::Decimal,
         created_at: i64,
         cumulative_funding_usd: rust_decimal::Decimal,
+        cumulative_position_fee_usd: rust_decimal::Decimal,
         display_ticker: String,
         engine_type: models::EngineType,
+        funding_ask_impact_size_usd: rust_decimal::Decimal,
         funding_baseline_apr: rust_decimal::Decimal,
+        funding_bid_impact_size_usd: rust_decimal::Decimal,
         funding_clamp_apr: rust_decimal::Decimal,
         funding_max_apr: rust_decimal::Decimal,
         funding_rate1h: rust_decimal::Decimal,
         id: uuid::Uuid,
         lot_size: rust_decimal::Decimal,
+        maintenance_margin: rust_decimal::Decimal,
         maker_fee: rust_decimal::Decimal,
+        margin_mode: models::ProductMarginMode,
         max_leverage: f64,
         max_open_interest_usd: rust_decimal::Decimal,
         max_position_notional_usd: rust_decimal::Decimal,
@@ -135,10 +169,11 @@ impl ProductDto {
         min_quantity: rust_decimal::Decimal,
         onchain_id: i64,
         open_interest: rust_decimal::Decimal,
+        open_market_initial_margin: rust_decimal::Decimal,
         pyth_feed_id: i64,
         quote_token_address: String,
         quote_token_name: String,
-        status: models::ProductDtoOrderStatus,
+        status: models::ProductStatus,
         taker_fee: rust_decimal::Decimal,
         tick_size: rust_decimal::Decimal,
         ticker: String,
@@ -148,18 +183,24 @@ impl ProductDto {
             base_token_address,
             base_token_name,
             block_number,
+            closed_market_initial_margin,
             created_at,
             cumulative_funding_usd,
+            cumulative_position_fee_usd,
             display_ticker,
             engine_type,
+            funding_ask_impact_size_usd,
             funding_baseline_apr,
+            funding_bid_impact_size_usd,
             funding_clamp_apr,
             funding_max_apr,
             funding_rate1h,
             funding_updated_at: None,
             id,
             lot_size,
+            maintenance_margin,
             maker_fee,
+            margin_mode,
             max_leverage,
             max_open_interest_usd,
             max_position_notional_usd,
@@ -169,6 +210,8 @@ impl ProductDto {
             min_quantity,
             onchain_id,
             open_interest,
+            open_market_initial_margin,
+            position_fee_updated_at: None,
             pyth_feed_id,
             quote_token_address,
             quote_token_name,

@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -27,6 +27,8 @@ pub enum PositionFillDtoOrderType {
     RealizedFunding,
     #[serde(rename = "DELEVERAGE")]
     Deleverage,
+    #[serde(rename = "SETTLEMENT")]
+    Settlement,
 }
 
 impl std::fmt::Display for PositionFillDtoOrderType {
@@ -38,6 +40,7 @@ impl std::fmt::Display for PositionFillDtoOrderType {
             Self::Liquidation => write!(f, "LIQUIDATION"),
             Self::RealizedFunding => write!(f, "REALIZED_FUNDING"),
             Self::Deleverage => write!(f, "DELEVERAGE"),
+            Self::Settlement => write!(f, "SETTLEMENT"),
         }
     }
 }

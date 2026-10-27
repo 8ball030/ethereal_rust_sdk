@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -15,6 +15,8 @@ use serde::{Deserialize, Serialize};
 /// Result codes for orders that failed to be created (outright failure)
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 pub enum SubmitFailedCode {
+    #[serde(rename = "PreviousOrderInBatchRejected")]
+    PreviousOrderInBatchRejected,
     #[serde(rename = "AccountSuspended")]
     AccountSuspended,
     #[serde(rename = "DuplicateClientOrderId")]
@@ -60,6 +62,7 @@ pub enum SubmitFailedCode {
 impl std::fmt::Display for SubmitFailedCode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
+            Self::PreviousOrderInBatchRejected => write!(f, "PreviousOrderInBatchRejected"),
             Self::AccountSuspended => write!(f, "AccountSuspended"),
             Self::DuplicateClientOrderId => write!(f, "DuplicateClientOrderId"),
             Self::ExchangeSuspended => write!(f, "ExchangeSuspended"),
@@ -86,6 +89,6 @@ impl std::fmt::Display for SubmitFailedCode {
 
 impl Default for SubmitFailedCode {
     fn default() -> SubmitFailedCode {
-        Self::AccountSuspended
+        Self::PreviousOrderInBatchRejected
     }
 }

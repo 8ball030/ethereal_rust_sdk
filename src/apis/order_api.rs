@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,10 +13,22 @@ use crate::{apis::ResponseContent, models};
 use reqwest;
 use serde::{de::Error as _, Deserialize, Serialize};
 
+/// struct for passing parameters to the method [`order_controller_batch`]
+#[derive(Clone, Debug, Default)]
+pub struct OrderControllerBatchParams {
+    pub batch_order_dto: models::BatchOrderDto,
+}
+
 /// struct for passing parameters to the method [`order_controller_cancel`]
 #[derive(Clone, Debug, Default)]
 pub struct OrderControllerCancelParams {
     pub cancel_order_dto: models::CancelOrderDto,
+}
+
+/// struct for passing parameters to the method [`order_controller_cancel_all`]
+#[derive(Clone, Debug, Default)]
+pub struct OrderControllerCancelAllParams {
+    pub cancel_all_order_dto: models::CancelAllOrderDto,
 }
 
 /// struct for passing parameters to the method [`order_controller_dry_run`]
@@ -126,10 +138,38 @@ pub struct OrderControllerSubmitParams {
     pub submit_order_dto: models::SubmitOrderDto,
 }
 
+/// struct for typed errors of method [`order_controller_batch`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum OrderControllerBatchError {
+    Status400(models::BadRequestDto),
+    Status401(models::UnauthorizedDto),
+    Status403(models::ForbiddenDto),
+    Status404(models::NotFoundDto),
+    Status422(models::UnprocessableEntityDto),
+    Status429(models::TooManyRequestsDto),
+    Status500(),
+    UnknownValue(serde_json::Value),
+}
+
 /// struct for typed errors of method [`order_controller_cancel`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum OrderControllerCancelError {
+    Status400(models::BadRequestDto),
+    Status401(models::UnauthorizedDto),
+    Status403(models::ForbiddenDto),
+    Status404(models::NotFoundDto),
+    Status422(models::UnprocessableEntityDto),
+    Status429(models::TooManyRequestsDto),
+    Status500(),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`order_controller_cancel_all`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum OrderControllerCancelAllError {
     Status400(models::BadRequestDto),
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
@@ -148,6 +188,7 @@ pub enum OrderControllerDryRunError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::DryRunOrderFailedUnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -162,6 +203,7 @@ pub enum OrderControllerGetByIdError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -176,6 +218,7 @@ pub enum OrderControllerListBySubaccountIdError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -190,6 +233,7 @@ pub enum OrderControllerListFillsBySubaccountIdError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -204,6 +248,7 @@ pub enum OrderControllerListGroupByOrderIdError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -218,6 +263,7 @@ pub enum OrderControllerListTradesError {
     Status401(models::UnauthorizedDto),
     Status403(models::ForbiddenDto),
     Status404(models::NotFoundDto),
+    Status413(models::PayloadTooLargeDto),
     Status422(models::UnprocessableEntityDto),
     Status429(models::TooManyRequestsDto),
     Status500(),
@@ -236,6 +282,49 @@ pub enum OrderControllerSubmitError {
     Status429(models::TooManyRequestsDto),
     Status500(),
     UnknownValue(serde_json::Value),
+}
+
+pub async fn order_controller_batch(
+    configuration: &configuration::Configuration,
+    params: OrderControllerBatchParams,
+) -> Result<models::BatchOrderResponseDto, Error<OrderControllerBatchError>> {
+    let uri_str = format!("{}/v1/order/batch", configuration.base_path);
+    let mut req_builder = configuration
+        .client
+        .request(reqwest::Method::POST, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.json(&params.batch_order_dto);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::BatchOrderResponseDto`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::BatchOrderResponseDto`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<OrderControllerBatchError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
 }
 
 pub async fn order_controller_cancel(
@@ -273,6 +362,49 @@ pub async fn order_controller_cancel(
     } else {
         let content = resp.text().await?;
         let entity: Option<OrderControllerCancelError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+pub async fn order_controller_cancel_all(
+    configuration: &configuration::Configuration,
+    params: OrderControllerCancelAllParams,
+) -> Result<models::ListOfCancelOrderResultDtos, Error<OrderControllerCancelAllError>> {
+    let uri_str = format!("{}/v1/order/cancel-all", configuration.base_path);
+    let mut req_builder = configuration
+        .client
+        .request(reqwest::Method::POST, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.json(&params.cancel_all_order_dto);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ListOfCancelOrderResultDtos`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ListOfCancelOrderResultDtos`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<OrderControllerCancelAllError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

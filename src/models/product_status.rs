@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -11,27 +11,30 @@
 use crate::models;
 use serde::{Deserialize, Serialize};
 
-/// ProductDtoOrderStatus : Extracted enum for ProductDtoOrderStatus
-/// Extracted enum for ProductDtoOrderStatus
+/// ProductStatus : Product status
+/// Product status
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum ProductDtoOrderStatus {
+pub enum ProductStatus {
     #[serde(rename = "PENDING")]
     Pending,
     #[serde(rename = "ACTIVE")]
     Active,
+    #[serde(rename = "DELISTED")]
+    Delisted,
 }
 
-impl std::fmt::Display for ProductDtoOrderStatus {
+impl std::fmt::Display for ProductStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::Pending => write!(f, "PENDING"),
             Self::Active => write!(f, "ACTIVE"),
+            Self::Delisted => write!(f, "DELISTED"),
         }
     }
 }
 
-impl Default for ProductDtoOrderStatus {
-    fn default() -> ProductDtoOrderStatus {
+impl Default for ProductStatus {
+    fn default() -> ProductStatus {
         Self::Pending
     }
 }

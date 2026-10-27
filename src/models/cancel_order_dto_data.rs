@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CancelOrderDtoData {
-    /// Client order IDs to cancel (UUIDs or alphanumeric up to 32 chars)
+    /// Client-generated order ids to be canceled (orderIds combined length cannot exceed maximum)
     #[serde(rename = "clientOrderIds", skip_serializing_if = "Option::is_none")]
     pub client_order_ids: Option<Vec<String>>,
     /// Unique nonce for this request (nanoseconds since Unix epoch)

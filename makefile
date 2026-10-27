@@ -47,8 +47,8 @@ audit:
 lint: 
 	cargo clippy --all-features --all-targets --examples --tests -- -D warnings 
 fmt:
-	cargo fmt --all
 	cargo clippy --all-features --all-targets --examples --tests --fix --allow-dirty -- -D warnings
+	cargo fmt --all
 build:
 	cargo build --all-features
 test:
@@ -60,7 +60,7 @@ codegen:
 	bash build_scripts/pre_processing.sh
 	python build_scripts/patch_spec.py
 
-	rm -rf ./src/models/* ./src/archive_models/*
+	rm -rf ./src/models/* ./src/archive_models/* ./src/apis/*
 
 	jq '.components.schemas |= (to_entries | sort_by(.key) | from_entries)' ws_messages.json > tmp.json && mv tmp.json ws_messages.json
 	redocly bundle ws_messages.json -o ws_spec_updated.json
@@ -104,7 +104,7 @@ codegen:
 	find ./src/models -maxdepth 1 -type f -name '*.rs' ! -name 'mod.rs' | LC_ALL=C sort | while IFS= read -r f; do \
 		base=$$(basename "$$f"); \
 		name=$${base%.rs}; \
-		camel=$$(echo "$$name" | sed -E 's/(^|_)([a-z])/\U\2/g'); \
+		camel=$$(echo "$$name" | sed -E 's/(^|_)([a-z0-9])/\U\2/g'); \
 		printf "\tpub mod %s;\n" "$$name" >> ./src/models/mod.rs; \
 		printf "\tpub use %s::%s;\n" "$$name" "$$camel" >> ./src/models/mod.rs; \
 	done

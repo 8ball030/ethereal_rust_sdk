@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -22,9 +22,9 @@ pub struct ActivateReferralDtoData {
     /// Message signedAt current timestamp (seconds since Unix Epoch)
     #[serde(rename = "signedAt")]
     pub signed_at: i64,
-    /// Bytes32 encoded subaccount name (0x prefix, zero padded)
-    #[serde(rename = "subaccount")]
-    pub subaccount: String,
+    /// Bytes32 encoded subaccount name (0x prefix, zero padded, required for linked signers)
+    #[serde(rename = "subaccount", skip_serializing_if = "Option::is_none")]
+    pub subaccount: Option<String>,
 }
 
 impl ActivateReferralDtoData {
@@ -32,13 +32,12 @@ impl ActivateReferralDtoData {
         intent: models::Eip712AuthIntent,
         sender: String,
         signed_at: i64,
-        subaccount: String,
     ) -> ActivateReferralDtoData {
         ActivateReferralDtoData {
             intent,
             sender,
             signed_at,
-            subaccount,
+            subaccount: None,
         }
     }
 }

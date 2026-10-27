@@ -13,8 +13,9 @@ use serde::{Deserialize, Serialize};
 
 /// UnprocessableEntityDtoErrorEnum : Extracted enum for UnprocessableEntityDtoErrorEnum
 /// Extracted enum for UnprocessableEntityDtoErrorEnum
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-#[derive(Default)]
+#[derive(
+    Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, Default,
+)]
 pub enum UnprocessableEntityDtoErrorEnum {
     #[serde(rename = "Unprocessable Entity")]
     #[default]
@@ -28,4 +29,3 @@ impl std::fmt::Display for UnprocessableEntityDtoErrorEnum {
         }
     }
 }
-

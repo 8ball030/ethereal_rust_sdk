@@ -21,16 +21,16 @@ impl EnvDomains {
 }
 pub static DOMAINS: EnvDomains = EnvDomains {
     testnet: DomainConfig {
-        name: "Ethereal",
+        name: "Meridian",
         version: "1",
-        chain_id: 13374202,
-        verifying_contract: "0x1F0327A80e43FEF1Cd872DC5d38dCe4A165c0643",
+        chain_id: 46630,
+        verifying_contract: "0x09c9DE924BEDB93A01FA9e7beCa3a078b99E1B3b",
     },
 
     mainnet: DomainConfig {
-        name: "Ethereal",
+        name: "Meridian",
         version: "1",
-        chain_id: 5064014,
-        verifying_contract: "0xB3cDC82035C495c484C9fF11eD5f3Ff6d342e3cc",
+        chain_id: 4663,
+        verifying_contract: "0xD540F47F214dC7D6D244E62A6aE7e06B586Ef44A",
     },
 };

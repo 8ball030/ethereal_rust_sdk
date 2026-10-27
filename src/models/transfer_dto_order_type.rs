@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -19,6 +19,8 @@ pub enum TransferDtoOrderType {
     Deposit,
     #[serde(rename = "WITHDRAW")]
     Withdraw,
+    #[serde(rename = "CONVERT")]
+    Convert,
 }
 
 impl std::fmt::Display for TransferDtoOrderType {
@@ -26,6 +28,7 @@ impl std::fmt::Display for TransferDtoOrderType {
         match self {
             Self::Deposit => write!(f, "DEPOSIT"),
             Self::Withdraw => write!(f, "WITHDRAW"),
+            Self::Convert => write!(f, "CONVERT"),
         }
     }
 }

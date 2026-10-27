@@ -4,14 +4,19 @@ use crate::{
         product_api::{
             product_controller_get_by_id, product_controller_get_market_liquidity,
             product_controller_get_market_price, product_controller_list,
-            ProductControllerGetByIdError, ProductControllerGetByIdParams,
-            ProductControllerGetMarketLiquidityError, ProductControllerGetMarketLiquidityParams,
-            ProductControllerGetMarketPriceError, ProductControllerGetMarketPriceParams,
-            ProductControllerListError, ProductControllerListParams,
+            product_controller_list_mark_price_gaps, ProductControllerGetByIdError,
+            ProductControllerGetByIdParams, ProductControllerGetMarketLiquidityError,
+            ProductControllerGetMarketLiquidityParams, ProductControllerGetMarketPriceError,
+            ProductControllerGetMarketPriceParams, ProductControllerListError,
+            ProductControllerListMarkPriceGapsError, ProductControllerListMarkPriceGapsParams,
+            ProductControllerListParams,
         },
         Error,
     },
-    models::{ListOfMarketPriceDtos, MarketLiquidityDto, PageOfProductDtos, ProductDto},
+    models::{
+        ListOfMarketPriceDtos, MarketLiquidityDto, PageOfMarkPriceGapDtos, PageOfProductDtos,
+        ProductDto,
+    },
 };
 pub struct ProductClient<'a> {
     pub config: &'a Configuration,
@@ -44,5 +49,12 @@ impl<'a> ProductClient<'a> {
         params: ProductControllerListParams,
     ) -> Result<PageOfProductDtos, Error<ProductControllerListError>> {
         product_controller_list(self.config, params).await
+    }
+
+    pub async fn list_mark_price_gaps(
+        &self,
+        params: ProductControllerListMarkPriceGapsParams,
+    ) -> Result<PageOfMarkPriceGapDtos, Error<ProductControllerListMarkPriceGapsError>> {
+        product_controller_list_mark_price_gaps(self.config, params).await
     }
 }

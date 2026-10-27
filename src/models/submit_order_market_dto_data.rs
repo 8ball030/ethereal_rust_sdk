@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -34,7 +34,6 @@ pub struct SubmitOrderMarketDtoData {
     /// Group Id (UUID) for linking orders together in OCO/OTO relationships
     #[serde(rename = "groupId", skip_serializing_if = "Option::is_none")]
     pub group_id: Option<uuid::Uuid>,
-    /// Message nonce timestamp (nanoseconds since Unix Epoch)
     #[serde(rename = "nonce")]
     pub nonce: String,
     /// Onchain product ID, available from the products endpoint
@@ -52,7 +51,6 @@ pub struct SubmitOrderMarketDtoData {
     /// Side as either BUY (0) or SELL (1)
     #[serde(rename = "side")]
     pub side: models::OrderSide,
-    /// Message signedAt current timestamp (seconds since Unix Epoch)
     #[serde(rename = "signedAt")]
     pub signed_at: i32,
     /// Stop price expressed as a decimal (precision: 9), requires stopType

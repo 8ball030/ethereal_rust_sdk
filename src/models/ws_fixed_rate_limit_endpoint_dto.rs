@@ -1,7 +1,7 @@
 /*
- * Ethereal Exchange API
+ * Meridian Exchange API
  *
- * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.ethereal.trade](https://docs.ethereal.trade).
+ * Ethereal HTTP API for real-time trading, order management, and market data access.  For more details, see [docs.meridian.xyz](https://docs.meridian.xyz).
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -16,9 +16,9 @@ pub struct WsFixedRateLimitEndpointDto {
     /// Fixed points consumed per request
     #[serde(rename = "fixedPoints")]
     pub fixed_points: f64,
-    /// WebSocket namespace
-    #[serde(rename = "namespace")]
-    pub namespace: String,
+    /// WebSocket path
+    #[serde(rename = "path")]
+    pub path: String,
     #[serde(rename = "protocol")]
     pub protocol: models::WsFixedRateLimitEndpointDtoProtocolEnum,
     #[serde(rename = "type")]
@@ -28,13 +28,13 @@ pub struct WsFixedRateLimitEndpointDto {
 impl WsFixedRateLimitEndpointDto {
     pub fn new(
         fixed_points: f64,
-        namespace: String,
+        path: String,
         protocol: models::WsFixedRateLimitEndpointDtoProtocolEnum,
         r#type: models::WsFixedRateLimitEndpointDtoOrderType,
     ) -> WsFixedRateLimitEndpointDto {
         WsFixedRateLimitEndpointDto {
             fixed_points,
-            namespace,
+            path,
             protocol,
             r#type,
         }
