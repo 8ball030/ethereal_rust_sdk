@@ -15,7 +15,7 @@ use ethers::{types::U256, utils::keccak256};
 use crate::models::SubaccountDto;
 use crate::{domain_config::DOMAINS, enums::Environment};
 
-use anyhow::{Result, anyhow};
+use anyhow::{anyhow, Result};
 
 /// Scales a decimal onto the wire's unsigned e9 fixed point. A negative value, or one whose
 /// scaled form does not fit, is an error: the only two ways `to_u128` can fail, and this

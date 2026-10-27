@@ -63,7 +63,6 @@ fn get_archive_server_url(environment: &Environment) -> &str {
     }
 }
 
-
 #[macro_export]
 macro_rules! with_signing_fields {
     ($signing_fn:ident, $ctx:expr, $struct:ident { $($rest:tt)* }) => {{

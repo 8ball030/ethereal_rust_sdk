@@ -187,12 +187,18 @@ fn scaling_a_negative_value_is_an_error_not_a_panic() {
     let err = to_scaled_e9(dec!(-0.5)).unwrap_err().to_string();
     assert!(err.contains("unsigned"), "{}", err);
     assert_eq!(to_scaled_e9(dec!(0)).unwrap(), 0, "zero is fine");
-    assert_eq!(to_scaled_e9(dec!(-0.0)).unwrap(), 0, "negative zero is zero");
+    assert_eq!(
+        to_scaled_e9(dec!(-0.0)).unwrap(),
+        0,
+        "negative zero is zero"
+    );
 }
 
 #[test]
 fn scaling_a_value_too_large_for_the_wire_is_an_error_not_a_panic() {
-    let err = to_scaled_e9(rust_decimal::Decimal::MAX).unwrap_err().to_string();
+    let err = to_scaled_e9(rust_decimal::Decimal::MAX)
+        .unwrap_err()
+        .to_string();
     assert!(err.contains("does not fit"), "{}", err);
 }
 
@@ -208,8 +214,14 @@ fn a_32_byte_hex_string_decodes_with_or_without_the_prefix() {
 #[test]
 fn a_short_or_long_hex_string_is_an_error_instead_of_being_padded_or_cut() {
     let short = hex_to_bytes32("0x1234").unwrap_err().to_string();
-    assert!(short.contains("expected 32 bytes") && short.contains("2 byte(s)"), "{}", short);
-    let long = hex_to_bytes32(&format!("0x{}", "ab".repeat(33))).unwrap_err().to_string();
+    assert!(
+        short.contains("expected 32 bytes") && short.contains("2 byte(s)"),
+        "{}",
+        short
+    );
+    let long = hex_to_bytes32(&format!("0x{}", "ab".repeat(33)))
+        .unwrap_err()
+        .to_string();
     assert!(long.contains("33 byte(s)"), "{}", long);
     assert!(hex_to_bytes32("0xzz").is_err(), "not hex at all");
 }
