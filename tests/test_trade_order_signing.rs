@@ -179,3 +179,37 @@ fn test_known_flow() -> Result<(), Box<dyn std::error::Error>> {
     println!("✓ Known flow signature verification successful!");
     Ok(())
 }
+
+// ── to_scaled_e9 and hex_to_bytes32 report their failures instead of panicking ───────────────
+
+#[test]
+fn scaling_a_negative_value_is_an_error_not_a_panic() {
+    let err = to_scaled_e9(dec!(-0.5)).unwrap_err().to_string();
+    assert!(err.contains("unsigned"), "{}", err);
+    assert_eq!(to_scaled_e9(dec!(0)).unwrap(), 0, "zero is fine");
+    assert_eq!(to_scaled_e9(dec!(-0.0)).unwrap(), 0, "negative zero is zero");
+}
+
+#[test]
+fn scaling_a_value_too_large_for_the_wire_is_an_error_not_a_panic() {
+    let err = to_scaled_e9(rust_decimal::Decimal::MAX).unwrap_err().to_string();
+    assert!(err.contains("does not fit"), "{}", err);
+}
+
+#[test]
+fn a_32_byte_hex_string_decodes_with_or_without_the_prefix() {
+    let hex32 = "123456789abcde00000000000000000000000000000000000000000000000000";
+    let with = hex_to_bytes32(&format!("0x{hex32}")).unwrap();
+    let without = hex_to_bytes32(hex32).unwrap();
+    assert_eq!(with, without);
+    assert_eq!(with[0], 0x12);
+}
+
+#[test]
+fn a_short_or_long_hex_string_is_an_error_instead_of_being_padded_or_cut() {
+    let short = hex_to_bytes32("0x1234").unwrap_err().to_string();
+    assert!(short.contains("expected 32 bytes") && short.contains("2 byte(s)"), "{}", short);
+    let long = hex_to_bytes32(&format!("0x{}", "ab".repeat(33))).unwrap_err().to_string();
+    assert!(long.contains("33 byte(s)"), "{}", long);
+    assert!(hex_to_bytes32("0xzz").is_err(), "not hex at all");
+}
