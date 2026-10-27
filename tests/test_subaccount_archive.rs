@@ -26,8 +26,8 @@ async fn test_list_balance_history() {
         .unwrap()
         .as_millis() as f64;
     let params = SubaccountArchiveControllerListBalanceHistoryParams {
-        start_time: now_ms - 3_500_000.0, // 58m20s ago (safely within minute1 max range)
-        resolution: "minute1".to_string(),
+        start_time: now_ms - 86_400_000.0, // 24 hours ago
+        resolution: "hour1".to_string(),
         subaccount_id: client.subaccounts.first().unwrap().id.clone().to_string(),
         ..Default::default()
     };
@@ -87,8 +87,8 @@ async fn test_list_volume_history() {
         .unwrap()
         .as_millis() as f64;
     let params = SubaccountArchiveControllerListVolumeHistoryParams {
-        start_time: now_ms - 3_500_000.0, // 58m20s ago (safely within minute1 max range)
-        resolution: "minute1".to_string(),
+        start_time: now_ms - 86_400_000.0, // 24 hours ago
+        resolution: "hour1".to_string(),
         subaccount_id: client.subaccounts.first().unwrap().id.clone().to_string(),
         ..Default::default()
     };
