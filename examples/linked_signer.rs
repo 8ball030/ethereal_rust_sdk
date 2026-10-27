@@ -1,5 +1,7 @@
 use std::error::Error;
 
+use alloy_primitives::hex;
+use alloy_signer_local::PrivateKeySigner;
 use ethereal_rust_sdk::signing::{Eip712, SigningContext};
 use ethereal_rust_sdk::with_signing_fields;
 use ethereal_rust_sdk::{
@@ -12,8 +14,6 @@ use ethereal_rust_sdk::{
     models::{LinkSignerDto, LinkSignerDtoData},
     signable_messages::LinkSigner,
 };
-use ethers::signers::{LocalWallet, Signer};
-use ethers::utils::hex;
 
 mod common;
 
@@ -49,7 +49,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     // adding a new linked signer is as so;
 
     let new_signer_pk = "43718d12917ba14f08f2d4a424f8406b0ba20adc4f3a15bcff0d593c57f55dc6";
-    let wallet = new_signer_pk.parse::<LocalWallet>().unwrap();
+    let wallet = new_signer_pk.parse::<PrivateKeySigner>().unwrap();
     let new_signer = format!("{:?}", wallet.address());
     let ctx = SigningContext::new(&http_client.wallet, subaccount_id);
     let link_signer_msg = with_signing_fields!(
@@ -77,8 +77,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let params = LinkedSignerControllerLinkSignerParams {
         link_signer_dto: LinkSignerDto {
             data: link_signer_dto_data,
-            signature: "0x".to_string() + &hex::encode(owner_signature.to_vec()),
-            signer_signature: "0x".to_string() + &hex::encode(signer_signature.to_vec()),
+            signature: "0x".to_string() + &hex::encode(owner_signature.as_bytes()),
+            signer_signature: "0x".to_string() + &hex::encode(signer_signature.as_bytes()),
         },
     };
 

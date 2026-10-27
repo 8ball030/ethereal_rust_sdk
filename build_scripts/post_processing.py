@@ -303,15 +303,15 @@ def gather_signable_messages():
         "uint8": "u8",
         "bool": "bool",
     }
-    sol_to_ethers_type_map = {
+    sol_to_dyn_sol_value_map = {
         "address": "Address(self.{name})",
-        "bytes32": "FixedBytes(self.{name}.to_vec())",
-        "uint128": "Uint(U256::from(self.{name}))",
-        "uint256": "Uint(self.{name}.clone().into())",
+        "bytes32": "FixedBytes(B256::from(self.{name}), 32)",
+        "uint128": "Uint(U256::from(self.{name}), 128)",
+        "uint256": "Uint(U256::from(self.{name}), 256)",
         "bool": "Bool(self.{name})",
-        "uint8": "Uint(U256::from(self.{name}))",
-        "uint32": "Uint(U256::from(self.{name}))",
-        "uint64": "Uint(U256::from(self.{name}))",
+        "uint8": "Uint(U256::from(self.{name}), 8)",
+        "uint32": "Uint(U256::from(self.{name}), 32)",
+        "uint64": "Uint(U256::from(self.{name}), 64)",
     }
     spec_path = DATA_DIR/  "mainnet" / "rpc_config.json"
     sig_types = json.loads(spec_path.read_text())["signatureTypes"]
@@ -323,8 +323,8 @@ def gather_signable_messages():
             t, type_name = value.split(" ")
             field = f"    pub {to_snake_case(type_name)}: {sol_to_rust_type_map[t]},"
             fields.append(field)
-            ethers_type = sol_to_ethers_type_map[t].format(name=to_snake_case(type_name))
-            fields_encoding.append(f"                ethers::abi::Token::{ethers_type},")
+            dyn_sol_value = sol_to_dyn_sol_value_map[t].format(name=to_snake_case(type_name))
+            fields_encoding.append(f"                DynSolValue::{dyn_sol_value},")
         generated_file = SIGNABLE_MESSAGE_TEMPLATE.substitute(
             message_name=message_name,
             fields="\n".join(fields),

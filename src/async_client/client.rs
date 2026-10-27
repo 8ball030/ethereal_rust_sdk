@@ -40,10 +40,8 @@ use crate::{
 use anyhow::Result;
 
 use crate::signing::Eip712;
-use ethers::{
-    signers::{LocalWallet, Signer},
-    utils::hex,
-};
+use alloy_primitives::hex;
+use alloy_signer_local::PrivateKeySigner;
 use log::debug;
 use rust_decimal::Decimal;
 use std::collections::HashMap;
@@ -81,7 +79,7 @@ pub struct HttpClient {
     pub env: Environment,
     config: Configuration,
     archive_config: ArchiveConfiguration,
-    pub wallet: LocalWallet,
+    pub wallet: PrivateKeySigner,
     pub address: String,
     pub owner_address: Option<String>,
     pub subaccounts: Vec<SubaccountDto>,
@@ -100,7 +98,7 @@ impl HttpClient {
             ..Default::default()
         };
 
-        let wallet = private_key.parse::<LocalWallet>().unwrap();
+        let wallet = private_key.parse::<PrivateKeySigner>().unwrap();
         let address = format!("{:?}", wallet.address());
         let sender_address = owner_address
             .clone()
@@ -295,7 +293,7 @@ impl HttpClient {
         );
         let dto = SubmitOrderDto {
             data: SubmitOrderData::SubmitOrderLimitDtoData(order_dto),
-            signature: "0x".to_string() + &hex::encode(signature.to_vec()),
+            signature: "0x".to_string() + &hex::encode(signature.as_bytes()),
         };
 
         let result = self
@@ -338,7 +336,7 @@ impl HttpClient {
                         order_ids: ids.into(),
                         ..Default::default()
                     },
-                    signature: "0x".to_string() + &hex::encode(signature.to_vec()),
+                    signature: "0x".to_string() + &hex::encode(signature.as_bytes()),
                 },
             })
             .await;

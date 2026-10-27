@@ -1,10 +1,8 @@
-use ethers::types::transaction::eip712::Eip712Error;
-use ethers::types::Address;
-
-use ethers::types::U256;
+use alloy_dyn_abi::DynSolValue;
+use alloy_primitives::{keccak256, Address, B256, U256};
 use serde::{Deserialize, Serialize};
 
-use crate::signing::Eip712;
+use crate::signing::{Eip712, Eip712Error};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LinkSigner {
@@ -16,23 +14,26 @@ pub struct LinkSigner {
 }
 impl Eip712 for LinkSigner {
     fn type_hash() -> Result<[u8; 32], Eip712Error> {
-        Ok(ethers::utils::keccak256(
+        Ok(keccak256(
             "LinkSigner(address sender,address signer,bytes32 subaccount,uint64 nonce,uint64 signedAt)"
-        ))
+        ).0)
     }
 
     fn struct_hash(&self) -> Result<[u8; 32], Eip712Error> {
         let mut encoded = Vec::new();
         encoded.extend_from_slice(&Self::type_hash()?);
-        encoded.extend_from_slice(&ethers::abi::encode(&[
-            ethers::abi::Token::Address(self.sender),
-            ethers::abi::Token::Address(self.signer),
-            ethers::abi::Token::FixedBytes(self.subaccount.to_vec()),
-            ethers::abi::Token::Uint(U256::from(self.nonce)),
-            ethers::abi::Token::Uint(U256::from(self.signed_at)),
-        ]));
+        encoded.extend_from_slice(
+            &DynSolValue::Tuple(vec![
+                DynSolValue::Address(self.sender),
+                DynSolValue::Address(self.signer),
+                DynSolValue::FixedBytes(B256::from(self.subaccount), 32),
+                DynSolValue::Uint(U256::from(self.nonce), 64),
+                DynSolValue::Uint(U256::from(self.signed_at), 64),
+            ])
+            .abi_encode_params(),
+        );
 
-        Ok(ethers::utils::keccak256(&encoded))
+        Ok(keccak256(&encoded).0)
     }
 }
 
@@ -51,28 +52,31 @@ pub struct TradeOrder {
 }
 impl Eip712 for TradeOrder {
     fn type_hash() -> Result<[u8; 32], Eip712Error> {
-        Ok(ethers::utils::keccak256(
+        Ok(keccak256(
             "TradeOrder(address sender,bytes32 subaccount,uint128 quantity,uint128 price,bool reduceOnly,uint8 side,uint8 engineType,uint32 productId,uint64 nonce,uint64 signedAt)"
-        ))
+        ).0)
     }
 
     fn struct_hash(&self) -> Result<[u8; 32], Eip712Error> {
         let mut encoded = Vec::new();
         encoded.extend_from_slice(&Self::type_hash()?);
-        encoded.extend_from_slice(&ethers::abi::encode(&[
-            ethers::abi::Token::Address(self.sender),
-            ethers::abi::Token::FixedBytes(self.subaccount.to_vec()),
-            ethers::abi::Token::Uint(U256::from(self.quantity)),
-            ethers::abi::Token::Uint(U256::from(self.price)),
-            ethers::abi::Token::Bool(self.reduce_only),
-            ethers::abi::Token::Uint(U256::from(self.side)),
-            ethers::abi::Token::Uint(U256::from(self.engine_type)),
-            ethers::abi::Token::Uint(U256::from(self.product_id)),
-            ethers::abi::Token::Uint(U256::from(self.nonce)),
-            ethers::abi::Token::Uint(U256::from(self.signed_at)),
-        ]));
+        encoded.extend_from_slice(
+            &DynSolValue::Tuple(vec![
+                DynSolValue::Address(self.sender),
+                DynSolValue::FixedBytes(B256::from(self.subaccount), 32),
+                DynSolValue::Uint(U256::from(self.quantity), 128),
+                DynSolValue::Uint(U256::from(self.price), 128),
+                DynSolValue::Bool(self.reduce_only),
+                DynSolValue::Uint(U256::from(self.side), 8),
+                DynSolValue::Uint(U256::from(self.engine_type), 8),
+                DynSolValue::Uint(U256::from(self.product_id), 32),
+                DynSolValue::Uint(U256::from(self.nonce), 64),
+                DynSolValue::Uint(U256::from(self.signed_at), 64),
+            ])
+            .abi_encode_params(),
+        );
 
-        Ok(ethers::utils::keccak256(&encoded))
+        Ok(keccak256(&encoded).0)
     }
 }
 
@@ -89,26 +93,29 @@ pub struct InitiateWithdraw {
 }
 impl Eip712 for InitiateWithdraw {
     fn type_hash() -> Result<[u8; 32], Eip712Error> {
-        Ok(ethers::utils::keccak256(
+        Ok(keccak256(
             "InitiateWithdraw(address account,bytes32 subaccount,address token,uint256 amount,uint64 nonce,uint64 signedAt,bytes32 destinationAddress,uint32 destinationEndpointId)"
-        ))
+        ).0)
     }
 
     fn struct_hash(&self) -> Result<[u8; 32], Eip712Error> {
         let mut encoded = Vec::new();
         encoded.extend_from_slice(&Self::type_hash()?);
-        encoded.extend_from_slice(&ethers::abi::encode(&[
-            ethers::abi::Token::Address(self.account),
-            ethers::abi::Token::FixedBytes(self.subaccount.to_vec()),
-            ethers::abi::Token::Address(self.token),
-            ethers::abi::Token::Uint(self.amount.into()),
-            ethers::abi::Token::Uint(U256::from(self.nonce)),
-            ethers::abi::Token::Uint(U256::from(self.signed_at)),
-            ethers::abi::Token::FixedBytes(self.destination_address.to_vec()),
-            ethers::abi::Token::Uint(U256::from(self.destination_endpoint_id)),
-        ]));
+        encoded.extend_from_slice(
+            &DynSolValue::Tuple(vec![
+                DynSolValue::Address(self.account),
+                DynSolValue::FixedBytes(B256::from(self.subaccount), 32),
+                DynSolValue::Address(self.token),
+                DynSolValue::Uint(U256::from(self.amount), 256),
+                DynSolValue::Uint(U256::from(self.nonce), 64),
+                DynSolValue::Uint(U256::from(self.signed_at), 64),
+                DynSolValue::FixedBytes(B256::from(self.destination_address), 32),
+                DynSolValue::Uint(U256::from(self.destination_endpoint_id), 32),
+            ])
+            .abi_encode_params(),
+        );
 
-        Ok(ethers::utils::keccak256(&encoded))
+        Ok(keccak256(&encoded).0)
     }
 }
 
@@ -122,23 +129,26 @@ pub struct RevokeLinkedSigner {
 }
 impl Eip712 for RevokeLinkedSigner {
     fn type_hash() -> Result<[u8; 32], Eip712Error> {
-        Ok(ethers::utils::keccak256(
+        Ok(keccak256(
             "RevokeLinkedSigner(address sender,address signer,bytes32 subaccount,uint64 nonce,uint64 signedAt)"
-        ))
+        ).0)
     }
 
     fn struct_hash(&self) -> Result<[u8; 32], Eip712Error> {
         let mut encoded = Vec::new();
         encoded.extend_from_slice(&Self::type_hash()?);
-        encoded.extend_from_slice(&ethers::abi::encode(&[
-            ethers::abi::Token::Address(self.sender),
-            ethers::abi::Token::Address(self.signer),
-            ethers::abi::Token::FixedBytes(self.subaccount.to_vec()),
-            ethers::abi::Token::Uint(U256::from(self.nonce)),
-            ethers::abi::Token::Uint(U256::from(self.signed_at)),
-        ]));
+        encoded.extend_from_slice(
+            &DynSolValue::Tuple(vec![
+                DynSolValue::Address(self.sender),
+                DynSolValue::Address(self.signer),
+                DynSolValue::FixedBytes(B256::from(self.subaccount), 32),
+                DynSolValue::Uint(U256::from(self.nonce), 64),
+                DynSolValue::Uint(U256::from(self.signed_at), 64),
+            ])
+            .abi_encode_params(),
+        );
 
-        Ok(ethers::utils::keccak256(&encoded))
+        Ok(keccak256(&encoded).0)
     }
 }
 
@@ -154,25 +164,28 @@ pub struct ConvertToken {
 }
 impl Eip712 for ConvertToken {
     fn type_hash() -> Result<[u8; 32], Eip712Error> {
-        Ok(ethers::utils::keccak256(
+        Ok(keccak256(
             "ConvertToken(address sender,bytes32 subaccount,address fromToken,address toToken,uint128 amount,uint64 nonce,uint64 signedAt)"
-        ))
+        ).0)
     }
 
     fn struct_hash(&self) -> Result<[u8; 32], Eip712Error> {
         let mut encoded = Vec::new();
         encoded.extend_from_slice(&Self::type_hash()?);
-        encoded.extend_from_slice(&ethers::abi::encode(&[
-            ethers::abi::Token::Address(self.sender),
-            ethers::abi::Token::FixedBytes(self.subaccount.to_vec()),
-            ethers::abi::Token::Address(self.from_token),
-            ethers::abi::Token::Address(self.to_token),
-            ethers::abi::Token::Uint(U256::from(self.amount)),
-            ethers::abi::Token::Uint(U256::from(self.nonce)),
-            ethers::abi::Token::Uint(U256::from(self.signed_at)),
-        ]));
+        encoded.extend_from_slice(
+            &DynSolValue::Tuple(vec![
+                DynSolValue::Address(self.sender),
+                DynSolValue::FixedBytes(B256::from(self.subaccount), 32),
+                DynSolValue::Address(self.from_token),
+                DynSolValue::Address(self.to_token),
+                DynSolValue::Uint(U256::from(self.amount), 128),
+                DynSolValue::Uint(U256::from(self.nonce), 64),
+                DynSolValue::Uint(U256::from(self.signed_at), 64),
+            ])
+            .abi_encode_params(),
+        );
 
-        Ok(ethers::utils::keccak256(&encoded))
+        Ok(keccak256(&encoded).0)
     }
 }
 
@@ -184,21 +197,22 @@ pub struct EIP712Auth {
 }
 impl Eip712 for EIP712Auth {
     fn type_hash() -> Result<[u8; 32], Eip712Error> {
-        Ok(ethers::utils::keccak256(
-            "EIP712Auth(address sender,uint8 intent,uint64 signedAt)",
-        ))
+        Ok(keccak256("EIP712Auth(address sender,uint8 intent,uint64 signedAt)").0)
     }
 
     fn struct_hash(&self) -> Result<[u8; 32], Eip712Error> {
         let mut encoded = Vec::new();
         encoded.extend_from_slice(&Self::type_hash()?);
-        encoded.extend_from_slice(&ethers::abi::encode(&[
-            ethers::abi::Token::Address(self.sender),
-            ethers::abi::Token::Uint(U256::from(self.intent)),
-            ethers::abi::Token::Uint(U256::from(self.signed_at)),
-        ]));
+        encoded.extend_from_slice(
+            &DynSolValue::Tuple(vec![
+                DynSolValue::Address(self.sender),
+                DynSolValue::Uint(U256::from(self.intent), 8),
+                DynSolValue::Uint(U256::from(self.signed_at), 64),
+            ])
+            .abi_encode_params(),
+        );
 
-        Ok(ethers::utils::keccak256(&encoded))
+        Ok(keccak256(&encoded).0)
     }
 }
 
@@ -210,21 +224,22 @@ pub struct CancelOrder {
 }
 impl Eip712 for CancelOrder {
     fn type_hash() -> Result<[u8; 32], Eip712Error> {
-        Ok(ethers::utils::keccak256(
-            "CancelOrder(address sender,bytes32 subaccount,uint64 nonce)",
-        ))
+        Ok(keccak256("CancelOrder(address sender,bytes32 subaccount,uint64 nonce)").0)
     }
 
     fn struct_hash(&self) -> Result<[u8; 32], Eip712Error> {
         let mut encoded = Vec::new();
         encoded.extend_from_slice(&Self::type_hash()?);
-        encoded.extend_from_slice(&ethers::abi::encode(&[
-            ethers::abi::Token::Address(self.sender),
-            ethers::abi::Token::FixedBytes(self.subaccount.to_vec()),
-            ethers::abi::Token::Uint(U256::from(self.nonce)),
-        ]));
+        encoded.extend_from_slice(
+            &DynSolValue::Tuple(vec![
+                DynSolValue::Address(self.sender),
+                DynSolValue::FixedBytes(B256::from(self.subaccount), 32),
+                DynSolValue::Uint(U256::from(self.nonce), 64),
+            ])
+            .abi_encode_params(),
+        );
 
-        Ok(ethers::utils::keccak256(&encoded))
+        Ok(keccak256(&encoded).0)
     }
 }
 
@@ -237,22 +252,26 @@ pub struct RefreshLinkedSigner {
 }
 impl Eip712 for RefreshLinkedSigner {
     fn type_hash() -> Result<[u8; 32], Eip712Error> {
-        Ok(ethers::utils::keccak256(
+        Ok(keccak256(
             "RefreshLinkedSigner(address sender,address signer,uint64 nonce,uint64 signedAt)",
-        ))
+        )
+        .0)
     }
 
     fn struct_hash(&self) -> Result<[u8; 32], Eip712Error> {
         let mut encoded = Vec::new();
         encoded.extend_from_slice(&Self::type_hash()?);
-        encoded.extend_from_slice(&ethers::abi::encode(&[
-            ethers::abi::Token::Address(self.sender),
-            ethers::abi::Token::Address(self.signer),
-            ethers::abi::Token::Uint(U256::from(self.nonce)),
-            ethers::abi::Token::Uint(U256::from(self.signed_at)),
-        ]));
+        encoded.extend_from_slice(
+            &DynSolValue::Tuple(vec![
+                DynSolValue::Address(self.sender),
+                DynSolValue::Address(self.signer),
+                DynSolValue::Uint(U256::from(self.nonce), 64),
+                DynSolValue::Uint(U256::from(self.signed_at), 64),
+            ])
+            .abi_encode_params(),
+        );
 
-        Ok(ethers::utils::keccak256(&encoded))
+        Ok(keccak256(&encoded).0)
     }
 }
 
@@ -264,20 +283,21 @@ pub struct ExtendLinkedSigner {
 }
 impl Eip712 for ExtendLinkedSigner {
     fn type_hash() -> Result<[u8; 32], Eip712Error> {
-        Ok(ethers::utils::keccak256(
-            "ExtendLinkedSigner(address sender,uint64 nonce,uint64 signedAt)",
-        ))
+        Ok(keccak256("ExtendLinkedSigner(address sender,uint64 nonce,uint64 signedAt)").0)
     }
 
     fn struct_hash(&self) -> Result<[u8; 32], Eip712Error> {
         let mut encoded = Vec::new();
         encoded.extend_from_slice(&Self::type_hash()?);
-        encoded.extend_from_slice(&ethers::abi::encode(&[
-            ethers::abi::Token::Address(self.sender),
-            ethers::abi::Token::Uint(U256::from(self.nonce)),
-            ethers::abi::Token::Uint(U256::from(self.signed_at)),
-        ]));
+        encoded.extend_from_slice(
+            &DynSolValue::Tuple(vec![
+                DynSolValue::Address(self.sender),
+                DynSolValue::Uint(U256::from(self.nonce), 64),
+                DynSolValue::Uint(U256::from(self.signed_at), 64),
+            ])
+            .abi_encode_params(),
+        );
 
-        Ok(ethers::utils::keccak256(&encoded))
+        Ok(keccak256(&encoded).0)
     }
 }

@@ -11,6 +11,7 @@
 
 use std::sync::Arc;
 
+use alloy_primitives::hex;
 use criterion::{criterion_group, criterion_main, BatchSize, Criterion};
 use ethereal_rust_sdk::{
     async_client::client::HttpClient,
@@ -23,7 +24,6 @@ use ethereal_rust_sdk::{
     signing::{to_scaled_e9, Eip712, SigningContext},
     with_signing_fields,
 };
-use ethers::utils::hex;
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
 use tokio::runtime::Runtime;
@@ -85,7 +85,7 @@ pub fn build_submit_order_dto_for_bench(
     );
     let dto = SubmitOrderDto {
         data: SubmitOrderData::SubmitOrderLimitDtoData(order_dto),
-        signature: "0x".to_string() + &hex::encode(signature.to_vec()),
+        signature: "0x".to_string() + &hex::encode(signature.as_bytes()),
     };
     Ok(dto)
 }

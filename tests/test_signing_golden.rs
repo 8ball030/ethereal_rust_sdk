@@ -1,23 +1,22 @@
 // Golden values captured from the ethers-based signer before the alloy migration. Any change to
 // how a message is hashed or signed shows up here as a hex mismatch.
+use alloy_primitives::{hex, Address};
+use alloy_signer_local::PrivateKeySigner;
 use ethereal_rust_sdk::enums::Environment;
 use ethereal_rust_sdk::signable_messages::{
     CancelOrder, ConvertToken, EIP712Auth, ExtendLinkedSigner, InitiateWithdraw, LinkSigner,
     RefreshLinkedSigner, RevokeLinkedSigner, TradeOrder,
 };
 use ethereal_rust_sdk::signing::{get_domain_separator, hex_to_bytes32, Eip712};
-use ethers::signers::{LocalWallet, Signer};
-use ethers::types::Address;
-use ethers::utils::hex;
 
 const KEY: &str = "0bb5d63b84421e1268dda020818ae30cf26e7f10e321fb820a8aa69216dea92a";
 
-fn wallet() -> LocalWallet {
+fn wallet() -> PrivateKeySigner {
     KEY.parse().unwrap()
 }
 
 fn sign_hex<T: Eip712>(msg: &T, env: Environment) -> String {
-    hex::encode(msg.sign(env, &wallet()).unwrap().to_vec())
+    hex::encode(msg.sign(env, &wallet()).unwrap().as_bytes())
 }
 
 fn addr(s: &str) -> Address {
