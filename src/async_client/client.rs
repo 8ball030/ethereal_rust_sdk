@@ -35,6 +35,7 @@ use crate::{
     },
     signable_messages::{CancelOrder, TradeOrder},
     signing::{hex_to_bytes32, to_scaled_e9, SigningContext},
+    utils::{floor_quantity_to_lot, round_price_to_tick},
 };
 use anyhow::Result;
 
@@ -62,13 +63,6 @@ fn get_archive_server_url(environment: &Environment) -> &str {
     }
 }
 
-fn round_to_tick(value: Decimal, tick_size: Decimal) -> Result<Decimal> {
-    if tick_size.is_zero() {
-        return Ok(value);
-    }
-    let ticks = (value / tick_size).round();
-    Ok(ticks * tick_size)
-}
 
 #[macro_export]
 macro_rules! with_signing_fields {
@@ -260,8 +254,8 @@ impl HttpClient {
         let tick_size = product_info.tick_size;
         let lot_size = product_info.lot_size;
 
-        let price = round_to_tick(price, tick_size)?;
-        let quantity = round_to_tick(quantity, lot_size)?;
+        let price = round_price_to_tick(price, tick_size, side)?;
+        let quantity = floor_quantity_to_lot(quantity, lot_size)?;
 
         debug!(
             "Submitting order with quantity: {}, price: {}, side: {:?}, type: {:?}, time_in_force: {:?}, post_only: {}, reduce_only: {}, expires_at: {:?}",
